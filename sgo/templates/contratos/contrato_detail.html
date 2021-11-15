@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% load contratos_tags %}
+{% block page_title %}Contratos{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Contratos</a></li>
+  <li class="breadcrumb-item active">Detalle</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Contrato <small>Detalle</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+{#<div class="panel panel-inverse">#}
+{#  <div class="panel-heading">#}
+{#    <div class="panel-heading-btn">#}
+{#      <span class="panel-title" style="font-style: italic;">#}
+{#        Contrato generado el:#}
+{#        <strong>{{ contrato.modified|date:'d/M/Y' }}</strong>#}
+{#      </span>#}
+{#      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>#}
+{#      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>#}
+{#    </div>#}
+{#    <h4 class="panel-title">Información Contrato</h4>#}
+{#  </div>#}
+{#  <div class="panel-body">#}
+{#    <div class="row">#}
+{#      <div class="col-lg-8">#}
+{#        <h3 class="m-t-10">#}
+{#          {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}#}
+{#          <small>{{ contrato.usuario.rut }}</small>#}
+{#        </h3>#}
+{#      </div>#}
+{#      <div class="col-lg-4">#}
+{#        <p class="text-right">{{ contrato.usuario.planta.first }}</p>#}
+{#      </div>#}
+{#    </div>#}
+{##}
+{##}
+{#  </div>#}
+{##}
+{#</div>#}
+
+<div class="panel panel-default panel-with-tabs" data-init="true">
+  <!-- begin panel-heading -->
+  <div class="panel-heading p-0 ui-sortable-handle">
+      <div class="panel-heading-btn m-r-10 m-t-10">
+        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-inverse" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      </div>
+      <!-- begin nav-tabs -->
+      <div class="tab-overflow overflow-right">
+        <ul class="nav nav-tabs" style="margin-left: 0px;">
+          <li class="nav-item prev-button" style=""><a href="javascript:;" data-click="prev-tab" class="text-inverse nav-link"><i class="fa fa-arrow-left"></i></a></li>
+          <li class="nav-item">
+            <a href="#nav-tab2-0" data-toggle="tab" class="nav-link active">
+              Información Contrato</a>
+          </li>
+          {% for d in documentos.all %}
+            <li class="nav-item">
+              <a href="#nav-tab2-{{ forloop.counter }}" data-toggle="tab" class="nav-link">
+                {{ d.nombre_archivo|nombre_doc }}</a>
+            </li>
+          {% endfor %}
+          <li class="nav-item next-button" style=""><a href="javascript:;" data-click="next-tab" class="text-inverse nav-link"><i class="fa fa-arrow-right"></i></a></li>
+          <li class="nav-item">
+            <a href="#nav-tab2-10" data-toggle="tab" class="nav-link show">
+              Firmar</a>
+          </li>
+        </ul>
+      </div>
+      <!-- end nav-tabs -->
+    </div>
+    <!-- end panel-heading -->
+    <!-- begin tab-content -->
+    <div class="tab-content">
+      <div class="tab-pane fade active show" id="nav-tab2-0">
+       <div class="row">
+          <div class="col-lg-8">
+            <h3 class="m-t-10">
+              {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
+              <small>{{ contrato.usuario.rut }}</small>
+            </h3>
+          </div>
+          <div class="col-lg-4">
+            <p class="text-right">{{ contrato.usuario.planta.first }} <br>
+            {{ contrato.estado|estado_contrato|safe }}
+            </p>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-6 col-md-12">
+            <div class="table-responsive">
+              <table class="table table-striped m-b-0">
+									<tbody>
+                    <tr class="text-center">
+											<th colspan="2">Info. Contrato</th>
+										</tr>
+										<tr>
+											<th>Contrato generado</th>
+											<td>{{ contrato.created|date:'d/M/Y' }}</td>
+										</tr>
+										<tr>
+											<th>Firmado por Trabajador</th>
+											<td>Sin firmar</td>
+										</tr>
+										<tr>
+											<th>Firmado por Empleador</th>
+											<td>Sin firmar</td>
+										</tr>
+                    <tr>
+											<th>Observaciones</th>
+											<td>Ninguna</td>
+										</tr>
+									</tbody>
+								</table>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-12">
+            <div class="table-responsive">
+              <table class="table table-striped m-b-0">
+									<tbody>
+                    <tr class="text-center">
+											<th colspan="3">Documentos Contratos</th>
+										</tr>
+                    {% for d in documentos.all %}
+										<tr>
+                      <td>{{ forloop.counter }}.</td>
+											<td>{{ d.nombre_archivo|nombre_doc }}</td>
+											<td><a href="" data-tab="{{ forloop.counter }}" class="ver-pdf nav-link btn btn-xs btn-default">
+                        <i class="fa fa-eye"></i> Ver</a>
+                      </td>
+										</tr>
+                    {% endfor %}
+									</tbody>
+								</table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% for d in documentos.all %}
+      <!-- begin tab-pane -->
+      <div class="tab-pane fade" id="nav-tab2-{{ forloop.counter }}">
+      <div class="row">
+        <div class="col-lg-8">
+          <h3 class="m-t-10">{{ d.nombre_archivo|nombre_doc }}</h3>
+        </div>
+        {% if request.user.groups.first.name == 'Administrador Contratos' or request.user.groups.first.name == 'Trabajador' %}
+        <div class="col-lg-4 text-right">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input"
+                   name="aceptar-doc-{{ forloop.counter }}" id="aceptar-doc-{{ forloop.counter }}">
+            <label class="custom-control-label" for="aceptar-doc-{{ forloop.counter }}">Aceptar</label>
+          </div>
+          <small class="form-text text-muted" style="font-size: smaller;">
+            Debes aceptar el documento para iniciar proceso de firma electronica</small>
+        </div>
+        {% endif %}
+      </div>
+      <hr>
+      <object data="{{ d.archivo.url }}" type="application/pdf" width="100%" height="600">
+        <embed src="{{ d.archivo.url }}" type="application/pdf" width="100%" height="600">
+          <p class="text-center">
+            Si no se visualiza el PDF de <a href="{{ d.archivo.url }}" target="blank">click aquí</a>.
+          </p>
+        </embed>
+      </object>
+      </div>
+      <!-- end tab-pane -->
+      {% endfor %}
+      <div class="tab-pane fade" id="nav-tab2-10">
+        <div class="row">
+          <div class="col-lg-8">
+            <h3 class="m-t-10">
+              {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
+              <small>{{ contrato.usuario.rut }}</small>
+            </h3>
+          </div>
+          <div class="col-lg-4">
+            <p class="text-right">{{ contrato.usuario.planta.first }} <br>
+            {{ contrato.estado|estado_contrato|safe }}
+            </p>
+          </div>
+        </div>
+        <hr>
+        <p class="text-center">Contrato Generado el: {{ contrato.created|date:'d/M/Y' }}</p><br>
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                  <tbody>
+                    <tr class="text-center">
+                       <th colspan="2">Firmar Contrato.</th>
+                    </tr>
+                    <tr class="text-center">
+                      <td>
+                        <button class="btn btn-success btn-firma-contrato" data-id="{{ contrato.id }}">
+                          Firmar
+                        </button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                  <tbody>
+                    <tr class="text-center">
+                      <th colspan="3">Declinar Contrato.</th>
+                    </tr>
+                    <tr class="text-center">
+                      <td colspan="2"><a href="" class="btn btn-success">Declinar</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>
+
+<div class="modal fade" id="modal-contrato">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
+  var contratosUrl = '/contratos/';
+
+  $('.btn-firma-contrato').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('contrato_id', 'id');
+        var URL = '/contratos/'+id+'/generar_firma/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+              url: URL,
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#modal-contrato").modal("show");
+              },
+              success: function (data) {
+                  $("#modal-contrato .modal-content").html(data.html_form);
+              }
+            });
+    });
+
+  $("#modal-contrato").on("submit", ".js-generar-firma-form", function () {
+      var form = $(this);
+      var $boton = $('.btn-modal-submit');
+
+      $('.msg-loading').show('slow');
+
+      $boton.prop('disabled', true);
+      $boton.addClass('disabled');
+
+      $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+          $('.msg-loading').hide();
+          $('.btn-modal-submit').hide();
+
+          if (data.form_is_valid) {
+              console.log('Form Valid');
+              //$("#modal-contrato").modal("hide");
+              $('.success-msg-box').html(data.mensaje);
+              $('.msg-success').show('slow');
+
+              $('#modal-contrato').on('click', '.success-link', function(e){
+                e.preventDefault();
+                window.location.href = contratosUrl + data.id_contrato + '/detail/';
+              });
+
+              iziToast.success({
+                  title: '',
+                  message: 'Contrato en proceso de firma exitosamente.',
+                  position: 'topRight',
+              });
+          }
+          else {
+              console.log('Error');
+              console.log(data.mensaje);
+              $('.msg-box').html(data.mensaje);
+              $('.msg-error').show('slow');
+          }
+        }
+      });
+      return false;
+  });
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

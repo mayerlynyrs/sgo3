@@ -1,0 +1,17 @@
+[
+    {"id": 16, "nombre": "Región del Ñuble"}, 
+    {"id": 15, "nombre": "Región de Arica y Parinacota"}, 
+    {"id": 14, "nombre": "Regiónn de los Rí­os"}, 
+    {"id": 13, "nombre": "Región Metropolitana"}, 
+    {"id": 12, "nombre": "Región de Magallanes"}, 
+    {"id": 11, "nombre": "Región de Aysén"}, 
+    {"id": 10, "nombre": "Región de Los Lagos"}, 
+    {"id": 9, "nombre": "Región de la Araucaní­a"}, 
+    {"id": 8, "nombre": "Región del Bí­oBí­o"}, 
+    {"id": 7, "nombre": "Región del Maule"}, 
+    {"id": 6, "nombre": "Región de O'Higgins"}, 
+    {"id": 5, "nombre": "Región de Valparaíso"}, 
+    {"id": 4, "nombre": "Región de Coquimbo"}, 
+    {"id": 3, "nombre": "Región de Atacama"}, 
+    {"id": 2, "nombre": "Región de Antofagasta"}, 
+    {"id": 1, "nombre": "Región de Tarapacá"}]

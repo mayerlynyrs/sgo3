@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body style="margin:0px; background: #f8f8f8; ">
+<div width="100%" style="background: #f8f8f8; padding: 0px 0px;
+     font-family:arial; line-height:28px; height:100%;
+     width: 100%; color: #008a8a;">
+  <div style="max-width: 700px; padding:50px 0;  margin: 0px auto; font-size: 14px">
+    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 20px">
+      <tbody>
+        <tr>
+          <td style="vertical-align: top; padding-bottom:30px;" align="center">
+              <a href="javascript:void(0)" target="_blank">
+                  <img src="http://{{ domain }}{% static 'img/logo.jpg' %}" width="200"
+                       style="padding-top: 8px;" alt="logo sgo"></a></td>
+        </tr>
+      </tbody>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+      <tbody>
+        <tr>
+          <td style="background:#008a8a; padding:20px; color:#fff; text-align:center;
+              font-weight: bold; font-size: large;">
+              Firma Electrónica </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding: 40px; background: #fff;">
+      <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-family: 'Helvetica', Arial, sans-serif;color: #606060;">
+        <tbody>
+          <tr>
+              <td>
+                <p>Hola,</p>
+                <p>Se envio este correo electrónico debido a que hemos recibido su solicitud para <b>Firma Electronicamente su Contrato</b>. </p>
+              <div style="background: #ffffff url(http://{{ domain }}{% static 'admin/assets/img/login-bg/login-bg-11-thumb.jpg' %}) no-repeat center center;padding-top:128px; background-size: contain;"></div>
+              <p style="margin-bottom: -1em;">Para continuar con el proceso puede firmar a través del siguiente enlace.</p><br>
+              <p style="text-align: center;">
+                  <a href="http://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}"
+                   style="padding: 11px 20px; margin: 16px 0px 25px; font-size: 14px;
+                   color: #fff; background: #008a8a; border-radius: 5px; text-decoration:none;
+                   font-weight: bold;">
+                    Firmar Contrato</a>
+              </p>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align: center; font-size: 12px; color: #b2b2b5; margin-top: 20px">
+      <p> Powered by SGO <br>
+        <a href="javascript: void(0);" style="color: #b2b2b5;">
+            Tus contratos digitales al alcance de tu mano.</a></p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

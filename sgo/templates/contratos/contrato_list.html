@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load contratos_tags %}
+{% block page_title %}Contratos{% endblock %}
+{% block styles %}
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+}
+
+.text-desc {
+  font-style: italic;
+  margin-top:-0.1em;
+  padding-left: 0.1em;
+  font-size: small;
+}
+
+.estado-fichero{
+  text-align: center;
+  vertical-align: middle;
+}
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #00acac !important;
+    border-color: #00acac !important;
+    color: #fff;
+}
+{% endblock %}
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Contratos</a></li>
+  <li class="breadcrumb-item active">Listado</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Contratos <small>Listado</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">Todos los contratos</h4>
+  </div>
+  <div class="panel-body">
+    <div class="table-responsive">
+
+      {% block buscador %}
+        <form method="get">
+          <div class="input-group col-md-12">
+            <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      {% endblock buscador %}<br>
+    <table class="table table-bordered table-hover">
+      <thead>
+          <tr>
+              <th class="text-center" width="5%">#</th>
+              <th class="text-center" width="25%">Contratos</th>
+              <th class="text-center" width="20%">Planta</th>
+              <th class="text-center" width="20%">Estado</th>
+              <th class="text-center" width="10%">Inicio</th>
+              <th class="text-center" width="10%">Término</th>
+              <th class="text-center" width="10%">Fecha Creación</th>
+          </tr>
+      </thead>
+      <tbody>
+      {% for obj in object_list  %}
+          <tr>
+            <td class="text-right">{{ forloop.counter }}.</td>
+            <td>
+                <a href="{% url 'contratos:detail' obj.id %}?page={{ request.GET.page }}">
+                    <span class="text-name text-success">
+                        {{ obj.usuario.first_name|title }} {{ obj.usuario.last_name|title }}
+                    </span>
+                </a>
+            </td>
+            <td class="text-center">
+              {{ obj.usuario.planta.first }}
+            </td>
+            <td class="text-center">
+              {{ obj.estado|estado_contrato|safe }}
+            </td>
+            <td>
+               <p class="text-center">
+                  {{ obj.modified|date:'d/M/Y' }} <br>
+               </p>
+            </td>
+            <td>
+               <p class="text-center">
+                  {{ obj.modified|date:'d/M/Y' }} <br>
+               </p>
+            </td>
+            <td>
+               <p class="text-center">
+                  {{ obj.modified|date:'d/M/Y' }} <br>
+               </p>
+            </td>
+          </tr>
+      {% empty %}
+        <tr><td colspan="5">
+          <div class="text-center">No hay contratos generados.</div>
+        </td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+     {% if is_paginated %}
+      <!-- pagination -->
+     <ul class="pagination centrar">
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
+           class="page-link">«</a>
+      </li>
+      {% for page in page_obj.paginator.page_range %}
+          {% if page_obj.number|add:'-5' <= page and page_obj.number|add:'5' >= page%}
+            <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+              <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={{ page }}"
+                 class="page-link">{{ page }}</a>
+            </li>
+          {% endif %}
+      {% endfor %}
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
+           class="page-link">»</a>
+      </li>
+    </ul>
+      {% if page_obj.paginator.num_pages > 5 %}
+      <ul class="pager m-t-0 m-b-0">
+        <li class="page-item previous {% if not page_obj.has_previous %}disabled{% endif %}">
+          <a href="{{ request.path }}?page=1" class="page-link">← Primero</a></li>
+        <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
+          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="page-link">Último →</a></li>
+      </ul>
+     {% endif %}
+  {% endif %}
+
+  </div>
+</div>
+<div class="modal fade" id="modal-plantilla">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block scripts %}
+
+      $('.btn-view-fichero').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('fichero_id', 'id');
+        var URL = '/ficheros/'+id+'/detail/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+              url: URL,
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#modal-fichero").modal("show");
+              },
+              success: function (data) {
+                  $("#modal-fichero .modal-content").html(data.html_form);
+              }
+            });
+    });
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block page_title %}Usuarios{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Usuarios</a></li>
+  <li class="breadcrumb-item active">{% if usuario %}{{ usuario.id }}{% else %}Nuevo{% endif %}</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Usuarios <small>{% if usuario %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      {% if usuario.last_login %}
+      <span class="panel-title" style="font-style: italic;">
+        Ultimo acceso el:
+        <strong>{{ usuario.last_login|date:'d/M/Y' }}</strong>
+      </span>
+      {% endif %}
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+    </div>
+    <h4 class="panel-title">
+      {% if usuario %}{{ usuario.first_name|upper }} {{ usuario.last_name|upper }}{% else %}Nuevo Usuario{% endif %}</h4>
+  </div>
+  <div class="panel-body">
+
+    {% if form.non_field_errors%}
+      <div class="alert alert-danger fade show">
+        <span class="close" data-dismiss="alert">×</span>
+        <h4><i class="icon fa fa-exclamation-triangle"></i> Revisa el formulario!</h4>
+        {% for err in form.non_field_errors %}{{ err }}<br>{% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-danger fade show" id="msgbox" style="display: none;">
+        <span class="close" data-dismiss="alert">×</span>
+        <span>
+          <strong><i class="icon fa fa-exclamation-triangle text-danger pr-1"></i>
+            <span id="num-errors"></span></strong>
+          Revisa el formulario, sigue las instrucciones y completa los datos.</span>
+      </div>
+    {% endif %}
+    <div class="card-body">
+    <form method="post" autocomplete="off" novalidate id="CrearUsuarioForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+      {% csrf_token %}
+      {% include 'basic_form.html' with form=form %}
+        <!-- Alerta informa RUT-->
+        <div
+          id="alerta"
+          class="alert alert-info alert-dismissible fade show text-center"
+          role="alert">
+          <span id="mensaje">Ingrese un RUT en el siguiente campo de texto para validar
+            si es correcto o no.</span>
+        </div>
+        <!-- FIN ALERTA -->
+      <div class="form-group row m-b-0">
+        <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
+        <div class="col-md-8 col-sm-8 text-right">
+          <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+          <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </form>
+
+    <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script>
+      $("#id_region").change(function () {
+        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+        var regionId = $(this).val();  // get the selected region ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url: "{% url 'users:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
+          data: {
+            'region': regionId       // add the region id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_provincias` view function
+            $("#id_provincia").html(data);  // replace the contents of the provincia input with the data that came from the server
+          }
+        });
+  
+      });
+      // this one is for fetching ciudad data
+      $("#id_provincia").change(function () { //django-model-form created this id
+        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+        var provinciaId = $(this).val();  // get the selected region ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url: "{% url 'users:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
+          data: {
+            'provincia': provinciaId       // add the region id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_provincias` view function
+            $("#id_ciudad").html(data);  // replace the contents of the provincia input with the data that came from the server
+          }
+        });
+  
+      });
+      // plantas
+      $("#id_cliente").change(function () {
+        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
+        var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
+          data: {
+            'cliente': clienteId       // add the cliente id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_plantas` view function
+            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
+          }
+        });
+  
+      });
+    </script>
+  
+  </div>
+<script>
+  function fixedEncodeURI (str) {
+    return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']'); }
+</script>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/js/script.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
+  var enviando = false;
+  //Submit form
+  $('#btn-guardar').on('click', function(e){
+      $(this).prop('disabled', true);
+      $(this).addClass('disabled');
+
+      e.preventDefault();
+
+      var $form = $('form');
+      var validator = $form.validate({
+          ignore: "",
+          errorClass: "is-invalid",
+          validClass: "is-valid",
+          errorElement: 'div',
+          errorPlacement: function ( error, element ) {
+            error.addClass("invalid-feedback");
+
+            if(element.prop("type") === "checkbox") {
+              error.insertAfter(element.parent("label"));
+            }else{
+              error.insertAfter(element);
+            }
+
+            // Add the span element, if doesn't exists, and apply the icon classes to it.
+            if (!element.next("div")[0]) {
+              $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+            }
+          },
+          wrapper: "",
+          rules: {
+                  first_name: "required",
+                  last_name: "required",
+                  rut: {
+                    required: true,
+                    minlength: 8
+                  },
+                  email: {
+                    required: true,
+                    email: true
+                  },
+                  telefono: {
+                    required: true,
+                    digits: true,
+                    minlength: 4
+                  },
+                  group: "required",
+                  planta: {
+                    required: true
+                    
+                  }
+                },
+                messages: {
+                  first_name: "Ingresa los nombres.",
+                  last_name: "Ingresa los apellidos.",
+                  rut: {
+                    required: "Ingresa el RUT del usuario.",
+                    minlength: "Ingresa un RUT valido."
+                  },
+                  telefono: {
+                    required: "Ingresa el teléfono de contacto.",
+                    digits: "Ingrese un número de teléfono valido.",
+                    minlength: "Ingrese un número de teléfono valido."
+                  },
+                  planta: "Selecciona al menos una planta a la que pertenezca el usuario.",
+                  group: "Selecciona un perfil para el usuario.",
+                  email: {
+                    required: "Ingresa el email del usuario.",
+                    email: "Ingresa un email valido. por ejemplo: name@domain.com"
+                  }
+          },
+          showErrors: function(errorMap, errorList) {
+              console.log('show messages', errorList.length);
+              if(errorList.length){
+                  $('#msgbox').show('slow');
+                  $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                  this.defaultShowErrors();
+                  console.log('Errores', errorMap, errorList);
+              }
+        }
+      });
+
+      if(validator.form()){
+          if(!enviando){
+              enviando = true;
+              $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+              $form.submit();
+          }else{
+              console.log("El formulario ya se esta enviando...");
+          }
+      }else{
+          console.log('Error en el formulario.');
+          $(this).removeClass('disabled');
+          $(this).prop('disabled', false);
+      }
+
+  })
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

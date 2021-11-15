@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% load contratos_tags %}
+{% block page_title %}Contratos{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Contratos</a></li>
+  <li class="breadcrumb-item active">Detalle</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Contrato <small>Detalle</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+{#<div class="panel panel-inverse">#}
+{#  <div class="panel-heading">#}
+{#    <div class="panel-heading-btn">#}
+{#      <span class="panel-title" style="font-style: italic;">#}
+{#        Contrato generado el:#}
+{#        <strong>{{ contrato.modified|date:'d/M/Y' }}</strong>#}
+{#      </span>#}
+{#      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>#}
+{#      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>#}
+{#    </div>#}
+{#    <h4 class="panel-title">Información Contrato</h4>#}
+{#  </div>#}
+{#  <div class="panel-body">#}
+{#    <div class="row">#}
+{#      <div class="col-lg-8">#}
+{#        <h3 class="m-t-10">#}
+{#          {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}#}
+{#          <small>{{ contrato.usuario.rut }}</small>#}
+{#        </h3>#}
+{#      </div>#}
+{#      <div class="col-lg-4">#}
+{#        <p class="text-right">{{ contrato.usuario.planta.first }}</p>#}
+{#      </div>#}
+{#    </div>#}
+{##}
+{##}
+{#  </div>#}
+{##}
+{#</div>#}
+
+<div class="panel panel-default panel-with-tabs" data-init="true">
+  <!-- begin panel-heading -->
+  <div class="panel-heading p-0 ui-sortable-handle">
+      <div class="panel-heading-btn m-r-10 m-t-10">
+        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-inverse" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      </div>
+      <!-- begin nav-tabs -->
+      <div class="tab-overflow overflow-right">
+        <ul class="nav nav-tabs" style="margin-left: 0px;">
+          <li class="nav-item prev-button" style=""><a href="javascript:;" data-click="prev-tab" class="text-inverse nav-link"><i class="fa fa-arrow-left"></i></a></li>
+          <li class="nav-item">
+            <a href="#nav-tab2-0" data-toggle="tab" class="nav-link active">
+              Firmar</a>
+          </li>
+          {% for d in documentos.all %}
+            <li class="nav-item">
+              <a href="#nav-tab2-{{ forloop.counter }}" data-toggle="tab" class="nav-link">
+                {{ d.nombre_archivo|nombre_doc }}</a>
+            </li>
+          {% endfor %}
+          <li class="nav-item next-button" style=""><a href="javascript:;" data-click="next-tab" class="text-inverse nav-link"><i class="fa fa-arrow-right"></i></a></li>
+          <li class="nav-item">
+            <a href="#nav-tab2-10" data-toggle="tab" class="nav-link show">
+              Información Contrato</a>
+          </li>
+        </ul>
+      </div>
+      <!-- end nav-tabs -->
+    </div>
+    <!-- end panel-heading -->
+    <!-- begin tab-content -->
+    <div class="tab-content">
+      <div class="tab-pane fade active show" id="nav-tab2-0">
+        <div class="row">
+          <div class="col-lg-8">
+            <h3 class="m-t-10">
+              {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
+              <small>{{ contrato.usuario.rut }}</small>
+            </h3>
+          </div>
+          <div class="col-lg-4">
+            <p class="text-right">{{ contrato.usuario.planta.first }} <br>
+            {{ contrato.estado|estado_contrato|safe }}
+            </p>
+          </div>
+        </div>
+        <hr>
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                  <tbody>
+                    <tr class="text-center">
+                       <th colspan="2">Firmar Contrato</th>
+                    </tr>
+                    <tr>
+                      <th>Contrato generado</th>
+                      <td>{{ contrato.created|date:'d/M/Y' }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><p> Se envío un código a su correo electrónico para finalizar con el proceso de firma electrónica</p></td>
+                    </tr>
+                    <tr class="text-center">
+                      <th colspan="2"><h3 class="m-t-10">Ingresa código</h3></th>
+                    </tr>
+                    <tr class="text-center">
+                      <td colspan="2"><input type="" name="" class="form-control-lg form-control" id="" /></td>
+                    </tr>
+                    <tr class="text-center">
+                      <td colspan="2"><a href="" class="btn btn-success">Firmar</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- <div class="col-lg-6 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                  <tbody>
+                    <tr class="text-center">
+                      <th colspan="3">Declinar Contrato</th>
+                    </tr>
+                    <tr>
+											<th>Observaciones: </th>
+											<td><input required /></td>
+										</tr>
+                    <tr class="text-center">
+                      <td colspan="2"><a href="" class="btn btn-success">Declinar</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-tab2-10">
+          <div class="row">
+            <div class="col-lg-8">
+              <h3 class="m-t-10">
+                {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
+                <small>{{ contrato.usuario.rut }}</small>
+              </h3>
+            </div>
+            <div class="col-lg-4">
+              <p class="text-right">{{ contrato.usuario.planta.first }} <br>
+              {{ contrato.estado|estado_contrato|safe }}
+              </p>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                    <tbody>
+                      <tr class="text-center">
+                        <th colspan="2">Info. Contrato</th>
+                      </tr>
+                      <tr>
+                        <th>Contrato generado</th>
+                        <td>{{ contrato.created|date:'d/M/Y' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Firmado por Trabajador</th>
+                        <td>Sin firmar</td>
+                      </tr>
+                      <tr>
+                        <th>Firmado por Empleador</th>
+                        <td>Sin firmar</td>
+                      </tr>
+                      <tr>
+                        <th>Observaciones</th>
+                        <td>Ninguna</td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped m-b-0">
+                    <tbody>
+                      <tr class="text-center">
+                        <th colspan="3">Documentos Contratos</th>
+                      </tr>
+                      {% for d in documentos.all %}
+                      <tr>
+                        <td>{{ forloop.counter }}.</td>
+                        <td>{{ d.nombre_archivo|nombre_doc }}</td>
+                        <td><a href="" data-tab="{{ forloop.counter }}" class="ver-pdf nav-link btn btn-xs btn-default">
+                          <i class="fa fa-eye"></i> Ver</a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% for d in documentos.all %}
+        <!-- begin tab-pane -->
+        <div class="tab-pane fade" id="nav-tab2-{{ forloop.counter }}">
+        <div class="row">
+          <div class="col-lg-8">
+            <h3 class="m-t-10">{{ d.nombre_archivo|nombre_doc }}</h3>
+          </div>
+        </div>
+        <hr>
+        <object data="{{ d.archivo.url }}" type="application/pdf" width="100%" height="600">
+          <embed src="{{ d.archivo.url }}" type="application/pdf" width="100%" height="600">
+            <p class="text-center">
+              Si no se visualiza el PDF de <a href="{{ d.archivo.url }}" target="blank">click aquí</a>.
+            </p>
+          </embed>
+        </object>
+        </div>
+        <!-- end tab-pane -->
+        {% endfor %}
+  </div>
+
+<div class="modal fade" id="modal-contrato">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block librerias %}
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
+
+  $('body').on('click','.ver-pdf', function(e){
+    e.preventDefault();
+    var numTab = $(this).data('tab');
+    console.log('tab', numTab);
+    $('a[href="#nav-tab2-'+numTab+'"').click();
+  });
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

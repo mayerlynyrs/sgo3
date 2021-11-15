@@ -1,0 +1,5 @@
+[
+    {"id": 4, "nombre": "Viudo(a)", "status": "1"}, 
+    {"id": 3, "nombre": "Divorciado(a)", "status": "1"}, 
+    {"id": 2, "nombre": "Casado(a)", "status": "1"}, 
+    {"id": 1, "nombre": "Soltero(a)", "status": "1"}]

@@ -1,0 +1,8 @@
+[
+    {"id": 7, "nombre": "AFP Uno", "status": "1"}, 
+    {"id": 6, "nombre": "AFP Provida", "status": "1"}, 
+    {"id": 5, "nombre": "AFP Planvital", "status": "1"}, 
+    {"id": 4, "nombre": "AFP Modelo", "status": "1"}, 
+    {"id": 3, "nombre": "AFP Habitat", "status": "1"}, 
+    {"id": 2, "nombre": "AFP Cuprum", "status": "1"}, 
+    {"id": 1, "nombre": "AFP Capital", "status": "1"}]

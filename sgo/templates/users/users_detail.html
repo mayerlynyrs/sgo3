@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block page_title %}Usuarios{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Usuarios</a></li>
+  <li class="breadcrumb-item active">Detalle</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Usuarios <small>Detalle</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      {% if usuario.last_login %}
+      <span class="panel-title" style="font-style: italic;">
+        Último acceso el:
+        <strong>{{ usuario.last_login|date:'d/M/Y' }}</strong>
+      </span>
+      {% endif %}
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">
+      {{ usuario.first_name|upper }} {{ usuario.last_name|upper }}</h4>
+  </div>
+  <div class="panel-body">
+
+    <form method="post" autocomplete="off" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_first_name">Perfil:</label>
+        <div class="form-control">{{ usuario.groups.first.name }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_rut">RUT:</label>
+        <div class="form-control">{{ usuario.rut }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Nombres:</label>
+        <div class="form-control">{{ usuario.first_name|lower|title }}</div>
+        <!-- <div class="form-control-lg">{{ usuario.first_name|lower|title }}</div> -->
+      </div>
+      <div class="form-group">
+        <label for="id_last_name">Apellidos:</label>
+        <div class="form-control">{{ usuario.last_name|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_sexo">Sexo:</label>
+        <div class="form-control">{{ usuario.sexo.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_email">Email:</label>
+        <div class="form-control">{{ usuario.email|lower }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Teléfono:</label>
+        <div class="form-control">{{ usuario.telefono }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Estado Civil:</label>
+        <div class="form-control">{{ usuario.estado_civil.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Fecha de Nacimiento:</label>
+        <div class="form-control">{{ usuario.fecha_nacimiento|date:'d/m/Y' }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Nacionalidad:</label>
+        <div class="form-control">{{ usuario.nacionalidad.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Región:</label>
+        <div class="form-control">{{ usuario.region|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Provincia:</label>
+        <div class="form-control">{{ usuario.provincia|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Ciudad:</label>
+        <div class="form-control">{{ usuario.ciudad|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Domicilio:</label>
+        <div class="form-control">{{ usuario.domicilio|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Sistema Salud:</label>
+        <div class="form-control">{{ usuario.sistema_salud.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Sistema Previsión:</label>
+        <div class="form-control">{{ usuario.sistema_prevision.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Banco:</label>
+        <div class="form-control">{{ usuario.banco.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Tipo de Cuenta:</label>
+        <div class="form-control">{{ usuario.tipo_cuenta.nombre }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Número de Cuenta:</label>
+        <div class="form-control">{{ usuario.cuenta|lower|title }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Cliente:</label>
+        <ul>
+          {% for c in usuario.cliente.all %}
+            <!-- <li style="font-size: large;">{{ c.nombre|title }}</li> -->
+            <li style="font-size: small;">{{ c.razon_social|title }}</li>
+          {% empty %}
+            <li>Sin cliente(s) asignado(s)</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- <div class="form-group">
+        <label for="id_first_name">Cliente:</label>
+        <div class="form-control">{{ usuario.cliente|lower|title }}</div>
+      </div> -->
+      <div class="form-group">
+        <label for="id_first_name">Planta:</label>
+        <ul>
+          {% for p in usuario.planta.all %}
+            <!-- <li style="font-size: large;">{{ p.nombre|title }}</li> -->
+            <li style="font-size: small;">{{ p.nombre|title }}</li>
+          {% empty %}
+            <li>Sin planta(s) asignada(s)</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="form-group">
+        {% if usuario.is_active %}
+        <div class="col-md-6 form-control-lg text-center">
+          {% if usuario.id == request.user.id %}
+          <a href="{% url 'users:change_password' %}" class="btn btn-md btn-warning">
+            <i class="fas fa-lg fa-key"></i> Cambiar Clave</a>
+          {% comment %}{% else %}
+            {% if user.groups.first.name == 'Administrador' or user.groups.first.name == 'Administrador Contratos' %}
+              <a href="{% url 'users:admin_change_password' usuario.id %}" class="btn btn-warning">
+                <i class="fas fa-lg fa-key"></i> Cambiar Clave</a>
+            {% endif %}{% endcomment %}
+          {% endif %}
+        </div>
+      {% endif %}
+        <div class="col-md-6 offset-md-6 text-right">
+          {{ usuario.is_active|tag_active_detail|safe }}
+          <small class="form-text text-muted">Indica si el usuario debe ser tratado como activo. Desmarque esta opción en lugar de borrar la cuenta.</small>
+        </div>
+      </div>
+
+      <div class="form-group row m-b-0">
+        {% if user.groups.first.name == 'Administrador' or user.groups.first.name == 'Administrador Contratos' %}
+        <div class="col-md-4 col-sm-4 col-form-label">
+          {% if usuario.groups.first.name == 'Trabajador' %}
+            <a href="{% url 'users:attribute' usuario.id %}?page={{ request.GET.page }}" class="btn btn-warning"><i class="fas fa-list-alt"></i> Contrato</a>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="col-md-4 col-sm-4 col-form-label">
+          <!-- Alinear boton de volver -->
+        </div>
+        {% endif %}
+
+        <div class="col-md-8 col-sm-8 text-right">
+          {% if perms.user.add_user %}
+            <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Volver</a>
+          {% else %}
+            <a href="{% url 'home' %}" class="btn btn-default">Volver</a>
+          {% endif %}
+          {% if request.user.groups.first.name == 'Administrador Contratos' or request.user.groups.first.name == 'Administrador' %}
+          <b>
+            {% if usuario.groups.first.name == 'Trabajador' or request.user.groups.first.name == 'Administrador' %}
+            <a href="{% url 'users:update' usuario.id %}?page={{ request.GET.page }}" class="btn btn-success">Editar</a>
+            {% endif %}
+          </b>
+            
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal fade" id="modal-usuario">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

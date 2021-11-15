@@ -1,0 +1,133 @@
+{% load static %}
+{% load user_tags %}
+<div id="sidebar" class="sidebar sidebar-transparent">
+  <!-- begin sidebar scrollbar -->
+  <div data-scrollbar="true" data-height="100%">
+    <!-- begin sidebar user -->
+    <ul class="nav">
+      <li class="nav-profile">
+        <a href="javascript:;" data-toggle="nav-profile">
+          <div class="cover with-shadow"></div>
+          <div class="image">
+            {{ request.user.groups.all.first.name|image_profile|safe }}
+          </div>
+          <div class="info">
+            <b class="caret pull-right"></b>
+            {{ request.user.first_name}} {{ request.user.last_name }}
+            <small>{{ request.user.groups.all.first }}</small>
+          </div>
+        </a>
+      </li>
+      <li>
+        <ul class="nav nav-profile">
+          <li><a href="{% url 'users:detail' request.user.id %}"><i class="fa fa-user"></i> Perfil</a></li>
+          <li><a href="{% url 'contratos:miscontratos' %}">
+            <i class="fab fa-dochub"></i>
+            Mis Contratos <span class="badge pull-right">10</span></a></li>
+          {% if request.user.is_staff %}
+            <li><a href="{% url "admin:index" %}" target="_blank">
+              <i class="fa fa-wrench"></i> Administración</a>
+            </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+    <!-- end sidebar user -->
+    <!-- begin sidebar nav -->
+    <ul class="nav">
+      <li class="nav-header">Menú</li>
+      {% if not user.groups.first.name == 'Administrador'  %}
+      <li {% if menu_app == 'home' %}class="active"{% endif %}>
+        <a href="{% url 'home' %}">
+          <i class="fas fa-home"></i>
+          <span>Inicio </span>
+        </a>
+      </li>
+      {% endif %}
+      {% if user.groups.first.name == 'Administrador'  %}
+      <li {% if menu_app == 'inicio' %}class="active"{% endif %}>
+        <a href="{% url 'inicio' %}">
+          <i class="fas fa-home"></i>
+          <span>Inicio </span>
+        </a>
+      </li>
+      {% endif %}
+      {% if perms.contratos.view_plantilla %}
+      <li class="has-sub {% if menu_app == 'contratos' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="fas fa-archive"></i>
+          <span>Contratos </span>
+        </a>
+        <ul class="sub-menu">
+        {% if perms.contratos.view_plantilla %}
+          <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
+								<a href="javascript:;">
+									<b class="caret"></b>
+									Plantillas
+								</a>
+								<ul class="sub-menu" style="{% if menu_module == 'plantilla' %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list-plantilla' %}">Ver Plantillas</a></li>
+                  {% if perms.contratos.add_plantilla %}
+									<li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'contratos:create-plantilla' %}">Crear Plantilla</a></li>
+                  {% endif %}
+								</ul>
+							</li>
+        {% endif %}
+        {% if perms.contratos.view_contrato %}
+          <li class="has-sub {% if menu_module == None %}expand{% else %}closed{% endif %}">
+								<a href="javascript:;">
+									<b class="caret"></b>
+									Contratos
+								</a>
+								<ul class="sub-menu" style="{% if menu_module == None %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
+								</ul>
+							</li>
+        {% endif %}
+          {% comment %}<li {% if menu_module == 'lista' %}class="active"{% endif %}><a href="ui_general.html">Ver Plantillas </a></li>
+        {% if perms.contratos.add_plantilla %}
+          <li {% if menu_module == 'lista' %}class="active"{% endif %}><a href="ui_typography.html">Crear Plantilla</a></li>
+        {% endif %}{% endcomment %}
+        </ul>
+      </li>
+      {% endif %}
+      {% if perms.ficheros.view_fichero %}
+      <li class="has-sub {% if menu_app == 'ficheros' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="far fa-hdd"></i>
+          <span>Ficheros Digitales </span>
+        </a>
+        <ul class="sub-menu">
+          <li {% if menu_app == 'ficheros' and menu_page == None %} class="active"{% endif %}><a href="{% url 'ficheros:list' %}">Ver Ficheros </a></li>
+        {% if perms.ficheros.add_fichero %}
+          <li {% if menu_app == 'ficheros' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'ficheros:create' %}">Crear Fichero</a></li>
+        {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+      {% if perms.users.view_user %}
+      <li class="has-sub {% if menu_app == 'users' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="fas fa-users"></i>
+          <span>Usuarios </span>
+        </a>
+        <ul class="sub-menu">
+          <li {% if menu_app == 'users' and menu_page == None %} class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
+        {% if perms.users.add_user %}
+        <li {% if menu_app == 'users' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
+        {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+      <!-- begin sidebar minify button -->
+      <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
+      <!-- end sidebar minify button -->
+    </ul>
+    <!-- end sidebar nav -->
+  </div>
+  <!-- end sidebar scrollbar -->
+</div>
+<div class="sidebar-bg"></div>

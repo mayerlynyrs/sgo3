@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block page_title %}Usuarios{% endblock %}
+{% block styles %}
+img {
+  width: 3em;
+}
+.img-div {
+  float: left;
+  text-align: center;
+  padding-right: 0.5em;
+}
+
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+  font-size: 13px;
+}
+
+.text-desc {
+ margin-top:-0.3em;
+ margin-bottom: 0;
+ padding-left: 2.7em;
+ font-size: small;
+ font-style: italic;
+}
+
+.list-plantas{
+  vertical-align: middle;
+  font-size: small;
+}
+
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #00acac !important;
+    border-color: #00acac !important;
+    color: #fff;
+}
+
+{% endblock %}
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Usuarios</a></li>
+  <li class="breadcrumb-item active">Listado</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Usuarios <small>Listado</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+    </div>
+    <h4 class="panel-title">Todos los usuarios</h4>
+  </div>
+    </header>
+    <div class="panel-body">
+  <!-- {% block barra_busqueda %}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 search">
+          <form method="get">
+              <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                  <input type="text" class="form-control" placeholder="Buscar..." name="buscar" value = "{{ request.GET.buscar }}">
+                  <span class="input-group-list">
+                    <i class="icon icon-search"></i>
+                    <button type="submit" class="boton btn-success">Buscar</button>
+                  </span>
+                </div>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endblock barra_busqueda %} -->
+
+    {% block buscador %}
+      <form method="get">
+        <div class="input-group col-md-12">
+          <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    {% endblock buscador %}<br>
+
+    <table class="table table-bordered table-hover">
+      <thead>
+          <tr>
+              <th class="text-center">Datos Usuario</th>
+              <th class="text-center">Plantas</th>
+          </tr>
+      </thead>
+      <tbody>
+      {% block contenido %}
+      {% for usr in object_list  %}
+        {% if not usr.id == request.user.id %}
+          <tr>
+            <td>
+                <a href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}">
+                  <div class="img-div">
+                    {{ usr.groups.first.name|image_profile|safe }}<br>
+                    {{ usr.is_active|tag_active|safe }}
+                  </div>
+                  <span class="text-name text-success">
+                    {{ usr.first_name|title }} {{ usr.last_name|title }} -
+                    {{ usr.rut|upper }}
+                  </span>
+                </a>
+                <p class="text-desc">
+                  {{ usr.groups.first.name|title }}
+                </p>
+                <p class="text-desc">
+                  <i class="fas fa-at fa-xs"></i>
+                  {{ usr.email|lower }}
+                  <i class="fas fa-phone fa-xs"></i>
+                  {{ usr.telefono|lower }}
+                </p>
+            </td>
+            <td class="list-plantas">
+                <ul>
+                  {% for p in usr.planta.all %}
+                    <li>{{ p.nombre }}</li>
+                  {% empty %}
+                    <li>Sin asignar</li>
+                  {% endfor %}
+                </ul>
+            </td>
+          </tr>
+        
+        {% endif %}
+      {% endfor %}
+      {% endblock contenido %}
+      </tbody>
+    </table>
+    {% if is_paginated %}
+      <!-- pagination -->
+     <ul class="pagination centrar">
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
+           class="page-link">«</a>
+      </li>
+      {% for page in page_obj.paginator.page_range %}
+          {% if page_obj.number|add:'-5' <= page and page_obj.number|add:'5' >= page%}
+            <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+              <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={{ page }}"
+                 class="page-link">{{ page }}</a>
+            </li>
+          {% endif %}
+      {% endfor %}
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
+           class="page-link">»</a>
+      </li>
+    </ul>
+      {% if page_obj.paginator.num_pages > 5 %}
+      <ul class="pager m-t-0 m-b-0">
+        <li class="page-item previous {% if not page_obj.has_previous %}disabled{% endif %}">
+          <a href="{{ request.path }}?page=1" class="page-link">← Primero</a></li>
+        <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
+          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="page-link">Último →</a></li>
+      </ul>
+     {% endif %}
+  {% endif %}
+
+  </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block scripts %}
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

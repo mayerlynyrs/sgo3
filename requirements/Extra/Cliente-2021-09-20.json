@@ -1,0 +1,13 @@
+[
+    {"id": 12, "codigo": "16", "rut": "96.532.330-9", "razon_social": "CMPC PULP SPA", "ciudad": "", "direccion_comercial": "Av. Jorge Alessandri 001 Mininco, Collipulli"}, 
+    {"id": 11, "codigo": "15", "rut": "79.990.550-7", "razon_social": "Bioforest S.A.", "ciudad": "", "direccion_comercial": "Camino a Coronel KM 15 S/N"}, 
+    {"id": 10, "codigo": "14", "rut": "91.868.000-4", "razon_social": "Industrias Chilenas del Alambre Inchalam S.A.", "ciudad": "", "direccion_comercial": "Avenida Gran Bretaña #2675, Talcahuano"}, 
+    {"id": 9, "codigo": "13", "rut": "77.470.940-1", "razon_social": "Andritz Chile Limitada", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 8, "codigo": "12", "rut": "91.510.000-7", "razon_social": "Edyce Metalúrgica S.A.", "ciudad": "", "direccion_comercial": "Algarrobo #159. Talcahuano"}, 
+    {"id": 7, "codigo": "11", "rut": "76.050.022-4", "razon_social": "Constructora (Empresa)", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 6, "codigo": "10", "rut": "00.446.664-6", "razon_social": "Servicios Industriales Integra Ltda.", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 5, "codigo": "7", "rut": "77.424.780-7", "razon_social": "Ewos Chile Alimentos Limitada", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 4, "codigo": "6", "rut": "76.143.821-2", "razon_social": "Camanchaca Pesca Sur S.A.", "ciudad": "", "direccion_comercial": "Avda. General Carlos Prats González #80, Lo Rojas, Coronel"}, 
+    {"id": 3, "codigo": "5", "rut": "85.805.200-9", "razon_social": "Forestal Arauco S.A.", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 2, "codigo": "4", "rut": "96.510.970-6", "razon_social": "Maderas Arauco S.A.", "ciudad": "", "direccion_comercial": ""}, 
+    {"id": 1, "codigo": "2", "rut": "93.458.000-1", "razon_social": "Celulosa Arauco y Constitución S.A.", "ciudad": "", "direccion_comercial": "Avda. Enrique Mac-Iver 505"}]

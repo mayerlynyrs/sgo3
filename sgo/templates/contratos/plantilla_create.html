@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block page_title %}Contratos{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'contratos:list-plantilla' %}">Plantillas</a></li>
+  <li class="breadcrumb-item active">{% if plantilla %}{{ plantilla.id }}{% else %}Nueva{% endif %}</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Plantilla <small>{% if plantilla %}Editar{% else %}Nueva{% endif %}</small></h1>
+<!-- end page-header -->
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">
+      {% if plantilla %}{{ plantilla.nombre|upper }}{% else %}Plantilla Nueva{% endif %}</h4>
+  </div>
+  <div class="panel-body">
+
+    {% if form.non_field_errors%}
+      <div class="alert alert-danger fade show">
+        <span class="close" data-dismiss="alert">×</span>
+        <h5><i class="fa fa-exclamation-triangle"></i> Revisa el fomulario!</h5>
+        {% for err in form.non_field_errors %}{{ err }}<br>{% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-danger fade show" id="msgbox" style="display: none;">
+        <span class="close" data-dismiss="alert">×</span>
+        <span>
+          <strong><i class="icon fa fa-exclamation-triangle text-danger pr-1"></i>
+            <span id="num-errors"></span></strong>
+          Revisa el formulario, sigue las instrucciones y completa los datos.</span>
+      </div>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+      {% csrf_token  %}
+      {% include 'basic_form.html' with form=form %}
+      <br/>
+      <div class="form-group row m-b-0">
+        <div class="col-md-4 col-sm-4">
+          {% if plantilla and perms.ficheros.delete_fichero %}
+            <button type="button" id="btn-delete" class="btn btn-danger">Eliminar</button>
+          {% endif %}
+        </div>
+        <div class="col-md-8 col-sm-8 text-right">
+          <a href="{% url 'contratos:list-plantilla' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+          <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- end panel -->
+<div class="modal fade" id="modal-plantilla">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+  <script src="{% static "admin/assets/plugins/jquery-validation/dist/additional-methods.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+{% block scripts %}
+  var enviando = false;
+  //Submit form
+  $('#btn-guardar').on('click', function(e){
+      $(this).prop('disabled', true);
+      $(this).addClass('disabled');
+
+      e.preventDefault();
+
+      var $form = $('form');
+      var validator = $form.validate({
+          ignore: "",
+          errorClass: "is-invalid",
+          validClass: "is-valid",
+          errorElement: 'div',
+          errorPlacement: function ( error, element ) {
+            error.addClass("invalid-feedback");
+
+            if(element.prop("type") === "checkbox") {
+              error.insertAfter(element.parent("label"));
+            }else{
+              error.insertAfter(element);
+            }
+
+            // Add the span element, if doesn't exists, and apply the icon classes to it.
+            if (!element.next("div")[0]) {
+              $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+            }
+          },
+          wrapper: "",
+          rules: {
+                  nombre: "required",
+                  desc: "required",
+
+                  archivo: {
+                  {% if not plantilla %}
+                    required: true,
+                  {% endif %}
+                    accept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    },
+
+                  cliente: "required",
+                  plantas: "required",
+                },
+                messages: {
+                  nombre: "Ingresa el nombre del fichero digital.",
+                  archivo: {
+                    {% if not plantilla %}
+                      required: "Selecciona un archivo.",
+                    {% endif %}
+                      accept: "Solo se aceptan archivos Word."
+                  },
+                  cliente: "Selecciona un cliente.",
+                  plantas: "Selecciona al menos una planta."
+          },
+          showErrors: function(errorMap, errorList) {
+              console.log('show messages', errorList.length);
+              if(errorList.length){
+                  $('#msgbox').show('slow');
+                  $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                  this.defaultShowErrors();
+                  console.log('Errores', errorMap, errorList);
+              }
+        }
+      });
+
+      if(validator.form()){
+          if(!enviando){
+              enviando = true;
+              $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+              $form.submit();
+          }else{
+              console.log("El formulario ya se esta enviando...");
+          }
+      }else{
+          console.log('Error en el formulario.');
+          $(this).removeClass('disabled');
+          $(this).prop('disabled', false);
+      }
+
+  })
+
+{% if plantilla and perms.plantilla.delete_plantilla %}
+  var deleteURL = "{% url 'contratos:delete-plantilla' plantilla.id %}";
+
+  $('#btn-delete').on('click', function(e){
+      e.preventDefault();
+
+      console.log('click delete object');
+      console.log(deleteURL);
+
+      $.ajax({
+        url: deleteURL,
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+          $("#modal-plantilla").modal("show");
+        },
+        success: function (data) {
+            $("#modal-plantilla .modal-content").html(data.html_form);
+        }
+      });
+  });
+{% endif %}
+
+{% if messages %}
+      console.log('mensajes');
+      {% for mensaje in messages %}
+          console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+          {% if mensaje.tags == 'success' %}
+            iziToast.success({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% elif mensaje.tags == 'error' %}
+            iziToast.error({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% endif %}
+      {% endfor %}
+
+  {% endif %}
+{% endblock %}
+

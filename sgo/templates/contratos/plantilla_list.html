@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block page_title %}Contratos{% endblock %}
+{% block styles %}
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+}
+
+.text-desc {
+  font-style: italic;
+  margin-top:-0.1em;
+  padding-left: 0.1em;
+  font-size: small;
+}
+
+.estado-fichero{
+  text-align: center;
+  vertical-align: middle;
+}
+
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #00acac !important;
+    border-color: #00acac !important;
+    color: #fff;
+}
+{% endblock %}
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Contratos</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Plantillas</a></li>
+  <li class="breadcrumb-item active">Listado</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Plantillas <small>Contratos</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">Todos las plantillas</h4>
+  </div>
+  <div class="panel-body">
+
+    {% block buscador %}
+      <form method="get">
+        <div class="input-group col-md-12">
+          <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    {% endblock buscador %}<br>
+
+    <table class="table table-bordered table-hover">
+      <thead>
+          <tr>
+              <th class="text-center" width="45%">Plantilla de Contratos</th>
+              <th class="text-center" width="35%">Planta</th>
+              <th class="text-center" width="20%"><i class="fas fa-calendar fa-fw"></i> Fecha</th>
+          </tr>
+      </thead>
+      {% for obj in object_list  %}
+          <tr>
+            <td>
+                <!-- nombre de la plantilla -->
+                <a href="{% if perms.contratos.change_plantilla %}{% url 'contratos:update-plantilla' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
+                    <span class="text-name text-success">
+                        {{ obj.nombre|title }}
+                    </span>
+                </a>
+                <!-- Número(s) de documento(s) -->
+                <span class="badge badge-success m-l-5 t-minus-1">{{ obj.atributos|length }}</span>
+                <!-- nombre del tipo -->
+                <p class="text-muted" style="font-weight: bold; font-style: italic; margin-bottom: 0;">{{ obj.tipo.nombre }}</p>
+                <!-- {"Fecha_Termino": "15/12/2021"} -->
+                <p class="text-desc">
+                     {{ obj.atributos }}
+                </p>
+            </td>
+            <td class="list-plantas">
+                <ul>
+                  {% for p in obj.plantas.all %}
+                    <li>{{ p.nombre }}</li>
+                  {% empty %}
+                    <li>Sin asignar</li>
+                  {% endfor %}
+                </ul>
+            </td>
+            <td class="estado-fichero">
+               <p class="text-desc">
+                  {{ obj.activo|tag_activo_fichero|safe }} <br>
+                  <i class="fas fa-calendar"></i> {{ obj.modified|date:'d/M/Y' }} <br>
+               </p>
+              <a href="{% get_media_prefix %}{{ obj.archivo }}" target="_blank"
+                 class="btn btn-xs btn-success btn-view-plantilla"><i class="fa fa-file-pdf-o margin-r-5"></i>
+                <i class="fas fa-file-word"></i> Descargar</a>
+            </td>
+          </tr>
+      {% empty %}
+        <tr><td colspan="2">
+          <div class="text-center">No hay plantilla de contratos creadas.</div>
+        </td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% if is_paginated %}
+      <!-- pagination -->
+     <ul class="pagination centrar">
+      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
+           class="page-link">«</a>
+      </li>
+      {% for page in page_obj.paginator.page_range %}
+          {% if page_obj.number|add:'-5' <= page and page_obj.number|add:'5' >= page%}
+            <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+              <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={{ page }}"
+                 class="page-link">{{ page }}</a>
+            </li>
+          {% endif %}
+      {% endfor %}
+      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
+           class="page-link">»</a>
+      </li>
+    </ul>
+      {% if page_obj.paginator.num_pages > 5 %}
+      <ul class="pager m-t-0 m-b-0">
+        <li class="page-item previous {% if not page_obj.has_previous %}disabled{% endif %}">
+          <a href="{{ request.path }}?page=1" class="page-link">← Primero</a></li>
+        <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
+          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="page-link">Último →</a></li>
+      </ul>
+     {% endif %}
+    {% endif %}
+  </div>
+</div>
+<div class="modal fade" id="modal-plantilla">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block scripts %}
+
+      $('.btn-view-fichero').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('fichero_id', 'id');
+        var URL = '/ficheros/'+id+'/detail/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+              url: URL,
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#modal-fichero").modal("show");
+              },
+              success: function (data) {
+                  $("#modal-fichero .modal-content").html(data.html_form);
+              }
+            });
+    });
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% load static %}
+{% load widget_tweaks %}
+<form method="post" action="{% url 'contratos:generar_firma' contrato_id=contrato.id %}"
+      class="js-generar-firma-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title">Firmar Contrato</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="text-center">
+      ¿Esta seguro que desea firmar el contrato generado el: {{ contrato.created|date:'d/M/Y' }}?</p>
+      <p style="font-weight: bold;">Si selecciona <i>Si</i>, se enviara un código a su correo electrónico para continuar con el proceso de firma electrónica</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">No</a>
+    <form method="post" class="margin-bottom-0" autocomplete="off">
+      <input name="email" value="mel@yopmail.com" />
+      <input name="uidb64" value="1s72q4rgru5hyt6fyrjhvc8y1a73piq6" />
+      <input name="token" value="oN8ZslfdNk6n6sjUKo63roxbVdfeRHGQthkT48CjlTB57IPj2tn1Ga6d7VRMOGlF" />
+      <div class="login-buttons">
+        <button type="submit" class="btn btn-success btn-block btn-lg" data-id="{{ token }}">SI</button>
+      </div>
+    </form>
+    <!-- <button type="submit" class="btn btn-warning btn-modal-submit">Si</button> -->
+  </div>
+</form>

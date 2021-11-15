@@ -1,0 +1,6 @@
+[
+    {"id": 5, "nombre": "Cuenta Rut", "status": "1"}, 
+    {"id": 4, "nombre": "Cuenta Chequera Electrónica", "status": "1"}, 
+    {"id": 3, "nombre": "Cuenta Vista", "status": "1"}, 
+    {"id": 2, "nombre": "Cuenta de Ahorro", "status": "1"}, 
+    {"id": 1, "nombre": "Cuenta Corriente", "status": "1"}]

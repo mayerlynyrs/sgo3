@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% load contratos_tags %}
+{% block page_title %}Usuarios{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Usuarios</a></li>
+  <li class="breadcrumb-item active">Contrato</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Usuarios <small>Contrato</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      {% if usuario.last_login %}
+      <span class="panel-title" style="font-style: italic;">
+        Último acceso el:
+        <strong>{{ usuario.last_login|date:'d/M/Y' }}</strong>
+      </span>
+      {% endif %}
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">
+      {{ usuario.first_name|upper }} {{ usuario.last_name|upper }}</h4>
+  </div>
+  <div class="panel-body">
+
+    <form method="post" autocomplete="off" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_first_name">Perfil:</label>
+        <!-- <input type="" name="user_id" id="user_id" value="5" /> -->
+        <div class="form">- {{ usuario.groups.first.name|upper }}</div>
+      </div>
+      <div class="form-group">
+        <label for="id_rut">Rut:</label>
+        <div class="form">- {{ usuario.rut }}</div>
+        <!-- <div class="form-control-lg">{{ usuario.first_name|lower|title }}</div> -->
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Cliente:</label>
+        <ul>
+          {% for c in usuario.cliente.all %}
+            <!-- <li style="font-size: large;">{{ c.nombre|title }}</li> -->
+            <li style="font-size: small;">{{ c.razon_social|title }}</li>
+          {% empty %}
+            <li>Sin cliente(s) asignado(s)</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="form-group">
+        <label for="id_first_name">Planta:</label>
+        <ul>
+          {% for p in usuario.planta.all %}
+            <li style="font-size: small;">{{ p.nombre|title }}</li>
+          {% empty %}
+            <li>Sin planta(s) asignada(s)</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- Atributos -->
+      <div class="form-group"><hr />
+        <!-- <div class="alert alert-danger" role="alert"></div> -->
+        <ul>
+          {% if usuario.atributos == empty %}
+            <b style="color:red">IMPORTANTE.</b>
+            <b>Para continuar generando el contrato se debe completar la siguiente información</b><br><br>
+            <li>{% include 'basic_form.html' with form=form %}</li>
+          {% else %}
+          <label for="id_first_name">Más Información:</label>
+            <li style="font-size: small;">{{ usuario.atributos }}</li>
+          {% endif %}
+        </ul>
+      </div>
+      
+      <!-- <div class="form-group">
+        <label for="id_cargo">Cargo:</label>
+        <select class="form-control">{{ usuario.cargo.nombre }}</select>
+      </div>
+      <div class="form-group">
+        <label for="id_cargo">Departamento:</label>
+        <select class="form-control">{{ usuario.cargo.nombre }}</select>
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Jornada:</label>
+        <input type="text" name="nombre" class="form-control" required id="id_nombre">
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Sueldo:</label>
+        <input type="text" name="nombre" class="form-control" required id="id_nombre">
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Beneficio:</label>
+        <input type="text" name="nombre" class="form-control" required id="id_nombre">
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Fecha Ingreso:</label>
+        <input type="text" name="nombre" class="form-control" required id="id_nombre">
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Hora Ingreso:</label>
+        <input type="text" name="nombre" class="form-control" required id="id_nombre">
+      </div>
+      <div class="form-group">
+        <label for="id_nombre">Fecha Término:</label>
+        <input type="text" name="fecha_termino" class="form-control" required id="id_fecha_termino">
+      </div> -->
+
+      <div class="form-group row m-b-0">
+      {% for ctt in contratos %}
+        <!-- Contrato:{{ ctt.usuario }}<br>
+        Usuario:{{ usuario.rut }} -->
+        {% if ctt.usuario == usuario.rut %}
+          <!-- hola -->
+        {% else %}
+        <div class="col-md-6 col-sm-6 col-form-label">
+          <a href="{% url 'contratos:detail' ctt.id %}?page={{ request.GET.page }}" class="btn btn-warning"><i class="fas fa-list-alt"></i> Contrato</a>
+        </div>
+          <!-- chao -->
+        {% endif %}
+      {% empty %}
+        <!-- <li>Sin cliente(s) asignado(s)</li> -->
+        {% if user.groups.first.name == 'Administrador' or user.groups.first.name == 'Administrador Contratos' %}
+        <div class="col-md-6 col-sm-6 col-form-label">
+          {% if usuario.groups.first.name == 'Trabajador' %}
+          <button class="btn btn-warning btn-ver-contrato" data-id="{{ usuario.id }}">
+              <i class="fas fa-list-alt"></i> Generar Contrato
+          </button>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="col-md-4 col-sm-4 col-form-label">
+          <!-- Alinear boton de volver -->
+        </div>
+        {% endif %}
+      {% endfor %}
+
+        <div class="col-md-6 col-sm-6 text-right">
+          {% if perms.user.add_user %}
+            <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+          {% else %}
+            <a href="{% url 'home' %}" class="btn btn-default">Cancelar</a>
+          {% endif %}
+          {% if request.user.groups.first.name == 'Administrador Contratos' or request.user.groups.first.name == 'Administrador' %}
+          <b>
+            {% if usuario.groups.first.name == 'Trabajador' or request.user.groups.first.name == 'Administrador' %}
+            <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+            {% endif %}
+          </b>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal fade" id="modal-usuario">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+<!-- end panel -->
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
+    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
+  var contratosUrl = '/contratos/';
+
+  $('.btn-ver-contrato').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('usuario_id', 'id');
+        var URL = '/users/'+id+'/contrato/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+              url: URL,
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#modal-usuario").modal("show");
+              },
+              success: function (data) {
+                  $("#modal-usuario .modal-content").html(data.html_form);
+              }
+            });
+    });
+
+  $("#modal-usuario").on("submit", ".js-generar-contrato-form", function () {
+      var form = $(this);
+      var $boton = $('.btn-modal-submit');
+
+      $('.msg-loading').show('slow');
+
+      $boton.prop('disabled', true);
+      $boton.addClass('disabled');
+
+      $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+          $('.msg-loading').hide();
+          $('.btn-modal-submit').hide();
+
+          if (data.form_is_valid) {
+              console.log('Form Valid');
+              //$("#modal-usuario").modal("hide");
+              $('.success-msg-box').html(data.mensaje);
+              $('.msg-success').show('slow');
+
+              $('#modal-usuario').on('click', '.success-link', function(e){
+                e.preventDefault();
+                window.location.href = contratosUrl + data.id_contrato + '/attribute/';
+              });
+
+              iziToast.success({
+                  title: '',
+                  message: 'Contrato generado exitosamente.',
+                  position: 'topRight',
+              });
+          }
+          else {
+              console.log('Error');
+              console.log(data.mensaje);
+              $('.msg-box').html(data.mensaje);
+              $('.msg-error').show('slow');
+          }
+        }
+      });
+      return false;
+  });
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

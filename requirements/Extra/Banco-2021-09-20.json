@@ -1,0 +1,15 @@
+[
+    {"id": 14, "nombre": "Banco Coopeuch", "status": "1"}, 
+    {"id": 13, "nombre": "Banco Consorcio", "status": "1"}, 
+    {"id": 12, "nombre": "Banco BICE", "status": "1"}, 
+    {"id": 11, "nombre": "Banco Ripley", "status": "1"}, 
+    {"id": 10, "nombre": "Banco Falabella", "status": "1"}, 
+    {"id": 9, "nombre": "Banco Citibank", "status": "1"}, 
+    {"id": 8, "nombre": "Banco BBVA", "status": "1"}, 
+    {"id": 7, "nombre": "Banco Itaú", "status": "1"}, 
+    {"id": 6, "nombre": "Banco Scotiabank", "status": "1"}, 
+    {"id": 5, "nombre": "Banco BCI", "status": "1"}, 
+    {"id": 4, "nombre": "Banco Chile", "status": "1"}, 
+    {"id": 3, "nombre": "Banco Santander", "status": "1"}, 
+    {"id": 2, "nombre": "Banco Estado", "status": "1"}, 
+    {"id": 1, "nombre": "NINGUNO", "status": "1"}]

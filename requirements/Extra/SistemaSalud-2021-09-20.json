@@ -1,0 +1,15 @@
+[
+    {"id": 14, "nombre": "Isapre Chuquicamata", "status": "1"}, 
+    {"id": 13, "nombre": "Isapre San Lorenzo", "status": "1"}, 
+    {"id": 12, "nombre": "Isapre Fusat", "status": "1"}, 
+    {"id": 11, "nombre": "Isapre Fundacion", "status": "1"}, 
+    {"id": 10, "nombre": "Isapre Cruz Del Norte", "status": "1"}, 
+    {"id": 9, "nombre": "Isapre Rio Blanco", "status": "1"}, 
+    {"id": 8, "nombre": "Isapre Vida Tres", "status": "1"}, 
+    {"id": 7, "nombre": "Isapre Cruz Blanca", "status": "1"}, 
+    {"id": 6, "nombre": "Isapre Ferrosalud", "status": "1"}, 
+    {"id": 5, "nombre": "Isapre Colmena Golden Cross", "status": "1"}, 
+    {"id": 4, "nombre": "Isapre Banmedica", "status": "1"}, 
+    {"id": 3, "nombre": "Isapre Mas Vida", "status": "1"}, 
+    {"id": 2, "nombre": "Isapre Consalud", "status": "1"}, 
+    {"id": 1, "nombre": "Fonasa", "status": "1"}]

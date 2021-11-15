@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+  {% include 'webicons.html' %}
+{% endblock %}
+
+{% block branding %}
+ <img src="{% static 'img/logo_.png' %}" width="140" alt="logo" style="float: left;">
+ <sub style="font-weight: bold;  margin-left: -2em; font-style: italic; color: #fff;">Admin</sub>
+ {% comment %}{{ block.super }}{% endcomment %}
+{% endblock %}
+
+{% block extrastyle %}
+
+<style>
+#header{
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background: #000;
+  color: #AAA;
+  overflow: hidden;
+}
+
+div.breadcrumbs {
+    background: #999;
+    padding: 10px 40px;
+    border: none;
+    font-size: 14px;
+    color: #c4dce8;
+    text-align: left;
+}
+
+</style>
+{% endblock %}
