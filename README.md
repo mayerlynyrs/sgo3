@@ -1,5 +1,5 @@
 # SGO
-# Fiirmatec
+# Firmatec
 
 Sistema de Gestión de Operaciones.
 Plataforma de Firma Electrónica simple de contratos.
