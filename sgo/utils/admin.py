@@ -9,7 +9,7 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from utils.models import Region, Provincia, Ciudad, Gratificacion, Cliente, Negocio, Planta, Cargo, Area
+from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  TipoArchivo, PuestaDisposicion , Abastecimiento, Horario, Equipo
 
 
 class RegionSetResource(resources.ModelResource):
@@ -34,6 +34,12 @@ class CiudadSetResource(resources.ModelResource):
         model = Ciudad
         fields = ('id', 'nombre', 'provincia', 'status', )
 
+class BonoSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Bono
+        fields = ('id', 'nombre', 'status', )
+
 
 class GratificacionSetResource(resources.ModelResource):
 
@@ -41,6 +47,18 @@ class GratificacionSetResource(resources.ModelResource):
         model = Gratificacion
         fields = ('id', 'nombre', 'descripcion', 'status', )
 
+class CargoSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Cargo
+        fields = ('id', 'nombre', 'status', )
+
+
+class AreaSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Area
+        fields = ('id', 'nombre', 'status', )
 
 class ClienteSetResource(resources.ModelResource):
 
@@ -63,20 +81,36 @@ class PlantaSetResource(resources.ModelResource):
         model = Planta
         fields = ('id', 'nombre', 'cliente', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
 
-
-class CargoSetResource(resources.ModelResource):
-
-    class Meta:
-        model = Cargo
-        fields = ('id', 'nombre', 'status', )
-
-
-class AreaSetResource(resources.ModelResource):
+  
+class TipoArchivoSetResource(resources.ModelResource):
 
     class Meta:
-        model = Area
-        fields = ('id', 'nombre', 'status', )
+        model = TipoArchivo
+        fields = ('id', 'nombre', 'descripcion', 'status', )
 
+class PuestaDisposicionSetResource(resources.ModelResource):
+
+    class Meta:
+        model = PuestaDisposicion
+        fields = ('id', 'nombre', 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual', 'status', )
+
+class AbastecimientoSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Abastecimiento
+        fields = ('id', 'tipo', 'insumos', 'status',  )
+
+class HorarioSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Horario
+        fields = ('id', 'nombre', 'descripcion', 'status',  )
+
+class EquipoSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Equipo
+        fields = ('id', 'nombre', 'cliente', 'valor',  'tipo' 'status',  )
 
 @admin.register(Region)
 class RegionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -109,6 +143,15 @@ class CiudadAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ['provincia', ]
     search_fields = ('nombre', 'provincia__nombre')
 
+@admin.register(Bono)
+class BonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """BonoAdmin model admin."""
+
+    resource_class = BonoSetResource
+    fields = ('nombre', 'status', )
+    list_display = ('id', 'nombre',)
+    search_fields = ['nombre', ]
+
 
 @admin.register(Gratificacion)
 class GratificacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -119,13 +162,32 @@ class GratificacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'nombre', 'status', 'created_date',)
     search_fields = ['nombre', ]
 
+@admin.register(Cargo)
+class CargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """CargoAdmin model admin."""
+
+    resource_class = CargoSetResource
+    fields = ('nombre', 'status', )
+    list_display = ('id', 'nombre',)
+    search_fields = ['nombre', ]
+
+
+@admin.register(Area)
+class AreaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """AreaAdmin model admin."""
+
+    resource_class = AreaSetResource
+    fields = ('nombre', 'status', )
+    list_display = ('id', 'nombre',)
+    search_fields = ['nombre', ]
+
 
 @admin.register(Cliente)
 class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ClienteAdmin model admin."""
 
     resource_class = ClienteSetResource
-    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'region', 'provincia', 'ciudad', 'direccion', 'status', )
+    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'Area','Cargo', 'region', 'provincia', 'ciudad', 'direccion', 'status', )
     list_display = ('id', 'rut', 'razon_social', 'ciudad',)
     search_fields = ['razon_social', ]
 
@@ -151,23 +213,50 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('nombre', 'negocio__nombre')
 
 
-@admin.register(Cargo)
-class CargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """CargoAdmin model admin."""
+@admin.register(TipoArchivo)
+class TipoArchivoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """TipoArchivoAdmin model admin."""
 
-    resource_class = CargoSetResource
-    fields = ('nombre', 'status', )
-    list_display = ('id', 'nombre',)
+    resource_class = TipoArchivoSetResource
+    fields = ('nombre','descripcion' ,'status', )
+    list_display = ('id', 'nombre', 'descripcion')
     search_fields = ['nombre', ]
 
 
-@admin.register(Area)
-class AreaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """AreaAdmin model admin."""
+@admin.register(PuestaDisposicion)
+class PuestaDisposicionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """PuestaDisposicionAdmin model admin."""
 
-    resource_class = AreaSetResource
-    fields = ('nombre', 'status', )
-    list_display = ('id', 'nombre',)
+    resource_class = PuestaDisposicionSetResource
+    fields = ('nombre' , 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual', 'status', )
+    list_display = ('id', 'nombre', 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual',)
     search_fields = ['nombre', ]
 
+@admin.register(Abastecimiento)
+class AbastecimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """AbastecimientoAdmin model admin."""
+
+    resource_class = AbastecimientoSetResource
+    fields = ( 'tipo', 'insumos', 'status', )
+    list_display = ('id', 'tipo', 'insumos', )
+    search_fields = ['tipo', 'insumos']
+
+@admin.register(Horario)
+class HorarioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """HorarioAdmin model admin."""
+
+    resource_class = HorarioSetResource
+    fields = ( 'nombre', 'descripcion','cliente', 'status', )
+    list_display = ('id', 'nombre', 'descripcion', )
+    search_fields = ['nombre', ]
+
+@admin.register(Equipo)
+class EquipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """EquipoAdmin model admin."""
+
+    resource_class = EquipoSetResource
+    fields = ( 'nombre', 'valor',  'tipo' ,'cliente', 'status', )
+    list_display = ('id','nombre', 'valor',  'tipo' , 'cliente' )
+    list_filter = ['cliente', ]
+    search_fields = ['nombre', 'tipo', ]
 # admin.site.register(Region)
