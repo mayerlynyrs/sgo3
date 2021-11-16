@@ -364,11 +364,8 @@ class Negocio(BaseModel):
         help_text='Seleccione uno o mas cliente para este negocio.'
     )
 
-    gratificacion = models.ManyToManyField(
-        Gratificacion,
-        help_text='Seleccione una o mas gratificaciones para este negocio.'
-    )
-horario
+    gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True, blank=True)
+
     bono = models.ManyToManyField(
         Bono,
         help_text='Seleccione una o mas Bonos para este negocio.'

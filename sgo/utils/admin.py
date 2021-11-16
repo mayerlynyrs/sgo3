@@ -120,7 +120,7 @@ class AbastecimientoSetResource(resources.ModelResource):
 
 class EquipoSetResource(resources.ModelResource):
     cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
-    
+
     class Meta:
         model = Equipo
         fields = ('id', 'nombre', 'cliente', 'valor',  'tipo' 'status',  )
@@ -208,7 +208,7 @@ class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ClienteAdmin model admin."""
 
     resource_class = ClienteSetResource
-    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'Area','Cargo', 'Horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
+    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'area','cargo', 'horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
     list_display = ('id', 'rut', 'razon_social', 'ciudad',)
     search_fields = ['razon_social', ]
 
@@ -258,8 +258,8 @@ class AbastecimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """AbastecimientoAdmin model admin."""
 
     resource_class = AbastecimientoSetResource
-    fields = ( 'tipo', 'insumos', 'status', )
-    list_display = ('id', 'tipo', 'insumos', )
+    fields = ( 'tipo', 'insumos','negocio', 'status',  )
+    list_display = ('id', 'tipo', 'insumos',  )
     search_fields = ['tipo', 'insumos']
 
 
