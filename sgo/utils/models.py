@@ -282,19 +282,19 @@ class Cliente(BaseModel):
         blank=True,
         null=True
     )
-    Area = models.ManyToManyField(
+    area = models.ManyToManyField(
         Area,
-        help_text='Seleccione uno o mas Area para este cliente.'
+        help_text='Seleccione uno o mas area para este cliente.'
     )
 
-    Cargo = models.ManyToManyField(
+    cargo = models.ManyToManyField(
         Cargo,
-        help_text='Seleccione uno o mas Cargo para este cliente.'
+        help_text='Seleccione uno o mas cargo para este cliente.'
     )
 
-    Horario = models.ManyToManyField(
+    horario = models.ManyToManyField(
         Horario,
-        help_text='Seleccione uno o mas Horario para este cliente.'
+        help_text='Seleccione uno o mas horario para este cliente.'
     )
 
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
@@ -368,7 +368,7 @@ class Negocio(BaseModel):
         Gratificacion,
         help_text='Seleccione una o mas gratificaciones para este negocio.'
     )
-
+horario
     bono = models.ManyToManyField(
         Bono,
         help_text='Seleccione una o mas Bonos para este negocio.'
