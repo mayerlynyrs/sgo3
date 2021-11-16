@@ -125,6 +125,23 @@ class Ciudad(models.Model):
     def __str__(self):
         return self.nombre
 
+class Bono(models.Model):
+    nombre = models.CharField(
+        max_length=120,
+        unique=True
+    )
+    status = models.BooleanField(
+        default=timezone.now,
+        help_text='para desactivar el bono, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
+    def __str__(self):
+        return self.nombre
+
 
 class Gratificacion(models.Model):
     """Modelo Gratificacion.
@@ -143,6 +160,67 @@ class Gratificacion(models.Model):
             blank=True
     )
 
+    def __str__(self):
+        return self.nombre
+
+class Cargo(models.Model):
+    """Modelo Cargo.
+    """
+
+    nombre = models.CharField(
+        max_length=120,
+        unique=True
+    )
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar este cargo, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return self.nombre
+
+
+class Area(models.Model):
+    """Modelo Area.
+    """
+
+    nombre = models.CharField(
+        max_length=120,
+        unique=True
+    )
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el area, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return self.nombre
+
+
+
+
+class TipoArchivo(models.Model):
+    nombre = models.CharField(max_length=120)
+    descripcion = models.CharField(max_length=100)
+    status = models.BooleanField(
+        default=timezone.now,
+        help_text='para desactivar el tipo, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
     def __str__(self):
         return self.nombre
 
@@ -187,6 +265,16 @@ class Cliente(BaseModel):
         blank=True,
         null=True
     )
+    Area = models.ManyToManyField(
+        Area,
+        help_text='Seleccione uno o mas Area para este negocio.'
+    )
+
+    Cargo = models.ManyToManyField(
+        Cargo,
+        help_text='Seleccione uno o mas Cargo para este negocio.'
+    )
+
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
     provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
     ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
@@ -259,6 +347,11 @@ class Negocio(BaseModel):
         help_text='Seleccione una o mas gratificaciones para este negocio.'
     )
 
+    bono = models.ManyToManyField(
+        Bono,
+        help_text='Seleccione una o mas Bonos para este negocio.'
+    )
+
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
 
     provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
@@ -313,45 +406,97 @@ class Planta(models.Model):
         return self.nombre
 
 
-class Cargo(models.Model):
-    """Modelo Cargo.
-    """
 
-    nombre = models.CharField(
-        max_length=120,
-        unique=True
-    )
+
+class PuestaDisposicion(models.Model):
+    nombre = models.CharField(max_length=120)
+    gratificacion = models.IntegerField()
+    seguro_cesantia = models.FloatField()
+    seguro_invalidez = models.FloatField()
+    seguro_vida = models.FloatField()
+    mutual = models.FloatField()
+
+
     status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar este cargo, deshabilite esta casilla.'
+        default=timezone.now,
+        help_text='para desactivar el puesta a disposicion, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
+        default= timezone.now,
+        null=True,
+        blank=True
     )
-
     def __str__(self):
         return self.nombre
 
 
-class Area(models.Model):
-    """Modelo Area.
-    """
-
-    nombre = models.CharField(
-        max_length=120,
-        unique=True
+class Abastecimiento(BaseModel):
+   
+    tipo = models.BooleanField(
+        help_text='true.- Habitual false.- No Nabitual.'
     )
+    insumos = models.BooleanField(
+        help_text='true.- EPP false.- Caja Herramientas.'
+    )
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+
     status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el area, deshabilite esta casilla.'
+        default=timezone.now,
+        help_text='para desactivar el tipo, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
+        default= timezone.now,
+        null=True,
+        blank=True
     )
+    def __str__(self):
+        return self.nombre
 
+class Horario(models.Model):
+   
+    nombre = models.CharField(max_length=120)
+    descripcion = models.CharField(max_length=100)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+    status = models.BooleanField(
+        default=timezone.now,
+        help_text='para desactivar el Horario, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
+    def __str__(self):
+        return self.nombre
+
+class Equipo(models.Model):
+
+    EPP = 'EPP'
+    EPP_ADICIONAL = 'EPPA'
+    CAJA_HERRAMIENTAS = 'CJ'
+    
+
+    TIPO_EQUIPO = (
+        (EPP, 'EPP'),
+        (EPP_ADICIONAL, 'EPP Adicionales'),
+        (CAJA_HERRAMIENTAS, 'Caja de Herramientas'),
+    )
+   
+    nombre = models.CharField(max_length=120)
+    valor = models.IntegerField()
+    tipo = models.CharField(max_length=4, choices=TIPO_EQUIPO, default=EPP)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+    status = models.BooleanField(
+        default=timezone.now,
+        help_text='para desactivar el equipo, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
     def __str__(self):
         return self.nombre
