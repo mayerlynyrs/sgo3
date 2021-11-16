@@ -8,6 +8,7 @@ from crum import get_current_user
 from smart_selects.db_fields import GroupedForeignKey
 
 
+
 class BaseModel(models.Model):
     """Project base model.
 
@@ -224,6 +225,22 @@ class TipoArchivo(models.Model):
     def __str__(self):
         return self.nombre
 
+class Horario(models.Model):
+   
+    nombre = models.CharField(max_length=120)
+    descripcion = models.CharField(max_length=100)
+
+    status = models.BooleanField(
+        default=timezone.now,
+        help_text='para desactivar el Horario, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
+    def __str__(self):
+        return self.nombre
 
 class Cliente(BaseModel):
     """Modelo Cliente. """
@@ -267,12 +284,17 @@ class Cliente(BaseModel):
     )
     Area = models.ManyToManyField(
         Area,
-        help_text='Seleccione uno o mas Area para este negocio.'
+        help_text='Seleccione uno o mas Area para este cliente.'
     )
 
     Cargo = models.ManyToManyField(
         Cargo,
-        help_text='Seleccione uno o mas Cargo para este negocio.'
+        help_text='Seleccione uno o mas Cargo para este cliente.'
+    )
+
+    Horario = models.ManyToManyField(
+        Horario,
+        help_text='Seleccione uno o mas Horario para este cliente.'
     )
 
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
@@ -438,7 +460,7 @@ class Abastecimiento(BaseModel):
     insumos = models.BooleanField(
         help_text='true.- EPP false.- Caja Herramientas.'
     )
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
     status = models.BooleanField(
@@ -453,23 +475,6 @@ class Abastecimiento(BaseModel):
     def __str__(self):
         return self.nombre
 
-class Horario(models.Model):
-   
-    nombre = models.CharField(max_length=120)
-    descripcion = models.CharField(max_length=100)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-
-    status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el Horario, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
-    def __str__(self):
-        return self.nombre
 
 class Equipo(models.Model):
 
