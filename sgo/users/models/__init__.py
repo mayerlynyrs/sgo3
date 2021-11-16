@@ -1,1 +1,1 @@
-from .users import User, Sexo, Civil, Nacionalidad, Salud, Afp, Banco, TipoCta
+from .users import User, Sexo, Civil, Nacionalidad, Salud, Afp, ValoresDiario, ValoresDiarioAfp, Banco, TipoCta, NivelEstudio, Especialidad, TipoArchivo, ArchivoUser, ListaNegra, Profesion, ProfesionUser, Parentesco, Contacto
