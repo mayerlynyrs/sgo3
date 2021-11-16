@@ -8,6 +8,7 @@ from django.contrib import admin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
+from import_export.widgets import ManyToManyWidget
 #Models
 from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  TipoArchivo, PuestaDisposicion , Abastecimiento, Horario, Equipo
 
@@ -60,7 +61,18 @@ class AreaSetResource(resources.ModelResource):
         model = Area
         fields = ('id', 'nombre', 'status', )
 
+class HorarioSetResource(resources.ModelResource):
+
+    class Meta:
+        model = Horario
+        fields = ('id', 'nombre', 'descripcion', 'status',  )
+
 class ClienteSetResource(resources.ModelResource):
+
+    horario = fields.Field(column_name='horario', attribute='horario',widget=ManyToManyWidget(Horario, ',', 'pk'))
+    area = fields.Field(column_name='area', attribute='area',widget=ManyToManyWidget(Area, ',', 'pk'))
+    cargo = fields.Field(column_name='cargo', attribute='cargo',widget=ManyToManyWidget(Cargo, ',', 'pk'))
+    Ciudad = fields.Field(column_name='Ciudad', attribute='Ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
 
     class Meta:
         model = Cliente
@@ -69,17 +81,22 @@ class ClienteSetResource(resources.ModelResource):
 
 class NegocioSetResource(resources.ModelResource):
 
+    Ciudad = fields.Field(column_name='Ciudad', attribute='Ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
+    cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
+    gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'razon_social'))
+    bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
+
     class Meta:
         model = Negocio
         fields = ('id', 'nombre', 'nombre_gerente', 'status', )
 
 
 class PlantaSetResource(resources.ModelResource):
-    cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
+    Negocio = fields.Field(column_name='Negocio', attribute='Negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
 
     class Meta:
         model = Planta
-        fields = ('id', 'nombre', 'cliente', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
+        fields = ('id', 'nombre', 'Negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
 
   
 class TipoArchivoSetResource(resources.ModelResource):
@@ -95,19 +112,15 @@ class PuestaDisposicionSetResource(resources.ModelResource):
         fields = ('id', 'nombre', 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual', 'status', )
 
 class AbastecimientoSetResource(resources.ModelResource):
+    Negocio = fields.Field(column_name='Negocio', attribute='Negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
 
     class Meta:
         model = Abastecimiento
         fields = ('id', 'tipo', 'insumos', 'status',  )
 
-class HorarioSetResource(resources.ModelResource):
-
-    class Meta:
-        model = Horario
-        fields = ('id', 'nombre', 'descripcion', 'status',  )
-
 class EquipoSetResource(resources.ModelResource):
-
+    cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
+    
     class Meta:
         model = Equipo
         fields = ('id', 'nombre', 'cliente', 'valor',  'tipo' 'status',  )
@@ -181,13 +194,21 @@ class AreaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'nombre',)
     search_fields = ['nombre', ]
 
+@admin.register(Horario)
+class HorarioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """HorarioAdmin model admin."""
+
+    resource_class = HorarioSetResource
+    fields = ( 'nombre', 'descripcion', 'status', )
+    list_display = ('id', 'nombre', 'descripcion', )
+    search_fields = ['nombre', ]
 
 @admin.register(Cliente)
 class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ClienteAdmin model admin."""
 
     resource_class = ClienteSetResource
-    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'Area','Cargo', 'region', 'provincia', 'ciudad', 'direccion', 'status', )
+    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'Area','Cargo', 'Horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
     list_display = ('id', 'rut', 'razon_social', 'ciudad',)
     search_fields = ['razon_social', ]
 
@@ -241,14 +262,6 @@ class AbastecimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'tipo', 'insumos', )
     search_fields = ['tipo', 'insumos']
 
-@admin.register(Horario)
-class HorarioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """HorarioAdmin model admin."""
-
-    resource_class = HorarioSetResource
-    fields = ( 'nombre', 'descripcion','cliente', 'status', )
-    list_display = ('id', 'nombre', 'descripcion', )
-    search_fields = ['nombre', ]
 
 @admin.register(Equipo)
 class EquipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
