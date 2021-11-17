@@ -22,7 +22,7 @@ USE_TZ = True
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'sgo_prueba',
+            'NAME': 'sgo',
             # 'NAME': 'sgo_prueba1',
             'USER': 'postgres',
             'PASSWORD': 'root',
@@ -68,6 +68,8 @@ LOCAL_APPS = [
     'sgo.ficheros.apps.FicherosConfig',
     'sgo.contratos.apps.ContratosConfig',
     #'sgo.api.apps.ApiAppConfig'
+    'sgo.examenes.apps.ExamenesConfig',
+    'sgo.requerimientos.apps.RequerimientosConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
