@@ -3,7 +3,7 @@
 # Django
 from django import forms
 # sgo Model
-from utils.models import Cliente, Negocio
+from utils.models import Cliente, Negocio, Planta
 from requerimientos.models import Requerimiento
 
 
