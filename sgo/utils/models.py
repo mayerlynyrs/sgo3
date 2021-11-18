@@ -70,8 +70,6 @@ class BaseModel(models.Model):
 class Region(models.Model):
     """Modelo Region.
     """
-
-
     nombre = models.CharField(max_length=250)
     status = models.BooleanField(
         default=True,
@@ -132,8 +130,8 @@ class Bono(models.Model):
         unique=True
     )
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el bono, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el bono, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,
@@ -214,8 +212,8 @@ class TipoArchivo(models.Model):
     nombre = models.CharField(max_length=120)
     descripcion = models.CharField(max_length=100)
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el tipo, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el tipo, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,
@@ -231,8 +229,8 @@ class Horario(models.Model):
     descripcion = models.CharField(max_length=100)
 
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el Horario, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el Horario, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,
@@ -437,8 +435,8 @@ class PuestaDisposicion(models.Model):
 
 
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el puesta a disposicion, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el puesta a disposicion, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,
@@ -461,8 +459,8 @@ class Abastecimiento(BaseModel):
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el tipo, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el tipo, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,
@@ -492,8 +490,8 @@ class Equipo(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
     status = models.BooleanField(
-        default=timezone.now,
-        help_text='para desactivar el equipo, deshabilite esta casilla.'
+        default=True,
+        help_text='Para desactivar el equipo, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
         default= timezone.now,

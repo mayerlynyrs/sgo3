@@ -3,14 +3,20 @@
 # Django
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.utils import timezone
+
 # Mailmerge
 from mailmerge import MailMerge
 #Utilities
-from utils.models import BaseModel, Cliente, Planta
+from utils.models import BaseModel, Cliente, Negocio
 
 
-class Tipo(BaseModel):
+class TipoDocumento(BaseModel):
     nombre = models.CharField(max_length=60)
+    status = models.BooleanField(
+        default=True,
+        help_text='para desactivar el tipo de documento, deshabilite esta casilla.'
+    )
 
     def __str__(self):
         return self.nombre
@@ -27,8 +33,8 @@ class Plantilla(BaseModel):
     )
     nombre = models.CharField(max_length=120)
     clientes = models.ManyToManyField(Cliente)
-    plantas = models.ManyToManyField(Planta)
-    tipo = models.ForeignKey(Tipo, on_delete=models.PROTECT)
+    negocios = models.ManyToManyField(Negocio)
+    tipo = models.ForeignKey(TipoDocumento, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.nombre
