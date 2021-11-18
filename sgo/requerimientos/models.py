@@ -5,22 +5,38 @@ from django.db import models
 
 import os
 # Django
-from django.core.validators import FileExtensionValidator
+from django.utils import timezone
 #Utilities
-from utils.models import BaseModel, Cliente, Negocio, Planta
+from utils.models import BaseModel, Planta, Area, Cargo
 #User
-from users.models import Especialidad
+from users.models import User
+
+
+class Causal(models.Model):
+    """Modelo Causal.
+    """
+
+
+    nombre = models.CharField(max_length=250)
+    descripcion = models.TextField()
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la causal, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return self.nombre
 
 
 class Requerimiento(BaseModel):
     """Requerimiento Model
 
-    El objeto Requerimiento tiene los siguientes atributos:
-        + nombre (char): Nombre del Requerimiento
-        + desc (text): Descripcion del Requerimiento
-        + url (file): Atributo con la referencia al achivo
-        + negocios (manytomany): Las negocios que pueden visualizar este requerimiento.
-        + status (boolean): Estado del Requerimiento.
+
     """
     NORMAL = 'NOR'
     PARADA_GENERAL_PLANTA = 'PGP'
@@ -55,12 +71,12 @@ class Requerimiento(BaseModel):
 
     fecha_inicio = models.DateField(null=True, blank=True)
 
-    fecha_fin = models.DateField(null=True, blank=True)
+    fecha_termino = models.DateField(null=True, blank=True)
 
     fecha_adendum = models.DateField(null=True, blank=True)
 
-    comentario = models.TextField(
-        'Comentario',
+    descripcion = models.TextField(
+        'Descripción',
         blank=True,
         null=True
     )
@@ -71,21 +87,120 @@ class Requerimiento(BaseModel):
         null=True
     )
 
+    bloqueo = models.BooleanField(
+        default=False,
+        help_text='Para bloquear el requerimiento, habilite esta casilla.'
+    )
+
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el requerimiento, deshabilite esta casilla.'
     )
 
+    causal = models.ForeignKey(Causal, on_delete=models.PROTECT, null=True, blank=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
 
-    @property
-    def nombre_url(self):
-        return os.path.basename(self.url.name)
 
-    @property
-    def extension_url(self):
-        name, extension = os.path.splitext(self.url.name)
-        return extension
+class AreaCargo(BaseModel):
+    """AreaCargo Model
+
+
+    """
+
+    cantidad = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    valor_aprox = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    fecha_ingreso = models.DateField(null=True, blank=True)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el area cargo, deshabilite esta casilla.'
+    )
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    area = models.ForeignKey(Area, on_delete=models.PROTECT, null=True, blank=True)
+
+    cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.cantidad)
+
+
+class RequerimientoUser(BaseModel):
+    """RequerimientoUser Model
+
+
+    """
+    SUPERVISOR = 'SUP'
+    TECNICO = 'TEC'
+
+    TIPO_ESTADO = (
+        (SUPERVISOR, 'Supervisor'),
+        (TECNICO, 'Técnico'),
+    )
+
+    referido = models.BooleanField(
+        default=False,
+        help_text='Para marcar como referido, habilite esta casilla.'
+    )
+
+    descripcion = models.TextField(
+        'Descripción',
+        blank=True,
+        null=True
+    )
+
+    tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
+
+    jefe_area = models.ForeignKey(User, related_name='jefearea_requerimientouser_set', on_delete=models.PROTECT, null=True, blank=True)
+
+    pension = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
+    )
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+
+    area_cargo = models.ForeignKey(AreaCargo, on_delete=models.PROTECT, null=True, blank=True)
+
+    # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.tipo)
+
+
+class Adendum(BaseModel):
+    """Adendum Model
+
+
+    """
+
+    fecha_inicio = models.DateField(null=True, blank=True)
+
+    fecha_termino = models.DateField(null=True, blank=True)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el adendum, deshabilite esta casilla.'
+    )
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.fecha_inicio)

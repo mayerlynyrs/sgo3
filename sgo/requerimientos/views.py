@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Model
 from requerimientos.models import Requerimiento
-from utils.models import Negocio
+from utils.models import Negocio, Planta
 # Form
 from requerimientos.forms import RequerimientoCreateForm
 
