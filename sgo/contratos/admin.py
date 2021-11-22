@@ -9,15 +9,27 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
 from contratos.models import Plantilla, Contrato, DocumentosContrato, TipoDocumento, Finiquito , ContratosBono, ContratosEquipo, Renuncia, Anexo , Revision
+from requerimientos.models import RequerimientoUser ,  Causal
+from utils.models import Gratificacion, Horario , Negocio , Bono , Equipo
+from users.models import User
 
 class RenunciaSetResource(resources.ModelResource):
 
+    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
     class Meta:
         model = Renuncia
         fields = ('id', 'url','fecha_termino','status', )
 
 class ContratoInLine(admin.TabularInline):
 
+    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
+    gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
+    horario = fields.Field(column_name='horario', attribute='horario', widget=ForeignKeyWidget(Horario, 'nombre'))
+    renuncia = fields.Field(column_name='renuncia', attribute='renuncia', widget=ForeignKeyWidget(Renuncia, 'nombre'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'nombre'))
+    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+    causal = fields.Field(column_name='causal', attribute='causal', widget=ForeignKeyWidget(Causal, 'nombre'))
+    
     class Meta:
         model = Contrato
         fields = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
@@ -25,6 +37,13 @@ class ContratoInLine(admin.TabularInline):
         'fecha_aprobacion','fecha_aprobacion_baja','status', )
 
 class AnexoInLine(admin.TabularInline):
+
+    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
+    horario = fields.Field(column_name='horario', attribute='horario', widget=ForeignKeyWidget(Horario, 'nombre'))
+    renuncia = fields.Field(column_name='renuncia', attribute='renuncia', widget=ForeignKeyWidget(Renuncia, 'nombre'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'nombre'))
+    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+    causal = fields.Field(column_name='causal', attribute='causal', widget=ForeignKeyWidget(Causal, 'nombre'))
 
     class Meta:
         model = Anexo
@@ -38,36 +57,39 @@ class TipoDocumentoSetResource(resources.ModelResource):
         fields = ('id', 'nombre','status', )
     
 class DocumentoContratoInLine(admin.TabularInline):
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
+    tipo_documento = fields.Field(column_name='tipo_documento', attribute='tipo_documento', widget=ForeignKeyWidget(TipoDocumento, 'nombre'))
+
     model = DocumentosContrato
     fields = ('archivo', 'status')
     extra = 1
 
-class TipoDocumentoSetResource(resources.ModelResource):
-
-    class Meta:
-        model = TipoDocumento
-        fields = ('id', 'valor', 'descripcion','status', )
-
 class ContratosBonoSetResource(resources.ModelResource):
-
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
+    bono = fields.Field(column_name='bono', attribute='bono', widget=ForeignKeyWidget(Bono, 'nombre'))
+    
     class Meta:
         model = ContratosBono
         fields = ('id', 'nombre','status', )
 
 class FiniquitoSetResource(resources.ModelResource):
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
 
     class Meta:
         model = Finiquito
         fields = ('id', 'total_pagar','status', )
 
 class ContratosEquipoSetResource(resources.ModelResource):
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
+    equipo = fields.Field(column_name='equipo', attribute='equipo', widget=ForeignKeyWidget(Equipo, 'nombre'))
 
     class Meta:
         model = ContratosEquipo
         fields = ('id', 'cantidad','status', )
 
 class RevisionSetResource(resources.ModelResource):
-
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
+    anexo = fields.Field(column_name='anexo', attribute='anexo', widget=ForeignKeyWidget(Anexo, 'nombre'))
     class Meta:
         model = Revision
         fields = ('id', 'estado','obs','status', )
@@ -95,12 +117,12 @@ class ContratoAdmin(admin.ModelAdmin):
 
     fields = ('sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
-        'fecha_aprobacion','fecha_aprobacion_baja','usuario','gratificacion','horario','negocio','renuncia','status',)
+        'fecha_aprobacion','fecha_aprobacion_baja','user','gratificacion','horario','negocio','renuncia','status',)
     list_display = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja',)
-    #list_filter = ['usuario__planta', ]
-    search_fields = ('usuario__rut', 'usuario__last_name', 'usuario__first_name',)
+    #list_filter = ['user__planta', ]
+    search_fields = ('user__rut', 'user__last_name', 'user__first_name',)
 
     
 
@@ -112,11 +134,11 @@ class AnexoAdmin(admin.ModelAdmin):
     """AnexoAdmin model Admin."""
 
     fields = ('url','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'otroanexo','estado_firma','estado_anexo',
-    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','usuario','contrato','renuncia','negocio','status')
+    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','user','contrato','renuncia','negocio','status')
     list_display = ('id', 'motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'otroanexo','estado_firma','estado_anexo',
     'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','status')
-    #list_filter = ['usuario__planta', ]
-    search_fields = ('usuario__rut', 'usuario__last_name', 'usuario__first_name',)
+    #list_filter = ['user__planta', ]
+    search_fields = ('user__rut', 'user__last_name', 'user__first_name',)
 
 
     def plantas_list(self, obj):
@@ -158,8 +180,8 @@ class ContratosBonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ContratosBonoAdmin model admin."""
 
     resource_class = ContratosBonoSetResource
-    fields = ('Valor','descripcion', 'contrato', 'bono', 'status', )
-    list_display = ('id', 'descripcion' ,'Valor', )
+    fields = ('valor','descripcion', 'contrato', 'bono', 'status', )
+    list_display = ('id', 'descripcion' ,'valor', )
     search_fields = ['nombre', ]
 
 @admin.register(ContratosEquipo)
