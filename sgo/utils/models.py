@@ -206,23 +206,6 @@ class Area(models.Model):
         return self.nombre
 
 
-
-
-class TipoArchivo(models.Model):
-    nombre = models.CharField(max_length=120)
-    descripcion = models.TextField(blank=True, null=True)
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el tipo, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
-    def __str__(self):
-        return self.nombre
-
 class Horario(models.Model):
    
     nombre = models.CharField(max_length=120)

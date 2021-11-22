@@ -22,7 +22,8 @@ class Renuncia(BaseModel):
     )
     fecha_termino = models.DateTimeField(blank=True, null=True)
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
-
+    contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
+    
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
@@ -75,7 +76,7 @@ class Contrato(BaseModel):
     fecha_pago = models.DateTimeField(blank=True, null=True)
     fecha_inicio = models.DateTimeField(blank=False, null=False)
     fecha_termino = models.DateTimeField(blank=False, null=False)
-    fecha_termino_adendum = models.DateTimeField(blank=True, null=True)
+    fecha_termino_ultimo_anexo = models.DateTimeField(blank=True, null=True)
     url = models.FileField(
         upload_to='contratoscreados/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
@@ -104,7 +105,7 @@ class Contrato(BaseModel):
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
+        help_text='Para desactivar el contrato , deshabilite esta casilla.'
     )
     def __str__(self):
         return str(self.usuario.rut) + '-' +str(self.id).zfill(4)
@@ -151,7 +152,6 @@ class Anexo(BaseModel):
     fecha_inicio = models.DateTimeField(blank=False, null=False)
     fecha_termino_anexo_anterior = models.DateTimeField(blank=False, null=False)
     fecha_termino = models.DateTimeField(blank=False, null=False)
-    otroanexo = models.BooleanField(default=False)
     estado_firma = models.CharField(max_length=2, choices=FIRMA_ESTADO, default=POR_FIRMAR)
     estado_anexo = models.CharField(max_length=2, choices=ANEXO_ESTADO, default=CREADO)
     fecha_solicitud = models.DateTimeField(blank=True, null=True)
@@ -211,7 +211,7 @@ class ContratosBono(models.Model):
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
-    )
+    )                                                                                                                                                                                                                
     created_date = models.DateTimeField(
         default= timezone.now,
         null=True,

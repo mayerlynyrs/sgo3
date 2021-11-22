@@ -98,12 +98,6 @@ class PlantaSetResource(resources.ModelResource):
         model = Planta
         fields = ('id', 'nombre', 'Negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
 
-  
-class TipoArchivoSetResource(resources.ModelResource):
-
-    class Meta:
-        model = TipoArchivo
-        fields = ('id', 'nombre', 'descripcion', 'status', )
 
 class PuestaDisposicionSetResource(resources.ModelResource):
 
@@ -233,15 +227,6 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ['negocio', ]
     search_fields = ('nombre', 'negocio__nombre')
 
-
-@admin.register(TipoArchivo)
-class TipoArchivoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """TipoArchivoAdmin model admin."""
-
-    resource_class = TipoArchivoSetResource
-    fields = ('nombre','descripcion' ,'status', )
-    list_display = ('id', 'nombre', 'descripcion')
-    search_fields = ['nombre', ]
 
 
 @admin.register(PuestaDisposicion)

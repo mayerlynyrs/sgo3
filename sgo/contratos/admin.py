@@ -14,7 +14,7 @@ from utils.models import Gratificacion, Horario , Negocio , Bono , Equipo
 from users.models import User
 
 class RenunciaSetResource(resources.ModelResource):
-
+    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
     requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
     class Meta:
         model = Renuncia
@@ -32,7 +32,7 @@ class ContratoInLine(admin.TabularInline):
     
     class Meta:
         model = Contrato
-        fields = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
+        fields = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'url' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja','status', )
 
@@ -47,7 +47,7 @@ class AnexoInLine(admin.TabularInline):
 
     class Meta:
         model = Anexo
-        fields = ('id', 'url','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'otroanexo','estado_firma',
+        fields = ('id', 'url','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'estado_firma',
         'estado_anexo','fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','status', )
 
 class TipoDocumentoSetResource(resources.ModelResource):
@@ -115,10 +115,10 @@ class PlantillaAdmin(admin.ModelAdmin):
 class ContratoAdmin(admin.ModelAdmin):
     """ContratoAdmin model Admin."""
 
-    fields = ('sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
+    fields = ('sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'url' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
-        'fecha_aprobacion','fecha_aprobacion_baja','user','gratificacion','horario','negocio','renuncia','status',)
-    list_display = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_adendum' , 'url' ,'motivo', 'archivado',
+        'fecha_aprobacion','fecha_aprobacion_baja','user','gratificacion','horario','negocio','renuncia','requerimiento_user','status',)
+    list_display = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'url' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja',)
     #list_filter = ['user__planta', ]
@@ -133,9 +133,9 @@ class ContratoAdmin(admin.ModelAdmin):
 class AnexoAdmin(admin.ModelAdmin):
     """AnexoAdmin model Admin."""
 
-    fields = ('url','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'otroanexo','estado_firma','estado_anexo',
-    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','user','contrato','renuncia','negocio','status')
-    list_display = ('id', 'motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' , 'otroanexo','estado_firma','estado_anexo',
+    fields = ('url','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' ,'estado_firma','estado_anexo',
+    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','user','contrato','renuncia','requerimiento_user','negocio','status')
+    list_display = ('id', 'motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' ,'estado_firma','estado_anexo',
     'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','status')
     #list_filter = ['user__planta', ]
     search_fields = ('user__rut', 'user__last_name', 'user__first_name',)
@@ -198,7 +198,7 @@ class RenunciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RenunciaAdmin model admin."""
 
     resource_class = RenunciaSetResource
-    fields = ('url','fecha_termino','status' )
+    fields = ('url','fecha_termino','status','contrato' ,'requerimiento_user',  )
     list_display = ('id', 'url', 'fecha_termino',)
     search_fields = ['nombre', ]
 
