@@ -22,7 +22,7 @@ class Renuncia(BaseModel):
     )
     fecha_termino = models.DateTimeField(blank=True, null=True)
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
-    contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
+    
     
     status = models.BooleanField(
         default=True,

@@ -14,7 +14,6 @@ from utils.models import Gratificacion, Horario , Negocio , Bono , Equipo
 from users.models import User
 
 class RenunciaSetResource(resources.ModelResource):
-    contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
     requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
     class Meta:
         model = Renuncia
@@ -198,7 +197,7 @@ class RenunciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RenunciaAdmin model admin."""
 
     resource_class = RenunciaSetResource
-    fields = ('url','fecha_termino','status','contrato' ,'requerimiento_user',  )
+    fields = ('url','fecha_termino','status' ,'requerimiento_user',  )
     list_display = ('id', 'url', 'fecha_termino',)
     search_fields = ['nombre', ]
 

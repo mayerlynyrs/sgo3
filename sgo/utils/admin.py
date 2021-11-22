@@ -10,7 +10,7 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ManyToManyWidget
 #Models
-from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  TipoArchivo, PuestaDisposicion , Abastecimiento, Horario, Equipo
+from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  PuestaDisposicion , Abastecimiento, Horario, Equipo
 
 
 class RegionSetResource(resources.ModelResource):
