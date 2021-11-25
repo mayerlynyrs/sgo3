@@ -108,11 +108,11 @@ class Contrato(BaseModel):
         help_text='Para desactivar el contrato , deshabilite esta casilla.'
     )
     def __str__(self):
-        return str(self.usuario.rut) + '-' +str(self.id).zfill(4)
+        return str(self.user.rut) + '-' +str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
-    return '/'.join(['contratos', str(instance.contrato.usuario.id), filename])
+    return '/'.join(['contratos', str(instance.contrato.user.id), filename])
 
 class Anexo(BaseModel):
     POR_FIRMAR = 'PF'
@@ -172,11 +172,11 @@ class Anexo(BaseModel):
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
 
     def __str__(self):
-        return str(self.usuario.rut) + '-' +str(self.id).zfill(4)
+        return str(self.user.rut) + '-' +str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
-    return '/'.join(['contratos', str(instance.contrato.usuario.id), filename])
+    return '/'.join(['contratos', str(instance.contrato.user.id), filename])
 
 class DocumentosContrato(BaseModel):
     url = models.FileField(upload_to=contrato_directory_path,
@@ -195,7 +195,7 @@ class DocumentosContrato(BaseModel):
         verbose_name_plural = "Documentos"
 
     def __str__(self):
-        return str(self.contrato.usuario) + '-' + self.nombre_archivo
+        return str(self.contrato.user) + '-' + self.nombre_archivo
 
     @property
     def nombre_archivo(self):

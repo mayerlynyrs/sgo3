@@ -71,7 +71,7 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             # de las negocios a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(ContratoListView, self).get_queryset().filter(
-                    Q(usuario__negocio__in=self.request.user.negocio.all()),
+                    Q(user__negocio__in=self.request.user.negocio.all()),
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos los contratos.
@@ -80,7 +80,7 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 else:
                     # Si recibe la negocio, solo muestra las plantillas que pertenecen a esa negocio.
                     queryset = super(ContratoListView, self).get_queryset().filter(
-                        Q(usuario__negocio__in=self.request.user.negocio.all())
+                        Q(user__negocio__in=self.request.user.negocio.all())
                     ).distinct()
 
         return queryset
