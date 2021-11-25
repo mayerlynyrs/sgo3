@@ -15,11 +15,12 @@ urlpatterns = [
     path('', views.Home.as_view(), name='home'),
     path('inicio/', views.Inicio.as_view(), name='inicio'),
 
-    path('users/', include(('users.urls', 'users'), namespace='users')),
+    path('users/', include(('users.urls', 'users'), namespace='users.profesiones')),
     path('ficheros/', include(('ficheros.urls', 'ficheros'), namespace='ficheros')),
     path('contratos/', include(('contratos.urls', 'contratos'), namespace='contratos')),
     path('requerimientos/', include(('requerimientos.urls', 'requerimientos'), namespace='requerimientos')),
     path('examenes/', include(('examenes.urls', 'examenes'), namespace='examenes')),
+    path('utils/', include(('utils.urls', 'utils'), namespace='utils')),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
         html_email_template_name='registration/password_reset_email.html'), name='password_reset'),

@@ -4,7 +4,7 @@
 from django import forms
 # Model
 from contratos.models import Plantilla
-from utils.models import Cliente, Planta
+from utils.models import Cliente, Negocio
 
 
 class CrearPlantillaForm(forms.ModelForm):
@@ -18,7 +18,7 @@ class CrearPlantillaForm(forms.ModelForm):
                                                               })
                                    )
 
-    plantas = forms.ModelMultipleChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+    negocios = forms.ModelMultipleChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -33,15 +33,15 @@ class CrearPlantillaForm(forms.ModelForm):
         super(CrearPlantillaForm, self).__init__(*args, **kwargs)
         if not user.groups.filter(name='Administrador').exists():
             self.fields['clientes'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            self.fields['plantas'].queryset = Planta.objects.filter(id__in=user.planta.all())
+            self.fields['negocios'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
         else:
             self.fields['clientes'].queryset = Cliente.objects.all()
-            self.fields['plantas'].queryset = Planta.objects.all()
+            self.fields['negocios'].queryset = Negocio.objects.all()
 
 
     class Meta:
         model = Plantilla
-        fields = ("nombre", "tipo", "archivo",  "clientes", "plantas", )
+        fields = ("nombre", "tipo", "archivo",  "clientes", "negocios", )
 
 
 class ActualizarPlantillaForm(forms.ModelForm):
@@ -56,7 +56,7 @@ class ActualizarPlantillaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    plantas = forms.ModelMultipleChoiceField(queryset=Planta.objects.none(), required=True, label="Planta",
+    negocios = forms.ModelMultipleChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -71,12 +71,12 @@ class ActualizarPlantillaForm(forms.ModelForm):
         super(ActualizarPlantillaForm, self).__init__(*args, **kwargs)
         if not user.groups.filter(name='Administrador').exists():
             self.fields['clientes'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            self.fields['plantas'].queryset = Planta.objects.filter(id__in=user.planta.all())
+            self.fields['negocios'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
         else:
             self.fields['clientes'].queryset = Cliente.objects.all()
-            self.fields['plantas'].queryset = Planta.objects.all()
+            self.fields['negocios'].queryset = Negocio.objects.all()
 
 
     class Meta:
         model = Plantilla
-        fields = ("nombre", "tipo", "archivo", "clientes", "plantas", 'activo')
+        fields = ("nombre", "tipo", "archivo", "clientes", "negocios", 'activo')

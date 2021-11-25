@@ -8,10 +8,22 @@ from django.contrib.auth import get_user_model
 from django.forms import TextInput
 from django.contrib.auth.models import Group
 # sgo Model
-from utils.models import Cliente, Planta, Region, Provincia, Ciudad
-from users.models import Civil, Salud, Afp, TipoCta
+from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
+from users.models import Civil, Salud, Afp, Profesion, Especialidad, TipoCta
 
 User = get_user_model()
+
+
+class ProfesionCreateForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+
+    def __init__(self, *args, **kwargs):
+        super(ProfesionCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Profesion
+        fields = ("nombre", "status", )
 
 
 class CrearUsuarioForm(forms.ModelForm):
@@ -67,7 +79,7 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -89,32 +101,32 @@ class CrearUsuarioForm(forms.ModelForm):
         if not user.groups.filter(name='Administrador').exists():
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
             self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
+            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
             cliente_id = self.data.get('cliente')
-            # self.fields['planta'].queryset = Planta.objects.filter(cliente_id=cliente_id).order_by('nombre')
+            # self.fields['negocio'].queryset = negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
         else:
             self.fields['group'].queryset = Group.objects.all()
             self.fields['cliente'].queryset = Cliente.objects.all()
-            self.fields['planta'].queryset = Planta.objects.all()
+            self.fields['negocio'].queryset = Negocio.objects.all()
 
         
 
         # if 'cliente' in self.data:
         #     try:
                 
-        #         self.fields['planta'].queryset = Planta.objects.filter(cliente_id=cliente_id).order_by('nombre')
+        #         self.fields['negocio'].queryset = negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
         #     except (ValueError, TypeError):
-        #         pass  # invalid input from the client; ignore and fallback to empty planta queryset
+        #         pass  # invalid input from the client; ignore and fallback to empty negocio queryset
         # elif self.instance.pk:
-        #     self.fields['planta'].queryset = self.instance.cliente.plantas_set.order_by('nombre')
-        #     # self.fields['planta'].queryset = Planta.objects.select_related('cliente')
+        #     self.fields['negocio'].queryset = self.instance.cliente.negocios_set.order_by('nombre')
+        #     # self.fields['negocio'].queryset = negocio.objects.select_related('cliente')
 
 
     class Meta:
         model = User
         fields = ("group", "rut", "first_name", "last_name", "sexo", "email", "telefono", "estado_civil", "fecha_nacimiento", 
                   "nacionalidad", "region", "provincia", "ciudad", "domicilio", "sistema_salud", "sistema_prevision",
-                  "banco", "tipo_cuenta", "cuenta", "cliente", "planta", "is_active", )
+                  "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         exclude = ('password1', 'password2')
         widgets = {
             'telefono': TextInput(attrs={
@@ -183,7 +195,7 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.none(), required=True, label="Planta",
+    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control-lg',
                                                        'data-size': '5',
@@ -224,19 +236,19 @@ class EditarUsuarioForm(forms.ModelForm):
             self.fields['ciudad'].queryset = self.instance.provincia.ciudad_set.order_by('nombre')
         if not user.groups.filter(name='Administrador').exists():
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.planta.all())
-            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
+            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
+            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
         else:
             self.fields['group'].queryset = Group.objects.all()
             self.fields['cliente'].queryset = Cliente.objects.all()
-            self.fields['planta'].queryset = Planta.objects.all()
+            self.fields['negocio'].queryset = Negocio.objects.all()
 
  
     class Meta:
         model = User
         fields = ("group", "rut", "first_name", "last_name", "sexo", "email", "telefono", "estado_civil", "fecha_nacimiento", 
                   "nacionalidad", "region", "provincia", "ciudad", "domicilio", "sistema_salud", "sistema_prevision",
-                  "banco", "tipo_cuenta", "cuenta", "cliente", "planta", "is_active", )
+                  "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control-lg",
@@ -265,4 +277,4 @@ class EditarAtributosForm(forms.ModelForm):
         fields = ("atributos", )
         exclude = ('group', 'rut', 'first_name', 'last_name', 'sexo', 'email', 'telefono', 'estado_civil', 'fecha_nacimiento', 
                   'nacionalidad', 'region', 'provincia', 'ciudad', 'domicilio', 'sistema_salud', 'sistema_prevision',
-                  'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'planta', 'is_active', 'password1', 'password2')
+                  'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'negocio', 'is_active', 'password1', 'password2')

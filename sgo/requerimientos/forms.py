@@ -3,17 +3,15 @@
 # Django
 from django import forms
 # sgo Model
-from utils.models import Cliente, Negocio, Planta
-from requerimientos.models import Requerimiento
+from utils.models import Planta
+from requerimientos.models import Requerimiento, Causal
 
 
 class RequerimientoCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control-lg"}))
-    comentario = forms.CharField(required=True, label="Comentario",
-                                widget=forms.Textarea(attrs={'class': "form-control-lg"}))
 
-    # clientes = forms.ModelMultipleChoiceField(queryset=Cliente.objects.none(), required=True, label="Cliente",
+    # plantas = forms.ModelMultipleChoiceField(queryset=Planta.objects.none(), required=True, label="Planta",
     #                                         widget=forms.SelectMultiple(
     #                                             attrs={'class': 'selectpicker show-tick',
     #                                                    'data-size': '5',
@@ -27,10 +25,13 @@ class RequerimientoCreateForm(forms.ModelForm):
         print(user)
         super(RequerimientoCreateForm, self).__init__(*args, **kwargs)
         if not user.groups.filter(name='Administrador').exists():
-            self.fields['clientes'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
+            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
+            self.fields['causal'].queryset = Causal.objects.filter(id__in=user.causal.all())
         else:
-            self.fields['clientes'].queryset = Cliente.objects.all()
+            self.fields['planta'].queryset = Planta.objects.all()
+            self.fields['causal'].queryset = Causal.objects.all()
 
     class Meta:
         model = Requerimiento
-        fields = ("nombre", "centro_costo", "comentario", "planta", "status", )
+        fields = ("codigo", "centro_costo", "nombre", "fecha_solicitud", "regimen", "fecha_inicio", "fecha_termino",
+                  "descripcion", "planta", "causal", "status", )
