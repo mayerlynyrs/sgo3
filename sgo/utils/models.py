@@ -148,7 +148,7 @@ class Gratificacion(models.Model):
 
 
     nombre = models.CharField(max_length=250)
-    descripcion = models.CharField(max_length=250)
+    descripcion = models.TextField(blank=True, null=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la gratificacion, deshabilite esta casilla.'
@@ -206,27 +206,10 @@ class Area(models.Model):
         return self.nombre
 
 
-
-
-class TipoArchivo(models.Model):
-    nombre = models.CharField(max_length=120)
-    descripcion = models.CharField(max_length=100)
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el tipo, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
-    def __str__(self):
-        return self.nombre
-
 class Horario(models.Model):
    
     nombre = models.CharField(max_length=120)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
 
     status = models.BooleanField(
         default=True,
@@ -407,7 +390,7 @@ class Planta(models.Model):
     #     null=True
     # )
     nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
     status = models.BooleanField(
         default=True,

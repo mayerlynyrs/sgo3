@@ -228,17 +228,19 @@ class EvaluacionPsicologico(models.Model):
 
 
     """
+    ESPERA_EVALUACION = 'E'
     APROBADO = 'A'
     RECHAZADO = 'R'
 
     ESTADOS = (
         (APROBADO, 'Aprobado'),
         (RECHAZADO, 'Rechazado'),
+        (ESPERA_EVALUACION, 'Espera evaluacion'),
     )
 
     nombre = models.CharField(max_length=250)
 
-    estado = models.CharField(max_length=1, choices=ESTADOS, default=RECHAZADO)
+    estado = models.CharField(max_length=1, choices=ESTADOS, default=ESPERA_EVALUACION)
 
     fecha_inicio = models.DateField(null=True, blank=True)
 
@@ -267,6 +269,57 @@ class EvaluacionPsicologico(models.Model):
             null=True,
             blank=True
     )
+
+    def __str__(self):
+        return self.resultado
+
+class Agenda(BaseModel):
+    """Agendar Psicologico Model
+
+
+    """
+    ESPERA_EVALUACION = 'E'
+    APROBADO = 'A'
+    RECHAZADO = 'R'
+    AGENDADO = 'AG'
+    SUPERVISOR = 'SUP'
+    TECNICO = 'TEC'
+
+    TIPO_ESTADO = (
+        (SUPERVISOR, 'Supervisor'),
+        (TECNICO, 'Técnico'),
+    )
+
+    ESTADOS = (
+        (APROBADO, 'Aprobado'),
+        (RECHAZADO, 'Rechazado'),
+        (ESPERA_EVALUACION, 'Espera evaluacion'),
+        (AGENDADO, 'Agendado'),
+    )
+
+    tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
+    referido = models.BooleanField(
+        default=False,
+        help_text='Para marcar como referido, habilite esta casilla.'
+    )
+    Hal2 = models.BooleanField(
+        default=False,
+        help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
+    )
+    fecha_ingreso_estimada = models.DateTimeField(blank=True, null=True)
+    fecha_agenda_evaluacion = models.DateTimeField(blank=True, null=True)
+    estado = models.CharField(max_length=2, choices=ESTADOS, default=ESPERA_EVALUACION)
+    obs = models.TextField(blank=True, null=True)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la evaluacion del examen psicologico, deshabilite esta casilla.'
+    )
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
+    evaluacion = models.ForeignKey(EvaluacionPsicologico, on_delete=models.PROTECT, null=True, blank=True)
+
 
     def __str__(self):
         return self.resultado

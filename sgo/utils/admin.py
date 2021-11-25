@@ -10,7 +10,7 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ManyToManyWidget
 #Models
-from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  TipoArchivo, PuestaDisposicion , Abastecimiento, Horario, Equipo
+from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cliente, Negocio, Planta, Cargo, Area,  PuestaDisposicion , Abastecimiento, Horario, Equipo
 
 
 class RegionSetResource(resources.ModelResource):
@@ -98,12 +98,6 @@ class PlantaSetResource(resources.ModelResource):
         model = Planta
         fields = ('id', 'nombre', 'Negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
 
-  
-class TipoArchivoSetResource(resources.ModelResource):
-
-    class Meta:
-        model = TipoArchivo
-        fields = ('id', 'nombre', 'descripcion', 'status', )
 
 class PuestaDisposicionSetResource(resources.ModelResource):
 
@@ -233,15 +227,6 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ['negocio', ]
     search_fields = ('nombre', 'negocio__nombre')
 
-
-@admin.register(TipoArchivo)
-class TipoArchivoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """TipoArchivoAdmin model admin."""
-
-    resource_class = TipoArchivoSetResource
-    fields = ('nombre','descripcion' ,'status', )
-    list_display = ('id', 'nombre', 'descripcion')
-    search_fields = ['nombre', ]
 
 
 @admin.register(PuestaDisposicion)

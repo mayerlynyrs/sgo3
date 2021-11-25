@@ -10,7 +10,7 @@ from users.models import User
 # Utilities
 from utils.models import BaseModel, Bono , Equipo , Gratificacion , Horario ,Negocio
 from contratos.models import TipoDocumento
-#from requerimientos.models import Requerimiento_user, Causal
+from requerimientos.models import RequerimientoUser, Causal
 
 User = get_user_model()
 
@@ -21,8 +21,9 @@ class Renuncia(BaseModel):
         validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', ])]
     )
     fecha_termino = models.DateTimeField(blank=True, null=True)
+    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
     
-
+    
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
@@ -75,7 +76,7 @@ class Contrato(BaseModel):
     fecha_pago = models.DateTimeField(blank=True, null=True)
     fecha_inicio = models.DateTimeField(blank=False, null=False)
     fecha_termino = models.DateTimeField(blank=False, null=False)
-    fecha_termino_adendum = models.DateTimeField(blank=True, null=True)
+    fecha_termino_ultimo_anexo = models.DateTimeField(blank=True, null=True)
     url = models.FileField(
         upload_to='contratoscreados/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
@@ -93,18 +94,18 @@ class Contrato(BaseModel):
     fecha_solicitud_baja = models.DateTimeField(blank=True, null=True)
     fecha_aprobacion = models.DateTimeField(blank=True, null=True)
     fecha_aprobacion_baja = models.DateTimeField(blank=True, null=True)
+    nueva_renta = models.IntegerField()
     obs = models.TextField(blank=True, null=True)
-
-    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
     horario = models.ForeignKey(Horario, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
     negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT) 
-    # requerimiento_user = models.ForeignKey(Requerimiento_user, on_delete=models.PROTECT)
-    # causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
+    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
+    causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
+        help_text='Para desactivar el contrato , deshabilite esta casilla.'
     )
     def __str__(self):
         return str(self.usuario.rut) + '-' +str(self.id).zfill(4)
@@ -151,7 +152,6 @@ class Anexo(BaseModel):
     fecha_inicio = models.DateTimeField(blank=False, null=False)
     fecha_termino_anexo_anterior = models.DateTimeField(blank=False, null=False)
     fecha_termino = models.DateTimeField(blank=False, null=False)
-    otroanexo = models.BooleanField(default=False)
     estado_firma = models.CharField(max_length=2, choices=FIRMA_ESTADO, default=POR_FIRMAR)
     estado_anexo = models.CharField(max_length=2, choices=ANEXO_ESTADO, default=CREADO)
     fecha_solicitud = models.DateTimeField(blank=True, null=True)
@@ -164,12 +164,12 @@ class Anexo(BaseModel):
         help_text='Para desactivar el anexo, deshabilite esta casilla.'
     )
     
-    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
     negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT) 
-    # requerimiento_user = models.ForeignKey(Requerimiento_user, on_delete=models.PROTECT)
-    # causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
+    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
+    causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
 
     def __str__(self):
         return str(self.usuario.rut) + '-' +str(self.id).zfill(4)
@@ -203,7 +203,7 @@ class DocumentosContrato(BaseModel):
 
 
 class ContratosBono(models.Model):
-    Valor = models.IntegerField()
+    valor = models.IntegerField()
     descripcion = models.TextField()
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
@@ -211,7 +211,7 @@ class ContratosBono(models.Model):
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
-    )
+    )                                                                                                                                                                                                                
     created_date = models.DateTimeField(
         default= timezone.now,
         null=True,
