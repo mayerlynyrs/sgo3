@@ -49,6 +49,16 @@ urlpatterns = [
         name='detail'
     ),
     path(
+        route='list_profesion',
+        view=views.ProfesionListView.as_view(),
+        name='list_profesion'
+     ),
+    path(
+        route='create_profesion',
+        view=views.create_profesion,
+        name="create_profesion"
+    ),
+    path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),
         name='change_password'
@@ -71,5 +81,5 @@ urlpatterns = [
     path('ajax/load-ciudades/', views.load_ciudades, name='ajax_load_ciudades'), # AJAX
     
     
-    path('ajax/load-plantas/', views.load_plantas, name='ajax_load_plantas'), # AJAX
+    path('ajax/load-negocios/', views.load_negocios, name='ajax_load_negocios'), # AJAX
 ]

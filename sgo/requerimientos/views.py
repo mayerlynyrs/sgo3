@@ -22,7 +22,7 @@ from requerimientos.forms import RequerimientoCreateForm
 
 class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Requerimiento List
-    Vista para listar todos los requerimiento según el usuario y sus las negocios
+    Vista para listar todos los requerimiento según el usuario y sus las plantas
     relacionadas.
     """
     model = Requerimiento
@@ -35,18 +35,18 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # Si el usuario no se administrador se despliegan los requerimientos en estado status
-            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(status=True),
-                    Q(negocios__in=self.request.user.negocio.all()),
+                    Q(plantas__in=self.request.user.planta.all()),
                     Q(nombre__icontains=search)
                 ).distinct()
             else:
@@ -57,20 +57,20 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
                 ).distinct()
         else:
             # Si el usuario no es administrador, se despliegan los requerimientos en estado
-            # status de las negocios a las que pertenece el usuario.
+            # status de las plantas a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(status=True),
-                    Q(negocios__in=self.request.user.negocio.all())
+                    Q(plantas__in=self.request.user.planta.all())
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.
-                if negocio is None:
+                if planta is None:
                     queryset = super(RequerimientoListView, self).get_queryset()
                 else:
-                    # Si recibe la negocio, solo muestra los requerimientos que pertenecen a esa negocio.
+                    # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
                     queryset = super(RequerimientoListView, self).get_queryset().filter(
-                        Q(negocios=negocio)
+                        Q(plantas=planta)
                     ).distinct()
 
         return queryset
@@ -78,7 +78,7 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
 
 class RequerimientoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Requerimiento Create
-    Vista para crear un fichero digital.
+    Vista para crear un requerimiento.
     """
 
     def get_form_kwargs(self):
@@ -89,17 +89,17 @@ class RequerimientoCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
         return kwargs
 
     form_class = RequerimientoCreateForm
-    template_name = "ficheros/fichero_create.html"
+    template_name = "requerimientos/requerimiento_create.html"
 
-    success_url = reverse_lazy('ficheros:list')
-    success_message = 'Fichero Creado Exitosamente!'
+    success_url = reverse_lazy('requerimientos:list')
+    success_message = 'Requerimiento Creado Exitosamente!'
 
-    permission_required = 'ficheros.add_fichero'
+    permission_required = 'requerimientos.add_requerimiento'
     raise_exception = True
 
 
 @login_required
-@permission_required('ficheros.add_fichero', raise_exception=True)
+@permission_required('requerimientos.add_requerimiento', raise_exception=True)
 def create_requerimiento(request):
     if request.method == 'POST':
 
@@ -108,67 +108,67 @@ def create_requerimiento(request):
         if form.is_valid():
             requerimiento = form.save()
 
-            messages.success(request, 'Fichero Creado Exitosamente')
-            return redirect('ficheros:list')
+            messages.success(request, 'Requerimiento Creado Exitosamente')
+            return redirect('requerimientos:list')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         form = RequerimientoCreateForm(user=request.user)
 
-    return render(request, 'ficheros/fichero_create.html', {
+    return render(request, 'requerimientos/requerimiento_create.html', {
         'form': form,
     })
 
 
 @login_required
-@permission_required('ficheros.change_fichero', raise_exception=True)
-def update_fichero(request, fichero_id):
+@permission_required('requerimientos.change_requerimiento', raise_exception=True)
+def update_requerimiento(request, requerimiento_id):
 
-    fichero = get_object_or_404(Requerimiento, pk=fichero_id)
+    requerimiento = get_object_or_404(Requerimiento, pk=requerimiento_id)
 
-    # Se obtienen las negocios del usuario.
+    # Se obtienen las plantas del usuario.
     try:
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=request.user)
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=request.user)
     except:
-        negocios_usuario = ''
+        plantas_usuario = ''
 
     if request.method == 'POST':
 
-        form = RequerimientoCreateForm(data=request.POST, instance=fichero, files=request.FILES, user=request.user)
+        form = RequerimientoCreateForm(data=request.POST, instance=requerimiento, files=request.FILES, user=request.user)
 
         if form.is_valid():
-            fichero = form.save()
+            requerimiento = form.save()
             messages.success(request, 'Requerimiento Actualizado Exitosamente')
             page = request.GET.get('page')
             if page != '':
-                response = redirect('ficheros:list')
+                response = redirect('requerimientos:list')
                 response['Location'] += '?page=' + page
                 return response
             else:
-                return redirect('ficheros:list')
+                return redirect('requerimientos:list')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        form = RequerimientoCreateForm(instance=fichero,
-                                 initial={'negocios': list(negocios_usuario), },
+        form = RequerimientoCreateForm(instance=requerimiento,
+                                 initial={'plantas': list(plantas_usuario), },
                                  user=request.user)
 
     return render(
         request=request,
-        template_name='ficheros/fichero_create.html',
+        template_name='requerimientos/requerimiento_create.html',
         context={
-            'fichero': fichero,
+            'requerimiento': requerimiento,
             'form': form
         })
 
 
 @login_required
-@permission_required('ficheros.view_fichero', raise_exception=True)
-def detail_fichero(request, fichero_id, template_name='ficheros/partial_fichero_detail.html'):
+@permission_required('requerimientos.view_requerimiento', raise_exception=True)
+def detail_requerimiento(request, requerimiento_id, template_name='requerimientos/partial_requerimiento_detail.html'):
     data = dict()
-    fichero = get_object_or_404(Requerimiento, pk=fichero_id)
+    requerimiento = get_object_or_404(Requerimiento, pk=requerimiento_id)
 
-    context = {'fichero': fichero, }
+    context = {'requerimiento': requerimiento, }
     data['html_form'] = render_to_string(
         template_name,
         context,
@@ -178,18 +178,18 @@ def detail_fichero(request, fichero_id, template_name='ficheros/partial_fichero_
 
 
 @login_required
-def delete_fichero(request, object_id, template_name='ficheros/fichero_delete.html'):
+def delete_requerimiento(request, object_id, template_name='requerimientos/requerimiento_delete.html'):
     data = dict()
     object = get_object_or_404(Requerimiento, pk=object_id)
     if request.method == 'POST':
         try:
             object.delete()
-            messages.success(request, 'Fichero eliminado Exitosamente')
+            messages.success(request, 'Requerimiento eliminado Exitosamente')
         except ProtectedError:
-            messages.error(request, 'Fichero no se pudo Eliminar.')
-            return redirect('ficheros:update', object_id)
+            messages.error(request, 'Requerimiento no se pudo Eliminar.')
+            return redirect('requerimientos:update', object_id)
 
-        return redirect('ficheros:list')
+        return redirect('requerimientos:list')
 
     context = {'object': object}
     data['html_form'] = render_to_string(

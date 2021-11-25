@@ -14,8 +14,28 @@ urlpatterns = [
         name='list'
      ),
     path(
+        route='<int:planta_id>/',
+        view=views.RequerimientoListView.as_view(),
+        name='list'
+    ),
+    path(
+        route='<int:requerimiento_id>/update/',
+        view=views.update_requerimiento,
+        name="update"
+    ),
+    path(
         route='create',
         view=views.create_requerimiento,
         name="create"
+    ),
+    path(
+        route='<int:requerimiento_id>/detail/',
+        view=views.detail_requerimiento,
+        name="detail"
+    ),
+    path(
+        route='<int:object_id>/delete/',
+        view=views.delete_requerimiento,
+        name="delete"
     ),
 ]
