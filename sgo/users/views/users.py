@@ -294,7 +294,7 @@ def update_a_user(request, user_id):
         #profile_form = ProfileForm(instance=profile)
 
     # Obtengo todos los documentos del contrato
-    contratos = Contrato.objects.filter(usuario=user)
+    contratos = Contrato.objects.filter(user=user)
 
     return render(
         request=request,

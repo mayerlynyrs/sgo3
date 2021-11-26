@@ -43,12 +43,12 @@ class Home(LoginRequiredMixin, TemplateView):
         # Obtengo los contratos del usuario si no es administrador.
         if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT']).exists():
             context['contratos'] = Contrato.objects.filter(
-                usuario=self.request.user).order_by('modified')
+                user=self.request.user).order_by('modified')
         else:
             # Obtengo todos los contratos por firmar de todas las negocios a las
             # que pertenece el usuario.
             context['contratos'] = Contrato.objects.filter(
-                usuario__negocio__in=negocios, estado_firma=Contrato.POR_FIRMAR)
+                user__negocio__in=negocios, estado_firma=Contrato.POR_FIRMAR)
 
         return context
 
