@@ -390,19 +390,12 @@ class ProfesionUserCreateForm(forms.ModelForm):
 
     class Meta:
         model = ProfesionUser
-        fields = ("egreso", "institucion", "profesion", "status", )
+        fields = ("egreso", "institucion", "profesion", )
 
 
 class ContactoCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control-lg"}))
-    user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.all(), required=True, label="Parentesco",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
                                                               'data-size': '5',
@@ -416,7 +409,7 @@ class ContactoCreateForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ("nombre", "telefono", "user", "parentesco", "status", )
+        fields = ("nombre", "telefono", "parentesco", )
 
 
 class ArchivoUserCreateForm(forms.ModelForm):

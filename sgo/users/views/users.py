@@ -27,7 +27,7 @@ from users.models import Sexo, Profesion, ProfesionUser
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, TipoArchivoCreateForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, TipoArchivoCreateForm
 
 User = get_user_model()
 
@@ -147,6 +147,8 @@ def create_user(request):
     if request.method == 'POST':
 
         user_form = CrearUsuarioForm(data=request.POST, user=request.user)
+        contacto_user_form = ContactoCreateForm(data=request.POST)
+        profesion_user_form = ProfesionUserCreateForm(data=request.POST, user=request.user)
         #profile_form = ProfileForm(data=request.POST, user=request.user)
 
         if user_form.is_valid():
@@ -187,10 +189,45 @@ def create_user(request):
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         user_form = CrearUsuarioForm(user=request.user)
+        contacto_user_form = ContactoCreateForm()
         #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
     
     return render(request, 'users/users_create.html', {
-        'form': user_form,
+        'first_form': user_form,
+        'second_form': contacto_user_form,
+    })
+
+
+@login_required
+@permission_required('users.add_profesion_user', raise_exception=True)
+def add_contacto_user(request, user_id):
+    if request.method == 'POST':
+
+        contacto_user_form = ContactoCreateForm(data=request.POST)
+        print(user_id)
+
+        if contacto_user_form.is_valid():
+            contacto = contacto_user_form.save(commit=False)
+            contacto.status = True
+            now_date = datetime.now()
+            contacto.created_date = now_date
+            contacto.user_id = user_id
+            print(user_id)
+            contacto.save()
+            contacto = contacto_user_form.save()
+            
+
+            messages.success(request, 'Contacto Usuario Creado Exitosamente')
+            # return redirect('users:add_contacto', user_id=profesion_user.id)
+            # return redirect('users:list')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        contacto_user_form = ContactoCreateForm()
+        #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
+    
+    return render(request, 'users/users_create.html', {
+        'second_form': contacto_user_form,
     })
 
 
@@ -619,6 +656,7 @@ def create_profesion_user(request, user_id):
             
 
             messages.success(request, 'Profesion Usuario Creado Exitosamente')
+            return redirect('users:add_contacto', user_id=user_id)
             # return redirect('users:list')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
