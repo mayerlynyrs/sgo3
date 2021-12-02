@@ -1,0 +1,4 @@
+<option value="">-----Seleccione la Negocio(s)----</option>
+{% for negocio in negocios %}
+<option value="{{ negocio.pk }}">{{ negocio.nombre }}</option>
+{% endfor %}

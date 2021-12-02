@@ -64,6 +64,11 @@ urlpatterns = [
         name="create"
     ),
     path(
+        route='<int:user_id>/add_contacto/',
+        view=views.add_contacto_user,
+        name="add_contacto"
+    ),
+    path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),
         name='change_password'
