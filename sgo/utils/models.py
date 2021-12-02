@@ -340,10 +340,7 @@ class Negocio(BaseModel):
         }
     )
 
-    cliente = models.ManyToManyField(
-        Cliente,
-        help_text='Seleccione uno o mas cliente para este negocio.'
-    )
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -391,7 +388,10 @@ class Planta(models.Model):
     # )
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+    negocio = models.ManyToManyField(
+        Negocio,
+        help_text='Seleccione uno o mas negocios para esta planta.'
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la planta, deshabilite esta casilla.'

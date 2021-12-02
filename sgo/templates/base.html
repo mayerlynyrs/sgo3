@@ -24,7 +24,9 @@
 	<link href="{% static 'admin/assets/css/default/style.min.css' %}" rel="stylesheet" />
 	<link href="{% static 'admin/assets/css/default/style-responsive.min.css' %}" rel="stylesheet" />
 	<link href="{% static 'admin/assets/css/default/theme/default.css' %}" id="theme" />
-  <link href="{% static 'admin/assets/plugins/iziToast/css/iziToast.min.css' %}" rel="stylesheet">
+  	<link href="{% static 'admin/assets/plugins/iziToast/css/iziToast.min.css' %}" rel="stylesheet">
+	<link href="{% static 'admin/assets/plugins/smartwizard/dist/css/smart_wizard.css' %}" rel="stylesheet">
+
   {% block css %}{% endblock %}
 	<!-- ================== END BASE CSS STYLE ================== -->
 
@@ -85,8 +87,11 @@
 	<script src="{% static 'admin/assets/plugins/slimscroll/jquery.slimscroll.min.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/js-cookie/js.cookie.js'%}"></script>
 	<script src="{% static 'admin/assets/js/theme/default.min.js'%}"></script>
-  <script src="{% static "admin/assets/plugins/iziToast/js/iziToast.min.js" %}"></script>
+  	<script src="{% static "admin/assets/plugins/iziToast/js/iziToast.min.js" %}"></script>
 	<script src="{% static 'admin/assets/js/apps.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/demo/form-wizards.demo.js'%}"></script>
+	<script src="{% static 'admin/assets/plugins/smartwizard/dist/js/jquery.smartWizard.js'%}"></script>
+
   {% block librerias %} {% endblock %}
 	<!-- ================== END BASE JS ================== -->
 
