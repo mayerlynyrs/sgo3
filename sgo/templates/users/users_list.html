@@ -27,7 +27,7 @@ img {
  font-style: italic;
 }
 
-.list-plantas{
+.list-negocios{
   vertical-align: middle;
   font-size: small;
 }
@@ -105,7 +105,7 @@ img {
       <thead>
           <tr>
               <th class="text-center">Datos Usuario</th>
-              <th class="text-center">Plantas</th>
+              <th class="text-center">Negocios</th>
           </tr>
       </thead>
       <tbody>
@@ -134,9 +134,9 @@ img {
                   {{ usr.telefono|lower }}
                 </p>
             </td>
-            <td class="list-plantas">
+            <td class="list-negocios">
                 <ul>
-                  {% for p in usr.planta.all %}
+                  {% for p in usr.negocio.all %}
                     <li>{{ p.nombre }}</li>
                   {% empty %}
                     <li>Sin asignar</li>

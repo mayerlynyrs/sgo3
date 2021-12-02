@@ -59,6 +59,11 @@ urlpatterns = [
         name="create_profesion"
     ),
     path(
+        route='<int:user_id>/create/',
+        view=views.create_profesion_user,
+        name="create"
+    ),
+    path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),
         name='change_password'

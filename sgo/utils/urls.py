@@ -24,7 +24,7 @@ urlpatterns = [
         name="update"
     ),
     path(
-        route='create',
+        route='create_profesion',
         view=views.create_profesion,
         name="create_profesion"
     ),

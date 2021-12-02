@@ -51,6 +51,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'crispy_forms',
 ]
 
 THIRD_PARTY_APPS = [
@@ -72,6 +73,8 @@ LOCAL_APPS = [
     'sgo.requerimientos.apps.RequerimientosConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Passwords
 PASSWORD_HASHERS = [

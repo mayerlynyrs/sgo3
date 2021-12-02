@@ -153,7 +153,7 @@ class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
         return kwargs
 
     form_class = ProfesionCreateForm
-    template_name = "profesiones/profesion_create.html"
+    template_name = "users/profesion_create.html"
 
     success_url = reverse_lazy('profesiones:list')
     success_message = 'Profesion Creado Exitosamente!'
@@ -173,7 +173,7 @@ def create_profesion(request):
             profesion = form.save()
 
             messages.success(request, 'Profesion Creado Exitosamente')
-            return redirect('users:list_profesion')
+            return redirect('utils:list_profesion')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
@@ -190,36 +190,28 @@ def update_profesion(request, profesion_id):
 
     profesion = get_object_or_404(Profesion, pk=profesion_id)
 
-    # Se obtienen las negocios del usuario.
-    try:
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=request.user)
-    except:
-        negocios_usuario = ''
-
     if request.method == 'POST':
 
-        form = ProfesionCreateForm(data=request.POST, instance=profesion, files=request.FILES, user=request.user)
+        form = ProfesionCreateForm(data=request.POST, instance=profesion, files=request.FILES)
 
         if form.is_valid():
             profesion = form.save()
             messages.success(request, 'Profesion Actualizado Exitosamente')
             page = request.GET.get('page')
             if page != '':
-                response = redirect('profesiones:list')
+                response = redirect('utils:list_profesion')
                 response['Location'] += '?page=' + page
                 return response
             else:
-                return redirect('profesiones:list')
+                return redirect('utils:list_profesion')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        form = ProfesionCreateForm(instance=profesion,
-                                 initial={'negocios': list(negocios_usuario), },
-                                 user=request.user)
+        form = ProfesionCreateForm(instance=profesion)
 
     return render(
         request=request,
-        template_name='profesiones/profesion_create.html',
+        template_name='users/profesion_create.html',
         context={
             'profesion': profesion,
             'form': form
