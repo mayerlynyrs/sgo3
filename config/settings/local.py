@@ -18,7 +18,8 @@ ALLOWED_HOSTS += [
     "0.0.0.0",
     "127.0.0.1",
     "192.168.0.201",
-    "192.168.1.111",
+    "192.168.0.112",
+    "192.168.1.111", #server
 ]
 
 # Cache
@@ -37,10 +38,10 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # NOQA
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'maye.yrs23@gmail.com'
-EMAIL_HOST_PASSWORD = 'SoManiarcos18'
-# EMAIL_USER = 'maye.yrs23@gmail.com'
-# EMAIL_PASSWORD = 'SoManiarcos18'
+EMAIL_HOST_USER = 'xxx@xxx.x'
+EMAIL_HOST_PASSWORD = 'xxx'
+# EMAIL_USER = 'xxx@xxx.x'
+# EMAIL_PASSWORD = 'xxx'
 EMAIL_USE_TLS = True
 
 # django-extensions

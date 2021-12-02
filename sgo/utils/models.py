@@ -370,7 +370,7 @@ class Negocio(BaseModel):
 
     def __str__(self):
         """Return RUT."""
-        return self.rut_gerente
+        return self.nombre
 
     def get_short_name(self):
         """Return RUT."""

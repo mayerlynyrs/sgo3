@@ -98,11 +98,11 @@
       </div>
       <div class="form-group">
         <label for="id_first_name">Sistema Salud:</label>
-        <div class="form-control">{{ usuario.sistema_salud.nombre }}</div>
+        <div class="form-control">{{ usuario.salud.nombre }}</div>
       </div>
       <div class="form-group">
         <label for="id_first_name">Sistema Previsión:</label>
-        <div class="form-control">{{ usuario.sistema_prevision.nombre }}</div>
+        <div class="form-control">{{ usuario.afp.nombre }}</div>
       </div>
       <div class="form-group">
         <label for="id_first_name">Banco:</label>
@@ -132,13 +132,13 @@
         <div class="form-control">{{ usuario.cliente|lower|title }}</div>
       </div> -->
       <div class="form-group">
-        <label for="id_first_name">Planta:</label>
+        <label for="id_first_name">Negocio:</label>
         <ul>
-          {% for p in usuario.planta.all %}
+          {% for p in usuario.negocio.all %}
             <!-- <li style="font-size: large;">{{ p.nombre|title }}</li> -->
             <li style="font-size: small;">{{ p.nombre|title }}</li>
           {% empty %}
-            <li>Sin planta(s) asignada(s)</li>
+            <li>Sin negocio(s) asignada(s)</li>
           {% endfor %}
         </ul>
       </div>

@@ -20,7 +20,7 @@ urlpatterns = [
     path('contratos/', include(('contratos.urls', 'contratos'), namespace='contratos')),
     path('requerimientos/', include(('requerimientos.urls', 'requerimientos'), namespace='requerimientos')),
     path('examenes/', include(('examenes.urls', 'examenes'), namespace='examenes')),
-    path('utils/', include(('utils.urls', 'utils'), namespace='utils')),
+    path('utils/', include(('utils.urls', 'utils'), namespace='profesiones')),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
         html_email_template_name='registration/password_reset_email.html'), name='password_reset'),

@@ -2,14 +2,15 @@
 
 # Django
 from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column
 from django.forms import inlineformset_factory, RadioSelect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.forms import TextInput
 from django.contrib.auth.models import Group
 # sgo Model
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
-from users.models import Civil, Salud, Afp, Profesion, Especialidad, TipoCta
+from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser
 
 User = get_user_model()
 
@@ -26,54 +27,79 @@ class ProfesionCreateForm(forms.ModelForm):
         fields = ("nombre", "status", )
 
 
+class ParentescoCreateForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+
+    def __init__(self, *args, **kwargs):
+        super(ParentescoCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Parentesco
+        fields = ("nombre", "status", )
+
+
+class TipoArchivoCreateForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+
+    def __init__(self, *args, **kwargs):
+        super(TipoArchivoCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = TipoArchivo
+        fields = ("nombre", "status", )
+
+
 class CrearUsuarioForm(forms.ModelForm):
     email = forms.EmailField(required=True,
-                             widget=forms.EmailInput(attrs={'class': "form-control-lg"}))
+                             widget=forms.EmailInput(attrs={'class': "form-control"}))
+    
     first_name = forms.CharField(required=True, label="Nombres",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control" }))
     last_name = forms.CharField(required=True, label="Apellidos",
-                                widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control-lg",}))
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'id':"datetimepicker1"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    sistema_salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+    salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    sistema_prevision = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+    afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.all(), required=True, label="Tipo Cuenta",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
-                                widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'form-control ',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
-                                            widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                            widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -88,16 +114,93 @@ class CrearUsuarioForm(forms.ModelForm):
                                                        })
                                             )
     rut = forms.CharField(required=True, label="RUT",
-                          widget=forms.TextInput(attrs={'class': "form-control-lg",
+                          widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
                           'oninput': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',}))
+    
+    
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         print(user)
         super(CrearUsuarioForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('group', css_class='form-group col-md-4 mb-0'),
+                Column('rut', css_class='form-group col-md-4 mb-0'),
+                Column('pasaporte', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
+                Column('last_name', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('fecha_nacimiento', css_class='form-group col-md-6 mb-0'),
+                Column('sexo', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('telefono', css_class='form-group col-md-6 mb-0'),
+                Column('telefono2', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                Column('estado_civil', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('nacionalidad', css_class='form-group col-md-6 mb-0'),
+                Column('foto', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('region', css_class='form-group col-md-4 mb-0'),
+                Column('provincia', css_class='form-group col-md-4 mb-0'),
+                Column('ciudad', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            'domicilio',
+            Row(
+                Column('afp', css_class='form-group col-md-6 mb-0'),
+                Column('salud', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('especialidad', css_class='form-group col-md-6 mb-0'),
+                Column('nivel_estudio', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('banco', css_class='form-group col-md-4 mb-0'),
+                Column('tipo_cuenta', css_class='form-group col-md-4 mb-0'),
+                Column('cuenta', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('talla_polera', css_class='form-group col-md-4 mb-0'),
+                Column('talla_pantalon', css_class='form-group col-md-4 mb-0'),
+                Column('calzado', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('licencia_conducir', css_class='form-group col-md-6 mb-0'),
+                Column('examen', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('cliente', css_class='form-group col-md-6 mb-0'),
+                Column('negocio', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            # 'check_me_out',
+            # Submit('submit', 'Sign in')
+        )
         if not user.groups.filter(name='Administrador').exists():
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
             self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
@@ -124,18 +227,19 @@ class CrearUsuarioForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("group", "rut", "first_name", "last_name", "sexo", "email", "telefono", "estado_civil", "fecha_nacimiento", 
-                  "nacionalidad", "region", "provincia", "ciudad", "domicilio", "sistema_salud", "sistema_prevision",
-                  "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
+        fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
+                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon",
+                  "calzado", "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "salud", "afp", "examen",
+                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         exclude = ('password1', 'password2')
         widgets = {
             'telefono': TextInput(attrs={
-                'class': "form-control-lg",
+                'class': "form-control",
                 'type': "number",
                 'placeholder': '56912345678',
                 }),
             'cuenta': TextInput(attrs={
-                'class': "form-control-lg",
+                'class': "form-control",
                 'type': "number"
                 }),
         }
@@ -158,14 +262,14 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    sistema_salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
+    salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    sistema_prevision = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
+    afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -246,9 +350,10 @@ class EditarUsuarioForm(forms.ModelForm):
  
     class Meta:
         model = User
-        fields = ("group", "rut", "first_name", "last_name", "sexo", "email", "telefono", "estado_civil", "fecha_nacimiento", 
-                  "nacionalidad", "region", "provincia", "ciudad", "domicilio", "sistema_salud", "sistema_prevision",
-                  "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
+        fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
+                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon",
+                  "calzado", "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "salud", "afp", "examen",
+                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control-lg",
@@ -260,6 +365,82 @@ class EditarUsuarioForm(forms.ModelForm):
                 'type': "number"
                 }),
         }
+
+
+class ProfesionUserCreateForm(forms.ModelForm):
+    institucion = forms.CharField(required=True, label="Institucion",
+                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+    profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    # user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
+    #                                widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+    #                                                           'data-size': '5',
+    #                                                           'data-live-search': 'true',
+    #                                                           'data-live-search-normalize': 'true'
+    #                                                           })
+    #                                )
+
+    def __init__(self, *args, **kwargs):
+        super(ProfesionUserCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ProfesionUser
+        fields = ("egreso", "institucion", "profesion", "status", )
+
+
+class ContactoCreateForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+    user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.all(), required=True, label="Parentesco",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+    def __init__(self, *args, **kwargs):
+        super(ContactoCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Contacto
+        fields = ("nombre", "telefono", "user", "parentesco", "status", )
+
+
+class ArchivoUserCreateForm(forms.ModelForm):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.all(), required=True, label="Tipo Archivo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+    def __init__(self, *args, **kwargs):
+        super(ArchivoUserCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ArchivoUser
+        fields = ("user", "tipo_archivo", "url", "status", )
 
 
 class EditarAtributosForm(forms.ModelForm):
@@ -276,5 +457,5 @@ class EditarAtributosForm(forms.ModelForm):
         model = User
         fields = ("atributos", )
         exclude = ('group', 'rut', 'first_name', 'last_name', 'sexo', 'email', 'telefono', 'estado_civil', 'fecha_nacimiento', 
-                  'nacionalidad', 'region', 'provincia', 'ciudad', 'domicilio', 'sistema_salud', 'sistema_prevision',
+                  'nacionalidad', 'region', 'provincia', 'ciudad', 'domicilio', 'salud', 'afp',
                   'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'negocio', 'is_active', 'password1', 'password2')

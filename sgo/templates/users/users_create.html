@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %}Usuarios{% endblock %}
@@ -57,7 +59,8 @@
     <div class="card-body">
     <form method="post" autocomplete="off" novalidate id="CrearUsuarioForm" data-negocios-url="{% url 'users:ajax_load_negocios' %}">
       {% csrf_token %}
-      {% include 'basic_form.html' with form=form %}
+      <!-- {% include 'basic_form.html' with form=form %} -->
+      {% crispy form %}
         <!-- Alerta informa RUT-->
         <div
           id="alerta"
