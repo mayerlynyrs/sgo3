@@ -17,7 +17,7 @@ User = get_user_model()
 
 class ProfesionCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
         super(ProfesionCreateForm, self).__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class ProfesionCreateForm(forms.ModelForm):
 
 class ParentescoCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
         super(ParentescoCreateForm, self).__init__(*args, **kwargs)
@@ -41,7 +41,7 @@ class ParentescoCreateForm(forms.ModelForm):
 
 class TipoArchivoCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
         super(TipoArchivoCreateForm, self).__init__(*args, **kwargs)
@@ -248,52 +248,52 @@ class CrearUsuarioForm(forms.ModelForm):
 
 class EditarUsuarioForm(forms.ModelForm):
     email = forms.EmailField(required=True,
-                             widget=forms.EmailInput(attrs={'class': "form-control-lg"}))
+                             widget=forms.EmailInput(attrs={'class': "form-control"}))
     first_name = forms.CharField(required=True, label="Nombres",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     last_name = forms.CharField(required=True, label="Apellidos",
-                                widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento",
-                                widget=forms.DateInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control-lg"}))
+                                widget=forms.DateInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.all(), required=True, label="Tipo Cuenta",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
-                                widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.none(), required=True, label="Cliente",
-                                   widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -301,14 +301,14 @@ class EditarUsuarioForm(forms.ModelForm):
                                    )
     negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
-                                                attrs={'class': 'selectpicker show-tick form-control-lg',
+                                                attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
                                                        'data-live-search': 'true',
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
     rut = forms.CharField(required=True, label="RUT",
-                          widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                          widget=forms.TextInput(attrs={'class': "form-control"}))
 
         
     def __init__(self, *args, **kwargs):
@@ -356,12 +356,12 @@ class EditarUsuarioForm(forms.ModelForm):
                    "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={
-                'class': "form-control-lg",
+                'class': "form-control",
                 'type': "number",
                 'placeholder': '56912345678'
                 }),
             'cuenta': TextInput(attrs={
-                'class': "form-control-lg",
+                'class': "form-control",
                 'type': "number"
                 }),
         }
@@ -369,16 +369,16 @@ class EditarUsuarioForm(forms.ModelForm):
 
 class ProfesionUserCreateForm(forms.ModelForm):
     institucion = forms.CharField(required=True, label="Institucion",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     # user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
-    #                                widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+    #                                widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
     #                                                           'data-size': '5',
     #                                                           'data-live-search': 'true',
     #                                                           'data-live-search-normalize': 'true'
@@ -395,9 +395,9 @@ class ProfesionUserCreateForm(forms.ModelForm):
 
 class ContactoCreateForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                                 widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.all(), required=True, label="Parentesco",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -414,14 +414,14 @@ class ContactoCreateForm(forms.ModelForm):
 
 class ArchivoUserCreateForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
     tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.all(), required=True, label="Tipo Archivo",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -438,7 +438,7 @@ class ArchivoUserCreateForm(forms.ModelForm):
 
 class EditarAtributosForm(forms.ModelForm):
     atributos = forms.JSONField(required=True, label="Más Información",
-                                widget=forms.Textarea(attrs={'class': "form-control-lg",
+                                widget=forms.Textarea(attrs={'class': "form-control",
                                                              'placeholder': '{"cargo": 23, "departamento": 17, "jornada": "Diurna", "sueldo": "500.000", "beneficio": "Si", "fecha_ingreso": "12/10/2021", "hora_ingreso": "08:30", "fecha_termino": "10/01/2022"}',}))
 
     def __init__(self, *args, **kwargs):
