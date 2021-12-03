@@ -116,7 +116,7 @@
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos Personales</legend>
 										<!-- begin form-group row -->
                     {% csrf_token %}
-										{% crispy form1 %}
+										{% crispy first_form %}
 									<!-- end col-8 -->
 								</div>
 								<!-- end row -->
@@ -135,7 +135,7 @@
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">You contact info, so that we can easily reach you</legend>
 										<!-- begin form-group row -->
                     {% csrf_token %}
-										{% crispy form2 %}
+										{% crispy second_form %}
                     
 										<!-- end form-group row -->
 									</div>

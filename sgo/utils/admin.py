@@ -72,7 +72,7 @@ class ClienteSetResource(resources.ModelResource):
     horario = fields.Field(column_name='horario', attribute='horario',widget=ManyToManyWidget(Horario, ',', 'pk'))
     area = fields.Field(column_name='area', attribute='area',widget=ManyToManyWidget(Area, ',', 'pk'))
     cargo = fields.Field(column_name='cargo', attribute='cargo',widget=ManyToManyWidget(Cargo, ',', 'pk'))
-    Ciudad = fields.Field(column_name='Ciudad', attribute='Ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
+    ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
 
     class Meta:
         model = Cliente
@@ -81,7 +81,7 @@ class ClienteSetResource(resources.ModelResource):
 
 class NegocioSetResource(resources.ModelResource):
 
-    Ciudad = fields.Field(column_name='Ciudad', attribute='Ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
+    ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
     cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'razon_social'))
     bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
@@ -92,11 +92,11 @@ class NegocioSetResource(resources.ModelResource):
 
 
 class PlantaSetResource(resources.ModelResource):
-    Negocio = fields.Field(column_name='Negocio', attribute='Negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio',widget=ManyToManyWidget(Negocio, ',', 'razon_social'))
 
     class Meta:
         model = Planta
-        fields = ('id', 'nombre', 'Negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
+        fields = ('id', 'nombre', 'negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
 
 
 class PuestaDisposicionSetResource(resources.ModelResource):
@@ -106,7 +106,7 @@ class PuestaDisposicionSetResource(resources.ModelResource):
         fields = ('id', 'nombre', 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual', 'status', )
 
 class AbastecimientoSetResource(resources.ModelResource):
-    Negocio = fields.Field(column_name='Negocio', attribute='Negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
 
     class Meta:
         model = Abastecimiento
@@ -223,9 +223,8 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = PlantaSetResource
     fields = ('negocio', 'nombre', 'descripcion', 'status', )
-    list_display = ('id', 'nombre', 'negocio')
-    list_filter = ['negocio', ]
-    search_fields = ('nombre', 'negocio__nombre')
+    list_display = ('id', 'nombre', )
+    search_fields = ('nombre', )
 
 
 
