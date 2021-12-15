@@ -44,6 +44,11 @@ urlpatterns = [
         name="create"
     ),
     path(
+        route='<int:user_id>/create/',
+        view=views.users_create,
+        name="create"
+    ),
+    path(
         route='<int:pk>/detail/',
         view=views.UserDetailView.as_view(),
         name='detail'
@@ -58,16 +63,11 @@ urlpatterns = [
         view=views.create_profesion,
         name="create_profesion"
     ),
-    path(
-        route='<int:user_id>/create/',
-        view=views.create_profesion_user,
-        name="create"
-    ),
-    path(
-        route='<int:user_id>/add_contacto/',
-        view=views.add_contacto_user,
-        name="add_contacto"
-    ),
+    # path(
+    #     route='<int:user_id>/add_contacto/',
+    #     view=views.add_contacto_user,
+    #     name="add_contacto"
+    # ),
     path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),

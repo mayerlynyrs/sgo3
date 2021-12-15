@@ -238,6 +238,11 @@ class CrearUsuarioForm(forms.ModelForm):
                 'type': "number",
                 'placeholder': '56912345678',
                 }),
+            'telefono2': TextInput(attrs={
+                'class': "form-control",
+                'type': "number",
+                'placeholder': '56912345678',
+                }),
             'cuenta': TextInput(attrs={
                 'class': "form-control",
                 'type': "number"
@@ -317,8 +322,6 @@ class EditarUsuarioForm(forms.ModelForm):
 
         self.fields['provincia'].queryset = Provincia.objects.none()
 
-        
-
         if 'region' in self.data:
             try:
                 region_id = int(self.data.get('region'))
@@ -329,6 +332,7 @@ class EditarUsuarioForm(forms.ModelForm):
             self.fields['provincia'].queryset = self.instance.region.provincia_set.order_by('nombre')
 
         self.fields['ciudad'].queryset = Provincia.objects.none()
+
         if 'provincia' in self.data:
             try:
                 provincia_id = int(self.data.get('provincia'))
@@ -338,6 +342,81 @@ class EditarUsuarioForm(forms.ModelForm):
         elif self.instance.pk:
             # self.fields['ciudad'].queryset = self.instance.region.provincia.ciudad_set.order_by('nombre')
             self.fields['ciudad'].queryset = self.instance.provincia.ciudad_set.order_by('nombre')
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('group', css_class='form-group col-md-4 mb-0'),
+                Column('rut', css_class='form-group col-md-4 mb-0'),
+                Column('pasaporte', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
+                Column('last_name', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('fecha_nacimiento', css_class='form-group col-md-6 mb-0'),
+                Column('sexo', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('telefono', css_class='form-group col-md-6 mb-0'),
+                Column('telefono2', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                Column('estado_civil', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('nacionalidad', css_class='form-group col-md-6 mb-0'),
+                Column('foto', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('region', css_class='form-group col-md-4 mb-0'),
+                Column('provincia', css_class='form-group col-md-4 mb-0'),
+                Column('ciudad', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            'domicilio',
+            Row(
+                Column('afp', css_class='form-group col-md-6 mb-0'),
+                Column('salud', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('especialidad', css_class='form-group col-md-6 mb-0'),
+                Column('nivel_estudio', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('banco', css_class='form-group col-md-4 mb-0'),
+                Column('tipo_cuenta', css_class='form-group col-md-4 mb-0'),
+                Column('cuenta', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('talla_polera', css_class='form-group col-md-4 mb-0'),
+                Column('talla_pantalon', css_class='form-group col-md-4 mb-0'),
+                Column('calzado', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('licencia_conducir', css_class='form-group col-md-6 mb-0'),
+                Column('examen', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('cliente', css_class='form-group col-md-6 mb-0'),
+                Column('negocio', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+        )
+
         if not user.groups.filter(name='Administrador').exists():
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
             self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
@@ -386,6 +465,7 @@ class ProfesionUserCreateForm(forms.ModelForm):
     #                                )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ProfesionUserCreateForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -405,6 +485,7 @@ class ContactoCreateForm(forms.ModelForm):
                                    )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ContactoCreateForm, self).__init__(*args, **kwargs)
 
     class Meta:
@@ -413,13 +494,6 @@ class ContactoCreateForm(forms.ModelForm):
 
 
 class ArchivoUserCreateForm(forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.all(), required=True, label="Tipo Archivo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -429,11 +503,12 @@ class ArchivoUserCreateForm(forms.ModelForm):
                                    )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ArchivoUserCreateForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = ArchivoUser
-        fields = ("user", "tipo_archivo", "url", "status", )
+        fields = ("tipo_archivo", "url", )
 
 
 class EditarAtributosForm(forms.ModelForm):
