@@ -41,7 +41,7 @@
   </div>
   <div class="panel-body">
 
-    {% if form.non_field_errors%}
+    {% if form.non_field_errors or form2.non_field_errors or form3.non_field_errors %}
       <div class="alert alert-danger fade show">
         <span class="close" data-dismiss="alert">×</span>
         <h4><i class="icon fa fa-exclamation-triangle"></i> Revisa el formulario!</h4>
@@ -111,7 +111,7 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales</legend>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales</legend><hr /><br>
 										<!-- begin form-group row -->
                     {% csrf_token %}
                     {% crispy form %}
@@ -137,6 +137,93 @@
             </form>
 					</div>
 					<!-- end step-1 -->
+					<!-- begin step-2 -->
+					<div id="step-2">
+            <form method="post" id="form2" autocomplete="off" novalidate>
+							<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-8 -->
+									<div class="col-xl-8 offset-xl-2">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Contacto</i></legend><hr /><br>
+										<!-- begin form-group row -->
+                    {% crispy form2 %}
+                  </div>
+									<!-- end col-8 -->
+								</div>
+								<!-- end row -->
+							</fieldset>
+							<!-- end fieldset -->
+                <!-- BOTONES -->
+              <div class="form-group row m-b-0">
+                <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
+                <div class="col-md-8 col-sm-8 text-right">
+                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+                  <button type="submit" class="btn btn-success" id="btn-guardar2">Guardar</button>
+                </div>
+              </div>
+            </form>
+					</div>
+					<!-- end step-2 -->
+					<!-- begin step-3 -->
+					<div id="step-3">
+            <form method="post" id="form3" autocomplete="off" novalidate>
+							<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-8 -->
+									<div class="col-xl-8 offset-xl-2">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Profesiones</i></legend><hr /><br>
+										<!-- begin form-group row -->
+                    {% crispy form3 %}
+                  </div>
+									<!-- end col-8 -->
+								</div>
+								<!-- end row -->
+							</fieldset>
+							<!-- end fieldset -->
+                <!-- BOTONES -->
+              <div class="form-group row m-b-0">
+                <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
+                <div class="col-md-8 col-sm-8 text-right">
+                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+                  <button type="submit" class="btn btn-success" id="btn-guardar3">Guardar</button>
+                </div>
+              </div>
+            </form>
+					</div>
+					<!-- end step-3 -->
+					<!-- begin step-4 -->
+					<div id="step-4">
+              <form method="post" id="form4" autocomplete="off" novalidate>
+                <!-- begin fieldset -->
+                <fieldset>
+                  <!-- begin row -->
+                  <div class="row">
+                    <!-- begin col-8 -->
+                    <div class="col-xl-8 offset-xl-2">
+                      <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Documentos</i> </legend><hr /><br>
+                      <!-- begin form-group row -->
+                      {% crispy form4 %}
+                    </div>
+                    <!-- end col-8 -->
+                  </div>
+                  <!-- end row -->
+                </fieldset>
+                <!-- end fieldset -->
+                  <!-- BOTONES -->
+                <div class="form-group row m-b-0">
+                  <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
+                  <div class="col-md-8 col-sm-8 text-right">
+                    <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+                    <button type="submit" class="btn btn-success" id="btn-guardar4">Guardar</button>
+                  </div>
+                </div>
+              </form>
+					</div>
+					<!-- end step-4 -->
 			</div>
 			<!-- end wizard-content -->
 		</div>
@@ -212,7 +299,7 @@
 {% block scripts %}
   var enviando = false;
   //Submit form
-  $('#btn-guardar').on('click', function(e){
+  $('#btn-guardar1').on('click', function(e){
       $(this).prop('disabled', true);
       $(this).addClass('disabled');
 
@@ -326,4 +413,186 @@
         {% endfor %}
 
     {% endif %}
+    var enviando = false;
+    //Submit form2
+    $('#btn-guardar2').on('click', function(e){
+        $(this).prop('disabled', true);
+        $(this).addClass('disabled');
+  
+        e.preventDefault();
+  
+        var $form = $('#form2');
+        var validator = $form.validate({
+            ignore: "",
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorElement: 'div',
+            errorPlacement: function ( error, element ) {
+              error.addClass("invalid-feedback");
+  
+              if(element.prop("type") === "checkbox") {
+                error.insertAfter(element.parent("label"));
+              }else{
+                error.insertAfter(element);
+              }
+  
+              // Add the span element, if doesn't exists, and apply the icon classes to it.
+              if (!element.next("div")[0]) {
+                $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+              }
+            },
+            wrapper: "",
+            rules: {
+                    nombre: "required",
+                    telefono: {
+                      required: true,
+                      digits: true,
+                      minlength: 4
+                    },
+                    parentesco: {
+                      required: true
+                      
+                    }
+                  },
+                  messages: {
+                    nombre: "Ingresa los nombres.",
+                    telefono: {
+                      required: "Ingresa el teléfono de contacto.",
+                      digits: "Ingrese un número de teléfono valido.",
+                      minlength: "Ingrese un número de teléfono valido."
+                    },
+                    parentesco: "Selecciona un parentesco.",
+            },
+            showErrors: function(errorMap, errorList) {
+                console.log('show messages', errorList.length);
+                if(errorList.length){
+                    $('#msgbox').show('slow');
+                    $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+  
+                    this.defaultShowErrors();
+                    console.log('Errores', errorMap, errorList);
+                }
+          }
+        });
+  
+        if(validator.form()){
+            if(!enviando){
+                enviando = true;
+                $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+                $form.submit();
+            }else{
+                console.log("El formulario ya se esta enviando...");
+            }
+        }else{
+            console.log('Error en el formulario.');
+            $(this).removeClass('disabled');
+            $(this).prop('disabled', false);
+        }
+  
+    })
+  
+    {% if messages %}
+          console.log('mensajes');
+          {% for mensaje in messages %}
+              console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+              {% if mensaje.tags == 'success' %}
+                iziToast.success({
+                    message: '{{ mensaje }}',
+                    position: 'topRight',
+                });
+              {% elif mensaje.tags == 'error' %}
+                iziToast.error({
+                    message: '{{ mensaje }}',
+                    position: 'topRight',
+                });
+              {% endif %}
+          {% endfor %}
+  
+      {% endif %}
+    var enviando = false;
+    //Submit form3
+    $('#btn-guardar3').on('click', function(e){
+        $(this).prop('disabled', true);
+        $(this).addClass('disabled');
+  
+        e.preventDefault();
+  
+        var $form = $('#form3');
+        var validator = $form.validate({
+            ignore: "",
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorElement: 'div',
+            errorPlacement: function ( error, element ) {
+              error.addClass("invalid-feedback");
+  
+              if(element.prop("type") === "checkbox") {
+                error.insertAfter(element.parent("label"));
+              }else{
+                error.insertAfter(element);
+              }
+  
+              // Add the span element, if doesn't exists, and apply the icon classes to it.
+              if (!element.next("div")[0]) {
+                $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+              }
+            },
+            wrapper: "",
+            rules: {
+                    institucion: "required",
+                    profesion: {
+                      required: true
+                      
+                    }
+                  },
+                  messages: {
+                    institucion: "Ingresa los nombres.",
+                    profesion: "Selecciona una profesion.",
+            },
+            showErrors: function(errorMap, errorList) {
+                console.log('show messages', errorList.length);
+                if(errorList.length){
+                    $('#msgbox').show('slow');
+                    $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+  
+                    this.defaultShowErrors();
+                    console.log('Errores', errorMap, errorList);
+                }
+          }
+        });
+  
+        if(validator.form()){
+            if(!enviando){
+                enviando = true;
+                $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+                $form.submit();
+            }else{
+                console.log("El formulario ya se esta enviando...");
+            }
+        }else{
+            console.log('Error en el formulario.');
+            $(this).removeClass('disabled');
+            $(this).prop('disabled', false);
+        }
+  
+    })
+  
+    {% if messages %}
+          console.log('mensajes');
+          {% for mensaje in messages %}
+              console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+              {% if mensaje.tags == 'success' %}
+                iziToast.success({
+                    message: '{{ mensaje }}',
+                    position: 'topRight',
+                });
+              {% elif mensaje.tags == 'error' %}
+                iziToast.error({
+                    message: '{{ mensaje }}',
+                    position: 'topRight',
+                });
+              {% endif %}
+          {% endfor %}
+  
+      {% endif %}
 {% endblock %}

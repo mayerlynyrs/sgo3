@@ -27,7 +27,7 @@ from users.models import Sexo, Profesion, ProfesionUser
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, TipoArchivoCreateForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, ArchivoUserCreateForm, TipoArchivoCreateForm
 
 User = get_user_model()
 
@@ -147,13 +147,11 @@ def create_user(request):
     if request.method == 'POST':
 
         user_form = CrearUsuarioForm(data=request.POST, user=request.user)
-        contacto_user_form = ContactoCreateForm(data=request.POST)
-        profesion_user_form = ProfesionUserCreateForm(data=request.POST, user=request.user)
         #profile_form = ProfileForm(data=request.POST, user=request.user)
 
         if user_form.is_valid():
             user = user_form.save(commit=False)
-            print(request.POST.getlist('group'))
+            # print(request.POST.getlist('group'))
             if request.POST.getlist('group') == ['1']:
                 user.is_superuser = True
                 user.is_staff = True
@@ -166,7 +164,6 @@ def create_user(request):
             user.is_active = True
             user.save()
             user = user_form.save()
-            print(user)
 
             #profile = profile_form.save(commit=False)
 
@@ -189,30 +186,82 @@ def create_user(request):
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         user_form = CrearUsuarioForm(user=request.user)
-        contacto_user_form = ContactoCreateForm()
         #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
     
     return render(request, 'users/users_create.html', {
-        'first_form': user_form,
-        'second_form': contacto_user_form,
+        'form': user_form,
     })
 
 
 @login_required
-@permission_required('users.add_profesion_user', raise_exception=True)
-def add_contacto_user(request, user_id):
+@permission_required('users.add_user', raise_exception=True)
+def users_create(request, user_id):
+
+    user = get_object_or_404(User, pk=user_id)
+
+    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
+    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+        if not user == request.user:
+            raise Http404
+
+    # Se obtiene el perfil y las negocios del usuario.
+    try:
+        current_group = user.groups.get()
+        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
+        #negocios_usuario[::1]
+    except:
+        current_group = ''
+        negocios_usuario = ''
+
+    if request.method == 'POST':
+        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
+        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+
+        if user_form.is_valid():
+            user_form.save()
+            #profile_form.save()
+
+            # Solo el Administrador puede cambiar el perfil del usuario
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                user.groups.clear()
+                user.groups.add(user_form.cleaned_data['group'])
+
+            messages.success(request, ('Usuario actualizado'))
+
+            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+                page = request.GET.get('page')
+                if page != '':
+                    response = redirect('users:detail', pk=user_id)
+                    response['Location'] += '?page=' + page
+                    return response
+                else:
+                    return redirect('users:detail', pk=user_id)
+            else:
+                return redirect('home')
+
+        else:
+            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+    else:
+
+        user_form = EditarUsuarioForm(
+            instance=user,
+            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
+            user=request.user
+        )
+        #profile_form = ProfileForm(instance=profile)
+
     if request.method == 'POST':
 
         contacto_user_form = ContactoCreateForm(data=request.POST)
-        print(user_id)
-
+        
         if contacto_user_form.is_valid():
             contacto = contacto_user_form.save(commit=False)
             contacto.status = True
             now_date = datetime.now()
             contacto.created_date = now_date
             contacto.user_id = user_id
-            print(user_id)
+            print("2do-", user_id)
             contacto.save()
             contacto = contacto_user_form.save()
             
@@ -222,13 +271,76 @@ def add_contacto_user(request, user_id):
             # return redirect('users:list')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+
+        profesion_user_form = ProfesionUserCreateForm(data=request.POST)
+        print("3ero-", user_id)
+
+        if profesion_user_form.is_valid():
+            profesion_user = profesion_user_form.save(commit=False)
+            profesion_user.status = True
+            now_date = datetime.now()
+            profesion_user.created_date = now_date
+            profesion_user.user_id = user_id
+            print("4to-", user_id)
+            profesion_user.save()
+            profesion_user = profesion_user_form.save()
+            
+
+            messages.success(request, 'Profesion Usuario Creado Exitosamente')
+            # return redirect('users:add_contacto', user_id=user_id)
+            # return redirect('users:list')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+
+        doc_user_form = ArchivoUserCreateForm(data=request.POST)
+        print("5to-", user_id)
+
+        if doc_user_form.is_valid():
+            archivo_user = doc_user_form.save(commit=False)
+            archivo_user.status = True
+            now_date = datetime.now()
+            archivo_user.created_date = now_date
+            archivo_user.user_id = user_id
+            print("6to-", user_id)
+            archivo_user.save()
+            archivo_user = doc_user_form.save()
+            
+
+            messages.success(request, 'Archivos del Usuario Creado Exitosamente')
+            # return redirect('users:add_contacto', user_id=user_id)
+            # return redirect('users:list')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        contacto_user_form = ContactoCreateForm()
+        contacto_user_form = ContactoCreateForm(user=request.user)
+        profesion_user_form = ProfesionUserCreateForm(user=request.user)
+        doc_user_form = ArchivoUserCreateForm(user=request.user)
         #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
+
     
-    return render(request, 'users/users_create.html', {
-        'second_form': contacto_user_form,
+    return render(request, 'users/create_users.html', {
+        'form2': contacto_user_form,
+        'form3': profesion_user_form,
+        'form4': doc_user_form,
+        'form': user_form
     })
+
+    # return render(
+    #     request=request,
+    #     template_name='users/users_create.html',
+    #     context={
+    #         'usuario': user,
+    #         'form': user_form
+    #     }
+    # )
+    
+    # return render(request, 'users/users_create.html', {
+    #     'form2': contacto_user_form,
+    # })
+    
+    # return render(request, 'users/users_create.html', {
+    #     'form1': user_form,
+    # })
 
 
 @login_required(login_url='users:signin')
@@ -621,52 +733,6 @@ class ProfesionUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
                         'first_name', 'last_name').distinct('first_name', 'last_name')
 
         return queryset
-
-
-@login_required
-@permission_required('users.add_profesion_user', raise_exception=True)
-def create_profesion_user(request, user_id):
-    if request.method == 'POST':
-
-        profesion_user_form = ProfesionUserCreateForm(data=request.POST)
-        print(user_id)
-        print(profesion_user_form)
-
-        if profesion_user_form.is_valid():
-            profesion_user = profesion_user_form.save(commit=False)
-            profesion_user.status = True
-            now_date = datetime.now()
-            profesion_user.created_date = now_date
-            profesion_user.user_id = user_id
-            print(user_id)
-            profesion_user.save()
-            profesion_user = profesion_user_form.save()
-
-            #profile = profile_form.save(commit=False)
-
-            # current_site = str(get_current_site(request))
-            #
-            # # task para enviar mail de activacion
-            # send_activation_mail.apply_async(
-            #     queue='high_priority',
-            #     kwargs={'current_site': current_site,
-            #             'user_id': user.pk
-            #             }
-            # )
-            
-
-            messages.success(request, 'Profesion Usuario Creado Exitosamente')
-            return redirect('users:add_contacto', user_id=user_id)
-            # return redirect('users:list')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        profesion_user_form = ProfesionUserCreateForm()
-        #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
-    
-    return render(request, 'users/users_create.html', {
-        'form': profesion_user_form,
-    })
 
 
 @login_required(login_url='users:signin')

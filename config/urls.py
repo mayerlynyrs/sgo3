@@ -5,12 +5,15 @@ from django.urls import include, path, re_path
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import path, include
 from django.views.static import serve
 
 from sgo.utils import views
 
 urlpatterns = [
     # Django Admin
+
+
     path(settings.ADMIN_URL, admin.site.urls),
     path('', views.Home.as_view(), name='home'),
     path('inicio/', views.Inicio.as_view(), name='inicio'),
