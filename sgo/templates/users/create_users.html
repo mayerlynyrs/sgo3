@@ -4,6 +4,32 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %}Usuarios{% endblock %}
+{% block styles %}
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+}
+.text-desc {
+  font-style: italic;
+  margin-top:-0.1em;
+  padding-left: 0.1em;
+  font-size: small;
+}
+.estado-fichero{
+  text-align: center;
+  vertical-align: middle;
+}
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #153264!important;
+    border-color: #153264 !important;
+    color: #fff;
+}
+{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
@@ -71,7 +97,7 @@
 							</span>
 						</a>
 					</li>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-2">
               <span class="number">2</span> 
 							<span class="info">
@@ -80,7 +106,7 @@
 							</span>
 						</a>
 					</li>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-3">
               <span class="number">3</span> 
 							<span class="info">
@@ -89,7 +115,7 @@
 							</span>
 						</a>
 					</li>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-4">
               <span class="number">4</span> 
 							<span class="info">
@@ -176,15 +202,13 @@
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Profesiones</i></legend><hr /><br>
-										<!-- begin form-group row -->
-                    {% crispy form3 %}
+                    
+                     {% crispy form3 %} 
+
+
                   </div>
-									<!-- end col-8 -->
 								</div>
-								<!-- end row -->
 							</fieldset>
-							<!-- end fieldset -->
-                <!-- BOTONES -->
               <div class="form-group row m-b-0">
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
