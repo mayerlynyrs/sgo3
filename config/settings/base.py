@@ -71,6 +71,7 @@ LOCAL_APPS = [
     #'sgo.api.apps.ApiAppConfig'
     'sgo.examenes.apps.ExamenesConfig',
     'sgo.requerimientos.apps.RequerimientosConfig',
+    
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

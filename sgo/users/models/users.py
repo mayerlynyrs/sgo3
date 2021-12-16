@@ -9,6 +9,8 @@ from django.core.validators import RegexValidator
 
 #Utilities
 from utils.models import BaseModel, Cliente, Negocio, Planta, Region, Provincia, Ciudad
+from .especialidads import Especialidad
+#Users
 # from users import User, Sexo, Civil, Nacionalidad, Salud, Afp, Banco, TipoCta
 # atributos, cambiar_clave, codigo, email, rut, sexo, estado_civil, fecha_nacimiento, telefono,
 # nacionalidad, domicilio, planta, salud, afp, banco, tipo_cta, cuenta
@@ -147,24 +149,6 @@ class NivelEstudio(models.Model):
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el nivel de estudio, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
-    )
-    
-    def __str__(self):
-        return self.nombre
-
-class Especialidad(models.Model):
-    nombre = models.CharField(
-        max_length=120,
-        unique=True
-    )
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la especialidad, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -387,9 +371,11 @@ class User(BaseModel, AbstractUser):
     )
     foto = models.ImageField(upload_to='usuarios', null=True, blank=True)
 
+    afp = models.ForeignKey(Afp, on_delete=models.PROTECT, null=True, blank=True)
+
     salud = models.ForeignKey(Salud, on_delete=models.PROTECT, null=True, blank=True)
 
-    afp = models.ForeignKey(Afp, on_delete=models.PROTECT, null=True, blank=True)
+    pacto_uf = models.FloatField()
 
     banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -450,49 +436,6 @@ class ListaNegra(BaseModel):
     
     def __str__(self):
         return str(self.user)
-
-class Profesion(models.Model):
-    nombre = models.CharField(
-        max_length=120,
-        unique=True
-    )
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la profesion, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
-    )
-    
-    def __str__(self):
-        return self.nombre
-
-class ProfesionUser(models.Model):
-    egreso = models.DateField(
-        null=True,
-        blank=True,
-        help_text="Por favor use el siguiente: <em>DD/MM/AAAA</em>."
-    )
-    institucion = models.CharField(
-        max_length=120,
-        unique=True
-    )
-    profesion = models.ForeignKey(Profesion, on_delete=models.PROTECT, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la profesion del usuario, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
-    )
-    
-    def __str__(self):
-        return self.institucion
 
 class Parentesco(models.Model):
     nombre = models.CharField(
