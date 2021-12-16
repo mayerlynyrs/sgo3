@@ -175,60 +175,7 @@
 
             var toolbarTop, toolbarBottom;
             // Append toolbar based on the position
-            switch (this.options.toolbarSettings.toolbarPosition) {
-                case 'top':
-                    toolbarTop = $('<div></div>').addClass('btn-toolbar sw-toolbar sw-toolbar-top justify-content-' + this.options.toolbarSettings.toolbarButtonPosition);
-                    toolbarTop.append(btnGroup);
-                    if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                        toolbarTop.prepend(btnGroupExtra);
-                    } else {
-                        toolbarTop.append(btnGroupExtra);
-                    }
-                    this.container.before(toolbarTop);
-                    break;
-                case 'bottom':
-                    toolbarBottom = $('<div></div>').addClass('btn-toolbar sw-toolbar sw-toolbar-bottom justify-content-' + this.options.toolbarSettings.toolbarButtonPosition);
-                    toolbarBottom.append(btnGroup);
-                    if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                        toolbarBottom.prepend(btnGroupExtra);
-                    } else {
-                        toolbarBottom.append(btnGroupExtra);
-                    }
-                    this.container.after(toolbarBottom);
-                    break;
-                case 'both':
-                    toolbarTop = $('<div></div>').addClass('btn-toolbar sw-toolbar sw-toolbar-top justify-content-' + this.options.toolbarSettings.toolbarButtonPosition);
-                    toolbarTop.append(btnGroup);
-                    if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                        toolbarTop.prepend(btnGroupExtra);
-                    } else {
-                        toolbarTop.append(btnGroupExtra);
-                    }
-                    this.container.before(toolbarTop);
-
-                    toolbarBottom = $('<div></div>').addClass('btn-toolbar sw-toolbar sw-toolbar-bottom justify-content-' + this.options.toolbarSettings.toolbarButtonPosition);
-                    toolbarBottom.append(btnGroup.clone(true));
-
-                    if (btnGroupExtra !== null) {
-                        if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                            toolbarBottom.prepend(btnGroupExtra.clone(true));
-                        } else {
-                            toolbarBottom.append(btnGroupExtra.clone(true));
-                        }
-                    }
-                    this.container.after(toolbarBottom);
-                    break;
-                default:
-                    toolbarBottom = $('<div></div>').addClass('btn-toolbar sw-toolbar sw-toolbar-bottom justify-content-' + this.options.toolbarSettings.toolbarButtonPosition);
-                    toolbarBottom.append(btnGroup);
-                    if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                        toolbarBottom.append(btnGroupExtra);
-                    } else {
-                        toolbarBottom.append(btnGroupExtra);
-                    }
-                    this.container.after(toolbarBottom);
-                    break;
-            }
+            
             return true;
         },
         _setEvents: function () {
@@ -499,21 +446,7 @@
         _keyNav: function (e) {
             var mi = this;
             // Keyboard navigation
-            switch (e.which) {
-                case 37:
-                    // left
-                    mi._showPrevious();
-                    e.preventDefault();
-                    break;
-                case 39:
-                    // right
-                    mi._showNext();
-                    e.preventDefault();
-                    break;
-                default:
-                    return; // exit this handler for other keys
-            }
-        },
+           },
         _fixHeight: function (idx) {
             // Auto adjust height of the container
             if (this.options.autoAdjustHeight) {
