@@ -20,7 +20,7 @@ ALLOWED_HOSTS += [
     "192.168.0.201",
     "192.168.0.14",
     "192.168.1.111", #server
-]aaa
+]
 
 # Cache
 CACHES = {

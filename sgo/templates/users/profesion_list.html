@@ -50,8 +50,9 @@
     <h4 class="panel-title">Todas las profesiones</h4>
   </div>
   <div class="panel-body">
+    
         <div class="row col-md-12">
-          <button class="btn btn-info btn-agregar-profesion" >
+          <button class="btn btn-info btn-view-fichero">
             <i class="fa fa-plus-circle"></i> Agregar
         </button>
       </div>
@@ -93,76 +94,32 @@
 </div>
 
 <!-- end panel -->
+
+<div class="modal fade" id="modal-fichero">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>
 {% endblock %}
 {% block scripts %}
-  var contratosUrl = '/contratos/';
+$('.btn-view-fichero').on('click', function(e){
+  e.preventDefault();
+  var URL = '/utils/create_profesion';
 
-  $('btn-agregar-profesion').on('click', function(e){
-        e.preventDefault();
-        var id = $(this).data('id');
-        console.log('usuario_id', 'id');
-        var URL = '/users/'+id+'/contrato/';
+  console.log('URL', URL);
 
-        console.log('URL', URL);
-
-        $.ajax({
-              url: URL,
-              type: 'get',
-              dataType: 'json',
-              beforeSend: function () {
-                $("modal_profesion").modal("show");
-              },
-              success: function (data) {
-                  $("modal_profesion .modal-content").html(data.html_form);
-              }
-            });
-    });
-
-  $("modal_profesion").on("submit", ".js-generar-contrato-form", function () {
-      var form = $(this);
-      var $boton = $('.btn-modal-submit');
-
-      $('.msg-loading').show('slow');
-
-      $boton.prop('disabled', true);
-      $boton.addClass('disabled');
-
-      $.ajax({
-        url: form.attr("action"),
-        data: form.serialize(),
-        type: form.attr("method"),
+  $.ajax({
+        url: URL,
+        type: 'get',
         dataType: 'json',
+        beforeSend: function () {
+          $("#modal-fichero").modal("show");
+        },
         success: function (data) {
-          $('.msg-loading').hide();
-          $('.btn-modal-submit').hide();
-
-          if (data.form_is_valid) {
-              console.log('Form Valid');
-              //$("modal_profesion").modal("hide");
-              $('.success-msg-box').html(data.mensaje);
-              $('.msg-success').show('slow');
-
-              $('modal_profesion').on('click', '.success-link', function(e){
-                e.preventDefault();
-                window.location.href = contratosUrl + data.id_contrato + '/attribute/';
-              });
-
-              iziToast.success({
-                  title: '',
-                  message: 'Contrato generado exitosamente.',
-                  position: 'topRight',
-              });
-          }
-          else {
-              console.log('Error');
-              console.log(data.mensaje);
-              $('.msg-box').html(data.mensaje);
-              $('.msg-error').show('slow');
-          }
+            $("#modal-fichero .modal-content").html(data.html_form);
         }
       });
-      return false;
-  });
+});
   {% if messages %}
         console.log('mensajes');
         {% for mensaje in messages %}

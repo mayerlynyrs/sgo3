@@ -153,7 +153,7 @@ class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
         return kwargs
 
     form_class = ProfesionCreateForm
-    template_name = "users/profesion_create.html"
+    template_name = "users/agregar_create.html"
 
     success_url = reverse_lazy('profesiones:list')
     success_message = 'Profesion Creado Exitosamente!'
@@ -164,24 +164,49 @@ class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 
 @login_required
 @permission_required('profesiones.add_profesion', raise_exception=True)
-def create_profesion(request):
+def create_profesion(request, template_name='users/agregar_create.html'):
     if request.method == 'POST':
-
         form = ProfesionCreateForm(data=request.POST, files=request.FILES)
-
         if form.is_valid():
             profesion = form.save()
-
             messages.success(request, 'Profesion Creado Exitosamente')
             return redirect('utils:list_profesion')
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         form = ProfesionCreateForm()
+        
+        data = dict()
+        print('aqui', data)
 
-    return render(request, 'users/profesion_create.html', {
-        'form': form,
-    })
+        context = {'form': form, }
+        print('aca', data)
+        data['html_form'] = render_to_string(
+                            template_name,
+                            context,
+                            request=request,
+                        )
+    return JsonResponse(data)
+    # return JsonResponse(data)
+
+# def create_profesion(request):
+#     if request.method == 'POST':
+
+#         form = ProfesionCreateForm(data=request.POST, files=request.FILES)
+
+#         if form.is_valid():
+#             profesion = form.save()
+
+#             messages.success(request, 'Profesion Creado Exitosamente')
+#             return redirect('utils:list_profesion')
+#         else:
+#             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+#     else:
+#         form = ProfesionCreateForm()
+
+#     return render(request, 'users/agregar_create.html', {
+#         'form': form,
+#     })
 
 
 @login_required
@@ -211,7 +236,7 @@ def update_profesion(request, profesion_id):
 
     return render(
         request=request,
-        template_name='users/profesion_create.html',
+        template_name='users/agregar_create.html',
         context={
             'profesion': profesion,
             'form': form
