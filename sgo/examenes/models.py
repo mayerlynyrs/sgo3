@@ -306,8 +306,8 @@ class Agenda(BaseModel):
         default=False,
         help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
     )
-    fecha_ingreso_estimada = models.DateTimeField(blank=True, null=True)
-    fecha_agenda_evaluacion = models.DateTimeField(blank=True, null=True)
+    fecha_ingreso_estimada = models.DateField(blank=True, null=True)
+    fecha_agenda_evaluacion = models.DateField(blank=True, null=True)
     estado = models.CharField(max_length=2, choices=ESTADOS, default=ESPERA_EVALUACION)
     obs = models.TextField(blank=True, null=True)
 

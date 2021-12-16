@@ -20,7 +20,7 @@ class Renuncia(BaseModel):
         upload_to='renuncias/',
         validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', ])]
     )
-    fecha_termino = models.DateTimeField(blank=True, null=True)
+    fecha_termino = models.DateField(blank=True, null=True)
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
     
     
@@ -73,10 +73,10 @@ class Contrato(BaseModel):
     )
 
     sueldo_base = models.IntegerField()
-    fecha_pago = models.DateTimeField(blank=True, null=True)
-    fecha_inicio = models.DateTimeField(blank=False, null=False)
-    fecha_termino = models.DateTimeField(blank=False, null=False)
-    fecha_termino_ultimo_anexo = models.DateTimeField(blank=True, null=True)
+    fecha_pago = models.DateField(blank=True, null=True)
+    fecha_inicio = models.DateField(blank=False, null=False)
+    fecha_termino = models.DateField(blank=False, null=False)
+    fecha_termino_ultimo_anexo = models.DateField(blank=True, null=True)
     url = models.FileField(
         upload_to='contratoscreados/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
@@ -149,9 +149,9 @@ class Anexo(BaseModel):
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
     motivo = models.TextField(blank=True, null=True)
-    fecha_inicio = models.DateTimeField(blank=False, null=False)
-    fecha_termino_anexo_anterior = models.DateTimeField(blank=False, null=False)
-    fecha_termino = models.DateTimeField(blank=False, null=False)
+    fecha_inicio = models.DateField(blank=False, null=False)
+    fecha_termino_anexo_anterior = models.DateField(blank=False, null=False)
+    fecha_termino = models.DateField(blank=False, null=False)
     estado_firma = models.CharField(max_length=2, choices=FIRMA_ESTADO, default=POR_FIRMAR)
     estado_anexo = models.CharField(max_length=2, choices=ANEXO_ESTADO, default=CREADO)
     fecha_solicitud = models.DateTimeField(blank=True, null=True)
@@ -229,11 +229,7 @@ class Finiquito(BaseModel):
         default=True,
         help_text='Para desactivar el finiquito, deshabilite esta casilla.'
     )
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
+   
     def __str__(self):
         return self.nombre
 
@@ -245,11 +241,7 @@ class ContratosEquipo(BaseModel):
         default=True,
         help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
     )
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
+    
     def __str__(self):
         return self.nombre
 

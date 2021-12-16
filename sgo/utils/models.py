@@ -170,6 +170,10 @@ class Cargo(models.Model):
         max_length=120,
         unique=True
     )
+    descripcion = models.CharField(
+        max_length=300,
+        unique=True
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar este cargo, deshabilite esta casilla.'
