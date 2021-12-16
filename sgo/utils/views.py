@@ -86,196 +86,196 @@ class Inicio(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ProfesionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Profesion List
-    Vista para listar todos los profesion según el usuario y sus las negocios
-    relacionadas.
-    """
-    model = Profesion
-    template_name = "profesiones/profesion_list.html"
-    paginate_by = 25
-    ordering = ['created_date', ]
+# class ProfesionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+#     """Profesion List
+#     Vista para listar todos los profesion según el usuario y sus las negocios
+#     relacionadas.
+#     """
+#     model = Profesion
+#     template_name = "profesiones/profesion_list.html"
+#     paginate_by = 25
+#     ordering = ['created_date', ]
 
-    permission_required = 'profesiones.view_profesion'
-    raise_exception = True
+#     permission_required = 'profesiones.view_profesion'
+#     raise_exception = True
 
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+#     def get_queryset(self):
+#         search = self.request.GET.get('q')
+#         negocio = self.kwargs.get('negocio_id', None)
 
-        if negocio == '':
-            negocio = None
+#         if negocio == '':
+#             negocio = None
 
-        if search:
-            # Si el usuario no se administrador se despliegan los profesiones en estado status
-            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                queryset = super(ProfesionListView, self).get_queryset().filter(
-                    Q(status=True),
-                    Q(nombre__icontains=search)
-                ).distinct()
-            else:
-                # Si el usuario es administrador se despliegan todos los profesiones
-                # segun el critero de busqueda.
-                queryset = super(ProfesionListView, self).get_queryset().filter(
-                    Q(nombre__icontains=search)
-                ).distinct()
-        else:
-            # Si el usuario no es administrador, se despliegan los profesiones en estado
-            # status de las negocios a las que pertenece el usuario.
-            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                queryset = super(ProfesionListView, self).get_queryset().filter(
-                    Q(status=True)
-                ).distinct()
-            else:
-                # Si el usuario es administrador, se despliegan todos los profesiones.
-                if negocio is None:
-                    queryset = super(ProfesionListView, self).get_queryset()
-                else:
-                    # Si recibe la negocio, solo muestra los profesiones que pertenecen a esa negocio.
-                    queryset = super(ProfesionListView, self).get_queryset().filter(
-                        Q(negocios=negocio)
-                    ).distinct()
+#         if search:
+#             # Si el usuario no se administrador se despliegan los profesiones en estado status
+#             # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+#             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+#                 queryset = super(ProfesionListView, self).get_queryset().filter(
+#                     Q(status=True),
+#                     Q(nombre__icontains=search)
+#                 ).distinct()
+#             else:
+#                 # Si el usuario es administrador se despliegan todos los profesiones
+#                 # segun el critero de busqueda.
+#                 queryset = super(ProfesionListView, self).get_queryset().filter(
+#                     Q(nombre__icontains=search)
+#                 ).distinct()
+#         else:
+#             # Si el usuario no es administrador, se despliegan los profesiones en estado
+#             # status de las negocios a las que pertenece el usuario.
+#             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+#                 queryset = super(ProfesionListView, self).get_queryset().filter(
+#                     Q(status=True)
+#                 ).distinct()
+#             else:
+#                 # Si el usuario es administrador, se despliegan todos los profesiones.
+#                 if negocio is None:
+#                     queryset = super(ProfesionListView, self).get_queryset()
+#                 else:
+#                     # Si recibe la negocio, solo muestra los profesiones que pertenecen a esa negocio.
+#                     queryset = super(ProfesionListView, self).get_queryset().filter(
+#                         Q(negocios=negocio)
+#                     ).distinct()
 
-        return queryset
-
-
-class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Profesion Create
-    Vista para crear un profesion.
-    """
-
-    def get_form_kwargs(self):
-        kwargs = super(ProfesionCreateView, self).get_form_kwargs()
-        if self.request.POST:
-            kwargs['user'] = self.request.user
-
-        return kwargs
-
-    form_class = ProfesionCreateForm
-    template_name = "users/agregar_create.html"
-
-    success_url = reverse_lazy('profesiones:list')
-    success_message = 'Profesion Creado Exitosamente!'
-
-    permission_required = 'profesiones.add_profesion'
-    raise_exception = True
+#         return queryset
 
 
-@login_required
-@permission_required('profesiones.add_profesion', raise_exception=True)
-def create_profesion(request, template_name='users/agregar_create.html'):
-    if request.method == 'POST':
-        form = ProfesionCreateForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            profesion = form.save()
-            messages.success(request, 'Profesion Creado Exitosamente')
-            return redirect('utils:list_profesion')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = ProfesionCreateForm()
-        
-        data = dict()
-        print('aqui', data)
+# class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+#     """Profesion Create
+#     Vista para crear un profesion.
+#     """
 
-        context = {'form': form, }
-        print('aca', data)
-        data['html_form'] = render_to_string(
-                            template_name,
-                            context,
-                            request=request,
-                        )
-    return JsonResponse(data)
-    # return JsonResponse(data)
+#     def get_form_kwargs(self):
+#         kwargs = super(ProfesionCreateView, self).get_form_kwargs()
+#         if self.request.POST:
+#             kwargs['user'] = self.request.user
 
-# def create_profesion(request):
+#         return kwargs
+
+#     form_class = ProfesionCreateForm
+#     template_name = "users/agregar_create.html"
+
+#     success_url = reverse_lazy('profesiones:list')
+#     success_message = 'Profesion Creado Exitosamente!'
+
+#     permission_required = 'profesiones.add_profesion'
+#     raise_exception = True
+
+
+# @login_required
+# @permission_required('profesiones.add_profesion', raise_exception=True)
+# def create_profesion(request, template_name='users/agregar_create.html'):
 #     if request.method == 'POST':
-
 #         form = ProfesionCreateForm(data=request.POST, files=request.FILES)
-
 #         if form.is_valid():
 #             profesion = form.save()
-
 #             messages.success(request, 'Profesion Creado Exitosamente')
 #             return redirect('utils:list_profesion')
 #         else:
 #             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
 #     else:
 #         form = ProfesionCreateForm()
+        
+#         data = dict()
+#         print('aqui', data)
 
-#     return render(request, 'users/agregar_create.html', {
-#         'form': form,
-#     })
+#         context = {'form': form, }
+#         print('aca', data)
+#         data['html_form'] = render_to_string(
+#                             template_name,
+#                             context,
+#                             request=request,
+#                         )
+#     return JsonResponse(data)
+#     # return JsonResponse(data)
 
+# # def create_profesion(request):
+# #     if request.method == 'POST':
 
-@login_required
-@permission_required('profesiones.change_profesion', raise_exception=True)
-def update_profesion(request, profesion_id):
+# #         form = ProfesionCreateForm(data=request.POST, files=request.FILES)
 
-    profesion = get_object_or_404(Profesion, pk=profesion_id)
+# #         if form.is_valid():
+# #             profesion = form.save()
 
-    if request.method == 'POST':
+# #             messages.success(request, 'Profesion Creado Exitosamente')
+# #             return redirect('utils:list_profesion')
+# #         else:
+# #             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+# #     else:
+# #         form = ProfesionCreateForm()
 
-        form = ProfesionCreateForm(data=request.POST, instance=profesion, files=request.FILES)
-
-        if form.is_valid():
-            profesion = form.save()
-            messages.success(request, 'Profesion Actualizado Exitosamente')
-            page = request.GET.get('page')
-            if page != '':
-                response = redirect('utils:list_profesion')
-                response['Location'] += '?page=' + page
-                return response
-            else:
-                return redirect('utils:list_profesion')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = ProfesionCreateForm(instance=profesion)
-
-    return render(
-        request=request,
-        template_name='users/agregar_create.html',
-        context={
-            'profesion': profesion,
-            'form': form
-        })
+# #     return render(request, 'users/agregar_create.html', {
+# #         'form': form,
+# #     })
 
 
-@login_required
-@permission_required('profesiones.view_profesion', raise_exception=True)
-def detail_profesion(request, profesion_id, template_name='profesiones/partial_profesion_detail.html'):
-    data = dict()
-    profesion = get_object_or_404(Profesion, pk=profesion_id)
+# @login_required
+# @permission_required('profesiones.change_profesion', raise_exception=True)
+# def update_profesion(request, profesion_id):
 
-    context = {'profesion': profesion, }
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
+#     profesion = get_object_or_404(Profesion, pk=profesion_id)
+
+#     if request.method == 'POST':
+
+#         form = ProfesionCreateForm(data=request.POST, instance=profesion, files=request.FILES)
+
+#         if form.is_valid():
+#             profesion = form.save()
+#             messages.success(request, 'Profesion Actualizado Exitosamente')
+#             page = request.GET.get('page')
+#             if page != '':
+#                 response = redirect('utils:list_profesion')
+#                 response['Location'] += '?page=' + page
+#                 return response
+#             else:
+#                 return redirect('utils:list_profesion')
+#         else:
+#             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+#     else:
+#         form = ProfesionCreateForm(instance=profesion)
+
+#     return render(
+#         request=request,
+#         template_name='users/agregar_create.html',
+#         context={
+#             'profesion': profesion,
+#             'form': form
+#         })
 
 
-@login_required
-def delete_profesion(request, object_id, template_name='profesiones/profesion_delete.html'):
-    data = dict()
-    object = get_object_or_404(Profesion, pk=object_id)
-    if request.method == 'POST':
-        try:
-            object.delete()
-            messages.success(request, 'Profesion eliminado Exitosamente')
-        except ProtectedError:
-            messages.error(request, 'Profesion no se pudo Eliminar.')
-            return redirect('profesiones:update', object_id)
+# @login_required
+# @permission_required('profesiones.view_profesion', raise_exception=True)
+# def detail_profesion(request, profesion_id, template_name='profesiones/partial_profesion_detail.html'):
+#     data = dict()
+#     profesion = get_object_or_404(Profesion, pk=profesion_id)
 
-        return redirect('profesiones:list')
+#     context = {'profesion': profesion, }
+#     data['html_form'] = render_to_string(
+#         template_name,
+#         context,
+#         request=request,
+#     )
+#     return JsonResponse(data)
 
-    context = {'object': object}
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request
-    )
-    return JsonResponse(data)
+
+# @login_required
+# def delete_profesion(request, object_id, template_name='profesiones/profesion_delete.html'):
+#     data = dict()
+#     object = get_object_or_404(Profesion, pk=object_id)
+#     if request.method == 'POST':
+#         try:
+#             object.delete()
+#             messages.success(request, 'Profesion eliminado Exitosamente')
+#         except ProtectedError:
+#             messages.error(request, 'Profesion no se pudo Eliminar.')
+#             return redirect('profesiones:update', object_id)
+
+#         return redirect('profesiones:list')
+
+#     context = {'object': object}
+#     data['html_form'] = render_to_string(
+#         template_name,
+#         context,
+#         request=request
+#     )
+#     return JsonResponse(data)

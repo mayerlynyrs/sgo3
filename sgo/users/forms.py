@@ -167,8 +167,9 @@ class CrearUsuarioForm(forms.ModelForm):
             ),
             'domicilio',
             Row(
-                Column('afp', css_class='form-group col-md-6 mb-0'),
-                Column('salud', css_class='form-group col-md-6 mb-0'),
+                Column('afp', css_class='form-group col-md-4 mb-0'),
+                Column('salud', css_class='form-group col-md-4 mb-0'),
+                Column('pacto_uf', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -228,8 +229,8 @@ class CrearUsuarioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
-                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon",
-                  "calzado", "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "salud", "afp", "examen",
+                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
+                  "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen",
                    "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         exclude = ('password1', 'password2')
         widgets = {
@@ -384,8 +385,9 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
             'domicilio',
             Row(
-                Column('afp', css_class='form-group col-md-6 mb-0'),
-                Column('salud', css_class='form-group col-md-6 mb-0'),
+                Column('afp', css_class='form-group col-md-4 mb-0'),
+                Column('salud', css_class='form-group col-md-4 mb-0'),
+                Column('pacto_uf', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -430,8 +432,8 @@ class EditarUsuarioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
-                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon",
-                  "calzado", "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "salud", "afp", "examen",
+                  "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
+                  "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen",
                    "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={

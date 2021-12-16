@@ -195,13 +195,13 @@
 							</li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-									<li {% if menu_module == 'utils' and menu_page == 'list_profesion' %}class="active"{% endif %}><a href="{% url 'utils:list_profesion' %}">Profesiones</a></li>
+									<li {% if menu_module == 'utils' and menu_page == 'list_profesion' %}class="active"{% endif %}><a href="{% url 'users:list_profesion' %}">Profesiones</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'utils:list_profesion' %}">Especialidades</a></li>
+        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'users:list_profesion' %}">Especialidades</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'utils:list_profesion' %}">Horarios</a></li>
+        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'ficheros:list' %}">Horarios</a></li>
         {% endif %}
         </ul>
       </li>
