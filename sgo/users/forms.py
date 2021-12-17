@@ -20,10 +20,23 @@ class ProfesionCreateForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ProfesionCreateForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Profesion
+        fields = ("nombre", "status", )
+
+
+class EspecialidadCreateForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(EspecialidadCreateForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Especialidad
         fields = ("nombre", "status", )
 
 
