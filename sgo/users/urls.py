@@ -38,11 +38,13 @@ urlpatterns = [
         view=views.update_a_user,
         name="attribute"
     ),
+    # Crea el usuario
     path(
         route='create',
         view=views.create_user,
         name="create"
     ),
+    # Crea el contacto/profesion/documentos del usuario
     path(
         route='<int:user_id>/create/',
         view=views.users_create,
@@ -62,6 +64,21 @@ urlpatterns = [
         route='create_profesion',
         view=views.create_profesion,
         name="create_profesion"
+    ),
+    path(
+        route='<int:profesion_id>/update_profesion/',
+        view=views.update_profesion,
+        name="update_profesion"
+    ),
+    path(
+        route='list_especialidad',
+        view=views.EspecialidadListView.as_view(),
+        name='list_especialidad'
+     ),
+    path(
+        route='create_especialidad',
+        view=views.create_especialidad,
+        name="create_especialidad"
     ),
     # path(
     #     route='<int:user_id>/add_contacto/',

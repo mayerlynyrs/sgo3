@@ -23,11 +23,11 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, ProfesionUser
+from users.models import Sexo, Profesion, ProfesionUser, Especialidad
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, ArchivoUserCreateForm, TipoArchivoCreateForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionCreateForm, EspecialidadCreateForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, ArchivoUserCreateForm, TipoArchivoCreateForm
 
 User = get_user_model()
 
@@ -481,7 +481,7 @@ class ProfesionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     relacionadas.
     """
     model = Profesion
-    template_name = "profesiones/profesion_list.html"
+    template_name = "users/profesion_list.html"
     paginate_by = 25
     ordering = ['created_date', ]
 
@@ -555,7 +555,8 @@ class ProfesionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
 @permission_required('profesiones.add_profesion', raise_exception=True)
 def create_profesion(request, template_name='users/agregar_create.html'):
     if request.method == 'POST':
-        form = ProfesionCreateForm(data=request.POST, files=request.FILES)
+        form = ProfesionCreateForm(data=request.POST, files=request.FILES, user=request.user)
+        # form = ProfesionCreateForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             profesion = form.save()
             messages.success(request, 'Profesion Creado Exitosamente')
@@ -563,7 +564,7 @@ def create_profesion(request, template_name='users/agregar_create.html'):
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        form = ProfesionCreateForm()
+        form = ProfesionCreateForm(user=request.user)
         
         data = dict()
 
@@ -611,7 +612,7 @@ def update_profesion(request, profesion_id):
 
     return render(
         request=request,
-        template_name='profesiones/profesion_create.html',
+        template_name='users/profesion_create.html',
         context={
             'profesion': profesion,
             'form': form
@@ -852,6 +853,187 @@ def update_a_user(request, user_id):
             'contratos': contratos
         }
     )
+
+
+class EspecialidadListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Especialidad List
+    Vista para listar todas las especialidades según el usuario y sus las negocios
+    relacionadas.
+    """
+    model = Especialidad
+    template_name = "users/especialidad_list.html"
+    paginate_by = 25
+    ordering = ['created_date', ]
+
+    permission_required = 'especialidades.view_especialidad'
+    raise_exception = True
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        negocio = self.kwargs.get('negocio_id', None)
+
+        if negocio == '':
+            negocio = None
+
+        if search:
+            # Si el usuario no se administrador se despliegan las especialidades en estado status
+            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = super(EspecialidadListView, self).get_queryset().filter(
+                    Q(status=True),
+                    Q(nombre__icontains=search)
+                ).distinct()
+            else:
+                # Si el usuario es administrador se despliegan todos las especialidades
+                # segun el critero de busqueda.
+                queryset = super(EspecialidadListView, self).get_queryset().filter(
+                    Q(nombre__icontains=search)
+                ).distinct()
+        else:
+            # Si el usuario no es administrador, se despliegan las especialidades en estado
+            # status de las negocios a las que pertenece el usuario.
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                queryset = super(EspecialidadListView, self).get_queryset().filter(
+                    Q(status=True)
+                ).distinct()
+            else:
+                # Si el usuario es administrador, se despliegan todos las especialidades.
+                if negocio is None:
+                    queryset = super(EspecialidadListView, self).get_queryset()
+                else:
+                    # Si recibe la negocio, solo muestra las especialidades que pertenecen a esa negocio.
+                    queryset = super(EspecialidadListView, self).get_queryset().filter(
+                        Q(negocios=negocio)
+                    ).distinct()
+
+        return queryset
+
+
+class EspecialidadCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Especialidad Create
+    Vista para crear un especialidad.
+    """
+
+    def get_form_kwargs(self):
+        kwargs = super(EspecialidadCreateView, self).get_form_kwargs()
+        if self.request.POST:
+            kwargs['user'] = self.request.user
+
+        return kwargs
+
+    form_class = EspecialidadCreateForm
+    template_name = "users/especialidad_create.html"
+
+    success_url = reverse_lazy('especialidades:list')
+    success_message = 'Especialidad Creada Exitosamente!'
+
+    permission_required = 'especialidades.add_especialidad'
+    raise_exception = True
+
+
+@login_required
+@permission_required('especialidades.add_especialidad', raise_exception=True)
+def create_especialidad(request, template_name='users/especialidad_create.html'):
+    if request.method == 'POST':
+        form = EspecialidadCreateForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            especialidad = form.save()
+            messages.success(request, 'Especialidad Creada Exitosamente')
+            return redirect('users:list_especialidad')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        form = EspecialidadCreateForm()
+        
+        data = dict()
+
+        context = {'form': form, }
+        data['html_form'] = render_to_string(
+                            template_name,
+                            context,
+                            request=request,
+                        )
+    return JsonResponse(data)
+
+
+@login_required
+@permission_required('especialidades.change_especialidad', raise_exception=True)
+def update_especialidad(request, especialidad_id):
+
+    especialidad = get_object_or_404(Especialidad, pk=especialidad_id)
+
+    # Se obtienen las negocios del usuario.
+    try:
+        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=request.user)
+    except:
+        negocios_usuario = ''
+
+    if request.method == 'POST':
+
+        form = EspecialidadCreateForm(data=request.POST, instance=especialidad, files=request.FILES, user=request.user)
+
+        if form.is_valid():
+            especialidad = form.save()
+            messages.success(request, 'Especialidad Actualizada Exitosamente')
+            page = request.GET.get('page')
+            if page != '':
+                response = redirect('especialidades:list')
+                response['Location'] += '?page=' + page
+                return response
+            else:
+                return redirect('especialidades:list')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        form = EspecialidadCreateForm(instance=especialidad,
+                                 initial={'negocios': list(negocios_usuario), },
+                                 user=request.user)
+
+    return render(
+        request=request,
+        template_name='users/especialidad_create.html',
+        context={
+            'especialidad': especialidad,
+            'form': form
+        })
+
+
+@login_required
+@permission_required('especialidades.view_especialidad', raise_exception=True)
+def detail_especialidad(request, especialidad_id, template_name='users/partial_especialidad_detail.html'):
+    data = dict()
+    especialidad = get_object_or_404(Especialidad, pk=especialidad_id)
+
+    context = {'especialidad': especialidad, }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@login_required
+def delete_especialidad(request, object_id, template_name='users/especialidad_delete.html'):
+    data = dict()
+    object = get_object_or_404(Especialidad, pk=object_id)
+    if request.method == 'POST':
+        try:
+            object.delete()
+            messages.success(request, 'Especialidad eliminada Exitosamente')
+        except ProtectedError:
+            messages.error(request, 'Especialidad no se pudo Eliminar.')
+            return redirect('especialidades:update', object_id)
+
+        return redirect('especialidades:list')
+
+    context = {'object': object}
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request
+    )
+    return JsonResponse(data)
 
 
 class PasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
