@@ -375,7 +375,7 @@ class User(BaseModel, AbstractUser):
 
     salud = models.ForeignKey(Salud, on_delete=models.PROTECT, null=True, blank=True)
 
-    pacto_uf = models.FloatField()
+    pacto_uf = models.FloatField(null=True)
 
     banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=True, blank=True)
 
