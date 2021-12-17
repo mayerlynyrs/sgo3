@@ -161,10 +161,10 @@
         </a>
         <ul class="sub-menu">
         {% if perms.users.view_user %}
-          <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'users:list' %}">Area</a></li>
+          <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'utils:list_area' %}">Area</a></li>
         {% endif %}
         {% if perms.users.view_user %}
-        <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'users:list' %}">Cargo</a></li>
+        <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'utils:list_cargo' %}">Cargo</a></li>
         {% endif %}
         {% if perms.contratos.view_plantilla %}
           <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
@@ -201,7 +201,7 @@
         <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'users:list_profesion' %}">Especialidades</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'ficheros:list' %}">Horarios</a></li>
+        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'utils:list_horario' %}">Horarios</a></li>
         {% endif %}
         </ul>
       </li>
