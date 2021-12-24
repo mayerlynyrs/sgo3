@@ -39,7 +39,7 @@ class BonoSetResource(resources.ModelResource):
 
     class Meta:
         model = Bono
-        fields = ('id', 'nombre', 'status', )
+        fields = ('id', 'nombre', 'descripcion', 'status', )
 
 
 class GratificacionSetResource(resources.ModelResource):
@@ -155,8 +155,8 @@ class BonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """BonoAdmin model admin."""
 
     resource_class = BonoSetResource
-    fields = ('nombre', 'status', )
-    list_display = ('id', 'nombre',)
+    fields = ('nombre', 'descripcion', 'status', )
+    list_display = ('id', 'nombre', 'descripcion',)
     search_fields = ['nombre', ]
 
 

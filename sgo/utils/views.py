@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from utils.models import Area, Cargo, Horario
+from utils.models import Area, Cargo, Horario, Bono
 
 # Create your views here.
 """Utils Views. """
@@ -20,7 +20,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaForm, CargoForm, HorarioForm
+from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -129,7 +129,7 @@ class AreaView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Areas'
-        context['list_url'] = reverse_lazy('users:area')
+        context['list_url'] = reverse_lazy('utils:area')
         context['entity'] = 'Areas'
         context['form'] = AreaForm()
         return context
@@ -176,13 +176,11 @@ class CargoView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Cargos'
-        context['list_url'] = reverse_lazy('users:cargo')
+        context['list_url'] = reverse_lazy('utils:cargo')
         context['entity'] = 'Cargos'
         context['form'] = CargoForm()
         return context
     
-
-
 class HorarioView(TemplateView):
     template_name = 'utils/horario_list.html'
 
@@ -224,7 +222,53 @@ class HorarioView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Horarios'
-        context['list_url'] = reverse_lazy('users:horario')
+        context['list_url'] = reverse_lazy('utils:horario')
         context['entity'] = 'Horarios'
         context['form'] = HorarioForm()
+        return context
+
+class BonoView(TemplateView):
+    template_name = 'utils/bono_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Bono.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                bono = Bono()
+                bono.nombre = request.POST['nombre']
+                bono.descripcion = request.POST['descripcion']
+                bono.status = True
+                # espec.created_date = request.POST['created_date']
+                bono.save()
+            elif action == 'edit':
+                bono = Bono.objects.get(pk=request.POST['id'])
+                bono.nombre = request.POST['nombre']
+                bono.descripcion = request.POST['descripcion']
+                bono.save()
+            elif action == 'delete':
+                bono = Bono.objects.get(pk=request.POST['id'])
+                bono.status = False
+                bono.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Bonos'
+        context['list_url'] = reverse_lazy('utils:bono')
+        context['entity'] = 'Bonos'
+        context['form'] = BonoForm()
         return context
