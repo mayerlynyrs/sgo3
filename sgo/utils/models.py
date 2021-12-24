@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import RegexValidator
+from django.forms import model_to_dict
 
 # Create your models here.
 # Crum User
@@ -187,6 +188,12 @@ class Cargo(models.Model):
     def __str__(self):
         return self.nombre
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+    
+    
+
 
 class Area(models.Model):
     """Modelo Area.
@@ -208,6 +215,10 @@ class Area(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class Horario(models.Model):
@@ -226,6 +237,10 @@ class Horario(models.Model):
     )
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 class Cliente(BaseModel):
     """Modelo Cliente. """

@@ -63,13 +63,29 @@
 
 		<!-- begin #content -->
 		<div id="content" class="content">
-			{% block content %}{% endblock %}
+			
+			{% block content %}
+			{% endblock %}
+			
+				
+					<tbody>
+					{% block rows %}
+	
+					{% endblock %}
+					</tbody>
+				</table>
+			
 		</div>
 		<!-- end #content -->
 
 		<!-- begin theme-panel -->
     {% block panel %}{% endblock %}
 		<!-- end theme-panel -->
+
+    <!-- Block javascript -->
+    {% block javascript %}
+
+    {% endblock %}
 
 		<!-- begin scroll to top btn -->
 		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade"
@@ -100,6 +116,11 @@
 	<script src="{% static 'admin/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js'%}"></script>
 	<script src="{% static 'admin/assets/js/demo/table-manage-default.demo.js'%}"></script>
+	<script src="{% static 'admin/assets/js/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'admin/assets/js/jquery-confirm-v3.3.4/jquery-confirm.min.css' %}">
+    <script src="{% static 'admin/assets/js/jquery-confirm-v3.3.4/jquery-confirm.min.js' %}"></script>
+
+	<script src="{% static 'admin/assets/js/functions.js'%}"></script>
 
   {% block librerias %} {% endblock %}
 	<!-- ================== END BASE JS ================== -->

@@ -4,6 +4,8 @@
 from django.db import models
 from django.utils import timezone
 
+from django.forms import model_to_dict
+
 
 class Especialidad(models.Model):
     nombre = models.CharField(
@@ -22,3 +24,12 @@ class Especialidad(models.Model):
     
     def __str__(self):
         return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    # class Meta:
+    #     verbose_name = 'Especialidad'
+    #     verbose_name_plural = 'Especialidades'
+    #     ordering = ['id']

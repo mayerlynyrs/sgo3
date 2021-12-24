@@ -161,10 +161,10 @@
         </a>
         <ul class="sub-menu">
         {% if perms.users.view_user %}
-          <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'utils:list_area' %}">Area</a></li>
+          <li {% if menu_app == 'users' and menu_page == area %} class="active"{% endif %}><a href="{% url 'utils:area' %}">Area</a></li>
         {% endif %}
         {% if perms.users.view_user %}
-        <li {% if menu_app == 'users' and menu_page == list %} class="active"{% endif %}><a href="{% url 'utils:list_cargo' %}">Cargo</a></li>
+        <li {% if menu_app == 'users' and menu_page == cargo %} class="active"{% endif %}><a href="{% url 'utils:cargo' %}">Cargo</a></li>
         {% endif %}
         {% if perms.contratos.view_plantilla %}
           <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
@@ -195,13 +195,13 @@
 							</li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-									<li {% if menu_module == 'utils' and menu_page == 'list_profesion' %}class="active"{% endif %}><a href="{% url 'users:list_profesion' %}">Profesiones</a></li>
+									<li {% if menu_module == 'utils' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'users:list_profesion' %}">Especialidades</a></li>
+        <li {% if menu_module == 'utils' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'list_especialidad' %}class="active"{% endif %}><a href="{% url 'utils:list_horario' %}">Horarios</a></li>
+        <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
         {% endif %}
         </ul>
       </li>

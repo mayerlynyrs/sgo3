@@ -12,12 +12,15 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, ProtectedError
 from django.http import Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaCreateForm, CargoCreateForm, HorarioCreateForm
+from utils.forms import AreaForm, CargoForm, HorarioForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,7 +31,7 @@ from django.db.models import Count
 from utils.models import Negocio
 from ficheros.models import Fichero
 from contratos.models import Contrato
-from users.models import User, Profesion
+from users.models import User
 
 
 class Home(LoginRequiredMixin, TemplateView):
@@ -87,513 +90,141 @@ class Inicio(LoginRequiredMixin, TemplateView):
 
         return context
 
-class AreaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Profesion List
-    Vista para listar todos lass areas
-    relacionadas.
-    """
-    model = Area
-    template_name = "utils/area_list.html"
-    paginate_by = 25
-    ordering = ['created_date', ]
+class AreaView(TemplateView):
+    template_name = 'utils/area_list.html'
 
-    permission_required = 'profesiones.view_profesion'
-    raise_exception = True
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
-        if negocio == '':
-            negocio = None
-        if search:
-                # Si el usuario no se administrador se despliegan los profesiones en estado status
-                # de las negocios a las que pertenece el usuario, según el critero de busqueda.
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                    queryset = super(AreaListView, self).get_queryset().filter(
-                        Q(status=True),
-                        Q(nombre__icontains=search)
-                    ).distinct()
-            else:
-                    # Si el usuario es administrador se despliegan todos los profesiones
-                    # segun el critero de busqueda.
-                    queryset = super(AreaListView, self).get_queryset().filter(
-                        Q(nombre__icontains=search)
-                    ).distinct()
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-        else:
-                # Si el usuario no es administrador, se despliegan los profesiones en estado
-                # status de las negocios a las que pertenece el usuario.
-                if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                    queryset = super(AreaListView, self).get_queryset().filter(
-                        Q(status=True)
-                    ).distinct()
-                else:
-                    # Si el usuario es administrador, se despliegan todos los profesiones.
-                    if negocio is None:
-                        queryset = super(AreaListView, self).get_queryset()
-                    else:
-                        # Si recibe la negocio, solo muestra los profesiones que pertenecen a esa negocio.
-                        queryset = super(AreaListView, self).get_queryset().filter(
-                            Q(negocios=negocio)
-                        ).distinct()
-
-        return queryset
-
-class AreaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Area Create
-    Vista para crear un profesion.
-    """
-
-    def get_form_kwargs(self):
-        kwargs = super(AreaCreateView, self).get_form_kwargs()
-        if self.request.POST:
-            kwargs['user'] = self.request.user
-
-        return kwargs
-
-    form_class = AreaCreateForm
-    template_name = "users/agregar_create.html"
-
-    success_url = reverse_lazy('profesiones:list')
-    success_message = 'Profesion Creado Exitosamente!'
-
-    permission_required = 'profesiones.add_profesion'
-    raise_exception = True
-
-
-@login_required
-@permission_required('profesiones.add_profesion', raise_exception=True)
-def create_area(request, template_name='utils/area_create.html'):
-    if request.method == 'POST':
-        form = AreaCreateForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            area = form.save()
-            messages.success(request, 'Area Creada Exitosamente')
-            return redirect('utils:list_area')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = AreaCreateForm()
-        
-        data = dict()
-
-        context = {'form': form, }
-        data['html_form'] = render_to_string(
-                            template_name,
-                            context,
-                            request=request,
-                        )
-    return JsonResponse(data)
-  
-
-
-@login_required
-@permission_required('profesiones.change_profesion', raise_exception=True)
-def update_profesion(request, profesion_id):
-
-    profesion = get_object_or_404(Area, pk=profesion_id)
-
-    if request.method == 'POST':
-
-        form = AreaCreateForm(data=request.POST, instance=profesion, files=request.FILES)
-
-        if form.is_valid():
-            profesion = form.save()
-            messages.success(request, 'Profesion Actualizado Exitosamente')
-            page = request.GET.get('page')
-            if page != '':
-                response = redirect('utils:list_profesion')
-                response['Location'] += '?page=' + page
-                return response
-            else:
-                return redirect('utils:list_profesion')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = AreaCreateForm(instance=profesion)
-
-    return render(
-        request=request,
-        template_name='users/agregar_create.html',
-        context={
-            'profesion': profesion,
-            'form': form
-        })
-
-
-@login_required
-@permission_required('profesiones.view_profesion', raise_exception=True)
-def detail_profesion(request, profesion_id, template_name='profesiones/partial_profesion_detail.html'):
-    data = dict()
-    profesion = get_object_or_404(Area, pk=profesion_id)
-
-    context = {'profesion': profesion, }
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
-@login_required
-def delete_profesion(request, object_id, template_name='profesiones/profesion_delete.html'):
-    data = dict()
-    object = get_object_or_404(Area, pk=object_id)
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        data = {}
         try:
-            object.delete()
-            messages.success(request, 'Profesion eliminado Exitosamente')
-        except ProtectedError:
-            messages.error(request, 'Profesion no se pudo Eliminar.')
-            return redirect('profesiones:update', object_id)
-
-        return redirect('profesiones:list')
-
-    context = {'object': object}
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request
-    )
-    return JsonResponse(data)
-
-class CargoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Profesion List
-    Vista para listar todos lass cargo
-    relacionadas.
-    """
-    model = Cargo
-    template_name = "utils/cargo_list.html"
-    paginate_by = 25
-    ordering = ['created_date', ]
-
-    permission_required = 'profesiones.view_profesion'
-    raise_exception = True
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
-        if negocio == '':
-            negocio = None
-        if search:
-                # Si el usuario no se administrador se despliegan los profesiones en estado status
-                # de las negocios a las que pertenece el usuario, según el critero de busqueda.
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                    queryset = super(CargoListView, self).get_queryset().filter(
-                        Q(status=True),
-                        Q(nombre__icontains=search)
-                    ).distinct()
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Area.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                area = Area()
+                area.nombre = request.POST['nombre']
+                area.status = True
+                # espec.created_date = request.POST['created_date']
+                area.save()
+            elif action == 'edit':
+                area = Area.objects.get(pk=request.POST['id'])
+                area.nombre = request.POST['nombre']
+                area.save()
+            elif action == 'delete':
+                area = Area.objects.get(pk=request.POST['id'])
+                area.status = False
+                area.save()
             else:
-                    # Si el usuario es administrador se despliegan todos los profesiones
-                    # segun el critero de busqueda.
-                    queryset = super(CargoListView, self).get_queryset().filter(
-                        Q(nombre__icontains=search)
-                    ).distinct()
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
-        else:
-                # Si el usuario no es administrador, se despliegan los profesiones en estado
-                # status de las negocios a las que pertenece el usuario.
-                if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                    queryset = super(CargoListView, self).get_queryset().filter(
-                        Q(status=True)
-                    ).distinct()
-                else:
-                    # Si el usuario es administrador, se despliegan todos los profesiones.
-                    if negocio is None:
-                        queryset = super(CargoListView, self).get_queryset()
-                    else:
-                        # Si recibe la negocio, solo muestra los profesiones que pertenecen a esa negocio.
-                        queryset = super(CargoListView, self).get_queryset().filter(
-                            Q(negocios=negocio)
-                        ).distinct()
-
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Areas'
+        context['list_url'] = reverse_lazy('users:area')
+        context['entity'] = 'Areas'
+        context['form'] = AreaForm()
+        return context
 
 
-class HorarioCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Cargo Create
-    Vista para crear un profesion.
-    """
+class CargoView(TemplateView):
+    template_name = 'utils/cargo_list.html'
 
-    def get_form_kwargs(self):
-        kwargs = super(HorarioCreateView, self).get_form_kwargs()
-        if self.request.POST:
-            kwargs['user'] = self.request.user
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-        return kwargs
-
-    form_class = CargoCreateForm
-    template_name = "users/agregar_create.html"
-
-    success_url = reverse_lazy('profesiones:list')
-    success_message = 'Profesion Creado Exitosamente!'
-
-    permission_required = 'profesiones.add_profesion'
-    raise_exception = True
-
-
-@login_required
-@permission_required('profesiones.add_profesion', raise_exception=True)
-def create_cargo(request, template_name='utils/cargo_create.html'):
-    if request.method == 'POST':
-        form = CargoCreateForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            area = form.save()
-            messages.success(request, 'Cargo Creada Exitosamente')
-            return redirect('utils:list_cargo')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = CargoCreateForm()
-        
-        data = dict()
-
-        context = {'form': form, }
-        data['html_form'] = render_to_string(
-                            template_name,
-                            context,
-                            request=request,
-                        )
-    return JsonResponse(data)
-  
-
-
-@login_required
-@permission_required('profesiones.change_profesion', raise_exception=True)
-def update_profesion(request, profesion_id):
-
-    profesion = get_object_or_404(Cargo, pk=profesion_id)
-
-    if request.method == 'POST':
-
-        form = CargoCreateForm(data=request.POST, instance=profesion, files=request.FILES)
-
-        if form.is_valid():
-            profesion = form.save()
-            messages.success(request, 'Profesion Actualizado Exitosamente')
-            page = request.GET.get('page')
-            if page != '':
-                response = redirect('utils:list_profesion')
-                response['Location'] += '?page=' + page
-                return response
-            else:
-                return redirect('utils:list_profesion')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = CargoCreateForm(instance=profesion)
-
-    return render(
-        request=request,
-        template_name='users/agregar_create.html',
-        context={
-            'profesion': profesion,
-            'form': form
-        })
-
-
-@login_required
-@permission_required('profesiones.view_profesion', raise_exception=True)
-def detail_profesion(request, profesion_id, template_name='profesiones/partial_profesion_detail.html'):
-    data = dict()
-    profesion = get_object_or_404(Cargo, pk=profesion_id)
-
-    context = {'profesion': profesion, }
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
-@login_required
-def delete_profesion(request, object_id, template_name='profesiones/profesion_delete.html'):
-    data = dict()
-    object = get_object_or_404(Cargo, pk=object_id)
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        data = {}
         try:
-            object.delete()
-            messages.success(request, 'Profesion eliminado Exitosamente')
-        except ProtectedError:
-            messages.error(request, 'Profesion no se pudo Eliminar.')
-            return redirect('profesiones:update', object_id)
-
-        return redirect('profesiones:list')
-
-    context = {'object': object}
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request
-    )
-    return JsonResponse(data)
-
-class HorarioListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Profesion List
-    Vista para listar todos lass areas
-    relacionadas.
-    """
-    model = Horario
-    template_name = "utils/horario_list.html"
-    paginate_by = 25
-    ordering = ['created_date', ]
-
-    permission_required = 'profesiones.view_profesion'
-    raise_exception = True
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
-        if negocio == '':
-            negocio = None
-        if search:
-                # Si el usuario no se administrador se despliegan los profesiones en estado status
-                # de las negocios a las que pertenece el usuario, según el critero de busqueda.
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                    queryset = super(HorarioListView, self).get_queryset().filter(
-                        Q(status=True),
-                        Q(nombre__icontains=search)
-                    ).distinct()
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Cargo.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                cargo = Cargo()
+                cargo.nombre = request.POST['nombre']
+                cargo.descripcion = request.POST['descripcion']
+                cargo.status = True
+                # espec.created_date = request.POST['created_date']
+                cargo.save()
+            elif action == 'edit':
+                cargo = Cargo.objects.get(pk=request.POST['id'])
+                cargo.nombre = request.POST['nombre']
+                cargo.descripcion = request.POST['descripcion']
+                cargo.save()
+            elif action == 'delete':
+                cargo = Cargo.objects.get(pk=request.POST['id'])
+                cargo.status = False
+                cargo.save()
             else:
-                    # Si el usuario es administrador se despliegan todos los profesiones
-                    # segun el critero de busqueda.
-                    queryset = super(HorarioListView, self).get_queryset().filter(
-                        Q(nombre__icontains=search)
-                    ).distinct()
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
-        else:
-                # Si el usuario no es administrador, se despliegan los profesiones en estado
-                # status de las negocios a las que pertenece el usuario.
-                if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                    queryset = super(HorarioListView, self).get_queryset().filter(
-                        Q(status=True)
-                    ).distinct()
-                else:
-                    # Si el usuario es administrador, se despliegan todos los profesiones.
-                    if negocio is None:
-                        queryset = super(HorarioListView, self).get_queryset()
-                    else:
-                        # Si recibe la negocio, solo muestra los profesiones que pertenecen a esa negocio.
-                        queryset = super(HorarioListView, self).get_queryset().filter(
-                            Q(negocios=negocio)
-                        ).distinct()
-
-        return queryset
-
-class HorarioCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Cargo Create
-    Vista para crear un profesion.
-    """
-
-    def get_form_kwargs(self):
-        kwargs = super(HorarioCreateView, self).get_form_kwargs()
-        if self.request.POST:
-            kwargs['user'] = self.request.user
-
-        return kwargs
-
-    form_class = HorarioCreateForm
-    template_name = "users/agregar_create.html"
-
-    success_url = reverse_lazy('profesiones:list')
-    success_message = 'Profesion Creado Exitosamente!'
-
-    permission_required = 'profesiones.add_profesion'
-    raise_exception = True
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Cargos'
+        context['list_url'] = reverse_lazy('users:cargo')
+        context['entity'] = 'Cargos'
+        context['form'] = CargoForm()
+        return context
+    
 
 
-@login_required
-@permission_required('profesiones.add_profesion', raise_exception=True)
-def create_horario(request, template_name='utils/horario_create.html'):
-    if request.method == 'POST':
-        form = HorarioCreateForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            area = form.save()
-            messages.success(request, 'Horario Creada Exitosamente')
-            return redirect('utils:list_horario')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = HorarioCreateForm()
-        
-        data = dict()
+class HorarioView(TemplateView):
+    template_name = 'utils/horario_list.html'
 
-        context = {'form': form, }
-        data['html_form'] = render_to_string(
-                            template_name,
-                            context,
-                            request=request,
-                        )
-    return JsonResponse(data)
-  
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-
-@login_required
-@permission_required('profesiones.change_profesion', raise_exception=True)
-def update_profesion(request, profesion_id):
-
-    profesion = get_object_or_404(Horario, pk=profesion_id)
-
-    if request.method == 'POST':
-
-        form = HorarioCreateForm(data=request.POST, instance=profesion, files=request.FILES)
-
-        if form.is_valid():
-            profesion = form.save()
-            messages.success(request, 'Profesion Actualizado Exitosamente')
-            page = request.GET.get('page')
-            if page != '':
-                response = redirect('utils:list_profesion')
-                response['Location'] += '?page=' + page
-                return response
-            else:
-                return redirect('utils:list_profesion')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = HorarioCreateForm(instance=profesion)
-
-    return render(
-        request=request,
-        template_name='users/agregar_create.html',
-        context={
-            'profesion': profesion,
-            'form': form
-        })
-
-
-@login_required
-@permission_required('profesiones.view_profesion', raise_exception=True)
-def detail_profesion(request, profesion_id, template_name='profesiones/partial_profesion_detail.html'):
-    data = dict()
-    profesion = get_object_or_404(Horario, pk=profesion_id)
-
-    context = {'profesion': profesion, }
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
-@login_required
-def delete_profesion(request, object_id, template_name='profesiones/profesion_delete.html'):
-    data = dict()
-    object = get_object_or_404(Horario, pk=object_id)
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        data = {}
         try:
-            object.delete()
-            messages.success(request, 'Profesion eliminado Exitosamente')
-        except ProtectedError:
-            messages.error(request, 'Profesion no se pudo Eliminar.')
-            return redirect('profesiones:update', object_id)
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Horario.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                horario = Horario()
+                horario.nombre = request.POST['nombre']
+                horario.descripcion = request.POST['descripcion']
+                horario.status = True
+                # espec.created_date = request.POST['created_date']
+                horario.save()
+            elif action == 'edit':
+                horario = Horario.objects.get(pk=request.POST['id'])
+                horario.nombre = request.POST['nombre']
+                horario.descripcion = request.POST['descripcion']
+                horario.save()
+            elif action == 'delete':
+                horario = Horario.objects.get(pk=request.POST['id'])
+                horario.status = False
+                horario.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
-        return redirect('profesiones:list')
-
-    context = {'object': object}
-    data['html_form'] = render_to_string(
-        template_name,
-        context,
-        request=request
-    )
-    return JsonResponse(data)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Horarios'
+        context['list_url'] = reverse_lazy('users:horario')
+        context['entity'] = 'Horarios'
+        context['form'] = HorarioForm()
+        return context

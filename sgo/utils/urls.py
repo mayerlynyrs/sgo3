@@ -8,37 +8,18 @@ from utils import views
 
 urlpatterns = [
     path(
-        route='list_area',
-        view=views.AreaListView.as_view(),
-        name='list_area'
+        route='area',
+        view=views.AreaView.as_view(),
+        name='area'
     ),
     path(
-        route='create_area',
-        view=views.create_area,
-        name="create_area"
+        route='cargo',
+        view=views.CargoView.as_view(),
+        name='cargo'
     ),
-
     path(
-        route='list_cargo',
-        view=views.CargoListView.as_view(),
-        name='list_cargo'
-    ),
-
-    path(
-        route='create_cargo',
-        view=views.create_cargo,
-        name='create_cargo'
-    ),
-
-    path(
-    route='list_horario',
-    view=views.HorarioListView.as_view(),
-    name='list_horario'
-    ),
-
-    path(
-        route='create_horario',
-        view=views.create_horario,
-        name='create_horario'
+    route='horario',
+    view=views.HorarioView.as_view(),
+    name='horario'
     ),
 ]

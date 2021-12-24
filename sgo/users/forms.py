@@ -1,6 +1,9 @@
 """Users Forms"""
 
 # Django
+from datetime import datetime
+
+from django.forms import *
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
@@ -15,29 +18,29 @@ from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialid
 User = get_user_model()
 
 
-class ProfesionCreateForm(forms.ModelForm):
+class ProfesionForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(ProfesionCreateForm, self).__init__(*args, **kwargs)
+        super(ProfesionForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Profesion
-        fields = ("nombre", "status", )
+        fields = ("nombre", )
 
-
-class EspecialidadCreateForm(forms.ModelForm):
+class EspecialidadForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+  
 
     def __init__(self, *args, **kwargs):
-        super(EspecialidadCreateForm, self).__init__(*args, **kwargs)
+        super(EspecialidadForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Especialidad
-        fields = ("nombre", "status", )
+        fields = ("nombre", )
 
 
 class ParentescoCreateForm(forms.ModelForm):
@@ -72,8 +75,8 @@ class CrearUsuarioForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control" }))
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'id':"datetimepicker1"}))
+    fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'type':"date", 'id':"start"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -272,8 +275,7 @@ class EditarUsuarioForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento",
-                                widget=forms.DateInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control"}))
+    fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento")
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -457,6 +459,12 @@ class EditarUsuarioForm(forms.ModelForm):
             'cuenta': TextInput(attrs={
                 'class': "form-control",
                 'type': "number"
+                }),
+            'fecha_nacimiento': TextInput(attrs={
+                'placeholder': 'DD/MM/AAAA',
+                'class': "form-control",
+                'type':"date",
+                'id':"start"
                 }),
         }
 
