@@ -130,6 +130,7 @@ class Bono(models.Model):
         max_length=120,
         unique=True
     )
+    descripcion = models.TextField(blank=True, null=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
@@ -141,6 +142,10 @@ class Bono(models.Model):
     )
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class Gratificacion(models.Model):

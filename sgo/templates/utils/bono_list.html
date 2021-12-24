@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block page_title %}Mantenedores{% endblock %}
+{% block styles %}
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+}
+.text-desc {
+  font-style: italic;
+  margin-top:-0.1em;
+  padding-left: 0.1em;
+  font-size: small;
+}
+.estado-fichero{
+  text-align: center;
+  vertical-align: middle;
+}
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #153264!important;
+    border-color: #153264 !important;
+    color: #fff;
+}
+{% endblock %}
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Mantenedor / Bonos</a></li>
+  <li class="breadcrumb-item active">Listado</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Bonos <small>Listado</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">Todas los Bonos</h4>
+  </div>
+  <div class="panel-body">
+    
+        <div class="row col-md-12">
+          
+        <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
+            <i class="fas fa-plus"></i> Nuevo registro
+        </a>
+      </div>
+      <br>
+  
+      
+      <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
+        <thead>
+          <tr>
+              <th >Bono</th>
+              <th >Descripcion</th>
+              <th>Acciones</th>
+          </tr>
+        </thead>
+        {% block rows %}
+
+        {% endblock %}
+      
+      
+    </table>
+
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+    <!-- Modal -->
+    <div class="modal fade" id="myModalbono" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form method="post" action="." enctype="multipart/form-data">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <b><i class="fas fa-search"></i> <span></span></b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <input name="action" type="hidden" value="add">
+                            <input name="id" id="id" type="hidden" value="0">
+                            {% for field in form.visible_fields %}
+                                <div class="form-group">
+                                    <label for="email">{{ field.label }}:</label>
+                                    {{ field }}
+                                </div>
+                            {% endfor %} 
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+<!-- end panel -->
+{% block librerias %}
+<script src="{% static 'admin/assets/js/crud/bono_list.js' %}"></script>
+{% endblock %}

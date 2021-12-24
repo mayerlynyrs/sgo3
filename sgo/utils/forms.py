@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.forms import TextInput
 
 # sgo Model
-from utils.models import Area, Cargo , Horario
+from utils.models import Area, Cargo , Horario , Bono
 
 User = get_user_model()
 
@@ -46,4 +46,17 @@ class HorarioForm(forms.ModelForm):
 
     class Meta:
         model = Horario
+        fields = ("nombre","descripcion",)
+
+class BonoForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    descripcion = forms.CharField (required=True, label="Descripcion", max_length=500,
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(BonoForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Bono
         fields = ("nombre","descripcion",)

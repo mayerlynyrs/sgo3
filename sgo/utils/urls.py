@@ -22,4 +22,9 @@ urlpatterns = [
     view=views.HorarioView.as_view(),
     name='horario'
     ),
+    path(
+    route='bono',
+    view=views.BonoView.as_view(),
+    name='bono'
+    ),
 ]
