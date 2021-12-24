@@ -11,35 +11,39 @@ from utils.models import Area, Cargo , Horario
 User = get_user_model()
 
 
-class AreaCreateForm(forms.ModelForm):
+class AreaForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
-        super(AreaCreateForm, self).__init__(*args, **kwargs)
+        super(AreaForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Area
-        fields = ("nombre", "status", )
+        fields = ("nombre",)
 
-class CargoCreateForm(forms.ModelForm):
+class CargoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+    descripcion = forms.CharField (required=True, label="Descripcion",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
-        super(CargoCreateForm, self).__init__(*args, **kwargs)
+        super(CargoForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Cargo
-        fields = ("nombre","descripcion", "status", )
+        fields = ("nombre","descripcion",)
 
-class HorarioCreateForm(forms.ModelForm):
+class HorarioForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+    descripcion = forms.CharField (required=True, label="Descripcion",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
-        super(HorarioCreateForm, self).__init__(*args, **kwargs)
+        super(HorarioForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Horario
-        fields = ("nombre","descripcion", "status", )
+        fields = ("nombre","descripcion",)

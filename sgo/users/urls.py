@@ -56,35 +56,16 @@ urlpatterns = [
         name='detail'
     ),
     path(
-        route='list_profesion',
-        view=views.ProfesionListView.as_view(),
-        name='list_profesion'
+        route='profesion',
+        view=views.ProfesionView.as_view(),
+        name='profesion'
      ),
+    # especialidad
     path(
-        route='create_profesion',
-        view=views.create_profesion,
-        name="create_profesion"
-    ),
-    path(
-        route='<int:profesion_id>/update_profesion/',
-        view=views.update_profesion,
-        name="update_profesion"
-    ),
-    path(
-        route='list_especialidad',
-        view=views.EspecialidadListView.as_view(),
-        name='list_especialidad'
+        route='especialidad',
+        view=views.EspecialidadView.as_view(),
+        name='especialidad'
      ),
-    path(
-        route='create_especialidad',
-        view=views.create_especialidad,
-        name="create_especialidad"
-    ),
-    # path(
-    #     route='<int:user_id>/add_contacto/',
-    #     view=views.add_contacto_user,
-    #     name="add_contacto"
-    # ),
     path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),
