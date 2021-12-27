@@ -81,23 +81,24 @@ class ClienteSetResource(resources.ModelResource):
 
 class NegocioSetResource(resources.ModelResource):
 
+    cliente = fields.Field(column_name='cliente', attribute='cliente',widget=ManyToManyWidget(Cliente, ',', 'razon_social'))
+
+    class Meta:
+        model = Negocio
+        fields = ('id', 'nombre', 'descripcion', 'url', 'status',)
+ 
+
+
+class PlantaSetResource(resources.ModelResource):
+
     ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
-    cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Cliente, 'razon_social'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'razon_social'))
     bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
 
     class Meta:
         model = Negocio
-        fields = ('id', 'nombre', 'nombre_gerente', 'status', )
-
-
-class PlantaSetResource(resources.ModelResource):
-    negocio = fields.Field(column_name='negocio', attribute='negocio',widget=ManyToManyWidget(Negocio, ',', 'razon_social'))
-
-    class Meta:
-        model = Planta
-        fields = ('id', 'nombre', 'negocio', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal')
-
+        fields = ('id', 'nombre', 'cliente', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal', )
 
 class PuestaDisposicionSetResource(resources.ModelResource):
 
@@ -211,22 +212,19 @@ class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class NegocioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """NegocioAdmin model admin."""
 
-    resource_class = NegocioSetResource
-    fields = ('nombre', 'rut_gerente', 'nombre_gerente', 'telefono', 'email', 'gratificacion', 'cliente', 'region', 'provincia', 'ciudad', 'direccion', 'status', )
-    list_display = ('id', 'nombre', 'rut_gerente', 'nombre_gerente', 'ciudad',)
-    search_fields = ['nombre', ]
-
+    resource_class = ClienteSetResource
+    fields = ('cliente', 'nombre', 'descripcion', 'url', 'status', )
+    list_display = ('id', 'nombre', )
+    search_fields = ('nombre', )
 
 @admin.register(Planta)
 class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
-    resource_class = PlantaSetResource
-    fields = ('negocio', 'nombre', 'descripcion', 'status', )
-    list_display = ('id', 'nombre', )
-    search_fields = ('nombre', )
-
-
+    resource_class = NegocioSetResource
+    fields = ('nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'negocio', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'status', )
+    list_display = ('id', 'nombre', 'rut_gerente', 'nombre_gerente', 'ciudad',)
+    search_fields = ['nombre', ]
 
 @admin.register(PuestaDisposicion)
 class PuestaDisposicionAdmin(ImportExportModelAdmin, admin.ModelAdmin):

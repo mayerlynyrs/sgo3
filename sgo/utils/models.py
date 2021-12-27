@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.forms import model_to_dict
@@ -176,7 +177,7 @@ class Cargo(models.Model):
         max_length=120,
         unique=True
     )
-    descripcion = models.CharField(
+    descripcion = models.TextField(
         max_length=300,
         unique=True
     )
@@ -326,7 +327,33 @@ class Negocio(BaseModel):
     """Negocio model.
 
     """
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+    cliente = models.ManyToManyField(
+        Cliente,
+        help_text='Seleccione uno o mas clientes para este Negocio.'
+    )
+    url = models.FileField(
+        upload_to='archivo_negocio/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
+    )
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la Negocio, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
 
+    def __str__(self):
+        return self.nombre
+
+
+class Planta(models.Model):
+    """Modelo Planta.
+    """ 
     nombre = models.CharField(max_length=100)
 
     rut_regex = RegexValidator(
@@ -343,6 +370,12 @@ class Negocio(BaseModel):
         }
     )
     nombre_gerente = models.CharField(max_length=100)
+
+    direccion_gerente = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True
+    )
 
     telefono_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
@@ -364,7 +397,7 @@ class Negocio(BaseModel):
         }
     )
 
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -396,40 +429,6 @@ class Negocio(BaseModel):
     def get_short_name(self):
         """Return RUT."""
         return self.rut_gerente
-
-
-class Planta(models.Model):
-    """Modelo Planta.
-    """
-
-    # codigo = models.CharField(
-    #     'código',
-    #     help_text='Identificador único de sistema de gestión.',
-    #     max_length=6,
-    #     unique=True,
-    #     blank=True,
-    #     null=True
-    # )
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
-    negocio = models.ManyToManyField(
-        Negocio,
-        help_text='Seleccione uno o mas negocios para esta planta.'
-    )
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la planta, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
-    )
-
-    def __str__(self):
-        return self.nombre
-
-
 
 
 class PuestaDisposicion(models.Model):

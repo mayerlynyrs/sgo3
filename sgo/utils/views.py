@@ -271,4 +271,4 @@ class BonoView(TemplateView):
         context['list_url'] = reverse_lazy('utils:bono')
         context['entity'] = 'Bonos'
         context['form'] = BonoForm()
-        return context
+        return context 
