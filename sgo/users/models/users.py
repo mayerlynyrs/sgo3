@@ -4,6 +4,8 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
+
+from django.forms import model_to_dict
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
@@ -484,4 +486,10 @@ class Contacto(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre + '-' + self.parentesco.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['parentesco'] = self.parentesco.nombre
+        item['parentesco_id'] = self.parentesco.id
+        return item

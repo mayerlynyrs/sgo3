@@ -434,14 +434,14 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
         )
 
-        if not user.groups.filter(name='Administrador').exists():
-            self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
-            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
-        else:
-            self.fields['group'].queryset = Group.objects.all()
-            self.fields['cliente'].queryset = Cliente.objects.all()
-            self.fields['negocio'].queryset = Negocio.objects.all()
+        # if not user.groups.filter(name='Administrador').exists():
+        #     self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
+        #     self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
+        #     self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+        # else:
+        #     self.fields['group'].queryset = Group.objects.all()
+        #     self.fields['cliente'].queryset = Cliente.objects.all()
+        #     self.fields['negocio'].queryset = Negocio.objects.all()
 
  
     class Meta:
@@ -469,7 +469,7 @@ class EditarUsuarioForm(forms.ModelForm):
         }
 
 
-class ProfesionUserCreateForm(forms.ModelForm):
+class ProfesionUserForm(forms.ModelForm):
     institucion = forms.CharField(required=True, label="Institucion",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
@@ -489,15 +489,17 @@ class ProfesionUserCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(ProfesionUserCreateForm, self).__init__(*args, **kwargs)
+        super(ProfesionUserForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = ProfesionUser
         fields = ("egreso", "institucion", "profesion", )
 
 
-class ContactoCreateForm(forms.ModelForm):
+class ContactoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    telefono = forms.CharField(required=True, label="Teléfono",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.all(), required=True, label="Parentesco",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -509,14 +511,14 @@ class ContactoCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(ContactoCreateForm, self).__init__(*args, **kwargs)
+        super(ContactoForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Contacto
         fields = ("nombre", "telefono", "parentesco", )
 
 
-class ArchivoUserCreateForm(forms.ModelForm):
+class ArchivoUserForm(forms.ModelForm):
     tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.all(), required=True, label="Tipo Archivo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -527,7 +529,7 @@ class ArchivoUserCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(ArchivoUserCreateForm, self).__init__(*args, **kwargs)
+        super(ArchivoUserForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = ArchivoUser

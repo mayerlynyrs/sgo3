@@ -50,6 +50,12 @@ urlpatterns = [
         view=views.users_create,
         name="create"
     ),
+    # user
+    path(
+        route='<int:user_id>/user/', 
+        view=views.UsersIdView.as_view(),
+        name='user'
+        ),
     path(
         route='<int:pk>/detail/',
         view=views.UserDetailView.as_view(),
