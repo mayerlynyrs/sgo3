@@ -1,8 +1,8 @@
-var tblClient;
+var tblContact;
 var modal_title;
 
 function getData() {
-    tblClient = $('#data-table-default').DataTable({
+    tblContact = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -17,7 +17,8 @@ function getData() {
         },
         columns: [
             {"data": "nombre"},
-            {"data": "descripcion"},
+            {"data": "telefono"},
+            {"data": "parentesco"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -45,41 +46,43 @@ $(function () {
     getData();
 
     $('.btnAdd').on('click', function () {
-        $('input[name="action"]').val('add');
-        modal_title.find('span').html('Horarios' );
+        $('input[name="action"]').val('contacto_add');
+        modal_title.find('span').html('Contactos' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
-        $('form')[0].reset();
-        $('#myModalhorario').modal('show');
+        $('form')[1].reset();
+        $('#myModalcontacto').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Edición de un Horario');
+        modal_title.find('span').html('Edición de un Contacto');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblClient.cell($(this).closest('td, li')).index();
-        var data = tblClient.row(tr.row).data();
-        $('input[name="action"]').val('edit');
+        var tr = tblContact.cell($(this).closest('td, li')).index();
+        var data = tblContact.row(tr.row).data();
+        $('input[name="action"]').val('contacto_edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
-        $('textarea[name="descripcion"]').val(data.descripcion);
-        $('#myModalhorario').modal('show');
+        $('input[name="telefono"]').val(data.telefono);
+        $('select[name="parentesco"]').val(data.parentesco_id);
+        $('#myModalcontacto').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('¿Desea Eliminar Cargo?');
+        modal_title.find('span').html('¿Desea Eliminar Contacto?');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblClient.cell($(this).closest('td, li')).index();
-        var data = tblClient.row(tr.row).data();
-        $('input[name="action"]').val('delete');
+        var tr = tblContact.cell($(this).closest('td, li')).index();
+        var data = tblContact.row(tr.row).data();
+        $('input[name="action"]').val('contacto_delete');
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
-        $('textarea[name="descripcion"]').val(data.descripcion);
-        $('#myModalhorario').modal('show');
+        $('input[name="telefono"]').val(data.telefono);
+        $('select[name="parentesco"]').val(data.parentesco);
+        $('#myModalcontacto').modal('show');
     }); 
 
-    $('#myModalhorario').on('shown.bs.modal', function () {
+    $('#myModalcontacto').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -88,8 +91,8 @@ $(function () {
         var parameters = new FormData(this);
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalhorario').modal('hide');
-            tblClient.ajax.reload();
+            $('#myModalcontacto').modal('hide');
+            tblContact.ajax.reload();
         });   
     });
 });

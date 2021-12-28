@@ -27,11 +27,11 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, ProfesionUser, Especialidad
+from users.models import Sexo, Profesion, ProfesionUser, Especialidad, Contacto
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserCreateForm, ParentescoCreateForm, ContactoCreateForm, ArchivoUserCreateForm, TipoArchivoCreateForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, TipoArchivoCreateForm
 
 User = get_user_model()
 
@@ -61,6 +61,59 @@ class SignInView(auth_views.LoginView):
     """Login view."""
 
     template_name = 'users/login.html'
+
+
+class UsersIdView(TemplateView):
+    template_name = 'users/create_users.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, user_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                print(user_id)
+                data = []
+                for i in Contacto.objects.filter(user=user_id, status=True):
+                    data.append(i.toJSON())
+            elif action == 'contacto_add':
+                contact = Contacto()
+                contact.nombre = request.POST['nombre']
+                contact.telefono = request.POST['telefono']
+                contact.parentesco_id = request.POST['parentesco']
+                contact.user_id = user_id
+                contact.save()
+            elif action == 'contacto_edit':
+                contact = Contacto.objects.get(pk=request.POST['id'])
+                contact.nombre = request.POST['nombre']
+                contact.telefono = request.POST['telefono']
+                contact.parentesco_id = request.POST['parentesco']
+                contact.user_id = user_id
+                contact.save()
+            elif action == 'contacto_delete':
+                contact = Contacto.objects.get(pk=request.POST['id'])
+                contact.status = False
+                contact.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Contactos'
+        context['list_url'] = reverse_lazy('users:<int:user_id>/create')
+        context['entity'] = 'Contactos'
+        context['form1'] = EditarUsuarioForm()
+        context['form2'] = ContactoForm()
+        context['form3'] = ProfesionUserForm()
+        context['form4'] = ArchivoUserForm()
+        return context
 
 
 class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -258,7 +311,7 @@ def users_create(request, user_id):
 
     if request.method == 'POST':
 
-        contacto_user_form = ContactoCreateForm(data=request.POST)
+        contacto_user_form = ContactoForm(data=request.POST)
         
         if contacto_user_form.is_valid():
             contacto = contacto_user_form.save(commit=False)
@@ -277,7 +330,7 @@ def users_create(request, user_id):
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
 
-        profesion_user_form = ProfesionUserCreateForm(data=request.POST)
+        profesion_user_form = ProfesionUserForm(data=request.POST)
         print("3ero-", user_id)
 
         if profesion_user_form.is_valid():
@@ -297,7 +350,7 @@ def users_create(request, user_id):
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
 
-        doc_user_form = ArchivoUserCreateForm(data=request.POST)
+        doc_user_form = ArchivoUserForm(data=request.POST)
         print("5to-", user_id)
 
         if doc_user_form.is_valid():
@@ -317,9 +370,9 @@ def users_create(request, user_id):
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        contacto_user_form = ContactoCreateForm(user=request.user)
-        profesion_user_form = ProfesionUserCreateForm(user=request.user)
-        doc_user_form = ArchivoUserCreateForm(user=request.user)
+        contacto_user_form = ContactoForm(user=request.user)
+        profesion_user_form = ProfesionUserForm(user=request.user)
+        doc_user_form = ArchivoUserForm(user=request.user)
         #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
 
     
