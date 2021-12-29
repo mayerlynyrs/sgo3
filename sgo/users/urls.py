@@ -57,6 +57,16 @@ urlpatterns = [
         name='user'
         ),
     path(
+        route='<int:user_id>/profesion_users/',
+        view=views.ProfesionUserView.as_view(),
+        name='profesion_users'
+     ),
+    path(
+        route='<int:user_id>/archivo_users/',
+        view=views.ArchivoUserView.as_view(),
+        name='archivo_users'
+     ),
+    path(
         route='<int:pk>/detail/',
         view=views.UserDetailView.as_view(),
         name='detail'
