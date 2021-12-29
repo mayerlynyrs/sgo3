@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 
 from django.forms import model_to_dict
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
@@ -416,8 +417,14 @@ class ArchivoUser(models.Model):
             blank=True
     )
     
-    def __int__(self):
-        return self.user
+    def __str__(self):
+        return self.user.first_name + '-' + self.tipo_archivo.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['url'] = [model_to_dict(t) for t in self.url.all()]
+        return item
+
 
 class ListaNegra(BaseModel):
     LISTA_NEGRA = 'LN'

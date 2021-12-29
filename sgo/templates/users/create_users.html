@@ -137,7 +137,7 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales</legend><hr /><br>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Usuario</legend><hr /><br>
 										<!-- begin form-group row -->
                     {% csrf_token %}
                   </div>
@@ -171,7 +171,7 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Contacto</i></legend><hr /><br>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Contacto(s) del Usuario</legend><hr /><br>
 										<!-- begin form-group row -->
                     <div class="row col-md-12">
                       <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
@@ -189,13 +189,13 @@
                               <th>Acciones</th>
                           </tr>
                         </thead>
-                        {% block rows %}
+                        {% block rows2 %}
 
                         {% endblock %}
                       
                       </table>
 
-                      {% block javascript %}
+                      {% block javascript2 %}
                           <!-- Modal -->
                           <div class="modal fade" id="myModalcontacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                               aria-hidden="true">
@@ -238,14 +238,6 @@
 								<!-- end row -->
 							</fieldset>
 							<!-- end fieldset -->
-                <!-- BOTONES -->
-              <div class="form-group row m-b-0">
-                <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
-                <div class="col-md-8 col-sm-8 text-right">
-                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                  <button type="submit" class="btn btn-success" id="btn-guardar2">Guardar</button>
-                </div>
-              </div>
             </form>
 					</div>
 					<!-- end step-2 -->
@@ -258,21 +250,70 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Profesiones</i></legend><hr /><br>
-                    
-                    {% crispy form3 %}                 
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Profesión(es) del Usuario</legend><hr /><br>
+                      <div class="row col-md-12">
+                        <a class="btn btn-primary btn-flat btnAddProfes" style="color: white;">
+                          <i class="fas fa-plus"></i> Nuevo registro
+                        </a>
+                      </div>
+                      <br>
+                          
+                        <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle ">
+                          <thead>
+                            <tr>
+                                <th >Egreso</th>
+                                <th >Institución</th>
+                                <th >Profesión</th>
+                                <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          {% block rows3 %}
+
+                          {% endblock %}
+                        
+                        </table>
+
+                        {% block javascript3 %}
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModalProfesionUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <form method="post" action="." enctype="multipart/form-data">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    <b><i class="fas fa-search"></i> <span></span></b>
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="container-fluid">
+                                                    <input name="action" type="hidden" value="add">
+                                                    <input name="id" id="id" type="hidden" value="0">
+                                                    {% for field in form3.visible_fields %}
+                                                        <div class="form-group">
+                                                            <label for="email">{{ field.label }}:</label>
+                                                            {{ field }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endblock %}              
                      
 
                   </div>
 								</div>
 							</fieldset>
-              <div class="form-group row m-b-0">
-                <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
-                <div class="col-md-8 col-sm-8 text-right">
-                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                  <button type="submit" class="btn btn-success" id="btn-guardar3">Guardar</button>
-                </div>
-              </div>
             </form>
 					</div>
 					<!-- end step-3 -->
@@ -285,9 +326,65 @@
                   <div class="row">
                     <!-- begin col-8 -->
                     <div class="col-xl-8 offset-xl-2">
-                      <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Personales <i>Documentos</i> </legend><hr /><br>
+                      <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Documento(s) del Usuario </legend><hr /><br>
                       <!-- begin form-group row -->
-                      {% crispy form4 %}
+                    <div class="row col-md-12">
+                      <a class="btn btn-primary btn-flat btnAddArchi" style="color: white;">
+                        <i class="fas fa-plus"></i> Nuevo registro
+                      </a>
+                    </div>
+                    <br>
+                        
+                      <table id="data-table-responsive" class="table table-striped table-bordered table-td-valign-middle ">
+                        <thead>
+                          <tr>
+                              <th >Tipo archivo</th>
+                              <th >Url</th>
+                              <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        {% block rows4 %}
+
+                        {% endblock %}
+                      
+                      </table>
+
+                      {% block javascript4 %}
+                          <!-- Modal -->
+                          <div class="modal fade" id="myModalArchivoUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                              aria-hidden="true">
+                              <form method="post" action="." enctype="multipart/form-data">
+                                  <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title">
+                                                  <b><i class="fas fa-search"></i> <span></span></b>
+                                              </h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                              </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div class="container-fluid">
+                                                  <input name="action" type="hidden" value="add">
+                                                  <input name="id" id="id" type="hidden" value="0">
+                                                  {% for field in form4.visible_fields %}
+                                                      <div class="form-group">
+                                                          <label for="email">{{ field.label }}:</label>
+                                                          {{ field }}
+                                                      </div>
+                                                  {% endfor %}
+                                              </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                              <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      {% endblock %}
                       
                     </div>
                     <!-- end col-8 -->
@@ -296,13 +393,13 @@
                 </fieldset>
                 <!-- end fieldset -->
                   <!-- BOTONES -->
-                <div class="form-group row m-b-0">
+                <!-- <div class="form-group row m-b-0">
                   <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                   <div class="col-md-8 col-sm-8 text-right">
                     <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
                     <button type="submit" class="btn btn-success" id="btn-guardar4">Guardar</button>
                   </div>
-                </div>
+                </div> -->
               </form>
 					</div>
 					<!-- end step-4 -->
@@ -378,6 +475,8 @@
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
     
     <script src="{% static 'admin/assets/js/crud/contacto_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/profesion_user_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/archivo_user_list.js' %}"></script>
 {% endblock %}
 
 {% block scripts %}

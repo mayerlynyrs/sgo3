@@ -470,7 +470,9 @@ class EditarUsuarioForm(forms.ModelForm):
 
 
 class ProfesionUserForm(forms.ModelForm):
-    institucion = forms.CharField(required=True, label="Institucion",
+    egreso = forms.CharField(required=True, label="Egreso",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    institucion = forms.CharField(required=True, label="Institución",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -526,6 +528,7 @@ class ArchivoUserForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    url = forms.FileField()
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

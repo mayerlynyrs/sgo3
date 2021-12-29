@@ -38,8 +38,7 @@ class ProfesionUser(models.Model):
         help_text="Por favor use el siguiente: <em>DD/MM/AAAA</em>."
     )
     institucion = models.CharField(
-        max_length=120,
-        unique=True
+        max_length=120
     )
     profesion = models.ForeignKey(Profesion, on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
@@ -55,3 +54,9 @@ class ProfesionUser(models.Model):
     
     def __str__(self):
         return self.institucion
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['profesion'] = self.profesion.nombre
+        item['profesion_id'] = self.profesion.id
+        return item

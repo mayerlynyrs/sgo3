@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user_model
+from django.forms.models import model_to_dict
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
@@ -27,7 +28,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, ProfesionUser, Especialidad, Contacto
+from users.models import Sexo, Profesion, ProfesionUser, Especialidad, Contacto, ArchivoUser
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
@@ -98,11 +99,47 @@ class UsersIdView(TemplateView):
                 contact = Contacto.objects.get(pk=request.POST['id'])
                 contact.status = False
                 contact.save()
+            elif action == 'profesion_add':
+                profes = ProfesionUser()
+                profes.egreso = request.POST['egreso']
+                profes.institucion = request.POST['institucion']
+                profes.profesion_id = request.POST['profesion']
+                profes.user_id = user_id
+                profes.save()
+            elif action == 'profesion_edit':
+                profes = ProfesionUser.objects.get(pk=request.POST['id'])
+                profes.egreso = request.POST['egreso']
+                profes.institucion = request.POST['institucion']
+                profes.profesion_id = request.POST['profesion']
+                profes.user_id = user_id
+                profes.save()
+            elif action == 'profesion_delete':
+                profes = ProfesionUser.objects.get(pk=request.POST['id'])
+                profes.status = False
+                profes.save()
+            elif action == 'archivo_add':
+                archiv = ArchivoUser()
+                archiv.tipo_archivo_id = request.POST['tipo_archivo']
+                archiv.url = request.POST['url']
+                archiv.user_id = user_id
+                archiv.save()
+            elif action == 'archivo_edit':
+                archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+                archiv.tipo_archivo_id = request.POST['tipo_archivo']
+                archiv.url = request.POST['url']
+                archiv.user_id = user_id
+                archiv.save()
+            elif action == 'archivo_delete':
+                archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+                archiv.status = False
+                archiv.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+        # return JsonResponse({'data': 'data'},{'data2': 'data2'})
+        # return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -113,6 +150,157 @@ class UsersIdView(TemplateView):
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionUserForm()
         context['form4'] = ArchivoUserForm()
+        return context
+
+
+class ProfesionUserView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'users/create_users.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, user_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata2':
+                data = []
+                for i in ProfesionUser.objects.filter(user=user_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+        # return JsonResponse({'data': 'data'},{'data2': 'data2'})
+        # return JsonResponse(data, safe=False)
+
+
+class ArchivoUserView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'users/create_users.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, user_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata3':
+                data = []
+                for i in ArchivoUser.objects.filter(user=user_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        print(data)
+        return JsonResponse(data, safe=False)
+
+
+class ProfesionView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'users/profesion_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Profesion.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                espec = Profesion()
+                espec.nombre = request.POST['nombre']
+                espec.status = True
+                # espec.created_date = request.POST['created_date']
+                espec.save()
+            elif action == 'edit':
+                espec = Profesion.objects.get(pk=request.POST['id'])
+                espec.nombre = request.POST['nombre']
+                espec.save()
+            elif action == 'delete':
+                espec = Profesion.objects.get(pk=request.POST['id'])
+                espec.status = False
+                espec.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Profesion'
+        context['list_url'] = reverse_lazy('users:profesion')
+        context['entity'] = 'Profesiones'
+        context['form'] = ProfesionForm()
+        return context
+
+
+class EspecialidadView(TemplateView):
+    template_name = 'users/especialidad_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Especialidad.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                espec = Especialidad()
+                espec.nombre = request.POST['nombre']
+                espec.status = True
+                # espec.created_date = request.POST['created_date']
+                espec.save()
+            elif action == 'edit':
+                espec = Especialidad.objects.get(pk=request.POST['id'])
+                espec.nombre = request.POST['nombre']
+                espec.save()
+            elif action == 'delete':
+                espec = Especialidad.objects.get(pk=request.POST['id'])
+                espec.status = False
+                espec.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Especialidades'
+        context['list_url'] = reverse_lazy('users:especialidad')
+        context['entity'] = 'Especialidades'
+        context['form'] = EspecialidadForm()
         return context
 
 
@@ -530,297 +718,6 @@ class UserDetailView(LoginRequiredMixin, DetailView):
             if not self.object == self.request.user:
                 raise Http404
 
-        return context
-
-
-class ProfesionView(TemplateView):
-    """Profesion List
-    Vista para listar todos los profesion según el usuario y sus las negocios
-    relacionadas.
-    """
-    template_name = 'users/profesion_list.html'
-
-    @method_decorator(csrf_exempt)
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'searchdata':
-                data = []
-                for i in Profesion.objects.filter(status=True):
-                    data.append(i.toJSON())
-            elif action == 'add':
-                espec = Profesion()
-                espec.nombre = request.POST['nombre']
-                espec.status = True
-                # espec.created_date = request.POST['created_date']
-                espec.save()
-            elif action == 'edit':
-                espec = Profesion.objects.get(pk=request.POST['id'])
-                espec.nombre = request.POST['nombre']
-                espec.save()
-            elif action == 'delete':
-                espec = Profesion.objects.get(pk=request.POST['id'])
-                espec.status = False
-                espec.save()
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Profesion'
-        context['list_url'] = reverse_lazy('users:profesion')
-        context['entity'] = 'Profesiones'
-        context['form'] = ProfesionForm()
-        return context   
-
-class ProfesionUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    model = ProfesionUser
-    template_name = "users/users_list.html"
-    paginate_by = 25
-    ordering = ['first_name', 'last_name']
-
-    permission_required = 'users.view_user'
-    raise_exception = True
-
-    def get_context_data(self, **kwargs):
-        context = super(UserListView, self).get_context_data(**kwargs)
-
-        if self.request.user.groups.filter(name__in=['Administrador']).exists():
-            institutions = Negocio.objects.values(
-                    value=F('id'),
-                    title=F('nombre')).all().order_by('nombre')
-                #cache.set('institutions', institutions)
-            institutions = Sexo.objects.values(
-                    value=F('id'),
-                    title=F('nombre')).all().order_by('nombre')
-
-            context['negocios'] = institutions
-            context['negocio'] = self.kwargs.get('negocio_id', None)
-
-        return context
-
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
-
-        if negocio == '':
-            negocio = None
-
-        if search:
-            # No es administrador y recibe parametro de busqueda
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                queryset = User.objects.select_related('negocio').filter(
-                    Q(cliente__in=self.request.user.cliente.all()),
-                    Q(negocio__in=self.request.user.negocio.all()),
-                    Q(first_name__icontains=search) |
-                    Q(last_name__icontains=search) |
-                    Q(username__icontains=search)).exclude(
-                    groups__name__in=['Administrador']).order_by(
-                    'first_name', 'last_name').distinct('first_name', 'last_name')
-            else:
-                # Es administrador y recibe parametro de busqueda
-                queryset = super(UserListView, self).get_queryset().filter(
-                                        Q(first_name__icontains=search) |
-                                        Q(last_name__icontains=search) |
-                                        Q(rut__icontains=search) |
-                                        Q(groups__name__icontains=search) |
-                                        Q(username__icontains=search)).order_by(
-                    'first_name', 'last_name').distinct('first_name', 'last_name')
-        else:
-            # Perfil no es Administrador
-            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                if negocio is None:
-                    queryset = User.objects.filter(
-                        negocio__in=self.request.user.negocio.all()).exclude(
-                        groups__name__in=['Administrador']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-                else:
-                    # No es administrador y hay negocios seleccionadas
-                    queryset = User.objects.filter(
-                        negocio__in=negocio).exclude(
-                        groups__name__in=['Administrador']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-
-            else:
-                # Es administrador y no hay negocio seleccionada.
-                if negocio is None:
-                    queryset = super(UserListView, self).get_queryset().order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-                else:
-                    # Es administrador y hay negocios seleccionadas.
-                    queryset = super(UserListView, self).get_queryset().filter(
-                        negocio__in=negocio).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-
-        return queryset
-
-
-@login_required(login_url='users:signin')
-def update_profesion_user(request, user_id):
-    """Update a user's profession view."""
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    # Se obtiene el perfil y las negocios del usuario.
-    try:
-        current_group = user.groups.get()
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
-        #negocios_usuario[::1]
-    except:
-        current_group = ''
-        negocios_usuario = ''
-
-    if request.method == 'POST':
-        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user_form.save()
-            #profile_form.save()
-
-            # Solo el Administrador puede cambiar el perfil del usuario
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                user.groups.clear()
-                user.groups.add(user_form.cleaned_data['group'])
-
-            messages.success(request, ('Usuario actualizado'))
-
-            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-                page = request.GET.get('page')
-                if page != '':
-                    response = redirect('users:detail', pk=user_id)
-                    response['Location'] += '?page=' + page
-                    return response
-                else:
-                    return redirect('users:detail', pk=user_id)
-            else:
-                return redirect('home')
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarUsuarioForm(
-            instance=user,
-            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    return render(
-        request=request,
-        template_name='users/users_create.html',
-        context={
-            'usuario': user,
-            'form': user_form
-        }
-    )
-
-
-@login_required(login_url='users:signin')
-def update_a_user(request, user_id):
-    """Update a user's profile view (attributes)."""
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    if request.method == 'POST':
-        user_form = EditarAtributosForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user_form.save()
-            #profile_form.save()
-
-            messages.success(request, ('Usuario actualizado'))
-
-            return redirect('users:attribute', user_id)
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarAtributosForm(
-            instance=user,
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    # Obtengo todos los documentos del contrato
-    contratos = Contrato.objects.filter(user=user)
-
-    return render(
-        request=request,
-        template_name='users/users_attribute.html',
-        context={
-            'usuario': user,
-            'form': user_form,
-            'contratos': contratos
-        }
-    )
-
-
-class EspecialidadView(TemplateView):
-    template_name = 'users/especialidad_list.html'
-
-    @method_decorator(csrf_exempt)
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'searchdata':
-                data = []
-                for i in Especialidad.objects.filter(status=True):
-                    data.append(i.toJSON())
-            elif action == 'add':
-                espec = Especialidad()
-                espec.nombre = request.POST['nombre']
-                espec.status = True
-                # espec.created_date = request.POST['created_date']
-                espec.save()
-            elif action == 'edit':
-                espec = Especialidad.objects.get(pk=request.POST['id'])
-                espec.nombre = request.POST['nombre']
-                espec.save()
-            elif action == 'delete':
-                espec = Especialidad.objects.get(pk=request.POST['id'])
-                espec.status = False
-                espec.save()
-            else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Especialidades'
-        context['list_url'] = reverse_lazy('users:especialidad')
-        context['entity'] = 'Especialidades'
-        context['form'] = EspecialidadForm()
         return context
 
 

@@ -42,12 +42,13 @@ function getData() {
 $(function () {
 
     modal_title = $('.modal-title');
+    console.log(window.location.pathname);
 
     getData();
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('contacto_add');
-        modal_title.find('span').html('Contactos' );
+        modal_title.find('span').html('Contacto <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
@@ -56,7 +57,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Edición de un Contacto');
+        modal_title.find('span').html('Contacto <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblContact.cell($(this).closest('td, li')).index();
         var data = tblContact.row(tr.row).data();
@@ -70,7 +71,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('¿Desea Eliminar Contacto?');
+        modal_title.find('span').html('Contacto <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblContact.cell($(this).closest('td, li')).index();
         var data = tblContact.row(tr.row).data();
@@ -93,6 +94,10 @@ $(function () {
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
             $('#myModalcontacto').modal('hide');
             tblContact.ajax.reload();
+            $('#myModalProfesionUser').modal('hide');
+            tblProfesionUser.ajax.reload();
+            // $('#myModalArchivoUser').modal('hide');
+            // tblArchivoUser.ajax.reload();
         });   
     });
 });
