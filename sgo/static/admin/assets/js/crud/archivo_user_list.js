@@ -1,5 +1,6 @@
 var tblArchivoUser;
 var modal_title;
+var user = null;
 
 function getData3() {
     tblArchivoUser = $('#data-table-responsive').DataTable({
@@ -8,10 +9,10 @@ function getData3() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/6/archivo_users/',
+            url: '/users/'+user+'/archivo_users/',
             type: 'POST',
             data: {
-                'action': 'searchdata3'
+                'action': 'searchdata4'
             },
             dataSrc: ""
         },
@@ -26,8 +27,8 @@ function getData3() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    var buttons = '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    // buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     return buttons;
                 }
             },
@@ -41,6 +42,7 @@ function getData3() {
 $(function () {
 
     modal_title = $('.modal-title');
+    user = document.getElementById("user_id").value;
 
     getData3();
 
@@ -62,8 +64,8 @@ $(function () {
         $('form')[3].reset();
         $('input[name="action"]').val('archivo_edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="tipo_archivo"]').val(data.tipo_archivo_id);
-        $('input[name="url"]').val(data.url);
+        $('select[name="tipo_archivo"]').val(data.tipo_archivo_id);
+        $('file[name="url"]').val(data.url);
         $('#myModalArchivoUser').modal('show');
     });
 
@@ -75,8 +77,8 @@ $(function () {
         var data = tblArchivoUser.row(tr.row).data();
         $('input[name="action"]').val('archivo_delete');
         $('input[name="id"]').val(data.id);
-        $('input[name="tipo_archivo"]').val(data.tipo_archivo);
-        $('input[name="url"]').val(data.url);
+        $('select[name="tipo_archivo"]').val(data.tipo_archivo_id);
+        $('file[name="url"]').val(data.url);
         $('#myModalArchivoUser').modal('show');
     }); 
 

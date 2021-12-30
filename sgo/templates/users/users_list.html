@@ -114,7 +114,7 @@ img {
         {% if not usr.id == request.user.id %}
           <tr>
             <td>
-                <a href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}">
+                <a href="{% url 'users:create' usr.id %}?page={{ request.GET.page }}">
                   <div class="img-div">
                     {{ usr.groups.first.name|image_profile|safe }}<br>
                     {{ usr.is_active|tag_active|safe }}
