@@ -79,7 +79,7 @@ class UsersIdView(TemplateView):
             if action == 'searchdata':
                 print(user_id)
                 data = []
-                for i in Contacto.objects.filter(user=user_id, status=True):
+                for i in User.objects.filter(id=3, is_active=True):
                     data.append(i.toJSON())
             elif action == 'contacto_add':
                 contact = Contacto()
@@ -120,15 +120,15 @@ class UsersIdView(TemplateView):
             elif action == 'archivo_add':
                 archiv = ArchivoUser()
                 archiv.tipo_archivo_id = request.POST['tipo_archivo']
-                archiv.url = request.POST['url']
+                archiv.url = request.FILES['url']
                 archiv.user_id = user_id
                 archiv.save()
-            elif action == 'archivo_edit':
-                archiv = ArchivoUser.objects.get(pk=request.POST['id'])
-                archiv.tipo_archivo_id = request.POST['tipo_archivo']
-                archiv.url = request.POST['url']
-                archiv.user_id = user_id
-                archiv.save()
+            # elif action == 'archivo_edit':
+            #     archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+            #     archiv.tipo_archivo_id = request.POST['tipo_archivo']
+            #     archiv.url = request.POST['url']
+            #     archiv.user_id = user_id
+            #     archiv.save()
             elif action == 'archivo_delete':
                 archiv = ArchivoUser.objects.get(pk=request.POST['id'])
                 archiv.status = False
@@ -145,12 +145,40 @@ class UsersIdView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
+        context['update_url'] = reverse_lazy('users:update')
         context['entity'] = 'Contactos'
         context['form1'] = EditarUsuarioForm()
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionUserForm()
         context['form4'] = ArchivoUserForm()
         return context
+
+
+class ContactoView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'users/create_users.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, user_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata2':
+                data = []
+                for i in Contacto.objects.filter(user=user_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
 
 class ProfesionUserView(TemplateView):
@@ -169,7 +197,7 @@ class ProfesionUserView(TemplateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'searchdata2':
+            if action == 'searchdata3':
                 data = []
                 for i in ProfesionUser.objects.filter(user=user_id, status=True):
                     data.append(i.toJSON())
@@ -198,7 +226,7 @@ class ArchivoUserView(TemplateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'searchdata3':
+            if action == 'searchdata4':
                 data = []
                 for i in ArchivoUser.objects.filter(user=user_id, status=True):
                     data.append(i.toJSON())
@@ -206,7 +234,7 @@ class ArchivoUserView(TemplateView):
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
-        print(data)
+            print(e)
         return JsonResponse(data, safe=False)
 
 
@@ -649,7 +677,7 @@ def update_user(request, user_id):
 
     return render(
         request=request,
-        template_name='users/users_create.html',
+        template_name='users/create_users.html',
         context={
             'usuario': user,
             'form': user_form

@@ -1,5 +1,6 @@
 var tblContact;
 var modal_title;
+var user = null;
 
 function getData() {
     tblContact = $('#data-table-default').DataTable({
@@ -8,10 +9,10 @@ function getData() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: window.location.pathname,
+            url: '/users/'+user+'/contactos/',
             type: 'POST',
             data: {
-                'action': 'searchdata'
+                'action': 'searchdata2'
             },
             dataSrc: ""
         },
@@ -42,7 +43,7 @@ function getData() {
 $(function () {
 
     modal_title = $('.modal-title');
-    console.log(window.location.pathname);
+    user = document.getElementById("user_id").value;
 
     getData();
 
@@ -79,7 +80,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
-        $('select[name="parentesco"]').val(data.parentesco);
+        $('select[name="parentesco"]').val(data.parentesco_id);
         $('#myModalcontacto').modal('show');
     }); 
 
@@ -96,8 +97,8 @@ $(function () {
             tblContact.ajax.reload();
             $('#myModalProfesionUser').modal('hide');
             tblProfesionUser.ajax.reload();
-            // $('#myModalArchivoUser').modal('hide');
-            // tblArchivoUser.ajax.reload();
+            $('#myModalArchivoUser').modal('hide');
+            tblArchivoUser.ajax.reload();
         });   
     });
 });

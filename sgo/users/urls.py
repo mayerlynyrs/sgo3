@@ -29,11 +29,6 @@ urlpatterns = [
         name='list'
     ),
     path(
-        route='<int:user_id>/update/',
-        view=views.update_user,
-        name="update"
-    ),
-    path(
         route='<int:user_id>/attribute/',
         view=views.update_a_user,
         name="attribute"
@@ -44,18 +39,26 @@ urlpatterns = [
         view=views.create_user,
         name="create"
     ),
-    # Crea el contacto/profesion/documentos del usuario
     path(
-        route='<int:user_id>/create/',
-        view=views.users_create,
-        name="create"
-    ),
-    # user
-    path(
-        route='<int:user_id>/user/', 
+        route='<int:user_id>/create/', 
         view=views.UsersIdView.as_view(),
-        name='user'
+        name='create'
         ),
+    path(
+        route='<int:pk>/detail/',
+        view=views.UserDetailView.as_view(),
+        name='detail'
+    ),
+    path(
+        route='<int:user_id>/update/',
+        view=views.update_user,
+        name="update"
+    ),
+    path(
+        route='<int:user_id>/contactos/',
+        view=views.ContactoView.as_view(),
+        name='contactos'
+     ),
     path(
         route='<int:user_id>/profesion_users/',
         view=views.ProfesionUserView.as_view(),
@@ -66,11 +69,6 @@ urlpatterns = [
         view=views.ArchivoUserView.as_view(),
         name='archivo_users'
      ),
-    path(
-        route='<int:pk>/detail/',
-        view=views.UserDetailView.as_view(),
-        name='detail'
-    ),
     path(
         route='profesion',
         view=views.ProfesionView.as_view(),

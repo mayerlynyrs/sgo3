@@ -1,5 +1,7 @@
 """User model."""
 
+import os
+
 # Django
 from django.db import models
 from django.core.validators import FileExtensionValidator
@@ -394,11 +396,16 @@ class User(BaseModel, AbstractUser):
 
     def __str__(self):
         """Return RUT."""
-        return self.rut
+        return self.rut + '-' +str(self.foto).zfill(0)
 
     def get_short_name(self):
         """Return RUT."""
-        return self.rut
+        return self.rut + '-' +str(self.foto).zfill(0)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['foto'] = str(self.foto).zfill(0)
+        return item
 
 class ArchivoUser(models.Model):
     url = models.FileField(
@@ -418,11 +425,13 @@ class ArchivoUser(models.Model):
     )
     
     def __str__(self):
-        return self.user.first_name + '-' + self.tipo_archivo.nombre
+        return self.user.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.url).zfill(0)
 
     def toJSON(self):
         item = model_to_dict(self)
-        item['url'] = [model_to_dict(t) for t in self.url.all()]
+        item['tipo_archivo'] = self.tipo_archivo.nombre
+        item['tipo_archivo_id'] = self.tipo_archivo.id
+        item['url'] = str(self.url).zfill(0)
         return item
 
 

@@ -289,7 +289,7 @@ class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
         ('Más Información', {
             'fields': ('rut', 'pasaporte', 'sexo', 'estado_civil', 'fecha_nacimiento', 'telefono', 'telefono2',
                        'nacionalidad', 'licencia_conducir', 'talla_polera', 'talla_pantalon', 'calzado', 'nivel_estudio',
-                       'especialidad', 'region', 'provincia', 'ciudad', 'domicilio', 'afp', 'salud', 'pacto_uf', 
+                       'especialidad', 'region', 'provincia', 'ciudad', 'domicilio', 'examen', 'foto', 'afp', 'salud', 'pacto_uf', 
                        'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'negocio', 'cambiar_clave', 'atributos', )
         }),
     )

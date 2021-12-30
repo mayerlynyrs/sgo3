@@ -448,7 +448,7 @@ class EditarUsuarioForm(forms.ModelForm):
         model = User
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
                   "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
-                  "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen",
+                  "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen", 
                    "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={
@@ -471,7 +471,7 @@ class EditarUsuarioForm(forms.ModelForm):
 
 class ProfesionUserForm(forms.ModelForm):
     egreso = forms.CharField(required=True, label="Egreso",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"start"}))
     institucion = forms.CharField(required=True, label="Institución",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
@@ -528,7 +528,6 @@ class ArchivoUserForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    url = forms.FileField()
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

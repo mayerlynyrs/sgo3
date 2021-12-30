@@ -1,5 +1,7 @@
 var tblProfesionUser;
 var modal_title;
+var user = null;
+
 
 function getData2() {
     tblProfesionUser = $('#data-table-buttons_wrapper').DataTable({
@@ -8,10 +10,10 @@ function getData2() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/6/profesion_users/',
+            url: '/users/'+user+'/profesion_users/',
             type: 'POST',
             data: {
-                'action': 'searchdata2'
+                'action': 'searchdata3'
             },
             dataSrc: ""
         },
@@ -42,6 +44,7 @@ function getData2() {
 $(function () {
 
     modal_title = $('.modal-title');
+    user = document.getElementById("user_id").value;
 
     getData2();
 
@@ -79,7 +82,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
-        $('select[name="profesion"]').val(data.profesion);
+        $('select[name="profesion"]').val(data.profesion_id);
         $('#myModalProfesionUser').modal('show');
     }); 
 
