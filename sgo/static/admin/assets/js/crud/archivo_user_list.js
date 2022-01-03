@@ -18,7 +18,7 @@ function getData3() {
         },
         columns: [
             {"data": "tipo_archivo"},
-            {"data": "url"},
+            {"data": "archivo"},
             {"data": "id"},
         ],
         columnDefs: [
