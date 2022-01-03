@@ -79,7 +79,7 @@ class UsersIdView(TemplateView):
             if action == 'searchdata':
                 print(user_id)
                 data = []
-                for i in User.objects.filter(id=3, is_active=True):
+                for i in User.objects.filter(id=user_id, is_active=True):
                     data.append(i.toJSON())
             elif action == 'contacto_add':
                 contact = Contacto()
@@ -141,13 +141,17 @@ class UsersIdView(TemplateView):
         # return JsonResponse({'data': 'data'},{'data2': 'data2'})
         # return JsonResponse(data, safe=False)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, user_id, **kwargs):
+        
+        user = get_object_or_404(User, pk=user_id)
+
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
         context['update_url'] = reverse_lazy('users:update')
         context['entity'] = 'Contactos'
-        context['form1'] = EditarUsuarioForm()
+        context['user_id'] = user_id
+        context['form1'] = EditarUsuarioForm(instance=user)
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionUserForm()
         context['form4'] = ArchivoUserForm()
