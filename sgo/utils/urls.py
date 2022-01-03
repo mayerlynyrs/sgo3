@@ -27,4 +27,24 @@ urlpatterns = [
     view=views.BonoView.as_view(),
     name='bono'
     ),
+    path(
+    route='list_cliente',
+    view=views.BonoView.as_view(),
+    name='list_cliente'
+    ),
+    path(
+    route='create_cliente',
+    view=views.create_cliente,
+    name='create_cliente'
+    ),
+    path(
+    route='<int:cliente_id>/create_cliente',
+    view=views.ClienteIdView.as_view(),
+    name='create_cliente'
+    ),
+    path(
+        route='<int:cliente_id>/negocios/',
+        view=views.NegocioView.as_view(),
+        name='negocios'
+     ),
 ]

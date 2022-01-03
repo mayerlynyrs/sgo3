@@ -85,7 +85,7 @@ class NegocioSetResource(resources.ModelResource):
 
     class Meta:
         model = Negocio
-        fields = ('id', 'nombre', 'descripcion', 'url', 'status',)
+        fields = ('id', 'nombre', 'descripcion', 'archivo', 'status',)
  
 
 
@@ -97,7 +97,7 @@ class PlantaSetResource(resources.ModelResource):
     bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
 
     class Meta:
-        model = Negocio
+        model = Planta
         fields = ('id', 'nombre', 'cliente', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal', )
 
 class PuestaDisposicionSetResource(resources.ModelResource):
@@ -212,8 +212,8 @@ class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class NegocioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """NegocioAdmin model admin."""
 
-    resource_class = ClienteSetResource
-    fields = ('cliente', 'nombre', 'descripcion', 'url', 'status', )
+    resource_class = NegocioSetResource
+    fields = ('cliente', 'nombre', 'descripcion', 'archivo', 'status', )
     list_display = ('id', 'nombre', )
     search_fields = ('nombre', )
 
@@ -221,7 +221,7 @@ class NegocioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
-    resource_class = NegocioSetResource
+    resource_class = PlantaSetResource
     fields = ('nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'negocio', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'status', )
     list_display = ('id', 'nombre', 'rut_gerente', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]

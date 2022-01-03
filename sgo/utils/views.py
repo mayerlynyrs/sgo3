@@ -20,7 +20,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm
+from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,7 +28,7 @@ from django.db.models import Q
 from django.views.generic import TemplateView
 from django.db.models import Count
 # Modelo
-from utils.models import Negocio
+from utils.models import Negocio, Cliente, Region
 from ficheros.models import Fichero
 from contratos.models import Contrato
 from users.models import User
@@ -270,5 +270,225 @@ class BonoView(TemplateView):
         context['title'] = 'Listado de Bonos'
         context['list_url'] = reverse_lazy('utils:bono')
         context['entity'] = 'Bonos'
-        context['form'] = BonoForm()
-        return context 
+        context['form'] = BonoForm
+        return context
+
+class clienteView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Cliente
+    template_name = "users/users_list.html"
+    paginate_by = 25
+    ordering = ['first_name', 'last_name']
+
+    permission_required = 'users.view_user'
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(clienteView, self).get_context_data(**kwargs)
+
+        if self.request.user.groups.filter(name__in=['Administrador']).exists():
+            institutions = Negocio.objects.values(
+                    value=F('id'),
+                    title=F('nombre')).all().order_by('nombre')
+                #cache.set('institutions', institutions)
+            institutions = Sexo.objects.values(
+                    value=F('id'),
+                    title=F('nombre')).all().order_by('nombre')
+
+            context['negocios'] = institutions
+            context['negocio'] = self.kwargs.get('negocio_id', None)
+
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        negocio = self.kwargs.get('negocio_id', None)
+
+        if negocio == '':
+            negocio = None
+
+        if search:
+            # No es administrador y recibe parametro de busqueda
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = User.objects.select_related('negocio').filter(
+                    Q(cliente__in=self.request.user.cliente.all()),
+                    Q(negocio__in=self.request.user.negocio.all()),
+                    Q(first_name__icontains=search) |
+                    Q(last_name__icontains=search) |
+                    Q(username__icontains=search)).exclude(
+                    groups__name__in=['Administrador']).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+            else:
+                # Es administrador y recibe parametro de busqueda
+                queryset = super(clienteView, self).get_queryset().filter(
+                                        Q(first_name__icontains=search) |
+                                        Q(last_name__icontains=search) |
+                                        Q(rut__icontains=search) |
+                                        Q(groups__name__icontains=search) |
+                                        Q(username__icontains=search)).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+        else:
+            # Perfil no es Administrador
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                if negocio is None:
+                    queryset = User.objects.filter(
+                        negocio__in=self.request.user.negocio.all()).exclude(
+                        groups__name__in=['Administrador']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # No es administrador y hay negocios seleccionadas
+                    queryset = User.objects.filter(
+                        negocio__in=negocio).exclude(
+                        groups__name__in=['Administrador']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+            else:
+                # Es administrador y no hay negocio seleccionada.
+                if negocio is None:
+                    queryset = super(clienteView, self).get_queryset().order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # Es administrador y hay negocios seleccionadas.
+                    queryset = super(clienteView, self).get_queryset().filter(
+                        negocio__in=negocio).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+        return queryset
+
+
+@login_required
+@permission_required('users.add_user', raise_exception=True)
+def create_cliente(request):
+    if request.method == 'POST':
+
+        cliente_form = CrearClienteForm(data=request.POST, user=request.user)
+        print(request.POST)
+
+        if cliente_form.is_valid():
+            cliente = cliente_form.save(commit=False)
+            cliente.status = True
+            cliente.save()
+            cliente = cliente_form.save()
+            messages.success(request, 'Cliente Creado Exitosamente')
+            return redirect('utils:create_cliente', cliente_id=cliente.id)
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        cliente_form = CrearClienteForm(user=request.user)
+    
+    return render(request, 'utils/cliente_create.html', {
+        'form': cliente_form,
+    })
+
+class ClienteIdView(TemplateView):
+    template_name = 'utils/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                print(cliente_id)
+                data = []
+                for i in Negocio.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+            elif action == 'contacto_add':
+                contact = Negocio()
+                contact.nombre = request.POST['nombre']
+                contact.telefono = request.POST['telefono']
+                contact.parentesco_id = request.POST['parentesco']
+                contact.cliente_id = cliente_id
+                contact.save()
+    #         elif action == 'contacto_edit':
+    #             contact = Contacto.objects.get(pk=request.POST['id'])
+    #             contact.nombre = request.POST['nombre']
+    #             contact.telefono = request.POST['telefono']
+    #             contact.parentesco_id = request.POST['parentesco']
+    #             contact.user_id = user_id
+    #             contact.save()
+    #         elif action == 'contacto_delete':
+    #             contact = Contacto.objects.get(pk=request.POST['id'])
+    #             contact.status = False
+    #             contact.save()
+    #         elif action == 'profesion_add':
+    #             profes = ProfesionUser()
+    #             profes.egreso = request.POST['egreso']
+    #             profes.institucion = request.POST['institucion']
+    #             profes.profesion_id = request.POST['profesion']
+    #             profes.user_id = user_id
+    #             profes.save()
+    #         elif action == 'profesion_edit':
+    #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
+    #             profes.egreso = request.POST['egreso']
+    #             profes.institucion = request.POST['institucion']
+    #             profes.profesion_id = request.POST['profesion']
+    #             profes.user_id = user_id
+    #             profes.save()
+    #         elif action == 'profesion_delete':
+    #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
+    #             profes.status = False
+    #             profes.save()
+    #         elif action == 'archivo_add':
+    #             archiv = ArchivoUser()
+    #             archiv.tipo_archivo_id = request.POST['tipo_archivo']
+    #             archiv.url = request.POST['url']
+    #             archiv.user_id = user_id
+    #             archiv.save()
+    #         elif action == 'archivo_edit':
+    #             archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+    #             archiv.tipo_archivo_id = request.POST['tipo_archivo']
+    #             archiv.url = request.POST['url']
+    #             archiv.user_id = user_id
+    #             archiv.save()
+    #         elif action == 'archivo_delete':
+    #             archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+    #             archiv.status = False
+    #             archiv.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, cliente_id, **kwargs):
+        cliente = get_object_or_404(Cliente, pk=cliente_id)
+
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Contactos'
+        context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
+        context['entity'] = 'Contactos'
+        context['cliente_id'] = cliente_id
+        context['form1'] = CrearClienteForm(instance=cliente)
+        context['form2'] = NegocioForm()
+        return context
+
+
+class NegocioView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'utils/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Negocio.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)

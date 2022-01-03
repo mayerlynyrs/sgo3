@@ -67,6 +67,21 @@
         </ul>
       </li>
       {% endif %}
+      {% if perms.clientes.view_cliente %}
+      <li class="has-sub {% if menu_app == 'clientes' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="far fa-lg fa-fw m-r-10 fa-building"></i>
+          <span>Clientes </span>
+        </a>
+        <ul class="sub-menu"> 
+          <li {% if menu_app == 'clientes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'utils:list_cliente' %}">Ver Clientes </a></li>
+        {% if perms.requerimientos.add_cliente %}
+          <li {% if menu_app == 'clientes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'utils:create_cliente' %}">Crear Clientes</a></li>
+        {% endif %}
+        </ul>
+      </li>
+      {% endif %}
       {% if perms.examenes.view_examen %}
       <li class="has-sub {% if menu_app == 'examenes' %}active{% endif %}">
         <a href="javascript:;">

@@ -322,6 +322,10 @@ class Cliente(BaseModel):
     def __str__(self):
         return self.razon_social
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
 
 class Negocio(BaseModel):
     """Negocio model.
@@ -329,11 +333,8 @@ class Negocio(BaseModel):
     """
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    cliente = models.ManyToManyField(
-        Cliente,
-        help_text='Seleccione uno o mas clientes para este Negocio.'
-    )
-    url = models.FileField(
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, null=True, blank=True)
+    archivo = models.FileField(
         upload_to='archivo_negocio/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -348,7 +349,12 @@ class Negocio(BaseModel):
     )
 
     def __str__(self):
-        return self.nombre
+        return self.nombre + '-' + str(self.archivo).zfill(0)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['archivo'] = str(self.archivo).zfill(0)
+        return item
 
 
 class Planta(models.Model):
