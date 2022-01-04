@@ -303,12 +303,12 @@ class Cliente(BaseModel):
         help_text='Seleccione uno o mas horario para este cliente.'
     )
 
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
-    provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
-    ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
-    # region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
-    # provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
-    # ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
+    # region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
+    # provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
+    # ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
     direccion = models.CharField(
         max_length=200,
         null=True,
