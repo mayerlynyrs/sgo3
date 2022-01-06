@@ -88,17 +88,30 @@ $(function () {
         //$('form')[0].reset();
     });
 
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        var parameters = new FormData(this);
-        console.log(FormData);
-        submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalcontacto').modal('hide');
-            tblContact.ajax.reload();
-            $('#myModalProfesionUser').modal('hide');
-            tblProfesionUser.ajax.reload();
-            $('#myModalArchivoUser').modal('hide');
-            tblArchivoUser.ajax.reload();
-        });   
-    });
+    if ($('input[name="action"]').val('add_usuario')) {
+        console.log("user");
+
+        // $('CrearUsuarioForm').on('submit', function (e) {
+        //     e.preventDefault();
+        //     var parameters = new FormData(this);
+        //     console.log(FormData);
+        //     submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+        //     }); 
+        // });
+      } else if ($('input[name="action"]').val('contacto_add') || $('input[name="action"]').val('profesion_add') || $('input[name="action"]').val('archivo_add')) {
+        console.log("otro");
+
+        // $('form').on('submit', function (e) {
+        //     e.preventDefault();
+        //     var parameters = new FormData(this);
+        //     submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+        //         $('#myModalcontacto').modal('hide');
+        //         tblContact.ajax.reload();
+        //         $('#myModalProfesionUser').modal('hide');
+        //         tblProfesionUser.ajax.reload();
+        //         $('#myModalArchivoUser').modal('hide');
+        //         tblArchivoUser.ajax.reload();
+        //     });   
+        // });
+      }
 });

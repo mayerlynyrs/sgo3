@@ -65,7 +65,7 @@ $(function () {
         $('input[name="action"]').val('archivo_edit');
         $('input[name="id"]' ).val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id);
-        $('file[name="url"]').val(data.url);
+        $('file[name="archivo"]').val(data.archivo);
         $('#myModalArchivoUser').modal('show');
     });
 
@@ -78,7 +78,7 @@ $(function () {
         $('input[name="action"]').val('archivo_delete');
         $('input[name="id"]').val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id);
-        $('file[name="url"]').val(data.url);
+        $('file[name="archivo"]').val(data.archivo);
         $('#myModalArchivoUser').modal('show');
     }); 
 

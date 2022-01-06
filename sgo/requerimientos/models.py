@@ -98,7 +98,7 @@ class Requerimiento(BaseModel):
     )
 
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT, null=True, blank=True)
-    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
+    planta = models.ForeignKey(Planta, related_name="reque_requerimiento_planta", on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.nombre

@@ -90,9 +90,9 @@
           <span>Exámenes </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'examenes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:list' %}">Ver Exámenes </a></li>
+          <li {% if menu_app == 'examenes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:list' %}">Exámenes</a></li>
         {% if perms.examenes.add_examen %}
-          <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:create' %}">Crear Examen</a></li>
+          <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:create' %}">Baterías</a></li>
         {% endif %}
         </ul>
       </li>
@@ -185,15 +185,18 @@
           <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
 								<a href="javascript:;">
 									<b class="caret"></b>
-									Batería
+									AFP
 								</a>
 								<ul class="sub-menu" style="{% if menu_module == 'plantilla' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list-plantilla' %}">Ver Baterías</a></li>
+									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list-plantilla' %}">Crear Afp</a></li>
                   {% if perms.contratos.add_plantilla %}
-									<li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'contratos:create-plantilla' %}">Crear Batería</a></li>
+									<li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'contratos:create-plantilla' %}">Valores Diarios</a></li>
                   {% endif %}
 								</ul>
 							</li>
+        {% endif %}
+        {% if perms.profesiones.view_profesion %}
+        <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Salud</a></li>
         {% endif %}
         {% if perms.profesiones.view_profesion %}
         <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Bonos</a></li>

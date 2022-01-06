@@ -8,7 +8,7 @@ from django.utils import timezone
 # Mailmerge
 from mailmerge import MailMerge
 #Utilities
-from utils.models import BaseModel, Cliente, Negocio
+from utils.models import BaseModel, Cliente, Planta
 
 
 class TipoDocumento(BaseModel):
@@ -33,7 +33,7 @@ class Plantilla(BaseModel):
     )
     nombre = models.CharField(max_length=120)
     clientes = models.ManyToManyField(Cliente)
-    negocios = models.ManyToManyField(Negocio)
+    plantas = models.ManyToManyField(Planta)
     tipo = models.ForeignKey(TipoDocumento, on_delete=models.PROTECT)
 
     def __str__(self):

@@ -8,7 +8,7 @@ import os
 # from django.db import models
 from django.core.validators import FileExtensionValidator
 #Utilities
-from utils.models import BaseModel, Cliente, Negocio
+from utils.models import BaseModel, Cliente, Planta
 #User
 from users.models import Especialidad
 
@@ -19,8 +19,8 @@ class Fichero(BaseModel):
     El objeto Fichero tiene los siguientes atributos:
         + nombre (char): Nombre del Fichero
         + desc (text): Descripcion del Fichero
-        + url (file): Atributo con la referencia al achivo
-        + negocios (manytomany): Las negocios que pueden visualizar este fichero.
+        + archivo (file): Atributo con la referencia al achivo
+        + plantas (manytomany): Las plantas que pueden visualizar este fichero.
         + status (boolean): Estado del Fichero.
     """
 
@@ -29,7 +29,7 @@ class Fichero(BaseModel):
         help_text='Para desactivar la publicación de este fichero, deshabilite esta casilla.'
     )
 
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='ficheros/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -45,18 +45,18 @@ class Fichero(BaseModel):
     )
 
     clientes = models.ManyToManyField(Cliente)
-    negocios = models.ManyToManyField(Negocio)
+    plantas = models.ManyToManyField(Planta)
 
     def __str__(self):
         return self.nombre
 
     @property
-    def nombre_url(self):
-        return os.path.basename(self.url.name)
+    def nombre_archivo(self):
+        return os.path.basename(self.archivo.name)
 
     @property
-    def extension_url(self):
-        name, extension = os.path.splitext(self.url.name)
+    def extension_archivo(self):
+        name, extension = os.path.splitext(self.archivo.name)
         return extension
 
 

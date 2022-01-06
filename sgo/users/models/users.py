@@ -408,7 +408,7 @@ class User(BaseModel, AbstractUser):
         return item
 
 class ArchivoUser(models.Model):
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='archivousuario/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -425,13 +425,13 @@ class ArchivoUser(models.Model):
     )
     
     def __str__(self):
-        return self.user.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.url).zfill(0)
+        return self.user.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.archivo).zfill(0)
 
     def toJSON(self):
         item = model_to_dict(self)
         item['tipo_archivo'] = self.tipo_archivo.nombre
         item['tipo_archivo_id'] = self.tipo_archivo.id
-        item['url'] = str(self.url).zfill(0)
+        item['archivo'] = str(self.archivo).zfill(0)
         return item
 
 

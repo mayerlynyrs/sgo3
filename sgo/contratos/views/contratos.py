@@ -31,29 +31,29 @@ from contratos.models import Contrato, DocumentosContrato
 
 class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Contrato List
-    Vista para listar todos las contratos según el usuario y negocios.
+    Vista para listar todos las contratos según el usuario y plantas.
     """
     model = Contrato
     template_name = "contratos/contrato_list.html"
     paginate_by = 25
-    #ordering = ['negocios', 'nombre', ]
+    #ordering = ['plantas', 'nombre', ]
 
     permission_required = 'contratos.view_contrato'
     raise_exception = True
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # Si el usuario no administrador se despliegan todos los contratos
-            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
                 queryset = super(ContratoListView, self).get_queryset().filter(
-                    Q(usuario__negocio__in=self.request.user.negocio.all()),
+                    Q(usuario__planta__in=self.request.user.planta.all()),
                     Q(usuario__first_name__icontains=search),
                     Q(usuario__last_name__icontains=search)
                 ).distinct()
@@ -68,19 +68,19 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 ).distinct()
         else:
             # Si el usuario no es administrador, se despliegan los contrtatos
-            # de las negocios a las que pertenece el usuario.
+            # de las plantas a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(ContratoListView, self).get_queryset().filter(
-                    Q(user__negocio__in=self.request.user.negocio.all()),
+                    Q(user__planta__in=self.request.user.planta.all()),
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos los contratos.
-                if negocio is None:
+                if planta is None:
                     queryset = super(ContratoListView, self).get_queryset()
                 else:
-                    # Si recibe la negocio, solo muestra las plantillas que pertenecen a esa negocio.
+                    # Si recibe la planta, solo muestra las plantillas que pertenecen a esa planta.
                     queryset = super(ContratoListView, self).get_queryset().filter(
-                        Q(user__negocio__in=self.request.user.negocio.all())
+                        Q(user__planta__in=self.request.user.planta.all())
                     ).distinct()
 
         return queryset
@@ -91,23 +91,23 @@ class ContratoMis(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ContratoMis, self).get_context_data(**kwargs)
-        # Obtengo las negocios del Usuario
-        negocios = self.request.user.negocio.all()
-        # Obtengo los ficheros de las negocios a las que pertenece el usuario
+        # Obtengo las plantas del Usuario
+        plantas = self.request.user.planta.all()
+        # Obtengo los ficheros de las plantas a las que pertenece el usuario
         context['ficheros'] = Fichero.objects.filter(
-            negocios__in=negocios, status=True, created_by_id=self.request.user
+            plantas__in=plantas, status=True, created_by_id=self.request.user
         ).distinct()
         # Obtengo los contratos del usuario si no es administrador.
         if self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos']).exists():
             context['contratos'] = Contrato.objects.filter(
                 created_by_id=self.request.user).order_by('modified')
         else:
-            # Obtengo todos los contratos por firmar de todas las negocios a las
+            # Obtengo todos los contratos por firmar de todas las plantas a las
             # que pertenece el usuario.
             context['contratos'] = Contrato.objects.filter(
-                usuario__negocio__in=negocios, estado=Contrato.POR_FIRMAR, created_by_id=self.request.user)
+                usuario__planta__in=plantas, estado=Contrato.POR_FIRMAR, created_by_id=self.request.user)
             context['result'] = Contrato.objects.values(
-                'usuario__negocio__nombre').order_by('usuario__negocio').annotate(count=Count(estado=Contrato.FIRMADO_TRABAJADOR))
+                'usuario__planta__nombre').order_by('usuario__planta').annotate(count=Count(estado=Contrato.FIRMADO_TRABAJADOR))
 
         return context
 

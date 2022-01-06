@@ -2,8 +2,9 @@
 
 # Django
 from django import forms
+from sgo.utils.models import Planta
 # sgo Model
-from utils.models import Cliente, Negocio
+from utils.models import Cliente
 from requerimientos.models import Requerimiento
 
 
@@ -27,9 +28,9 @@ class RequerimientoCreateForm(forms.ModelForm):
         print(user)
         super(RequerimientoCreateForm, self).__init__(*args, **kwargs)
         if not user.groups.filter(name='Administrador').exists():
-            self.fields['clientes'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
+            self.fields['plantas'].queryset = Planta.objects.filter(id__in=user.planta.all())
         else:
-            self.fields['clientes'].queryset = Cliente.objects.all()
+            self.fields['plantas'].queryset = Planta.objects.all()
 
     class Meta:
         model = Requerimiento
