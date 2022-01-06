@@ -306,21 +306,21 @@ class EditarUsuarioForm(forms.ModelForm):
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label="Perfil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.none(), required=True, label="Cliente",
+    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
                                    widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
+    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -535,7 +535,7 @@ class ArchivoUserForm(forms.ModelForm):
 
     class Meta:
         model = ArchivoUser
-        fields = ("tipo_archivo", "url", )
+        fields = ("tipo_archivo", "archivo", )
 
 
 class EditarAtributosForm(forms.ModelForm):

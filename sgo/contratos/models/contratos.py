@@ -8,7 +8,7 @@ from django.core.validators import FileExtensionValidator
 # Models
 from users.models import User
 # Utilities
-from utils.models import BaseModel, Bono , Equipo , Gratificacion , Horario ,Negocio
+from utils.models import BaseModel, Bono, Equipo, Gratificacion, Horario, Planta
 from contratos.models import TipoDocumento
 from requerimientos.models import RequerimientoUser, Causal
 
@@ -16,7 +16,7 @@ User = get_user_model()
 
 class Renuncia(BaseModel):
     nombre = models.CharField(max_length=250)
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='renuncias/',
         validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', ])]
     )
@@ -77,7 +77,7 @@ class Contrato(BaseModel):
     fecha_inicio = models.DateField(blank=False, null=False)
     fecha_termino = models.DateField(blank=False, null=False)
     fecha_termino_ultimo_anexo = models.DateField(blank=True, null=True)
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='contratoscreados/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -100,7 +100,7 @@ class Contrato(BaseModel):
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
     horario = models.ForeignKey(Horario, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
-    negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT) 
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
     status = models.BooleanField(
@@ -108,7 +108,7 @@ class Contrato(BaseModel):
         help_text='Para desactivar el contrato , deshabilite esta casilla.'
     )
     def __str__(self):
-        return str(self.user.rut) + '-' +str(self.id).zfill(4)
+        return str(self.user.rut) + '-' + str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
@@ -144,7 +144,7 @@ class Anexo(BaseModel):
     )
 
     
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='anexoscreados/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -167,19 +167,19 @@ class Anexo(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
-    negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT) 
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
 
     def __str__(self):
-        return str(self.user.rut) + '-' +str(self.id).zfill(4)
+        return str(self.user.rut) + '-' + str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
     return '/'.join(['contratos', str(instance.contrato.user.id), filename])
 
 class DocumentosContrato(BaseModel):
-    url = models.FileField(upload_to=contrato_directory_path,
+    archivo = models.FileField(upload_to=contrato_directory_path,
                                validators=[
                                    FileExtensionValidator(allowed_extensions=['pdf', ])])
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)

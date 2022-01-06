@@ -14,38 +14,38 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 # Models
 from contratos.models import Plantilla
-from utils.models import Cliente, Negocio
+from utils.models import Planta
 # From
 from contratos.forms import CrearPlantillaForm, ActualizarPlantillaForm
 
 
 class PlantillaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Plantilla List
-    Vista para listar todos las plantilla según el usuario y sus las negocios
+    Vista para listar todos las plantilla según el usuario y sus las plantas
     relacionadas.
     """
     model = Plantilla
     template_name = "contratos/plantilla_list.html"
     paginate_by = 25
-    ordering = ['negocios', 'nombre', ]
+    ordering = ['plantas', 'nombre', ]
 
     permission_required = 'contratos.view_plantilla'
     raise_exception = True
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # Si el usuario no se administrador se despliegan las plantillas en estado activo
-            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
                 queryset = super(PlantillaListView, self).get_queryset().filter(
                     Q(activo=True),
-                    Q(negocios__in=self.request.user.negocio.all()),
+                    Q(plantas__in=self.request.user.planta.all()),
                     Q(nombre__icontains=search)
                 ).distinct()
             else:
@@ -56,20 +56,20 @@ class PlantillaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 ).distinct()
         else:
             # Si el usuario no es administrador, se despliegan las plantillas en estado
-            # activo de las negocios a las que pertenece el usuario.
+            # activo de las plantas a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(PlantillaListView, self).get_queryset().filter(
                     Q(activo=True),
-                    Q(negocios__in=self.request.user.negocio.all())
+                    Q(plantas__in=self.request.user.planta.all())
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos las plantillas.
-                if negocio is None:
+                if planta is None:
                     queryset = super(PlantillaListView, self).get_queryset()
                 else:
-                    # Si recibe la negocio, solo muestra las plantillas que pertenecen a esa negocio.
+                    # Si recibe la planta, solo muestra las plantillas que pertenecen a esa planta.
                     queryset = super(PlantillaListView, self).get_queryset().filter(
-                        Q(negocios=negocio)
+                        Q(plantas=planta)
                     ).distinct()
 
         return queryset
@@ -81,11 +81,11 @@ def update_plantilla(request, plantilla_id):
 
     plantilla = get_object_or_404(Plantilla, pk=plantilla_id)
 
-    # Se obtienen las negocios del usuario.
+    # Se obtienen las plantas del usuario.
     try:
-        negocios_usuario = negocio.objects.values_list('id', flat=True).filter(user=request.user)
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=request.user)
     except:
-        negocios_usuario = ''
+        plantas_usuario = ''
 
     if request.method == 'POST':
 
@@ -105,7 +105,7 @@ def update_plantilla(request, plantilla_id):
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         form = ActualizarPlantillaForm(instance=plantilla,
-                                       initial={'negocios': list(negocios_usuario), },
+                                       initial={'plantas': list(plantas_usuario), },
                                        user=request.user)
 
     return render(

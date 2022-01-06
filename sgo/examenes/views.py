@@ -15,14 +15,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Model
 from requerimientos.models import Requerimiento
-from utils.models import Negocio
+from utils.models import Planta
 # Form
 from requerimientos.forms import RequerimientoCreateForm
 
 
 class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Requerimiento List
-    Vista para listar todos los requerimiento según el usuario y sus las negocios
+    Vista para listar todos los requerimiento según el usuario y sus plantas
     relacionadas.
     """
     model = Requerimiento
@@ -35,18 +35,18 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # Si el usuario no se administrador se despliegan los requerimientos en estado status
-            # de las negocios a las que pertenece el usuario, según el critero de busqueda.
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(status=True),
-                    Q(negocios__in=self.request.user.negocio.all()),
+                    Q(plantas__in=self.request.user.planta.all()),
                     Q(nombre__icontains=search)
                 ).distinct()
             else:
@@ -57,20 +57,20 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
                 ).distinct()
         else:
             # Si el usuario no es administrador, se despliegan los requerimientos en estado
-            # status de las negocios a las que pertenece el usuario.
+            # status de las plantas a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(status=True),
-                    Q(negocios__in=self.request.user.negocio.all())
+                    Q(plantas__in=self.request.user.planta.all())
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.
-                if negocio is None:
+                if planta is None:
                     queryset = super(RequerimientoListView, self).get_queryset()
                 else:
-                    # Si recibe la negocio, solo muestra los requerimientos que pertenecen a esa negocio.
+                    # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
                     queryset = super(RequerimientoListView, self).get_queryset().filter(
-                        Q(negocios=negocio)
+                        Q(plantas=planta)
                     ).distinct()
 
         return queryset
@@ -126,11 +126,11 @@ def update_fichero(request, fichero_id):
 
     fichero = get_object_or_404(Requerimiento, pk=fichero_id)
 
-    # Se obtienen las negocios del usuario.
+    # Se obtienen las plantas del usuario.
     try:
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=request.user)
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=request.user)
     except:
-        negocios_usuario = ''
+        plantas_usuario = ''
 
     if request.method == 'POST':
 
@@ -150,7 +150,7 @@ def update_fichero(request, fichero_id):
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
         form = RequerimientoCreateForm(instance=fichero,
-                                 initial={'negocios': list(negocios_usuario), },
+                                 initial={'plantas': list(plantas_usuario), },
                                  user=request.user)
 
     return render(

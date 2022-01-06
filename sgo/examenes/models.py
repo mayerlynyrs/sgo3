@@ -8,7 +8,7 @@ import os
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 #Utilities
-from utils.models import BaseModel, Negocio, Planta
+from utils.models import BaseModel, Planta
 #Requerimientos
 from requerimientos.models import RequerimientoUser
 #User
@@ -97,7 +97,7 @@ class Evaluacion(BaseModel):
 
     resultado = models.CharField(max_length=1, choices=RESULTADOS_ESTADO, default=EVALUADO)
 
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='resultadosexamenes/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -111,7 +111,7 @@ class Evaluacion(BaseModel):
 
     examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
 
-    negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT, null=True, blank=True)
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -151,7 +151,7 @@ class Requerimiento(BaseModel):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
-    negocio = models.ForeignKey(Negocio, on_delete=models.PROTECT, null=True, blank=True)
+    planta = models.ForeignKey(Planta, related_name="exam_requerimiento_planta", on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.resultado
@@ -250,7 +250,7 @@ class EvaluacionPsicologico(models.Model):
         max_length=120,
     )
 
-    url = models.FileField(
+    archivo = models.FileField(
         upload_to='evaluacionpsicologica/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )

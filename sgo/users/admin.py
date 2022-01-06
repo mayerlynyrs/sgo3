@@ -116,7 +116,7 @@ class ArchivoUserSetResource(resources.ModelResource):
 
     class Meta:
         model = ArchivoUser
-        fields = ('id', 'user', 'tipo_archivo', 'url', 'status', )
+        fields = ('id', 'user', 'tipo_archivo', 'archivo', 'status', )
 
 
 class ListaNegraSetResource(resources.ModelResource):
@@ -303,10 +303,10 @@ class ArchivoUserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ArchivoUserAdmin model admin."""
 
     resource_class = ArchivoUserSetResource
-    fields = ('user', 'tipo_archivo', 'url', 'status', )
+    fields = ('user', 'tipo_archivo', 'archivo', 'status', )
     list_display = ('id', 'user', 'tipo_archivo', 'status', 'created_date',)
     list_filter = ['user', 'tipo_archivo', ]
-    search_fields = ['user', 'tipo_archivo', 'url', ]
+    search_fields = ['user', 'tipo_archivo', 'archivo', ]
 
 
 @admin.register(ListaNegra)
