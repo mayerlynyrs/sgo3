@@ -7,7 +7,8 @@ from django.forms import model_to_dict
 # Create your models here.
 # Crum User
 from crum import get_current_user
-from smart_selects.db_fields import GroupedForeignKey
+
+# from examenes.models import Examen
 
 
 
@@ -109,8 +110,6 @@ class Provincia(models.Model):
 class Ciudad(models.Model):
     """Modelo Ciudad.
     """
-
-
     provincia = models.ForeignKey(Provincia, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=250)
     status = models.BooleanField(
@@ -349,7 +348,7 @@ class Negocio(BaseModel):
     )
 
     def __str__(self):
-        return self.nombre + '-' + str(self.archivo).zfill(0)
+        return self.nombre 
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -360,19 +359,27 @@ class Negocio(BaseModel):
 class Planta(models.Model):
     """Modelo Planta.
     """ 
-    nombre = models.CharField(max_length=100)
-
     rut_regex = RegexValidator(
         regex=r'^[0-9]{7,9}[0-9kK]{1}$',
         message='El RUT debe ser valido. Ingresalo sin puntos ni guiones.'
     )
+
+    rut = models.CharField(
+        max_length=12,
+        # validators=[rut_regex, ],
+        unique=True,
+        error_messages={
+            'unique': 'Ya existe una planta con este RUT registrado.'
+        }
+    )
+    nombre = models.CharField(max_length=100)
 
     rut_gerente = models.CharField(
         max_length=12,
         # validators=[rut_regex, ],
         unique=True,
         error_messages={
-            'unique': 'Ya existe un negocio con este RUT registrado.'
+            'unique': 'Ya existe un rut de gerente con este RUT registrado.'
         }
     )
     nombre_gerente = models.CharField(max_length=100)
@@ -405,11 +412,14 @@ class Planta(models.Model):
 
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True, blank=True)
+
 
     bono = models.ManyToManyField(
         Bono,
-        help_text='Seleccione una o mas Bonos para este negocio.'
+        help_text='Seleccione una o mas Bonos para esta planta.'
     )
 
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
@@ -423,9 +433,13 @@ class Planta(models.Model):
         null=True,
         blank=True
     )
+
+    examen = models.ManyToManyField("examenes.Examen",
+        help_text='Seleccione una o mas examenes para esta planta.')
+
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el negocio, deshabilite esta casilla.'
+        help_text='Para desactivar la planta, deshabilite esta casilla.'
     )
 
     def __str__(self):
@@ -435,6 +449,10 @@ class Planta(models.Model):
     def get_short_name(self):
         """Return RUT."""
         return self.rut_gerente
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class PuestaDisposicion(models.Model):
