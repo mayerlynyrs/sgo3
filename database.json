@@ -1,0 +1,20 @@
+[
+{
+  "model": "users.sexo",
+  "pk": 1,
+  "fields": {
+    "nombre": "Masculino",
+    "status": true,
+    "created_date": "2022-01-06T13:29:32.913Z"
+  }
+},
+{
+  "model": "users.sexo",
+  "pk": 2,
+  "fields": {
+    "nombre": "Femenino",
+    "status": true,
+    "created_date": "2022-01-06T13:29:38.545Z"
+  }
+}
+]

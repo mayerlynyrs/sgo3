@@ -9,7 +9,7 @@ from import_export.admin import ImportExportModelAdmin
 #Models
 from ficheros.models import Fichero, Publicacion
 # Utils Model
-from utils.models import Cliente, Negocio
+from utils.models import Cliente, Planta
 #User
 from users.models import Especialidad
 
@@ -20,15 +20,15 @@ class FicheroSetResource(resources.ModelResource):
         attribute='clientes',
         widget=ManyToManyWidget(Cliente, ',', 'pk'))
 
-    negocios = fields.Field(
-        column_name='negocios',
-        attribute='negocios',
-        widget=ManyToManyWidget(Negocio, ',', 'pk'))
+    plantas = fields.Field(
+        column_name='plantas',
+        attribute='plantas',
+        widget=ManyToManyWidget(Planta, ',', 'pk'))
 
 
     class Meta:
         model = Fichero
-        fields = ('id', 'nombre', 'desc', 'clientes', 'negocios')
+        fields = ('id', 'nombre', 'desc', 'clientes', 'plantas')
 
 
 class PublicacionSetResource(resources.ModelResource):
@@ -48,16 +48,16 @@ class FicheroAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """FicheroAdmin model Admin"""
 
     # resource_class = FicheroSetResource
-    fields = ('nombre', 'desc', 'url', 'clientes', 'negocios', 'status', )
-    list_display = ('id', 'nombre', 'clientes_list', 'negocios_list', 'modified_by')
-    list_filter = ['clientes', 'negocios', ]
-    search_fields = ('id', 'nombre', 'clientes__razon_social', 'negocios__nombre')
+    fields = ('nombre', 'desc', 'archivo', 'clientes', 'plantas', 'status', )
+    list_display = ('id', 'nombre', 'clientes_list', 'plantas_list', 'modified_by')
+    list_filter = ['clientes', 'plantas', ]
+    search_fields = ('id', 'nombre', 'clientes__razon_social', 'plantas__nombre')
 
     def clientes_list(self, obj):
         return u", ".join(o.razon_social for o in obj.clientes.all())
 
-    def negocios_list(self, obj):
-        return u", ".join(o.nombre for o in obj.negocios.all())
+    def plantas_list(self, obj):
+        return u", ".join(o.nombre for o in obj.plantas.all())
 
 
 @admin.register(Publicacion)

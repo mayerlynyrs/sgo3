@@ -28,7 +28,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, ProfesionUser, Especialidad, Contacto, ArchivoUser
+from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 # Forms
@@ -120,13 +120,13 @@ class UsersIdView(TemplateView):
             elif action == 'archivo_add':
                 archiv = ArchivoUser()
                 archiv.tipo_archivo_id = request.POST['tipo_archivo']
-                archiv.url = request.FILES['url']
+                archiv.archivo = request.FILES['archivo']
                 archiv.user_id = user_id
                 archiv.save()
             # elif action == 'archivo_edit':
             #     archiv = ArchivoUser.objects.get(pk=request.POST['id'])
             #     archiv.tipo_archivo_id = request.POST['tipo_archivo']
-            #     archiv.url = request.POST['url']
+            #     archiv.archivo = request.POST['archivo']
             #     archiv.user_id = user_id
             #     archiv.save()
             elif action == 'archivo_delete':
@@ -624,6 +624,7 @@ def users_create(request, user_id):
 @login_required(login_url='users:signin')
 def update_user(request, user_id):
     """Update a user's profile view."""
+    print('aqui')
 
     user = get_object_or_404(User, pk=user_id)
 
@@ -647,6 +648,7 @@ def update_user(request, user_id):
         #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
 
         if user_form.is_valid():
+            user.is_active = True
             user_form.save()
             #profile_form.save()
 
@@ -660,11 +662,10 @@ def update_user(request, user_id):
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
                 page = request.GET.get('page')
                 if page != '':
-                    response = redirect('users:detail', pk=user_id)
-                    response['Location'] += '?page=' + page
+                    response = redirect('users:create', 2)
                     return response
                 else:
-                    return redirect('users:detail', pk=user_id)
+                    return redirect('users:create', 2)
             else:
                 return redirect('home')
 
@@ -684,7 +685,7 @@ def update_user(request, user_id):
         template_name='users/create_users.html',
         context={
             'usuario': user,
-            'form': user_form
+            'form1': user_form
         }
     )
 

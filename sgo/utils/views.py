@@ -1,7 +1,5 @@
 from django.shortcuts import render
 
-from utils.models import Area, Cargo, Horario, Bono
-
 # Create your views here.
 """Utils Views. """
 
@@ -20,7 +18,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm
+from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm, PlantaForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,7 +26,7 @@ from django.db.models import Q
 from django.views.generic import TemplateView
 from django.db.models import Count
 # Modelo
-from utils.models import Negocio, Cliente, Region
+from utils.models import Area, Cargo, Horario, Bono, Negocio, Planta, Cliente, Region
 from ficheros.models import Fichero
 from contratos.models import Contrato
 from users.models import User
@@ -396,31 +394,45 @@ class ClienteIdView(TemplateView):
                 data = []
                 for i in Negocio.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
-            elif action == 'contacto_add':
-                contact = Negocio()
-                contact.nombre = request.POST['nombre']
-                contact.telefono = request.POST['telefono']
-                contact.parentesco_id = request.POST['parentesco']
-                contact.cliente_id = cliente_id
-                contact.save()
-    #         elif action == 'contacto_edit':
-    #             contact = Contacto.objects.get(pk=request.POST['id'])
-    #             contact.nombre = request.POST['nombre']
-    #             contact.telefono = request.POST['telefono']
-    #             contact.parentesco_id = request.POST['parentesco']
-    #             contact.user_id = user_id
-    #             contact.save()
-    #         elif action == 'contacto_delete':
-    #             contact = Contacto.objects.get(pk=request.POST['id'])
-    #             contact.status = False
-    #             contact.save()
-    #         elif action == 'profesion_add':
-    #             profes = ProfesionUser()
-    #             profes.egreso = request.POST['egreso']
-    #             profes.institucion = request.POST['institucion']
-    #             profes.profesion_id = request.POST['profesion']
-    #             profes.user_id = user_id
-    #             profes.save()
+            elif action == 'negocio_add':
+                negocio = Negocio()
+                negocio.nombre = request.POST['nombre']
+                negocio.descripcion = request.POST['descripcion']
+                negocio.archivo = request.FILES['archivo']
+                negocio.cliente_id = cliente_id
+                negocio.save()
+            elif action == 'negocio_edit':
+                negocio = Negocio.objects.get(pk=request.POST['id'])
+                negocio.nombre = request.POST['nombre']
+                negocio.descripcion = request.POST['descripcion']
+                negocio.archivo = request.FILES['archivo']
+                negocio.cliente_id = cliente_id
+                negocio.save()
+            elif action == 'contacto_delete':
+                negocio = Negocio.objects.get(pk=request.POST['id'])
+                negocio.status = False
+                negocio.save()
+            elif action == 'planta_add':
+                bono = request.POST.getlist('bono')
+                planta = Planta.objects.create(
+                    negocio_id = request.POST['negocio'],
+                    rut = request.POST['rut'],
+                    nombre = request.POST['nombre'],
+                    telefono = request.POST['telefono'],
+                    email = request.POST['email'],
+                    region_id = request.POST['region'],
+                    provincia_id = request.POST['provincia'],
+                    ciudad_id = request.POST['ciudad'],
+                    direccion = request.POST['direccion'],
+                    nombre_gerente = request.POST['nombre_gerente'],
+                    rut_gerente = request.POST['rut_gerente'],
+                    direccion_gerente = request.POST['direccion_gerente'],
+                    gratificacion_id = request.POST['gratificacion'],
+                    cliente_id = cliente_id                )
+
+                for i in bono:
+                    planta.bono.add(i)
+
     #         elif action == 'profesion_edit':
     #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
     #             profes.egreso = request.POST['egreso']
@@ -464,6 +476,7 @@ class ClienteIdView(TemplateView):
         context['cliente_id'] = cliente_id
         context['form1'] = CrearClienteForm(instance=cliente)
         context['form2'] = NegocioForm()
+        context['form3'] = PlantaForm()
         return context
 
 
@@ -486,6 +499,33 @@ class NegocioView(TemplateView):
             if action == 'searchdata':
                 data = []
                 for i in Negocio.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class PlantaView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'utils/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata2':
+                data = []
+                for i in Planta.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

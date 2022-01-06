@@ -4,7 +4,7 @@
 from django import forms
 from django.contrib.auth.models import Group
 # sgo Model
-from utils.models import Cliente, Negocio
+from utils.models import Cliente, Planta
 from ficheros.models import Fichero
 
 
@@ -22,7 +22,7 @@ class FicheroCreateForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    negocios = forms.ModelMultipleChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
+    plantas = forms.ModelMultipleChoiceField(queryset=Planta.objects.none(), required=True, label="Planta",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -37,12 +37,12 @@ class FicheroCreateForm(forms.ModelForm):
         super(FicheroCreateForm, self).__init__(*args, **kwargs)
         if not user.groups.filter(name='Administrador').exists():
             self.fields['clientes'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            self.fields['negocios'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+            self.fields['plantas'].queryset = Planta.objects.filter(id__in=user.planta.all())
         else:
             self.fields['clientes'].queryset = Cliente.objects.all()
-            self.fields['negocios'].queryset = Negocio.objects.all()
+            self.fields['plantas'].queryset = Planta.objects.all()
 
     class Meta:
         model = Fichero
-        fields = ("nombre", "desc", "url", "clientes", "negocios", "status", )
+        fields = ("nombre", "desc", "archivo", "clientes", "plantas", "status", )
 
