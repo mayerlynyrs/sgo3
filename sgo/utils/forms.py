@@ -178,7 +178,7 @@ class NegocioForm(forms.ModelForm):
     archivo = forms.FileField()
 
     def __init__(self, *args, **kwargs):
-        cliente = kwargs.pop('cliente', None)
+        Negocio = kwargs.pop('negocio', None)
         super(NegocioForm, self).__init__(*args, **kwargs)
 
     class Meta:
