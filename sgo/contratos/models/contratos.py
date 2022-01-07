@@ -72,7 +72,7 @@ class Contrato(BaseModel):
         (MENSUAL30, 'Mensual 30 hrs'),
     )
 
-    sueldo_base = models.IntegerField()
+    sueldo_base = models.IntegerField(default=0)
     fecha_pago = models.DateField(blank=True, null=True)
     fecha_inicio = models.DateField(blank=False, null=False)
     fecha_termino = models.DateField(blank=False, null=False)
@@ -94,7 +94,7 @@ class Contrato(BaseModel):
     fecha_solicitud_baja = models.DateTimeField(blank=True, null=True)
     fecha_aprobacion = models.DateTimeField(blank=True, null=True)
     fecha_aprobacion_baja = models.DateTimeField(blank=True, null=True)
-    nueva_renta = models.IntegerField()
+    nueva_renta = models.IntegerField(default=0)
     obs = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
@@ -203,7 +203,7 @@ class DocumentosContrato(BaseModel):
 
 
 class ContratosBono(models.Model):
-    valor = models.IntegerField()
+    valor = models.IntegerField(default=0)
     descripcion = models.TextField()
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
@@ -222,7 +222,7 @@ class ContratosBono(models.Model):
 
 
 class Finiquito(BaseModel):
-    total_pagar = models.IntegerField()
+    total_pagar = models.IntegerField(default=0)
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
 
     status = models.BooleanField(
@@ -234,7 +234,7 @@ class Finiquito(BaseModel):
         return self.nombre
 
 class ContratosEquipo(BaseModel):
-    cantidad = models.IntegerField()
+    cantidad = models.IntegerField(default=0)
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     status = models.BooleanField(
