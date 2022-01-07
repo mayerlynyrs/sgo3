@@ -315,3 +315,28 @@ class PlantaForm(forms.ModelForm):
         model = Planta
         fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion')
 
+
+class SaludForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(SaludForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Area
+        fields = ("nombre",)
+
+
+class AfpForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    tasa = forms.IntegerField(required=True, label="Tasa",
+                                 widget=forms.NumberInput(attrs={'class': "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(AfpForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Area
+        fields = ("nombre", "tasa",)

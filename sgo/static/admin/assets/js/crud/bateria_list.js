@@ -1,8 +1,8 @@
-var tblExam;
+var tblBateria;
 var modal_title;
 
 function getData() {
-    tblExam = $('#data-table-default').DataTable({
+    tblBateria = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -17,7 +17,7 @@ function getData() {
         },
         columns: [
             {"data": "nombre"},
-            {"data": "valor"},
+            {"data": "examen"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -46,40 +46,40 @@ $(function () {
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('add');
-        modal_title.find('span').html('Exámen <small style="font-size: 80%;">Nuevo</small>');
+        modal_title.find('span').html('Batería <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
-        $('#myModalExamen').modal('show');
+        $('#myModalBateria').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Exámen <small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Batería <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblExam.cell($(this).closest('td, li')).index();
-        var data = tblExam.row(tr.row).data();
+        var tr = tblBateria.cell($(this).closest('td, li')).index();
+        var data = tblBateria.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
-        $('input[name="valor"]').val(data.valor);
-        $('#myModalExamen').modal('show');
+        $('select[name="examen"]').val(data.examen_id);
+        $('#myModalBateria').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('Exámen <small style="font-size: 80%;">Eliminar</small>');
+        modal_title.find('span').html('Batería <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblExam.cell($(this).closest('td, li')).index();
-        var data = tblExam.row(tr.row).data();
+        var tr = tblBateria.cell($(this).closest('td, li')).index();
+        var data = tblBateria.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
-        $('input[name="valor"]').val(data.valor);
-        $('#myModalExamen').modal('show');
+        $('select[name="examen"]').val(data.examen_id);
+        $('#myModalBateria').modal('show');
     });
 
-    $('#myModalExamen').on('shown.bs.modal', function () {
+    $('#myModalBateria').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -88,8 +88,8 @@ $(function () {
         var parameters = new FormData(this);
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalExamen').modal('hide');
-            tblExam.ajax.reload();
+            $('#myModalBateria').modal('hide');
+            tblBateria.ajax.reload();
         });   
     });
 });

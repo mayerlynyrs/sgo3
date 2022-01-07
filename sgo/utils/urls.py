@@ -52,4 +52,14 @@ urlpatterns = [
         view=views.PlantaView.as_view(),
         name='plantas'
      ),
+    path(
+        route='salud',
+        view=views.SaludView.as_view(),
+        name='salud'
+    ),
+    path(
+        route='afp',
+        view=views.AfpView.as_view(),
+        name='afp'
+    ),
 ]

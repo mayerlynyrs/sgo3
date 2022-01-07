@@ -93,6 +93,10 @@ class Salud(models.Model):
     def __str__(self):
         return self.nombre
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
 class Afp(models.Model):
     nombre = models.CharField(
         max_length=120,
@@ -112,6 +116,10 @@ class Afp(models.Model):
     def __str__(self):
         return self.nombre
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
 class ValoresDiario(models.Model):
     valor_diario = models.IntegerField(
         unique=True
@@ -129,6 +137,7 @@ class ValoresDiario(models.Model):
     def __str__(self):
         return str(self.valor_diario)
 
+
 class ValoresDiarioAfp(models.Model):
     valor = models.IntegerField()
     afp = models.ForeignKey(Afp, on_delete=models.PROTECT, null=True, blank=True)
@@ -145,6 +154,11 @@ class ValoresDiarioAfp(models.Model):
     
     def __str__(self):
         return str(self.valor)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
 
 class NivelEstudio(models.Model):
     nombre = models.CharField(

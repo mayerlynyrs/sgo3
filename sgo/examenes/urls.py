@@ -3,19 +3,19 @@
 # Django
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from requerimientos import views
+from examenes import views
 
 
 urlpatterns = [
     # Management
     path(
-        route='',
-        view=views.RequerimientoListView.as_view(),
-        name='list'
-     ),
+        route='examen',
+        view=views.ExamenView.as_view(),
+        name='examen'
+    ),
     path(
-        route='create',
-        view=views.create_requerimiento,
-        name="create"
+        route='bateria',
+        view=views.BateriaView.as_view(),
+        name='bateria'
     ),
 ]

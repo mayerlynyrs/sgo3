@@ -8,6 +8,7 @@ from django.contrib import admin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
+from import_export.widgets import ManyToManyWidget
 #Models
 from examenes.models import Examen, Bateria, Evaluacion, Requerimiento, Psicologico, PsicologicoTipo, EvaluacionPsicologico , Agenda
 # Utils Model
@@ -26,6 +27,7 @@ class ExamenSetResource(resources.ModelResource):
 
 
 class BateriaSetResource(resources.ModelResource):
+    examen = fields.Field(column_name='examen', attribute='examen',widget=ManyToManyWidget(Examen, ',', 'pk'))
 
     class Meta:
         model = Bateria
@@ -108,7 +110,7 @@ class BateriaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """BateriaAdmin model admin."""
 
     resource_class = BateriaSetResource
-    fields = ('nombre', 'status', )
+    fields = ('nombre', 'examen', 'status', )
     list_display = ('id', 'nombre', 'status', 'created_date',)
     search_fields = ['nombre', ]
 

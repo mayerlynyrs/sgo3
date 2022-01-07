@@ -18,7 +18,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm, PlantaForm
+from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm, PlantaForm, SaludForm, AfpForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -533,3 +533,93 @@ class PlantaView(TemplateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+class SaludView(TemplateView):
+    template_name = 'utils/salud_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Salud.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                salud = Salud()
+                salud.nombre = request.POST['nombre']
+                salud.status = True
+                # espec.created_date = request.POST['created_date']
+                salud.save()
+            elif action == 'edit':
+                salud = Salud.objects.get(pk=request.POST['id'])
+                salud.nombre = request.POST['nombre']
+                salud.save()
+            elif action == 'delete':
+                salud = Salud.objects.get(pk=request.POST['id'])
+                salud.status = False
+                salud.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Sistema de Salud'
+        context['list_url'] = reverse_lazy('utils:salud')
+        context['entity'] = 'Salud'
+        context['form'] = SaludForm()
+        return context
+
+class AfpView(TemplateView):
+    template_name = 'utils/afp_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Afp.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                previs = Afp()
+                previs.nombre = request.POST['nombre']
+                previs.tasa = request.POST['tasa']
+                previs.status = True
+                # espec.created_date = request.POST['created_date']
+                previs.save()
+            elif action == 'edit':
+                previs = Afp.objects.get(pk=request.POST['id'])
+                previs.nombre = request.POST['nombre']
+                previs.tasa = request.POST['tasa']
+                previs.save()
+            elif action == 'delete':
+                previs = Afp.objects.get(pk=request.POST['id'])
+                previs.status = False
+                previs.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Sistema de Previsión'
+        context['list_url'] = reverse_lazy('utils:afp')
+        context['entity'] = 'Afps'
+        context['form'] = AfpForm()
+        return context
