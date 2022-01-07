@@ -40,9 +40,9 @@ class Home(LoginRequiredMixin, TemplateView):
         # Obtengo las negocios del Usuario
         negocios = self.request.user.negocio.all()
         # Obtengo los ficheros de las negocios a las que pertenece el usuario
-        context['ficheros'] = Fichero.objects.filter(
-            negocios__in=negocios, status=True
-        ).distinct()
+        # context['ficheros'] = Fichero.objects.filter(
+        #     negocios__in=negocios, status=True
+        # ).distinct()
         # Obtengo los contratos del usuario si no es administrador.
         if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT']).exists():
             context['contratos'] = Contrato.objects.filter(
@@ -408,12 +408,13 @@ class ClienteIdView(TemplateView):
                 negocio.archivo = request.FILES['archivo']
                 negocio.cliente_id = cliente_id
                 negocio.save()
-            elif action == 'contacto_delete':
+            elif action == 'negocio_delete':
                 negocio = Negocio.objects.get(pk=request.POST['id'])
                 negocio.status = False
                 negocio.save()
             elif action == 'planta_add':
                 bono = request.POST.getlist('bono')
+                examen = request.POST.getlist('examen')
                 planta = Planta.objects.create(
                     negocio_id = request.POST['negocio'],
                     rut = request.POST['rut'],
@@ -429,10 +430,10 @@ class ClienteIdView(TemplateView):
                     direccion_gerente = request.POST['direccion_gerente'],
                     gratificacion_id = request.POST['gratificacion'],
                     cliente_id = cliente_id                )
-
                 for i in bono:
                     planta.bono.add(i)
-
+                for e in examen:
+                    planta.examen.add(e)
     #         elif action == 'profesion_edit':
     #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
     #             profes.egreso = request.POST['egreso']
