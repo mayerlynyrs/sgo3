@@ -7,6 +7,7 @@ import os
 # Django
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
+from django.forms import model_to_dict
 #Utilities
 from utils.models import BaseModel, Planta
 #Requerimientos
@@ -34,6 +35,10 @@ class Examen(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class Bateria(models.Model):
@@ -42,6 +47,10 @@ class Bateria(models.Model):
 
 
     nombre = models.CharField(max_length=250)
+    examen = models.ManyToManyField(
+        Examen,
+        help_text='Seleccione uno o mas exámenes para esta bateria.'
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la bateria de examenes, deshabilite esta casilla.'
@@ -54,6 +63,10 @@ class Bateria(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class Evaluacion(BaseModel):
