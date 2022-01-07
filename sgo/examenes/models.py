@@ -62,10 +62,12 @@ class Bateria(models.Model):
     )
 
     def __str__(self):
-        return self.nombre
+        return self.nombre + '-' + self.examen.nombre
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['examen'] = self.examen.nombre
+        item['examen_id'] = self.examen.id
         return item
 
 

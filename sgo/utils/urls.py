@@ -62,4 +62,14 @@ urlpatterns = [
         view=views.AfpView.as_view(),
         name='afp'
     ),
+    path(
+        route='valores_diarios',
+        view=views.ValoresDiarioView.as_view(),
+        name='valores_diarios'
+    ),
+    path(
+        route='vdiarios_afp',
+        view=views.ValoresDiarioAfpView.as_view(),
+        name='vdiarios_afp'
+    ),
 ]

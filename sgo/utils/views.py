@@ -18,7 +18,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm, PlantaForm, SaludForm, AfpForm
+from utils.forms import AreaForm, CargoForm, HorarioForm, BonoForm, CrearClienteForm, NegocioForm, PlantaForm, SaludForm, AfpForm, ValoresDiarioForm, ValoresDiarioAfpForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -29,7 +29,7 @@ from django.db.models import Count
 from utils.models import Area, Cargo, Horario, Bono, Negocio, Planta, Cliente, Region
 from ficheros.models import Fichero
 from contratos.models import Contrato
-from users.models import User
+from users.models import User, Salud, Afp, ValoresDiario, ValoresDiarioAfp
 
 
 class Home(LoginRequiredMixin, TemplateView):
@@ -534,6 +534,7 @@ class PlantaView(TemplateView):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
+
 class SaludView(TemplateView):
     template_name = 'utils/salud_list.html'
 
@@ -577,6 +578,7 @@ class SaludView(TemplateView):
         context['entity'] = 'Salud'
         context['form'] = SaludForm()
         return context
+
 
 class AfpView(TemplateView):
     template_name = 'utils/afp_list.html'
@@ -622,4 +624,97 @@ class AfpView(TemplateView):
         context['list_url'] = reverse_lazy('utils:afp')
         context['entity'] = 'Afps'
         context['form'] = AfpForm()
+        return context
+
+
+class ValoresDiarioView(TemplateView):
+    template_name = 'utils/valores_diario_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in ValoresDiario.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                vdiario = ValoresDiario()
+                vdiario.valor_diario = request.POST['valor_diario']
+                vdiario.status = True
+                vdiario.save()
+            elif action == 'edit':
+                vdiario = ValoresDiario.objects.get(pk=request.POST['id'])
+                vdiario.valor_diario = request.POST['valor_diario']
+                vdiario.save()
+            elif action == 'delete':
+                vdiario = ValoresDiario.objects.get(pk=request.POST['id'])
+                vdiario.status = False
+                vdiario.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Valores Diarios'
+        context['list_url'] = reverse_lazy('utils:valores-diarios')
+        context['entity'] = 'ValoresDiario'
+        context['form'] = ValoresDiarioForm()
+        return context
+
+
+class ValoresDiarioAfpView(TemplateView):
+    template_name = 'utils/vdiario_afp_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in ValoresDiarioAfp.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                vdafp = ValoresDiarioAfp()
+                vdafp.valor = request.POST['valor']
+                vdafp.afp_id = request.POST['afp']
+                vdafp.valor_diario_id = request.POST['valor_diario']
+                vdafp.status = True
+                # espec.created_date = request.POST['created_date']
+                vdafp.save()
+            elif action == 'edit':
+                vdafp = ValoresDiarioAfp.objects.get(pk=request.POST['id'])
+                vdafp.valor = request.POST['valor']
+                vdafp.afp_id = request.POST['afp']
+                vdafp.valor_diario_id = request.POST['valor_diario']
+                vdafp.save()
+            elif action == 'delete':
+                vdafp = ValoresDiarioAfp.objects.get(pk=request.POST['id'])
+                vdafp.status = False
+                vdafp.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Valores Diarios AFP'
+        context['list_url'] = reverse_lazy('utils:vdiarios_afp')
+        context['entity'] = 'ValoresDiario'
+        context['form'] = ValoresDiarioAfpForm()
         return context

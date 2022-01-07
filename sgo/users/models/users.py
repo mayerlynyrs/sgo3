@@ -137,6 +137,10 @@ class ValoresDiario(models.Model):
     def __str__(self):
         return str(self.valor_diario)
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
 
 class ValoresDiarioAfp(models.Model):
     valor = models.IntegerField()
