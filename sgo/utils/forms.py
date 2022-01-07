@@ -10,6 +10,7 @@ from crispy_forms.layout import Layout, Row, Column
 # sgo Model
 from utils.models import Area, Cargo, Horario, Bono, Cliente, Negocio, Gratificacion, Planta, Region, Ciudad, Provincia
 from examenes.models import Examen
+from users.models import Salud, Afp, ValoresDiario, ValoresDiarioAfp
 
 User = get_user_model()
 
@@ -324,7 +325,7 @@ class SaludForm(forms.ModelForm):
         super(SaludForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = Area
+        model = Salud
         fields = ("nombre",)
 
 
@@ -338,5 +339,43 @@ class AfpForm(forms.ModelForm):
         super(AfpForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = Area
+        model = Afp
         fields = ("nombre", "tasa",)
+
+
+class ValoresDiarioForm(forms.ModelForm):
+    valor_diario = forms.CharField(required=True, label="Valor Diario",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(ValoresDiarioForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ValoresDiario
+        fields = ("valor_diario",)
+
+
+class ValoresDiarioAfpForm(forms.ModelForm):
+    valor = forms.CharField(required=True, label="Valor",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Afp",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    valor_diario = forms.ModelChoiceField(queryset=ValoresDiario.objects.all(), required=True, label="Valores Diarios",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+    def __init__(self, *args, **kwargs):
+        super(ValoresDiarioAfpForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ValoresDiarioAfp
+        fields = ("valor", "afp", "valor_diario",)
