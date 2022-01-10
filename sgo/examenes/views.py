@@ -82,8 +82,10 @@ class BateriaView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Bateria.objects.filter(status=True):
+                for i in Bateria.objects.all():
                     data.append(i.toJSON())
+                    print("-------")
+                print(data)
             elif action == 'add':
                 examen = request.POST.getlist('examen')
                 exam = Bateria.objects.create(

@@ -49,6 +49,7 @@ class Bateria(models.Model):
     nombre = models.CharField(max_length=250)
     examen = models.ManyToManyField(
         Examen,
+        related_name="examenes",
         help_text='Seleccione uno o mas exámenes para esta bateria.'
     )
     status = models.BooleanField(
@@ -62,12 +63,13 @@ class Bateria(models.Model):
     )
 
     def __str__(self):
-        return self.nombre + '-' + self.examen.nombre
+        return self.nombre
+        # return self.nombre + '-' + self.examen.nombre
     
     def toJSON(self):
         item = model_to_dict(self)
-        item['examen'] = self.examen.nombre
-        item['examen_id'] = self.examen.id
+        item['examen'] = [t.toJSON() for t in self.examen.all()]
+        # item['examen'] = [model_to_dict(t) for t in self.examen.all()]
         return item
 
 
