@@ -95,7 +95,7 @@
             </td>
             <td class="estado-fichero">
                <p class="text-desc">
-                  {{ obj.activo|tag_activo_fichero|safe }} <br>
+                  {{ obj.status|tag_activo_fichero|safe }} <br>
                   <i class="fas fa-calendar"></i> {{ obj.modified|date:'d/M/Y' }} <br>
                </p>
                <button data-id="{{ obj.id }}" type="button"

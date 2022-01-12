@@ -111,8 +111,11 @@ class BateriaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = BateriaSetResource
     fields = ('nombre', 'examen', 'status', )
-    list_display = ('id', 'nombre', 'status', 'created_date',)
+    list_display = ('id', 'nombre', 'examenes_list', 'status', 'created_date',)
     search_fields = ['nombre', ]
+
+    def examenes_list(self, obj):
+        return u", ".join(o.nombre for o in obj.examen.all())
 
 
 @admin.register(Evaluacion)
