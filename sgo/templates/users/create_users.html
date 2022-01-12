@@ -142,7 +142,7 @@
                     {% csrf_token %}
                     {% crispy form1 %}
                     <input name="action" type="hidden" value="add_usuario">
-                    <input name="user_id" id="user_id" type="" value="{{ user_id }}">
+                    <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
                   </div>
 									<!-- end col-8 -->
 								</div>
@@ -160,7 +160,7 @@
                 <div class="col-md-8 col-sm-8 text-right">
                   <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
                   <!-- <a href="{% url 'users:update' 1 %}?page={{ request.GET.page }}" class="btn btn-success">Guardar</a> -->
-                  <button type="submit" class="btn btn-success" id="btn-guardar1">Guardar</button>
+                  <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
                 </div>
               </div>
             </form>
@@ -215,7 +215,7 @@
                                           </div>
                                           <div class="modal-body">
                                               <div class="container-fluid">
-                                                  <input name="action" type="hidden" value="contacto_add">
+                                                  <input name="action" type="hidden" value="add">
                                                   <input name="id" id="id" type="hidden" value="0">
                                                   <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
                                                   {% for field in form2.visible_fields %}
@@ -292,7 +292,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="container-fluid">
-                                                    <input name="action" type="hidden" value="profesion_add">
+                                                    <input name="action" type="hidden" value="add">
                                                     <input name="id" id="id" type="hidden" value="0">
                                                     <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
                                                     {% for field in form3.visible_fields %}
@@ -367,7 +367,7 @@
                                           </div>
                                           <div class="modal-body">
                                               <div class="container-fluid">
-                                                  <input name="action" type="hidden" value="archivo_add">
+                                                  <input name="action" type="hidden" value="add">
                                                   <input name="id" id="id" type="hidden" value="0">
                                                   {% for field in form4.visible_fields %}
                                                       <div class="form-group">
@@ -473,7 +473,7 @@
 {% block scripts %}
   var enviando = false;
   //Submit form
-  $('#btn-guardar1').on('click', function(e){
+  $('#btn-guardar').on('click', function(e){
       $(this).prop('disabled', true);
       $(this).addClass('disabled');
 

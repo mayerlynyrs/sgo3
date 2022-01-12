@@ -223,7 +223,7 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
     resource_class = PlantaSetResource
-    fields = ('nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'negocio', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'status', 'examen',)
+    fields = ('cliente', 'negocio', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'examen', 'status',)
     list_display = ('id', 'nombre', 'rut_gerente', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]
 

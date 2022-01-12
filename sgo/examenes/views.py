@@ -82,10 +82,10 @@ class BateriaView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Bateria.objects.all():
+                for i in Bateria.objects.filter(status=True):
                     data.append(i.toJSON())
-                    print("-------")
-                print(data)
+                #     print("-------")
+                # print(data)
             elif action == 'add':
                 examen = request.POST.getlist('examen')
                 exam = Bateria.objects.create(
@@ -97,9 +97,17 @@ class BateriaView(TemplateView):
                     exam.examen.add(i)
                 # exam.save()
             elif action == 'edit':
+                examen = request.POST.getlist('examen')
+                pk=request.POST['id']
+                examenes = request.POST.getlist('examen', pk)
                 exam = Bateria.objects.get(pk=request.POST['id'])
+                print(examenes)
+                print("----")
+                print(examen)
                 exam.nombre = request.POST['nombre']
-                exam.examen = request.POST['examen']
+                # exam.examen = request.POST['examen']
+                for i in examen:
+                    exam.examen.add(i)
                 exam.save()
             elif action == 'delete':
                 exam = Bateria.objects.get(pk=request.POST['id'])
