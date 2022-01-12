@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.db.models.fields.related import ManyToManyField
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.forms import model_to_dict
@@ -452,6 +453,11 @@ class Planta(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['negocio'] = self.negocio.nombre
+        item['region_id'] = self.region.id
+        item['provincia_id'] = self.provincia.id
+        item['bono'] =  [t.toJSON() for t in self.bono.all()]
+        item['examen'] = [t.toJSON() for t in self.examen.all()]
         return item
 
 

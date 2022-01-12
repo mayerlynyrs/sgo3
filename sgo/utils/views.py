@@ -434,33 +434,34 @@ class ClienteIdView(TemplateView):
                     planta.bono.add(i)
                 for e in examen:
                     planta.examen.add(e)
-    #         elif action == 'profesion_edit':
-    #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
-    #             profes.egreso = request.POST['egreso']
-    #             profes.institucion = request.POST['institucion']
-    #             profes.profesion_id = request.POST['profesion']
-    #             profes.user_id = user_id
-    #             profes.save()
-    #         elif action == 'profesion_delete':
-    #             profes = ProfesionUser.objects.get(pk=request.POST['id'])
-    #             profes.status = False
-    #             profes.save()
-    #         elif action == 'archivo_add':
-    #             archiv = ArchivoUser()
-    #             archiv.tipo_archivo_id = request.POST['tipo_archivo']
-    #             archiv.url = request.POST['url']
-    #             archiv.user_id = user_id
-    #             archiv.save()
-    #         elif action == 'archivo_edit':
-    #             archiv = ArchivoUser.objects.get(pk=request.POST['id'])
-    #             archiv.tipo_archivo_id = request.POST['tipo_archivo']
-    #             archiv.url = request.POST['url']
-    #             archiv.user_id = user_id
-    #             archiv.save()
-    #         elif action == 'archivo_delete':
-    #             archiv = ArchivoUser.objects.get(pk=request.POST['id'])
-    #             archiv.status = False
-    #             archiv.save()
+            elif action == 'planta_edit':
+
+                bono = request.POST.getlist('bono')
+                examen = request.POST.getlist('examen')
+                planta = Planta.objects.create(
+                    negocio_id = request.POST['negocio'],
+                    rut = request.POST['rut'],
+                    nombre = request.POST['nombre'],
+                    telefono = request.POST['telefono'],
+                    email = request.POST['email'],
+                    region_id = request.POST['region'],
+                    provincia_id = request.POST['provincia'],
+                    ciudad_id = request.POST['ciudad'],
+                    direccion = request.POST['direccion'],
+                    nombre_gerente = request.POST['nombre_gerente'],
+                    rut_gerente = request.POST['rut_gerente'],
+                    direccion_gerente = request.POST['direccion_gerente'],
+                    gratificacion_id = request.POST['gratificacion'],
+                    cliente_id = cliente_id                )
+                for i in bono:
+                    planta.bono.add(i)
+                for e in examen:
+                    planta.examen.add(e)
+                    
+            elif action == 'planta_delete':
+                archiv = Planta.objects.get(pk=request.POST['id'])
+                archiv.status = False
+                archiv.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
