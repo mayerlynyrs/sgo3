@@ -43,7 +43,6 @@ function getData() {
 $(function () {
 
     modal_title = $('.modal-title');
-    console.log(window.location.pathname);
     cliente = document.getElementById("cliente_id").value;
 
     getData();
@@ -79,7 +78,7 @@ $(function () {
         $('select[name="examen"]').val(data.examen_id);
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
-        $('input[name="direcccion_gerente"]').val(data.direcccion_gerente);
+        $('input[name="direccion_gerente"]').val(data.direccion_gerente);
         $('#myModalplanta').modal('show');
     });
 

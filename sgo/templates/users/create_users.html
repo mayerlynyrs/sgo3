@@ -39,12 +39,12 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Usuarios</a></li>
-  <li class="breadcrumb-item active">{% if usuario %}{{ usuario.id }}{% else %}Nuevo{% endif %}</li>
+  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Cliente</a></li>
+  <li class="breadcrumb-item active">Nuevo</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Usuarios <small>{% if usuario %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<h1 class="page-header">Clientes <small>Nuevo</small></h1>
 <!-- end page-header -->
 
 <!-- begin panel -->
@@ -63,7 +63,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
     </div>
     <h4 class="panel-title">
-      {% if usuario %}{{ usuario.first_name|upper }} {{ usuario.last_name|upper }}{% else %}Nuevo Usuario{% endif %}</h4>
+      Nuevo Cliente</h4>
   </div>
   <div class="panel-body">
 
@@ -83,17 +83,14 @@
       </div>
     {% endif %}
     <div class="card-body">
-      
-      <!-- {% include 'basic_form.html' with form=form %} -->
       <div id="wizard">
-			  <!-- begin wizard-step -->
 				<ul>
           <li class="nav-item">
             <a href="#step-1">
               <span class="number">1</span> 
 							<span class="info">
-								Datos personales
-								<small>Nombre, Dirección, RUT y Cuenta</small>
+								Cliente
+								<small>Razón Social, RUT, Giro y Teléfono</small>
 							</span>
 						</a>
 					</li>
@@ -101,8 +98,8 @@
             <a href="#step-2">
               <span class="number">2</span> 
 							<span class="info">
-                Ingrese su contacto
-                <small>Nombre y parentesco. es requerido</small>
+                Negocios
+                <small>Nombre y Descripción. </small>
 							</span>
 						</a>
 					</li>
@@ -110,63 +107,37 @@
             <a href="#step-3">
               <span class="number">3</span> 
 							<span class="info">
-                Ingrese su profesión
-                <small>Institución y profesión. es requerido</small>
-							</span>
-						</a>
-					</li>
-          <li class="nav-item done">
-            <a href="#step-4">
-              <span class="number">4</span> 
-							<span class="info">
-                Documentos
-                <small>Certificados AFP, salud</small>
+                Plantas
+                <small>Nombre, Dirección y Gratificación </small>
 							</span>
 						</a>
 					</li>
 				</ul>
-			  <!-- end wizard-step -->
-			  <!-- begin wizard-content -->
 			  <div>
-					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" action="{% url 'users:update' user_id %}" autocomplete="off" id="CrearUsuarioForm" novalidate id="CrearUsuarioForm" data-negocios-url="{% url 'users:ajax_load_negocios' %}">
-							<!-- begin fieldset -->
+            <form method="post" action="{% url 'utils:update' cliente_id %}" autocomplete="off" id="CrearClienteForm" novalidate id="CrearClienteForm" >
 							<fieldset>
-								<!-- begin row -->
 								<div class="row">
-									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Usuario</legend><hr /><br>
-										<!-- begin form-group row -->
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Cliente</legend><hr /><br>  
                     {% csrf_token %}
                     {% crispy form1 %}
-                    <input name="action" type="hidden" value="add_usuario">
-                    <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                    <input name="action" type="hidden" value="cliente_add">
+                    <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
                   </div>
-									<!-- end col-8 -->
 								</div>
-								<!-- end row -->
 							</fieldset>
-							<!-- end fieldset -->
-                <!-- Alerta RUT-->
                 <div id="alerta" class="alert alert-info alert-dismissible fade show text-center" role="alert">
                   <span id="mensaje">Ingrese un RUT en el siguiente campo de texto para validar si es correcto o no.</span>
                 </div>
-                <!-- FIN ALERTA -->
-                <!-- BOTONES -->
               <div class="form-group row m-b-0">
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
-                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                  <!-- <a href="{% url 'users:update' 1 %}?page={{ request.GET.page }}" class="btn btn-success">Guardar</a> -->
-                  <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+                  <button type="submit" class="btn btn-info btn-flat btnAddCliente"> Guardar</button>
                 </div>
               </div>
             </form>
 					</div>
-					<!-- end step-1 -->
-					<!-- begin step-2 -->
 					<div id="step-2">
 							<!-- begin fieldset -->
 							<fieldset>
@@ -174,7 +145,7 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Contacto(s) del Usuario</legend><hr /><br>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Negocio(s) del Cliente</legend><hr /><br>
 										<!-- begin form-group row -->
                     <div class="row col-md-12">
                       <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
@@ -183,59 +154,57 @@
                     </div>
                     <br>
                         
-                      <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
-                        <thead>
-                          <tr>
-                              <th >Nombre</th>
-                              <th >Teléfono</th>
-                              <th >Parentesco</th>
-                              <th>Acciones</th>
-                          </tr>
-                        </thead>
-                        {% block rows2 %}
+                    <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
+                      <thead>
+                        <tr>
+                            <th >Nombre</th>
+                            <th >Descripción</th>
+                            <th >Archivo</th>
+                            <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      {% block rows2 %}
 
-                        {% endblock %}
-                      
-                      </table>
-
-                      {% block javascript2 %}
-                          <!-- Modal -->
-                          <div class="modal fade" id="myModalcontacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                              aria-hidden="true">
-                              <form method="post" action="." enctype="multipart/form-data">
-                                  <div class="modal-dialog" role="document">
-                                      <div class="modal-content">
-                                          <div class="modal-header">
-                                              <h5 class="modal-title">
-                                                  <b><i class="fas fa-search"></i> <span></span></b>
-                                              </h5>
-                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                              </button>
-                                          </div>
-                                          <div class="modal-body">
-                                              <div class="container-fluid">
-                                                  <input name="action" type="hidden" value="add">
-                                                  <input name="id" id="id" type="hidden" value="0">
-                                                  <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
-                                                  {% for field in form2.visible_fields %}
-                                                      <div class="form-group">
-                                                          <label for="email">{{ field.label }}:</label>
-                                                          {{ field }}
-                                                      </div>
-                                                  {% endfor %}
-                                              </div>
-                                          </div>
-                                          <div class="modal-footer">
-                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                              <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </form>
-                          </div>
                       {% endblock %}
+                    </table>
 
+                    {% block javascript2 %}
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModalnegocio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <form method="post" action="." enctype="multipart/form-data">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <b><i class="fas fa-search"></i> <span></span></b>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <input name="action" type="hidden" value="negocio_add">
+                                                <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
+                                                <input name="id" id="id" type="hidden" value="0">
+                                                {% for field in form2.visible_fields %}
+                                                    <div class="form-group">
+                                                        <label for="email">{{ field.label }}:</label>
+                                                        {{ field }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% endblock %}
                   </div>
 									<!-- end col-8 -->
 								</div>
@@ -252,110 +221,34 @@
 								<div class="row">
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Profesión(es) del Usuario</legend><hr /><br>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Planta(s) del Cliente</legend><hr /><br>
                       <div class="row col-md-12">
-                        <a class="btn btn-primary btn-flat btnAddProfes" style="color: white;">
+                        <a class="btn btn-primary btn-flat btnAddplanta" style="color: white;">
                           <i class="fas fa-plus"></i> Nuevo registro
                         </a>
                       </div>
                       <br>
-                          
-                        <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
-                          <thead>
-                            <tr>
-                                <th >Egreso</th>
-                                <th >Institución</th>
-                                <th >Profesión</th>
-                                <th>Acciones</th>
-                            </tr>
-                          </thead>
-                          {% block rows3 %}
-
-                          {% endblock %}
-                        
-                        </table>
-
-                        {% block javascript3 %}
-                            <!-- Modal -->
-                            <div class="modal fade" id="myModalProfesionUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
-                                <form method="post" action="." enctype="multipart/form-data">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    <b><i class="fas fa-search"></i> <span></span></b>
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="container-fluid">
-                                                    <input name="action" type="hidden" value="add">
-                                                    <input name="id" id="id" type="hidden" value="0">
-                                                    <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
-                                                    {% for field in form3.visible_fields %}
-                                                        <div class="form-group">
-                                                            <label for="email">{{ field.label }}:</label>
-                                                            {{ field }}
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                                <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        {% endblock %}              
-                     
-
-                  </div>
-								</div>
-							</fieldset>
-					</div>
-					<!-- end step-3 -->
-					<!-- begin step-4 -->
-					<div id="step-4">
-                <!-- begin fieldset -->
-                <fieldset>
-                  <!-- begin row -->
-                  <div class="row">
-                    <!-- begin col-8 -->
-                    <div class="col-xl-8 offset-xl-2">
-                      <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Documento(s) del Usuario </legend><hr /><br>
-                      <!-- begin form-group row -->
-                    <div class="row col-md-12">
-                      <a class="btn btn-primary btn-flat btnAddArchi" style="color: white;">
-                        <i class="fas fa-plus"></i> Nuevo registro
-                      </a>
-                    </div>
-                    <br>
-                        
-                      <table id="data-table-responsive" class="table table-striped table-bordered table-td-valign-middle ">
+                      <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
                         <thead>
                           <tr>
-                              <th >Tipo archivo</th>
-                              <th >Archivo</th>
+                              <th >Razon social</th>
+                              <th >Rut</th>
+                              <th >Negocio</th>
                               <th>Acciones</th>
                           </tr>
                         </thead>
-                        {% block rows4 %}
+                        {% block rows3 %}
 
                         {% endblock %}
                       
                       </table>
 
-                      {% block javascript4 %}
+                      {% block javascript3 %}
                           <!-- Modal -->
-                          <div class="modal fade" id="myModalArchivoUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                          <div class="modal fade bd-example-modal-lg" id="myModalplanta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                               aria-hidden="true">
                               <form method="post" action="." enctype="multipart/form-data">
-                                  <div class="modal-dialog" role="document">
+                                  <div class="modal-dialog modal-lg" role="document">
                                       <div class="modal-content">
                                           <div class="modal-header">
                                               <h5 class="modal-title">
@@ -367,16 +260,87 @@
                                           </div>
                                           <div class="modal-body">
                                               <div class="container-fluid">
-                                                  <input name="action" type="hidden" value="add">
+                                                  <input name="action" type="hidden" value="planta_add">
                                                   <input name="id" id="id" type="hidden" value="0">
-                                                  {% for field in form4.visible_fields %}
-                                                      <div class="form-group">
-                                                          <label for="email">{{ field.label }}:</label>
-                                                          {{ field }}
+                                                  <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
+                                                  <div class="row col-md-12">
+                                                      <div class="form-group col-md-6">
+                                                          <label for="email"> Negocio</label>
+                                                          {{ form3.negocio }}
                                                       </div>
-                                                  {% endfor %}
-                                              </div>
-                                          </div>
+                                                      <div class="form-group col-md-6">
+                                                        <label for="email">RUT Planta</label>
+                                                        {{ form3.rut }}
+                                                      </div>
+                                                    </div>
+                                                    <div class="row col-md-12">
+                                                        <div class="form-group col-md-12">
+                                                            <label for="email">Razón Social</label>
+                                                            {{ form3.nombre }}
+                                                        </div>
+                                                      </div>
+                                                      <div class="row col-md-12">
+                                                          <div class="form-group col-md-6">
+                                                              <label for="email">Teléfono Planta</label>
+                                                              {{ form3.telefono }}
+                                                          </div>
+                                                          <div class="form-group col-md-6">
+                                                            <label for="email">Correo Planta</label>
+                                                            {{ form3.email }}
+                                                          </div>
+                                                        </div>
+                                                        <div class="row col-md-12">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="email">Región</label>
+                                                                {{ form3.region }}
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                              <label for="email">Provincia</label>
+                                                              {{ form3.provincia }}
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                              <label for="email">Ciudad</label>
+                                                              {{ form3.ciudad }}
+                                                            </div>
+                                                          </div>
+                                                          <div class="row col-md-12">
+                                                              <div class="form-group col-md-12">
+                                                                  <label for="email">Dirección</label>
+                                                                  {{ form3.direccion }}
+                                                              </div>
+                                                            </div>
+                                                            <div class="row col-md-12">
+                                                              <div class="form-group col-md-4">
+                                                                  <label for="email">Bonos</label>
+                                                                  {{ form3.bono }}
+                                                              </div>
+                                                              <div class="form-group col-md-4">
+                                                                <label for="email">Gratificacion</label>
+                                                                {{ form3.gratificacion }}
+                                                              </div>
+                                                              <div class="form-group col-md-4">
+                                                                <label for="email">Examenes</label>
+                                                                {{ form3.examen }}
+                                                              </div>
+                                                            </div>
+                                                            <hr>
+                                                            <div class="row col-md-12">
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="email">RUT Gerente</label>
+                                                                    {{ form3.rut_gerente }}
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                  <label for="email">Nombre Gerente</label>
+                                                                  {{ form3.nombre_gerente }}
+                                                                </div>
+                                                              </div>
+                                                              <div class="row col-md-12">
+                                                                  <div class="form-group col-md-12">
+                                                                      <label for="email">Dirección Gerente</label>
+                                                                      {{ form3.direccion_gerente }}
+                                                                  </div>
+                                                                </div>
+
                                           <div class="modal-footer">
                                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                               <button type="submit" class="btn btn-info btn-flat "> Guardar</button>
@@ -385,18 +349,16 @@
                                   </div>
                               </form>
                           </div>
-                      {% endblock %}
-                      
-                    </div>
-                    <!-- end col-8 -->
+                      {% endblock %}             
                   </div>
-                  <!-- end row -->
-                </fieldset>
+								</div>
+							</fieldset>
 					</div>
-					<!-- end step-4 -->
 			</div>
-			<!-- end wizard-content -->
 		</div>
+  </div>
+</div>
+
 
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
@@ -464,22 +426,21 @@
     <script src="{% static 'admin/assets/js/script.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
-    
-    <script src="{% static 'admin/assets/js/crud/contacto_list.js' %}"></script>
-    <script src="{% static 'admin/assets/js/crud/profesion_user_list.js' %}"></script>
-    <script src="{% static 'admin/assets/js/crud/archivo_user_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/negocio_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/planta_list.js' %}"></script>
+
 {% endblock %}
 
 {% block scripts %}
   var enviando = false;
   //Submit form
-  $('#btn-guardar').on('click', function(e){
+  $('#btn-guardar1').on('click', function(e){
       $(this).prop('disabled', true);
       $(this).addClass('disabled');
 
       e.preventDefault();
 
-      var $form = $('#CrearUsuarioForm');
+      var $form = $('form');
       var validator = $form.validate({
           ignore: "",
           errorClass: "is-invalid",

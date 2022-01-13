@@ -17,9 +17,15 @@ function getData2() {
             dataSrc: ""
         },
         columns: [
-            {"data": "nombre"},
+            {
+            "data": "nombre"
+            },
             {"data": "descripcion"},
-            {"data": "archivo"},
+            {"data": "archivo",
+            "render": function(data, type, row, meta){
+                data = '<a href="//192.168.0.9:8000/media/' + data + '">' + ' <i class="fa fa-download" aria-hidden="true"></i></a> ';
+                return data;
+            }},
             {"data": "id"},
         ],
         columnDefs: [
@@ -55,6 +61,17 @@ $(function () {
         $('form')[2].reset();
         $('#myModalnegocio').modal('show');
     });
+
+    $('.btnAddCliente').on('click', function () {
+        $('input[name="action"]').val('cliente_add');
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+            });   
+        });
+    });
+
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
@@ -97,8 +114,6 @@ $(function () {
             tblnegocio.ajax.reload();
             $('#myModalplanta').modal('hide');
             tblplanta.ajax.reload();
-            // $('#myModalArchivoUser').modal('hide');
-            // tblArchivoUser.ajax.reload();
         });   
     });
 });
