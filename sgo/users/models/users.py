@@ -414,11 +414,12 @@ class User(BaseModel, AbstractUser):
 
     def __str__(self):
         """Return RUT."""
-        return self.rut + '-' +str(self.foto).zfill(0)
+        return self.rut
 
     def get_short_name(self):
         """Return RUT."""
-        return self.rut + '-' +str(self.foto).zfill(0)
+        return self.rut
+        # return self.rut + '-' +str(self.foto).zfill(0)
 
     def toJSON(self):
         item = model_to_dict(self)

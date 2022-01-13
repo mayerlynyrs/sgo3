@@ -662,10 +662,19 @@ def update_user(request, user_id):
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
                 page = request.GET.get('page')
                 if page != '':
-                    response = redirect('users:create', 2)
+                    response = redirect('users:create', user_id)
+                    # response['Location'] += '?page=' + page
                     return response
                 else:
-                    return redirect('users:create', 2)
+                    return redirect('users:create', user_id)
+
+            # if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+            #     page = request.GET.get('page')
+            #     if page != '':
+            #         response = redirect('users:create', user_id)
+            #         return response
+            #     else:
+            #         return redirect('users:create', user_id)
             else:
                 return redirect('home')
 

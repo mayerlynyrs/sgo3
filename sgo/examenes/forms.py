@@ -24,7 +24,7 @@ class ExamenForm(forms.ModelForm):
 class BateriaForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Exámen",
+    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Exámenes",
                                             widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
