@@ -89,4 +89,22 @@ $(function () {
     $('#myModalProfesionUser').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
+
+    $('.btnAdd3').on('click', function () {
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalcontacto').modal('hide');
+                tblContact.ajax.reload();
+                $('#myModalProfesionUser').modal('hide');
+                tblProfesionUser.ajax.reload();
+                $('#myModalArchivoUser').modal('hide');
+                tblArchivoUser.ajax.reload();
+            }); 
+        });
+
+    });
 });
