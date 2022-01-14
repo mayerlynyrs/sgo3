@@ -69,6 +69,9 @@ $(function () {
         $('input[name="telefono"]').val(data.telefono);
         $('select[name="parentesco"]').val(data.parentesco_id);
         $('#myModalcontacto').modal('show');
+        console.log("imprimir data");
+        console.log(data);
+        return data;
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
@@ -89,9 +92,12 @@ $(function () {
         // $('form')[0].reset();
     });
 
-        $('form').on('submit', function (e) {
+    $('.btnAdd1').on('click', function () {
+
+        $('CrearUsuarioForm').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
+            console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalcontacto').modal('hide');
                 tblContact.ajax.reload();
@@ -99,7 +105,27 @@ $(function () {
                 tblProfesionUser.ajax.reload();
                 $('#myModalArchivoUser').modal('hide');
                 tblArchivoUser.ajax.reload();
-            return data;
-            });   
+            }); 
         });
+
+    });
+
+    $('.btnAdd2').on('click', function () {
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalcontacto').modal('hide');
+                tblContact.ajax.reload();
+                $('#myModalProfesionUser').modal('hide');
+                tblProfesionUser.ajax.reload();
+                $('#myModalArchivoUser').modal('hide');
+                tblArchivoUser.ajax.reload();
+            }); 
+        });
+
+    });
+
 });
