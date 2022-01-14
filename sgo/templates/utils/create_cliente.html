@@ -113,47 +113,32 @@
 						</a>
 					</li>
 				</ul>
-			  <!-- end wizard-step -->
-			  <!-- begin wizard-content -->
 			  <div>
-					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" id="form" autocomplete="off" novalidate id="CrearUsuarioForm" data-negocios-url="{% url 'users:ajax_load_negocios' %}">
-							<!-- begin fieldset -->
+            <form method="post" action="{% url 'utils:update' cliente_id %}" autocomplete="off" id="CrearClienteForm" novalidate id="CrearClienteForm" >
 							<fieldset>
-								<!-- begin row -->
 								<div class="row">
-									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Usuario</legend><hr /><br>
-										<!-- begin form-group row -->
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Cliente</legend><hr /><br>  
                     {% csrf_token %}
                     {% crispy form1 %}
+                    <input name="action" type="hidden" value="cliente_add">
+                    <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
                   </div>
-									<!-- end col-8 -->
 								</div>
-								<!-- end row -->
 							</fieldset>
-							<!-- end fieldset -->
-                <!-- Alerta RUT-->
                 <div id="alerta" class="alert alert-info alert-dismissible fade show text-center" role="alert">
                   <span id="mensaje">Ingrese un RUT en el siguiente campo de texto para validar si es correcto o no.</span>
                 </div>
-                <!-- FIN ALERTA -->
-                <!-- BOTONES -->
               <div class="form-group row m-b-0">
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
-                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                  <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+                  <button type="submit" class="btn btn-info btn-flat btnAddCliente"> Guardar</button>
                 </div>
               </div>
             </form>
 					</div>
-					<!-- end step-1 -->
-					<!-- begin step-2 -->
 					<div id="step-2">
-            <form method="post" id="form2" autocomplete="off" novalidate>
 							<!-- begin fieldset -->
 							<fieldset>
 								<!-- begin row -->
@@ -220,22 +205,16 @@
                             </form>
                         </div>
                     {% endblock %}
-
-                        
-
-
                   </div>
 									<!-- end col-8 -->
 								</div>
 								<!-- end row -->
 							</fieldset>
 							<!-- end fieldset -->
-            </form>
 					</div>
 					<!-- end step-2 -->
 					<!-- begin step-3 -->
 					<div id="step-3">
-            <form method="post" id="form3" autocomplete="off" novalidate>
 							<!-- begin fieldset -->
 							<fieldset>
 								<!-- begin row -->
@@ -374,7 +353,6 @@
                   </div>
 								</div>
 							</fieldset>
-            </form>
 					</div>
 			</div>
 		</div>
