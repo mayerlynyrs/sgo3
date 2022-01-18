@@ -12,7 +12,8 @@ from django.contrib.auth import get_user_model
 from django.forms import TextInput
 from django.contrib.auth.models import Group
 # sgo Model
-from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
+from utils.models import Cliente, Negocio, Region, Provincia, Ciudad , Planta
+from examenes.models import Evaluacion , Examen
 from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser
 
 User = get_user_model()
@@ -229,17 +230,6 @@ class CrearUsuarioForm(forms.ModelForm):
             self.fields['cliente'].queryset = Cliente.objects.all()
             self.fields['negocio'].queryset = Negocio.objects.all()
 
-        
-
-        # if 'cliente' in self.data:
-        #     try:
-                
-        #         self.fields['negocio'].queryset = negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
-        #     except (ValueError, TypeError):
-        #         pass  # invalid input from the client; ignore and fallback to empty negocio queryset
-        # elif self.instance.pk:
-        #     self.fields['negocio'].queryset = self.instance.cliente.negocios_set.order_by('nombre')
-        #     # self.fields['negocio'].queryset = negocio.objects.select_related('cliente')
 
 
     class Meta:
@@ -434,15 +424,6 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
         )
 
-        # if not user.groups.filter(name='Administrador').exists():
-        #     self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-        #     self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
-        #     self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
-        # else:
-        #     self.fields['group'].queryset = Group.objects.all()
-        #     self.fields['cliente'].queryset = Cliente.objects.all()
-        #     self.fields['negocio'].queryset = Negocio.objects.all()
-
  
     class Meta:
         model = User
@@ -481,13 +462,7 @@ class ProfesionUserForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    # user = forms.ModelChoiceField(queryset=User.objects.all(), required=True, label="Usuario",
-    #                                widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-    #                                                           'data-size': '5',
-    #                                                           'data-live-search': 'true',
-    #                                                           'data-live-search-normalize': 'true'
-    #                                                           })
-    #                                )
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -554,3 +529,59 @@ class EditarAtributosForm(forms.ModelForm):
         exclude = ('group', 'rut', 'first_name', 'last_name', 'sexo', 'email', 'telefono', 'estado_civil', 'fecha_nacimiento', 
                   'nacionalidad', 'region', 'provincia', 'ciudad', 'domicilio', 'salud', 'afp',
                   'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'negocio', 'is_active', 'password1', 'password2')
+
+
+class EvaluacionAchivoForm(forms.ModelForm):
+
+    APROBADO = 'A'
+    RECHAZADO = 'R'
+    EVALUADO = 'E'
+
+    RESULTADOS_ESTADO = (
+        (APROBADO, 'Aprobado'),
+        (RECHAZADO, 'Rechazado'),
+        (EVALUADO, 'Evaluado'),
+    )
+
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    fecha_examen = forms.CharField(required=True, label="Fecha Examen",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"fecha_examen"}))
+    fecha_vigencia = forms.CharField(required=True, label="Fecha Vigencia",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"fecha_vigencia"}))
+    descripcion = forms.CharField (required=True, label="Observaciones",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+    valor_examen = forms.CharField(required=True, label="Valor Examen",
+                                widget=forms.TextInput(attrs={'class': "form-control"}))                              
+    resultado = forms.ChoiceField(choices = RESULTADOS_ESTADO, required=True, label="Resultado",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    examen = forms.ModelChoiceField(queryset=Examen.objects.all(), required=True, label="Tipo Examen",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    archivo = forms.FileField()
+    planta = forms.ModelChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    
+
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(EvaluacionAchivoForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Evaluacion
+        fields = ("nombre", "fecha_examen", "fecha_vigencia", "descripcion", "valor_examen", "resultado", "referido" , "archivo" , "examen" )

@@ -1,5 +1,6 @@
 """Users views."""
 
+
 import json
 # Django
 import os
@@ -31,8 +32,9 @@ from django.conf import settings
 from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
+from examenes.models import Evaluacion
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, TipoArchivoCreateForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, TipoArchivoCreateForm , EvaluacionAchivoForm
 
 User = get_user_model()
 
@@ -123,16 +125,50 @@ class UsersIdView(TemplateView):
                 archiv.archivo = request.FILES['archivo']
                 archiv.user_id = user_id
                 archiv.save()
-            # elif action == 'archivo_edit':
-            #     archiv = ArchivoUser.objects.get(pk=request.POST['id'])
-            #     archiv.tipo_archivo_id = request.POST['tipo_archivo']
-            #     archiv.archivo = request.POST['archivo']
-            #     archiv.user_id = user_id
-            #     archiv.save()
             elif action == 'archivo_delete':
                 archiv = ArchivoUser.objects.get(pk=request.POST['id'])
                 archiv.status = False
                 archiv.save()
+            elif action == 'evaluacion_add':
+                evalu = Evaluacion()
+                evalu.fecha_examen = request.POST['fecha_examen']
+                evalu.fecha_vigencia = request.POST['fecha_vigencia']
+                evalu.descripcion = request.POST['descripcion']
+                if "referido" in request.POST:
+                    estado = True
+                    evalu.referido =  estado
+                else:
+                    estado = False
+                    evalu.referido =  estado
+                evalu.valor_examen = request.POST['valor_examen']
+                evalu.resultado = request.POST['resultado']
+                evalu.planta_id = request.POST['planta']
+                evalu.examen_id = request.POST['examen']
+                evalu.archivo = request.FILES['archivo']
+                evalu.user_id = user_id
+                evalu.save()
+            elif action == 'evaluacion_edit':
+                evalu = Evaluacion.objects.get(pk=request.POST['id'])
+                evalu.fecha_examen = request.POST['fecha_examen']
+                evalu.fecha_vigencia = request.POST['fecha_vigencia']
+                evalu.descripcion = request.POST['descripcion']
+                if "referido" in request.POST:
+                    estado = True
+                    evalu.referido =  estado
+                else:
+                    estado = False
+                    evalu.referido =  estado
+                evalu.valor_examen = request.POST['valor_examen']
+                evalu.resultado = request.POST['resultado']
+                evalu.planta_id = request.POST['planta']
+                evalu.examen_id = request.POST['examen']
+                evalu.archivo = request.FILES['archivo']
+                evalu.user_id = user_id
+                evalu.save()
+            elif action == 'evaluacion_delete':
+                evalu = Evaluacion.objects.get(pk=request.POST['id'])
+                evalu.status = False
+                evalu.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -155,6 +191,7 @@ class UsersIdView(TemplateView):
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionUserForm()
         context['form4'] = ArchivoUserForm()
+        context['form5'] = EvaluacionAchivoForm()
         return context
 
 
@@ -210,8 +247,7 @@ class ProfesionUserView(TemplateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
-        # return JsonResponse({'data': 'data'},{'data2': 'data2'})
-        # return JsonResponse(data, safe=False)
+
 
 
 class ArchivoUserView(TemplateView):
@@ -233,6 +269,35 @@ class ArchivoUserView(TemplateView):
             if action == 'searchdata4':
                 data = []
                 for i in ArchivoUser.objects.filter(user=user_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+            print(e)
+        return JsonResponse(data, safe=False)
+
+
+
+class EvaluacionUserView(TemplateView):
+    """Profesion List
+    Vista para listar todos los profesion según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'users/create_users.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, user_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata5':
+                data = []
+                for i in Evaluacion.objects.filter(user=user_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -603,22 +668,6 @@ def users_create(request, user_id):
         'form': user_form
     })
 
-    # return render(
-    #     request=request,
-    #     template_name='users/users_create.html',
-    #     context={
-    #         'usuario': user,
-    #         'form': user_form
-    #     }
-    # )
-    
-    # return render(request, 'users/users_create.html', {
-    #     'form2': contacto_user_form,
-    # })
-    
-    # return render(request, 'users/users_create.html', {
-    #     'form1': user_form,
-    # })
 
 
 @login_required(login_url='users:signin')

@@ -70,6 +70,11 @@ urlpatterns = [
         name='archivo_users'
      ),
     path(
+        route='<int:user_id>/evaluacion_users/',
+        view=views.EvaluacionUserView.as_view(),
+        name='evaluacion_users'
+     ),
+    path(
         route='profesion',
         view=views.ProfesionView.as_view(),
         name='profesion'
