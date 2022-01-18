@@ -1,3 +1,4 @@
+from xml.dom import ValidationErr
 from django.db import models
 
 # Create your models here.
@@ -19,8 +20,6 @@ from users.models import User
 class Examen(models.Model):
     """Modelo Examen.
     """
-
-
     nombre = models.CharField(max_length=250)
     valor = models.IntegerField()
     status = models.BooleanField(
@@ -39,7 +38,6 @@ class Examen(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         return item
-
 
 class Bateria(models.Model):
     """Modelo Bateria.
@@ -132,6 +130,13 @@ class Evaluacion(BaseModel):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['archivo'] = str(self.archivo).zfill(0)
+        item['examen'] = self.examen.nombre
+        item['resultado'] = self.resultado
+        return item
 
 
 class Requerimiento(BaseModel):
