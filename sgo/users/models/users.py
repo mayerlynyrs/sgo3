@@ -495,7 +495,6 @@ class Parentesco(models.Model):
 class Contacto(models.Model):
     nombre = models.CharField(
         max_length=120,
-        unique=True
     )
     telefono_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
