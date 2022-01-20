@@ -47,7 +47,29 @@ function getdata5() {
 
 $(function () {
 
+    
+    var getDate = function (input) {
+        return new Date(input.date.valueOf());
+    }
 
+    $('#fecha_examen, #fecha_vigencia').datepicker({
+        format: "dd-mm-yyyy",
+        language: 'es'
+    });
+    
+    $('#fecha_vigencia').datepicker({
+        startDate: '+6d',
+        endDate: '+36d',
+    });
+    
+    $('#fecha_examen').datepicker({
+        startDate: '+5d',
+        endDate: '+35d',
+    }).on('changeDate',
+        function (selected) {
+            $('#fecha_vigencia').datepicker('clearDates');
+            $('#fecha_vigencia').datepicker('setStartDate', getDate(selected));
+        });
     getdata5();
 
     $('.btnAddExamen').on('click', function () {

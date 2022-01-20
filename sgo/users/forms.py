@@ -77,7 +77,7 @@ class CrearUsuarioForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'type':"date", 'id':"start"}))
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -265,7 +265,9 @@ class EditarUsuarioForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    # fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%Y"], label="Fecha de Nacimiento")
+    
+    fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -452,7 +454,7 @@ class EditarUsuarioForm(forms.ModelForm):
 
 class ProfesionUserForm(forms.ModelForm):
     egreso = forms.CharField(required=True, label="Egreso",
-                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"start"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off',  'id':"egreso"}))
     institucion = forms.CharField(required=True, label="Institución",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
@@ -546,9 +548,9 @@ class EvaluacionAchivoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_examen = forms.CharField(required=True, label="Fecha Examen",
-                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"fecha_examen"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_examen", }))
     fecha_vigencia = forms.CharField(required=True, label="Fecha Vigencia",
-                                 widget=forms.TextInput(attrs={'class': "form-control", 'type':"date", 'id':"fecha_vigencia"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_vigencia"}))
     descripcion = forms.CharField (required=True, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     valor_examen = forms.CharField(required=True, label="Valor Examen",

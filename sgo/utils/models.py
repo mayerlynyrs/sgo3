@@ -368,6 +368,7 @@ class Planta(models.Model):
     rut = models.CharField(
         max_length=12,
         # validators=[rut_regex, ],
+
         error_messages={
             'unique': 'Ya existe una planta con este RUT registrado.'
         }
