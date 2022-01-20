@@ -62,17 +62,6 @@ $(function () {
         $('#myModalnegocio').modal('show');
     });
 
-    $('.btnAddCliente').on('click', function () {
-        $('input[name="action"]').val('cliente_add');
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-            var parameters = new FormData(this);
-            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            });   
-        });
-    });
-
-
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
         modal_title.find('span').html('Negocio <small style="font-size: 80%;">Editar</small>');
@@ -105,15 +94,35 @@ $(function () {
         //$('form')[0].reset();
     });
 
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        var parameters = new FormData(this);
-        console.log(FormData);
-        submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalnegocio').modal('hide');
-            tblnegocio.ajax.reload();
-            $('#myModalplanta').modal('hide');
-            tblplanta.ajax.reload();
-        });   
+    $('.btnAdd1').on('click', function () {
+
+        $('CrearCreateForm').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalnegocio').modal('hide');
+                tblnegocio.ajax.reload();
+                $('#myModalplanta').modal('hide');
+                tblplanta.ajax.reload();
+            }); 
+        });
+
+    });
+
+    $('.btnAdd2').on('click', function () {
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalnegocio').modal('hide');
+                tblnegocio.ajax.reload();
+                $('#myModalplanta').modal('hide');
+                tblplanta.ajax.reload();
+            }); 
+        });
+
     });
 });

@@ -152,6 +152,7 @@ class CiudadAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ['provincia', ]
     search_fields = ('nombre', 'provincia__nombre')
 
+
 @admin.register(Bono)
 class BonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """BonoAdmin model admin."""
@@ -170,6 +171,7 @@ class GratificacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fields = ('nombre', 'descripcion', 'status',)
     list_display = ('id', 'nombre', 'status', 'created_date',)
     search_fields = ['nombre', ]
+
 
 @admin.register(Cargo)
 class CargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -190,6 +192,7 @@ class AreaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'nombre',)
     search_fields = ['nombre', ]
 
+
 @admin.register(Horario)
 class HorarioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """HorarioAdmin model admin."""
@@ -199,14 +202,33 @@ class HorarioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'nombre', 'descripcion', )
     search_fields = ['nombre', ]
 
+
 @admin.register(Cliente)
 class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """ClienteAdmin model admin."""
+    """ClienteAdmin model Admin"""
 
-    resource_class = ClienteSetResource
+    # resource_class = ClienteSetResource
     fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'area','cargo', 'horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
-    list_display = ('id', 'rut', 'razon_social', 'ciudad',)
-    search_fields = ['razon_social', ]
+    list_display = ('id', 'razon_social', 'ciudad', 'area_list', 'cargo_list', )
+    list_filter = ['area', 'cargo', ]
+    search_fields = ('id', 'razon_social', 'area__nombre', 'cargo__nombre')
+
+    def area_list(self, obj):
+        return u", ".join(o.nombre for o in obj.area.all())
+
+    def cargo_list(self, obj):
+        return u", ".join(o.nombre for o in obj.cargo.all())
+
+
+
+# @admin.register(Cliente)
+# class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+#     """ClienteAdmin model admin."""
+
+#     resource_class = ClienteSetResource
+#     fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'area','cargo', 'horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
+#     list_display = ('id', 'rut', 'razon_social', 'ciudad',)
+#     search_fields = ['razon_social', ]
 
 
 @admin.register(Negocio)
@@ -215,8 +237,9 @@ class NegocioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = NegocioSetResource
     fields = ('cliente', 'nombre', 'descripcion', 'archivo', 'status', )
-    list_display = ('id', 'nombre', )
+    list_display = ('id', 'nombre', 'cliente')
     search_fields = ('nombre', )
+
 
 @admin.register(Planta)
 class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -224,8 +247,9 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = PlantaSetResource
     fields = ('cliente', 'negocio', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'examen', 'status',)
-    list_display = ('id', 'nombre', 'rut_gerente', 'nombre_gerente', 'ciudad',)
+    list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]
+
 
 @admin.register(PuestaDisposicion)
 class PuestaDisposicionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -235,6 +259,7 @@ class PuestaDisposicionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fields = ('nombre' , 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual', 'status', )
     list_display = ('id', 'nombre', 'gratificacion', 'seguro_cesantia', 'seguro_invalidez', 'seguro_vida', 'mutual',)
     search_fields = ['nombre', ]
+
 
 @admin.register(Abastecimiento)
 class AbastecimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):

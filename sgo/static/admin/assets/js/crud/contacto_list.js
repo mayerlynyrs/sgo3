@@ -1,7 +1,6 @@
 var tblContact;
 var modal_title;
 var user = null;
-var data = {};
 
 function getData() {
     tblContact = $('#data-table-default').DataTable({

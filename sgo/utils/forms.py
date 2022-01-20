@@ -65,6 +65,7 @@ class BonoForm(forms.ModelForm):
         model = Bono
         fields = ("nombre","descripcion",)
 
+
 class CrearClienteForm(forms.ModelForm):
 
     rut = forms.CharField(required=True, label="RUT",
@@ -103,9 +104,6 @@ class CrearClienteForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-
-    
-    
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -168,8 +166,133 @@ class CrearClienteForm(forms.ModelForm):
                 'type': "number",
                 'placeholder': '56912345678',
                 }),
-            
         }
+
+
+class EditarClienteForm(forms.ModelForm):
+    rut = forms.CharField(required=True, label="RUT",
+                          widget=forms.TextInput(attrs={'class': "form-control",
+                                    'onkeypress': "return isNumber(event)",
+                                    'oninput': "checkRut(this)",
+                                    'title': "El RUT debe ser ingresado sin puntos ni guiones.",
+                                    'placeholder': '987654321',})
+                        )    
+    razon_social = forms.CharField(required=True, label="Razón Social",
+                             widget=forms.TextInput(attrs={'class': "form-control" }))
+    giro = forms.CharField(required=True, label="Giro",
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
+    email = forms.EmailField(required=True, label="Correo",
+                             widget=forms.EmailInput(attrs={'class': "form-control"}))
+    
+    horario = forms.ModelMultipleChoiceField(queryset=Horario.objects.all(), required=True, label="Horarios",
+                                            widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    cargo = forms.ModelMultipleChoiceField(queryset=Cargo.objects.all(), required=True, label="Cargos",
+                                            widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    area = forms.ModelMultipleChoiceField(queryset=Area.objects.all(), required=True, label="Áreas",
+                                            widget=forms.SelectMultiple(
+                                                attrs={'class': 'selectpicker show-tick',
+                                                       'data-size': '5',
+                                                       'data-live-search': 'true',
+                                                       'data-live-search-normalize': 'true'
+                                                       })
+                                            )
+
+        
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(EditarClienteForm, self).__init__(*args, **kwargs)
+
+        self.fields['provincia'].queryset = Provincia.objects.none()
+
+        if 'region' in self.data:
+            try:
+                region_id = int(self.data.get('region'))
+                self.fields['provincia'].queryset = Provincia.objects.filter(region_id=region_id).order_by('nombre')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
+        elif self.instance.pk:
+            self.fields['provincia'].queryset = self.instance.region.provincia_set.order_by('nombre')
+
+        self.fields['ciudad'].queryset = Provincia.objects.none()
+
+        if 'provincia' in self.data:
+            try:
+                provincia_id = int(self.data.get('provincia'))
+                self.fields['ciudad'].queryset = Ciudad.objects.filter(provincia_id=provincia_id).order_by('nombre')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
+        elif self.instance.pk:
+            # self.fields['ciudad'].queryset = self.instance.region.provincia.ciudad_set.order_by('nombre')
+            self.fields['ciudad'].queryset = self.instance.provincia.ciudad_set.order_by('nombre')
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('rut', css_class='form-group col-md-6 mb-0'),
+                Column('razon_social', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('giro', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                Column('region', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('provincia', css_class='form-group col-md-6 mb-0'),
+                Column('ciudad', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+             Row(
+                Column('direccion', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('area', css_class='form-group col-md-6 mb-0'),
+                Column('cargo', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('horario', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+        )
+
+        # if not user.groups.filter(name='Administrador').exists():
+        #     self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
+        #     self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
+        #     self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+        # else:
+        #     self.fields['group'].queryset = Group.objects.all()
+        #     self.fields['cliente'].queryset = Cliente.objects.all()
+        #     self.fields['negocio'].queryset = Negocio.objects.all()
+
+ 
+    class Meta:
+        model = Cliente
+        fields = ("rut", "razon_social", "giro", "email", "telefono", "area", "cargo", "horario",
+                  "direccion", "region", "provincia", "ciudad", )
+        widgets = {
+            'telefono': TextInput(attrs={
+                'class': "form-control",
+                'type': "number",
+                'placeholder': '56912345678'
+                }),
+        }
+
 
 class NegocioForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",

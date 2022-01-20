@@ -8,6 +8,16 @@ from utils import views
 
 urlpatterns = [
     path(
+        route='',
+        view=views.ClientListView.as_view(),
+        name='list'
+     ),
+    path(
+        route='<int:planta_id>/',
+        view=views.ClientListView.as_view(),
+        name='list'
+    ),
+    path(
         route='area',
         view=views.AreaView.as_view(),
         name='area'
@@ -18,29 +28,34 @@ urlpatterns = [
         name='cargo'
     ),
     path(
-    route='horario',
-    view=views.HorarioView.as_view(),
-    name='horario'
+        route='horario',
+        view=views.HorarioView.as_view(),
+        name='horario'
     ),
     path(
-    route='bono',
-    view=views.BonoView.as_view(),
-    name='bono'
+        route='bono',
+        view=views.BonoView.as_view(),
+        name='bono'
     ),
     path(
-    route='list_cliente',
-    view=views.BonoView.as_view(),
-    name='list_cliente'
+        route='list_cliente',
+        view=views.ClientListView.as_view(),
+        name='list_cliente'
     ),
     path(
-    route='create_cliente',
-    view=views.create_cliente,
-    name='create_cliente'
+        route='create_cliente',
+        view=views.create_cliente,
+        name='create_cliente'
     ),
     path(
-    route='<int:cliente_id>/create_cliente',
-    view=views.ClienteIdView.as_view(),
-    name='create_cliente'
+        route='<int:cliente_id>/create_cliente',
+        view=views.ClienteIdView.as_view(),
+        name='create_cliente'
+    ),
+    path(
+        route='<int:cliente_id>/update/',
+        view=views.update_cliente,
+        name="update"
     ),
     path(
         route='<int:cliente_id>/negocios/',

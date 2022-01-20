@@ -67,17 +67,17 @@
         </ul>
       </li>
       {% endif %}
-      {% if perms.clientes.view_cliente %}
-      <li class="has-sub {% if menu_app == 'clientes' %}active{% endif %}">
+      {% if perms.utils.view_cliente %}
+      <li class="has-sub {% if menu_app == 'utils' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
           <i class="far fa-lg fa-fw m-r-10 fa-building"></i>
           <span>Clientes </span>
         </a>
         <ul class="sub-menu"> 
-          <li {% if menu_app == 'clientes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'utils:list_cliente' %}">Ver Clientes </a></li>
-        {% if perms.requerimientos.add_cliente %}
-          <li {% if menu_app == 'clientes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'utils:create_cliente' %}">Crear Clientes</a></li>
+          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'utils:list_cliente' %}">Ver Clientes </a></li>
+        {% if perms.utils.add_cliente %}
+          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'utils:create_cliente' %}">Crear Clientes</a></li>
         {% endif %}
         </ul>
       </li>
@@ -167,7 +167,7 @@
         </ul>
       </li>
       {% endif %}
-      {% if perms.mantenedoress.view_plantilla %}
+      {% if perms.utils.view_cliente %}
       <li class="has-sub {% if menu_app == 'utils' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -175,40 +175,40 @@
           <span>Mantenedores </span>
         </a>
         <ul class="sub-menu">
-        {% if perms.users.view_user %}
-          <li {% if menu_app == 'users' and menu_page == area %} class="active"{% endif %}><a href="{% url 'utils:area' %}">Area</a></li>
+        {% if perms.utils.view_area %}
+          <li {% if menu_app == 'utils' and menu_page == area %} class="active"{% endif %}><a href="{% url 'utils:area' %}">Area</a></li>
         {% endif %}
-        {% if perms.users.view_user %}
-        <li {% if menu_app == 'users' and menu_page == cargo %} class="active"{% endif %}><a href="{% url 'utils:cargo' %}">Cargo</a></li>
+        {% if perms.utils.view_cargo %}
+        <li {% if menu_app == 'utils' and menu_page == cargo %} class="active"{% endif %}><a href="{% url 'utils:cargo' %}">Cargo</a></li>
         {% endif %}
-        {% if perms.contratos.view_plantilla %}
-          <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
+        {% if perms.users.view_afp %}
+          <li class="has-sub {% if menu_module == 'afp' %}expand{% else %}closed{% endif %}">
 								<a href="javascript:;">
 									<b class="caret"></b>
 									AFP
 								</a>
-								<ul class="sub-menu" style="{% if menu_module == 'plantilla' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
-                  {% if perms.contratos.add_plantilla %}
-									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
-									<li {% if menu_module == 'plantilla' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
+								<ul class="sub-menu" style="{% if menu_module == 'afp' %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_module == 'afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
+                  {% if perms.users.add_afp %}
+									<li {% if menu_module == 'valores_diarios' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
+									<li {% if menu_module == 'vdiarios_afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
                   {% endif %}
 								</ul>
 							</li>
         {% endif %}
-        {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:salud' %}">Salud</a></li>
+        {% if perms.users.view_salud %}
+        <li {% if menu_module == 'users' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:salud' %}">Salud</a></li>
         {% endif %}
-        {% if perms.profesiones.view_profesion %}
+        {% if perms.utils.view_bono %}
         <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Bonos</a></li>
         {% endif %}
-        {% if perms.profesiones.view_profesion %}
-									<li {% if menu_module == 'utils' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
+        {% if perms.users.view_profesion %}
+									<li {% if menu_module == 'users' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
         {% endif %}
-        {% if perms.profesiones.view_profesion %}
-        <li {% if menu_module == 'utils' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
+        {% if perms.users.view_especialidad %}
+        <li {% if menu_module == 'users' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
         {% endif %}
-        {% if perms.profesiones.view_profesion %}
+        {% if perms.utils.view_horario %}
         <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
         {% endif %}
         </ul>
