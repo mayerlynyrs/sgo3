@@ -43,6 +43,11 @@ function getData2() {
 
 $(function () {
 
+    $('#egreso').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'es'
+    });
+    
     modal_title = $('.modal-title');
     user = document.getElementById("user_id").value;
 
