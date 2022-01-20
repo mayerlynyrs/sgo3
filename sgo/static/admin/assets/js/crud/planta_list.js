@@ -112,5 +112,21 @@ $(function () {
         //$('form')[0].reset();
     });
 
+    $('.btnAdd3').on('click', function () {
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalnegocio').modal('hide');
+                tblnegocio.ajax.reload();
+                $('#myModalplanta').modal('hide');
+                tblplanta.ajax.reload();
+            }); 
+        });
+
+    });
+
 
 });

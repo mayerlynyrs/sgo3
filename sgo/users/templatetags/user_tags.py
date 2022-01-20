@@ -52,6 +52,17 @@ def tag_active_detail(value):
     return state
 
 
+@register.filter("tag_examen")
+def tag_examen(value):
+
+    if value is True:
+        state = '<span class="label label-green">SI</span>'
+    else:
+        state = '<span class="label label-danger">NO</span>'
+
+    return state
+
+
 # @register.filter("rut_format")
 # def rut_format(value):
 #     result = None

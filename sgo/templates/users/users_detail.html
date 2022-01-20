@@ -35,112 +35,243 @@
     <h4 class="panel-title">
       {{ usuario.first_name|upper }} {{ usuario.last_name|upper }}</h4>
   </div>
-  <div class="panel-body">
+  <div class="panel-body" style="padding:50px;" >
 
     <form method="post" autocomplete="off" novalidate>
       {% csrf_token %}
-      <div class="form-group">
-        <label for="id_first_name">Perfil:</label>
-        <div class="form-control">{{ usuario.groups.first.name }}</div>
+      <div class="form-row form-row">
+        <div class="form-group col-md-4 mb-0">
+          <div id="div_id_group" class="form-group">
+            <label for="id_group" class=" requiredField"> Perfil </label>
+            <div class="form-control">{{ usuario.groups.first.name }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-4 mb-0" >
+          <div id="div_id_rut" class="form-group">
+            <label for="id_rut" class=" requiredField">RUT </label>
+            <div class="form-control">{{ usuario.rut }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-4 mb-0" >
+          <div id="div_id_pasaporte" class="form-group">
+            <label for="id_pasaporte" class=""> Pasaporte</label>
+            <div class="form-control">{{ usuario.pasaporte }}</div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="id_rut">RUT:</label>
-        <div class="form-control">{{ usuario.rut }}</div>
+      <div  class="form-row form-row" >
+        <div class="form-group col-md-6 mb-0" >
+          <div id="div_id_first_name" class="form-group">
+            <label for="id_first_name" class=" requiredField">Nombres </label>
+            <div class="form-control">{{ usuario.first_name|lower|title }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6 mb-0" >
+          <div id="div_id_last_name" class="form-group">
+            <label for="id_last_name" class=" requiredField">Apellidos </label>
+            <div class="form-control">{{ usuario.last_name|lower|title }}</div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="id_first_name">Nombres:</label>
-        <div class="form-control">{{ usuario.first_name|lower|title }}</div>
-        <!-- <div class="form-control-lg">{{ usuario.first_name|lower|title }}</div> -->
+      <div  class="form-row form-row" >
+        <div class="form-group col-md-6 mb-0" >
+          <div id="div_id_fecha_nacimiento" class="form-group">
+            <label for="start" class=" requiredField">Fecha de Nacimiento </label>
+            <div class="form-control">{{ usuario.fecha_nacimiento|date:'d/m/Y' }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6 mb-0" >
+          <div id="div_id_sexo" class="form-group">
+            <label for="id_sexo" class="">Sexo</label>
+            <div class="form-control">{{ usuario.sexo.nombre }}</div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="id_last_name">Apellidos:</label>
-        <div class="form-control">{{ usuario.last_name|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_sexo">Sexo:</label>
-        <div class="form-control">{{ usuario.sexo.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_email">Email:</label>
-        <div class="form-control">{{ usuario.email|lower }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Teléfono:</label>
-        <div class="form-control">{{ usuario.telefono }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Estado Civil:</label>
-        <div class="form-control">{{ usuario.estado_civil.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Fecha de Nacimiento:</label>
-        <div class="form-control">{{ usuario.fecha_nacimiento|date:'d/m/Y' }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Nacionalidad:</label>
-        <div class="form-control">{{ usuario.nacionalidad.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Región:</label>
-        <div class="form-control">{{ usuario.region|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Provincia:</label>
-        <div class="form-control">{{ usuario.provincia|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Ciudad:</label>
-        <div class="form-control">{{ usuario.ciudad|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Domicilio:</label>
-        <div class="form-control">{{ usuario.domicilio|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Sistema Salud:</label>
-        <div class="form-control">{{ usuario.salud.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Sistema Previsión:</label>
-        <div class="form-control">{{ usuario.afp.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Banco:</label>
-        <div class="form-control">{{ usuario.banco.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Tipo de Cuenta:</label>
-        <div class="form-control">{{ usuario.tipo_cuenta.nombre }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Número de Cuenta:</label>
-        <div class="form-control">{{ usuario.cuenta|lower|title }}</div>
-      </div>
-      <div class="form-group">
-        <label for="id_first_name">Cliente:</label>
-        <ul>
-          {% for c in usuario.cliente.all %}
-            <!-- <li style="font-size: large;">{{ c.nombre|title }}</li> -->
-            <li style="font-size: small;">{{ c.razon_social|title }}</li>
-          {% empty %}
-            <li>Sin cliente(s) asignado(s)</li>
-          {% endfor %}
-        </ul>
-      </div>
-      <!-- <div class="form-group">
-        <label for="id_first_name">Cliente:</label>
-        <div class="form-control">{{ usuario.cliente|lower|title }}</div>
-      </div> -->
-      <div class="form-group">
-        <label for="id_first_name">Negocio:</label>
-        <ul>
-          {% for p in usuario.negocio.all %}
-            <!-- <li style="font-size: large;">{{ p.nombre|title }}</li> -->
-            <li style="font-size: small;">{{ p.nombre|title }}</li>
-          {% empty %}
-            <li>Sin negocio(s) asignada(s)</li>
-          {% endfor %}
-        </ul>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_telefono" class="form-group">
+              <label for="id_telefono" class="">Teléfono</label>
+              <div class="form-control">{{ usuario.telefono }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_telefono2" class="form-group">
+              <label for="id_telefono2" class="">Teléfono</label>
+              <div class="form-control">{{ usuario.telefono2 }}</div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" > 
+            <div id="div_id_email" class="form-group">
+              <label for="id_email" class=" requiredField">Email </label>
+              <div class="form-control">{{ usuario.email|lower }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_estado_civil" class="form-group">
+              <label for="id_estado_civil" class=" requiredField">Estado Civil </label>
+              <div class="form-control">{{ usuario.estado_civil.nombre }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_nacionalidad" class="form-group">
+              <label for="id_nacionalidad" class="">Nacionalidad</label>
+              <div class="form-control">{{ usuario.nacionalidad.nombre }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_foto" class="form-group">
+              <label for="id_foto" class="">Foto</label>
+              <div class="form-control">{{ usuario.foto }}</div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_region" class="form-group">
+              <label for="id_region" class="">Region</label>
+              <div class="form-control">{{ usuario.region|lower|title }}</div>
+            </div> 
+          </div>
+          <div class="form-group col-md-4 mb-0" > 
+            <div id="div_id_provincia" class="form-group">
+              <label for="id_provincia" class="">Provincia</label>
+              <div class="form-control">{{ usuario.provincia.nombre }}</div>
+            </div> 
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_ciudad" class="form-group">
+              <label for="id_ciudad" class="">Ciudad</label>
+              <div class="form-control">{{ usuario.ciudad.nombre }}</div>
+            </div> 
+          </div>
+        </div>
+        <div id="div_id_domicilio" class="form-group">
+          <label for="id_domicilio" class="">Domicilio</label>
+          <div class="form-control">{{ usuario.domicilio }}</div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_afp" class="form-group">
+              <label for="id_afp" class=" requiredField">Sistema Previsión </label>
+              <div class="form-control">{{ usuario.afp.nombre }}</div>
+            </div> 
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_salud" class="form-group">
+              <label for="id_salud" class=" requiredField">Sistema Salud </label>
+              <div class="form-control">{{ usuario.salud.nombre }}</div>
+            </div> 
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_pacto_uf" class="form-group">
+              <label for="id_pacto_uf" class="">Pacto uf</label>
+              <div class="form-control">{{ usuario.pacto_uf }}</div>
+            </div> 
+          </div>
+        </div>
+        <div class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_especialidad" class="form-group">
+              <label for="id_especialidad" class="">Especialidad</label>
+                <div class="form-control">{{ usuario.especialidad.nombre }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_nivel_estudio" class="form-group">
+              <label for="id_nivel_estudio" class="">Nivel estudio</label>
+              <div class="form-control">{{ usuario.nivel_estudio.nombre }}</div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_banco" class="form-group">
+              <label for="id_banco" class="">Banco</label>
+              <div class="form-control">{{ usuario.banco.nombre }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_tipo_cuenta" class="form-group">
+              <label for="id_tipo_cuenta" class=" requiredField">Tipo Cuenta </label>
+              <div class="form-control">{{ usuario.tipo_cuenta.nombre }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_cuenta" class="form-group">
+              <label for="id_cuenta" class=" requiredField">Número de Cuenta </label>
+              <div class="form-control">{{ usuario.cuenta }}</div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_talla_polera" class="form-group">
+              <label for="id_talla_polera" class="">Talla polera</label>
+              <div class="form-control">{{ usuario.talla_polera }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_talla_pantalon" class="form-group">
+              <label for="id_talla_pantalon" class="">Talla pantalón</label>
+              <div class="form-control">{{ usuario.talla_pantalon }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-4 mb-0" >
+            <div id="div_id_calzado" class="form-group">
+              <label for="id_calzado" class="">Calzado</label>
+              <div class="form-control">{{ usuario.calzado }}</div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_licencia_conducir" class="form-group">
+              <label for="id_licencia_conducir" class=" requiredField">Licencia conducir </label>
+              <div class="form-control">{{ usuario.licencia_conducir }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div class="form-group">
+              <div id="div_id_examen" class="custom-control custom-checkbox">
+                <div class="text-left">
+                  <label for="id_examen">Examen: </label>
+                  {{ usuario.examen|tag_examen|safe }}
+                  <!-- <small id="hint_id_examen" class="form-text text-muted">Para solicitar examen psicológico al usuario, habilite esta casilla.</small> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div  class="form-row form-row" >
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_cliente" class="form-group">
+              <label for="id_cliente">Cliente(s):</label>
+              <!-- <div class="form-control">{{ usuario.cliente|lower|title }}</div> -->
+                <ul>
+                {% for p in usuario.cliente.all %}
+                  <li style="font-size: small;">{{ p.razon_social|title }}</li>
+                {% empty %}
+                  <li>Sin cliente(s) asignada(s)</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <div class="form-group col-md-6 mb-0" >
+            <div id="div_id_negocio" class="form-group">
+              <label for="id_negocio">Negocio(s): </label>
+                <ul>
+                {% for p in usuario.negocio.all %}
+                  <li style="font-size: small;">{{ p.nombre|title }}</li>
+                {% empty %}
+                  <li>Sin negocio(s) asignada(s)</li>
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         {% if usuario.is_active %}
@@ -184,7 +315,7 @@
           {% if request.user.groups.first.name == 'Administrador Contratos' or request.user.groups.first.name == 'Administrador' %}
           <b>
             {% if usuario.groups.first.name == 'Trabajador' or request.user.groups.first.name == 'Administrador' %}
-            <a href="{% url 'users:update' usuario.id %}?page={{ request.GET.page }}" class="btn btn-success">Editar</a>
+            <a href="{% url 'users:profile' usuario.id %}?page={{ request.GET.page }}" class="btn btn-success">Editar</a>
             {% endif %}
           </b>
             
