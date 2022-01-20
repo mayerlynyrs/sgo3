@@ -9,8 +9,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
-from django.forms import TextInput
 from django.contrib.auth.models import Group
+from django.forms import TextInput
 # sgo Model
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad , Planta
 from examenes.models import Evaluacion , Examen
@@ -78,28 +78,28 @@ class CrearUsuarioForm(forms.ModelForm):
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
-    estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
+    estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
+    salud = forms.ModelChoiceField(queryset=Salud.objects.filter(status=True), required=True, label="Sistema Salud",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
+    afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.all(), required=True, label="Tipo Cuenta",
+    tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.filter(status=True), required=True, label="Tipo Cuenta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -115,14 +115,14 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
+    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
                                             widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
+    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.filter(status=True), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -231,7 +231,6 @@ class CrearUsuarioForm(forms.ModelForm):
             self.fields['negocio'].queryset = Negocio.objects.all()
 
 
-
     class Meta:
         model = User
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
@@ -257,7 +256,6 @@ class CrearUsuarioForm(forms.ModelForm):
         }
 
 
-
 class EditarUsuarioForm(forms.ModelForm):
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
@@ -268,28 +266,28 @@ class EditarUsuarioForm(forms.ModelForm):
     
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
-    estado_civil = forms.ModelChoiceField(queryset=Civil.objects.all(), required=True, label="Estado Civil",
+    estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    salud = forms.ModelChoiceField(queryset=Salud.objects.all(), required=True, label="Sistema Salud",
+    salud = forms.ModelChoiceField(queryset=Salud.objects.filter(status=True), required=True, label="Sistema Salud",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Sistema Prevision",
+    afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.all(), required=True, label="Tipo Cuenta",
+    tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.filter(status=True), required=True, label="Tipo Cuenta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -305,14 +303,14 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
+    cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
                                    widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
+    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.filter(status=True), required=True, label="Negocio",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -326,6 +324,7 @@ class EditarUsuarioForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        print(user)
         super(EditarUsuarioForm, self).__init__(*args, **kwargs)
 
         self.fields['provincia'].queryset = Provincia.objects.none()
@@ -426,6 +425,15 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
         )
 
+        if self.fields['group'].queryset == 'Administrador':
+            self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
+            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
+            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+        else:
+            self.fields['group'].queryset = Group.objects.all()
+            self.fields['cliente'].queryset = Cliente.objects.all()
+            self.fields['negocio'].queryset = Negocio.objects.all()
+
  
     class Meta:
         model = User
@@ -457,7 +465,7 @@ class ProfesionUserForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off',  'id':"egreso"}))
     institucion = forms.CharField(required=True, label="Institución",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    profesion = forms.ModelChoiceField(queryset=Profesion.objects.all(), required=True, label="Profesión",
+    profesion = forms.ModelChoiceField(queryset=Profesion.objects.filter(status=True), required=True, label="Profesión",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -480,7 +488,7 @@ class ContactoForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     telefono = forms.CharField(required=True, label="Teléfono",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.all(), required=True, label="Parentesco",
+    parentesco = forms.ModelChoiceField(queryset=Parentesco.objects.filter(status=True), required=True, label="Parentesco",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -498,7 +506,7 @@ class ContactoForm(forms.ModelForm):
 
 
 class ArchivoUserForm(forms.ModelForm):
-    tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.all(), required=True, label="Tipo Archivo",
+    tipo_archivo = forms.ModelChoiceField(queryset=TipoArchivo.objects.filter(status=True), required=True, label="Tipo Archivo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -570,7 +578,7 @@ class EvaluacionAchivoForm(forms.ModelForm):
                                                               })
                                    )
     archivo = forms.FileField()
-    planta = forms.ModelChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -586,4 +594,4 @@ class EvaluacionAchivoForm(forms.ModelForm):
 
     class Meta:
         model = Evaluacion
-        fields = ("nombre", "fecha_examen", "fecha_vigencia", "descripcion", "valor_examen", "resultado", "referido" , "archivo" , "examen" )
+        fields = ("nombre", "fecha_examen", "fecha_vigencia", "descripcion", "valor_examen", "resultado", "referido", "archivo", "examen" )

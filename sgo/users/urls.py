@@ -55,6 +55,11 @@ urlpatterns = [
         name="update"
     ),
     path(
+        route='<int:user_id>/profile/',		
+        view=views.update_profile,		
+        name="profile"		
+    ),
+    path(
         route='<int:user_id>/contactos/',
         view=views.ContactoView.as_view(),
         name='contactos'

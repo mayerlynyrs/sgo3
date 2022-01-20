@@ -1,6 +1,5 @@
 """Users views."""
 
-
 import json
 # Django
 import os
@@ -744,6 +743,73 @@ def update_user(request, user_id):
         context={
             'usuario': user,
             'form1': user_form
+        }
+    )
+
+
+@login_required(login_url='users:signin')
+def update_profile(request, user_id,):
+    """Update a user's profile view."""
+
+    user = get_object_or_404(User, pk=user_id)
+
+    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+    if not request.user.groups.filter(name__in=['Administrador', ]).exists():
+        if not user == request.user:
+            raise Http404
+
+    # Se obtiene el perfil y las negocios del usuario.
+    try:
+        current_group = user.groups.get()
+        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
+        #negocios_usuario[::1]
+    except:
+        current_group = ''
+        negocios_usuario = ''
+
+    if request.method == 'POST':
+        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
+        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+
+        if user_form.is_valid():
+            user_form.save()
+            #profile_form.save()
+
+            # Solo el Administrador puede cambiar el perfil del usuario
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                user.groups.clear()
+                user.groups.add(user_form.cleaned_data['group'])
+
+            messages.success(request, ('Usuario actualizado'))
+
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                page = request.GET.get('page')
+                if page != '':
+                    response = redirect('users:detail', pk=user_id)
+                    response['Location'] += '?page=' + page
+                    return response
+                else:
+                    return redirect('users:detail', pk=user_id)
+            else:
+                return redirect('home')
+
+        else:
+            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+    else:
+
+        user_form = EditarUsuarioForm(
+            instance=user,
+            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
+            user=request.user
+        )
+        #profile_form = ProfileForm(instance=profile)
+
+    return render(
+        request=request,
+        template_name='users/users_create.html',
+        context={
+            'usuario': user,
+            'form': user_form
         }
     )
 
