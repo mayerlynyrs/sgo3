@@ -122,7 +122,15 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.filter(status=True), required=True, label="Negocio",
+    # negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.filter(status=True), required=True, label="Negocio",
+    #                                         widget=forms.SelectMultiple(
+    #                                             attrs={'class': 'selectpicker show-tick',
+    #                                                    'data-size': '5',
+    #                                                    'data-live-search': 'true',
+    #                                                    'data-live-search-normalize': 'true'
+    #                                                    })
+    #                                         )
+    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Plantas",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
@@ -213,7 +221,7 @@ class CrearUsuarioForm(forms.ModelForm):
             ),
             Row(
                 Column('cliente', css_class='form-group col-md-6 mb-0'),
-                Column('negocio', css_class='form-group col-md-6 mb-0'),
+                Column('planta', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             # 'check_me_out',
@@ -222,13 +230,15 @@ class CrearUsuarioForm(forms.ModelForm):
         if not user.groups.filter(name='Administrador').exists():
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
             self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+            # self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
             cliente_id = self.data.get('cliente')
             # self.fields['negocio'].queryset = negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
         else:
             self.fields['group'].queryset = Group.objects.all()
             self.fields['cliente'].queryset = Cliente.objects.all()
-            self.fields['negocio'].queryset = Negocio.objects.all()
+            # self.fields['negocio'].queryset = Negocio.objects.all()
+            self.fields['planta'].queryset = Planta.objects.all()
 
 
     class Meta:
@@ -236,7 +246,7 @@ class CrearUsuarioForm(forms.ModelForm):
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
                   "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
                   "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen",
-                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
+                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "planta", "is_active", )
         exclude = ('password1', 'password2')
         widgets = {
             'telefono': TextInput(attrs={

@@ -26,8 +26,11 @@ class AreaForm(forms.ModelForm):
         model = Area
         fields = ("nombre",)
 
+
 class CargoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    alias = forms.CharField(required=True,
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     descripcion = forms.CharField (required=True, label="Descripcion",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
@@ -37,7 +40,8 @@ class CargoForm(forms.ModelForm):
 
     class Meta:
         model = Cargo
-        fields = ("nombre","descripcion",)
+        fields = ("nombre", "alias", "descripcion",)
+
 
 class HorarioForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
@@ -52,6 +56,7 @@ class HorarioForm(forms.ModelForm):
         model = Horario
         fields = ("nombre","descripcion",)
 
+
 class BonoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -63,7 +68,7 @@ class BonoForm(forms.ModelForm):
 
     class Meta:
         model = Bono
-        fields = ("nombre","descripcion",)
+        fields = ("nombre", "descripcion",)
 
 
 class CrearClienteForm(forms.ModelForm):
@@ -307,7 +312,7 @@ class NegocioForm(forms.ModelForm):
 
     class Meta:
         model = Negocio
-        fields = ("nombre","descripcion","archivo")
+        fields = ("nombre", "descripcion", "archivo")
 
 class PlantaForm(forms.ModelForm):
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
@@ -386,8 +391,6 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    
-   
 
     def __init__(self, *args, **kwargs):
         Planta = kwargs.pop('planta', None)

@@ -88,6 +88,7 @@ class Region(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Provincia(models.Model):
     """Modelo Provincia.
     """
@@ -108,6 +109,7 @@ class Provincia(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Ciudad(models.Model):
     """Modelo Ciudad.
     """
@@ -125,6 +127,7 @@ class Ciudad(models.Model):
 
     def __str__(self):
         return self.nombre
+
 
 class Bono(models.Model):
     nombre = models.CharField(
@@ -153,7 +156,6 @@ class Gratificacion(models.Model):
     """Modelo Gratificacion.
     """
 
-
     nombre = models.CharField(max_length=250)
     descripcion = models.TextField(blank=True, null=True)
     status = models.BooleanField(
@@ -169,16 +171,25 @@ class Gratificacion(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Cargo(models.Model):
     """Modelo Cargo.
     """
 
     nombre = models.CharField(
+        max_length=120
+    )
+    alias = models.CharField(
         max_length=120,
-        unique=True
+        default='General'
     )
     descripcion = models.TextField(
         max_length=300,
+        unique=True
+    )
+    nombre_alias = models.CharField(
+        max_length=240,
+        null=True,
         unique=True
     )
     status = models.BooleanField(
@@ -192,14 +203,12 @@ class Cargo(models.Model):
     )
 
     def __str__(self):
-        return self.nombre
+        return self.nombre +' - '+ self.alias
 
     def toJSON(self):
         item = model_to_dict(self)
         return item
     
-    
-
 
 class Area(models.Model):
     """Modelo Area.
@@ -247,6 +256,7 @@ class Horario(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         return item
+
 
 class Cliente(BaseModel):
     """Modelo Cliente. """
@@ -462,6 +472,9 @@ class Planta(models.Model):
 
 
 class PuestaDisposicion(models.Model):
+    """Modelo Puesta a Disposicion.
+    """ 
+
     nombre = models.CharField(max_length=120)
     gratificacion = models.IntegerField()
     seguro_cesantia = models.FloatField()
