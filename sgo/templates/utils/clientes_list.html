@@ -68,40 +68,8 @@ img {
   </div>
     </header>
     <div class="panel-body">
-  <!-- {% block barra_busqueda %}
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 search">
-          <form method="get">
-              <div id="custom-search-input">
-                <div class="input-group col-md-12">
-                  <input type="text" class="form-control" placeholder="Buscar..." name="buscar" value = "{{ request.GET.buscar }}">
-                  <span class="input-group-list">
-                    <i class="icon icon-search"></i>
-                    <button type="submit" class="boton btn-success">Buscar</button>
-                  </span>
-                </div>
-              </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  {% endblock barra_busqueda %} -->
 
-    {% block buscador %}
-      <form method="get">
-        <div class="input-group col-md-12">
-          <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">
-              <i class="fas fa-search fa-sm"></i>
-            </button>
-          </div>
-        </div>
-      </form>
-    {% endblock buscador %}<br>
-
-    <table class="table table-bordered table-hover">
+    <table  id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
       <thead>
           <tr>
               <th class="text-center">Datos Cliente</th>
@@ -112,7 +80,7 @@ img {
       {% for clte in clients  %}
           <tr>
             <td>
-                <a href="{% url 'utils:create_cliente' clte.id %}?page={{ request.GET.page }}">
+                <a title="Editar" href="{% url 'utils:create_cliente' clte.id %}?page={{ request.GET.page }}">
                   <span class="text-name text-success">
                     <!-- {{ c.razon_social }} -->
                     {{ clte.razon_social|upper }}<br>
@@ -171,35 +139,6 @@ img {
       {% endblock contenido %}
       </tbody>
     </table>
-    {% if is_paginated %}
-      <!-- pagination -->
-     <ul class="pagination centrar">
-      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
-           class="page-link">«</a>
-      </li>
-      {% for page in page_obj.paginator.page_range %}
-          {% if page_obj.number|add:'-5' <= page and page_obj.number|add:'5' >= page%}
-            <li class="page-item {% if page_obj.number == page %}active{% endif %}">
-              <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={{ page }}"
-                 class="page-link">{{ page }}</a>
-            </li>
-          {% endif %}
-      {% endfor %}
-      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
-           class="page-link">»</a>
-      </li>
-    </ul>
-      {% if page_obj.paginator.num_pages > 5 %}
-      <ul class="pager m-t-0 m-b-0">
-        <li class="page-item previous {% if not page_obj.has_previous %}disabled{% endif %}">
-          <a href="{{ request.path }}?page=1" class="page-link">← Primero</a></li>
-        <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
-          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="page-link">Último →</a></li>
-      </ul>
-     {% endif %}
-  {% endif %}
 
   </div>
 </div>

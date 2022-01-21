@@ -290,11 +290,11 @@ class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
             'fields': ('rut', 'pasaporte', 'sexo', 'estado_civil', 'fecha_nacimiento', 'telefono', 'telefono2',
                        'nacionalidad', 'licencia_conducir', 'talla_polera', 'talla_pantalon', 'calzado', 'nivel_estudio',
                        'especialidad', 'region', 'provincia', 'ciudad', 'domicilio', 'examen', 'foto', 'afp', 'salud', 'pacto_uf', 
-                       'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'negocio', 'cambiar_clave', 'atributos', )
+                       'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'planta', 'cambiar_clave', 'atributos', )
         }),
     )
     list_display = ('id', 'rut', 'pasaporte', 'first_name', 'last_name', 'email', 'is_active')
-    list_filter = ('region', 'provincia', 'ciudad', 'negocio', 'is_staff', 'created', 'modified')
+    list_filter = ('region', 'provincia', 'ciudad', 'planta', 'is_staff', 'created', 'modified')
     search_fields = ('first_name', 'last_name', 'email', 'rut', 'pasaporte', 'region__nombre', 'provincia__nombre', 'ciudad__nombre', 'negocio__nombre')
 
 

@@ -1,8 +1,8 @@
-var tblClient;
+var tblCargo;
 var modal_title;
 
 function getData() {
-    tblClient = $('#data-table-default').DataTable({
+    tblCargo = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -17,6 +17,7 @@ function getData() {
         },
         columns: [
             {"data": "nombre"},
+            {"data": "alias"},
             {"data": "descripcion"},
             {"data": "id"},
         ],
@@ -57,11 +58,12 @@ $(function () {
     
         modal_title.find('span').html('Edición de un Cargo');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblClient.cell($(this).closest('td, li')).index();
-        var data = tblClient.row(tr.row).data();
+        var tr = tblCargo.cell($(this).closest('td, li')).index();
+        var data = tblCargo.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
+        $('input[name="alias"]').val(data.alias);
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('#myModalcargo').modal('show');
     });
@@ -70,11 +72,12 @@ $(function () {
     
         modal_title.find('span').html('¿Desea Eliminar Cargo?');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblClient.cell($(this).closest('td, li')).index();
-        var data = tblClient.row(tr.row).data();
+        var tr = tblCargo.cell($(this).closest('td, li')).index();
+        var data = tblCargo.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
+        $('input[name="alias"]').val(data.alias);
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('#myModalcargo').modal('show');
     }); 
@@ -89,7 +92,7 @@ $(function () {
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
             $('#myModalcargo').modal('hide');
-            tblClient.ajax.reload();
+            tblCargo.ajax.reload();
         });   
     });
 });

@@ -52,7 +52,7 @@ class CargoSetResource(resources.ModelResource):
 
     class Meta:
         model = Cargo
-        fields = ('id', 'nombre','descripcion' ,'status', )
+        fields = ('id', 'nombre', 'alias', 'descripcion' ,'status', )
 
 
 class AreaSetResource(resources.ModelResource):
@@ -119,7 +119,7 @@ class EquipoSetResource(resources.ModelResource):
 
     class Meta:
         model = Equipo
-        fields = ('id', 'nombre', 'cliente', 'valor',  'tipo' 'status',  )
+        fields = ('id', 'nombre', 'cliente', 'valor', 'tipo', 'status',  )
 
 @admin.register(Region)
 class RegionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -178,8 +178,8 @@ class CargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """CargoAdmin model admin."""
 
     resource_class = CargoSetResource
-    fields = ('nombre', 'descripcion','status', )
-    list_display = ('id', 'nombre', 'descripcion',)
+    fields = ('nombre', 'alias', 'descripcion','status', )
+    list_display = ('id', 'nombre', 'alias', 'descripcion',)
     search_fields = ['nombre', ]
 
 

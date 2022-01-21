@@ -301,9 +301,9 @@ class User(BaseModel, AbstractUser):
         help_text='Seleccione solo un cliente si el perfil que esta seleccionado es Trabajador.'
     )
 
-    negocio = models.ManyToManyField(
-        Negocio,
-        help_text='Seleccione solo una negocio si el perfil que esta seleccionado es Trabajador.'
+    planta = models.ManyToManyField(
+        Planta,
+        help_text='Seleccione solo una planta si el perfil que esta seleccionado es Trabajador.'
     )
 
     rut_regex = RegexValidator(

@@ -29,7 +29,7 @@ from mailmerge import MailMerge
 from django.conf import settings
 # Models
 from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser
-from utils.models import Cliente, Negocio, Region, Provincia, Ciudad
+from utils.models import Cliente, Negocio, Planta, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 from examenes.models import Evaluacion
 # Forms
@@ -413,7 +413,7 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context = super(UserListView, self).get_context_data(**kwargs)
 
         if self.request.user.groups.filter(name__in=['Administrador']).exists():
-            institutions = Negocio.objects.values(
+            institutions = Planta.objects.values(
                     value=F('id'),
                     title=F('nombre')).all().order_by('nombre')
                 #cache.set('institutions', institutions)
@@ -421,24 +421,24 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     value=F('id'),
                     title=F('nombre')).all().order_by('nombre')
 
-            context['negocios'] = institutions
-            context['negocio'] = self.kwargs.get('negocio_id', None)
+            context['plantas'] = institutions
+            context['planta'] = self.kwargs.get('planta_id', None)
 
         return context
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # No es administrador y recibe parametro de busqueda
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                queryset = User.objects.select_related('negocio').filter(
+                queryset = User.objects.select_related('planta').filter(
                     Q(cliente__in=self.request.user.cliente.all()),
-                    Q(negocio__in=self.request.user.negocio.all()),
+                    Q(planta__in=self.request.user.planta.all()),
                     Q(first_name__icontains=search) |
                     Q(last_name__icontains=search) |
                     Q(username__icontains=search)).exclude(
@@ -456,27 +456,27 @@ class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         else:
             # Perfil no es Administrador
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                if negocio is None:
+                if planta is None:
                     queryset = User.objects.filter(
-                        negocio__in=self.request.user.negocio.all()).exclude(
+                        planta__in=self.request.user.planta.all()).exclude(
                         groups__name__in=['Administrador']).order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
                 else:
-                    # No es administrador y hay negocios seleccionadas
+                    # No es administrador y hay plantas seleccionadas
                     queryset = User.objects.filter(
-                        negocio__in=negocio).exclude(
+                        planta__in=planta).exclude(
                         groups__name__in=['Administrador']).order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
 
             else:
-                # Es administrador y no hay negocio seleccionada.
-                if negocio is None:
+                # Es administrador y no hay planta seleccionada.
+                if planta is None:
                     queryset = super(UserListView, self).get_queryset().order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
                 else:
-                    # Es administrador y hay negocios seleccionadas.
+                    # Es administrador y hay plantas seleccionadas.
                     queryset = super(UserListView, self).get_queryset().filter(
-                        negocio__in=negocio).order_by(
+                        planta__in=planta).order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
 
         return queryset
@@ -547,14 +547,14 @@ def users_create(request, user_id):
         if not user == request.user:
             raise Http404
 
-    # Se obtiene el perfil y las negocios del usuario.
+    # Se obtiene el perfil y las plantas del usuario.
     try:
         current_group = user.groups.get()
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
         #negocios_usuario[::1]
     except:
         current_group = ''
-        negocios_usuario = ''
+        plantas_usuario = ''
 
     if request.method == 'POST':
         user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
@@ -588,7 +588,7 @@ def users_create(request, user_id):
 
         user_form = EditarUsuarioForm(
             instance=user,
-            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
+            initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
             user=request.user
         )
         #profile_form = ProfileForm(instance=profile)
