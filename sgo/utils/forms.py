@@ -126,13 +126,14 @@ class CrearClienteForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('abreviatura', css_class='form-group col-md-6 mb-0'),
                 Column('email', css_class='form-group col-md-6 mb-0'),
-                Column('region', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('provincia', css_class='form-group col-md-6 mb-0'),
-                Column('ciudad', css_class='form-group col-md-6 mb-0'),
+                Column('region', css_class='form-group col-md-4 mb-0'),
+                Column('provincia', css_class='form-group col-md-4 mb-0'),
+                Column('ciudad', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
              Row(
@@ -163,13 +164,17 @@ class CrearClienteForm(forms.ModelForm):
 
     class Meta:
         model = Cliente
-        fields = ("rut", "razon_social", "giro", "email", "telefono", "area", "cargo", "horario",
+        fields = ("rut", "razon_social", "giro", "abreviatura", "email", "telefono", "area", "cargo", "horario",
                   "direccion", "region", "provincia", "ciudad", )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",
                 'type': "number",
                 'placeholder': '56912345678',
+                }),
+            'abreviatura': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'ABCD'
                 }),
         }
 
@@ -252,13 +257,14 @@ class EditarClienteForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('abreviatura', css_class='form-group col-md-6 mb-0'),
                 Column('email', css_class='form-group col-md-6 mb-0'),
-                Column('region', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('provincia', css_class='form-group col-md-6 mb-0'),
-                Column('ciudad', css_class='form-group col-md-6 mb-0'),
+                Column('region', css_class='form-group col-md-4 mb-0'),
+                Column('provincia', css_class='form-group col-md-4 mb-0'),
+                Column('ciudad', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
              Row(
@@ -288,13 +294,17 @@ class EditarClienteForm(forms.ModelForm):
  
     class Meta:
         model = Cliente
-        fields = ("rut", "razon_social", "giro", "email", "telefono", "area", "cargo", "horario",
+        fields = ("rut", "razon_social", "giro", "abreviatura", "email", "telefono", "area", "cargo", "horario",
                   "direccion", "region", "provincia", "ciudad", )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",
                 'type': "number",
                 'placeholder': '56912345678'
+                }),
+            'abreviatura': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'ABCD'
                 }),
         }
 
@@ -322,6 +332,13 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    rut = forms.CharField(required=True, label="RUT",
+                          widget=forms.TextInput(attrs={'class': "form-control",
+                          'onkeypress': "return isNumber(event)",
+                          'oninput': "checkRut(this)",
+                          'title': "El RUT debe ser ingresado sin puntos ni guiones.",
+                          'placeholder': '987654321',})
+                          ) 
     nombre = forms.CharField(required=True, label="Razon social",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
     direccion = forms.CharField (required=True, label="direccion",
@@ -331,14 +348,8 @@ class PlantaForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'oninput': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',}))
-    rut= forms.CharField(required=True, label="RUT ",
-                          widget=forms.TextInput(attrs={'class': "form-control",
-                          'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
-                          'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',}))
-
+                          'placeholder': '987654321',})
+                          )
     nombre_gerente = forms.CharField(required=True, label="Nombre Gerente",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     direccion_gerente = forms.CharField (required=True, label="direccion gerente",

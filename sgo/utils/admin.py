@@ -76,7 +76,7 @@ class ClienteSetResource(resources.ModelResource):
 
     class Meta:
         model = Cliente
-        fields = ('id', 'rut', 'razon_social', 'ciudad', 'direccion_comercial', )
+        fields = ('id', 'rut', 'razon_social', 'abreviatura', 'email', 'telefono', 'ciudad', 'direccion_comercial', )
 
 
 class NegocioSetResource(resources.ModelResource):
@@ -208,7 +208,7 @@ class ClienteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ClienteAdmin model Admin"""
 
     # resource_class = ClienteSetResource
-    fields = ('rut', 'razon_social', 'giro', 'email', 'telefono', 'area','cargo', 'horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
+    fields = ('rut', 'razon_social', 'giro', 'abreviatura', 'email', 'telefono', 'area','cargo', 'horario' , 'region', 'provincia', 'ciudad', 'direccion', 'status', )
     list_display = ('id', 'razon_social', 'ciudad', 'area_list', 'cargo_list', )
     list_filter = ['area', 'cargo', ]
     search_fields = ('id', 'razon_social', 'area__nombre', 'cargo__nombre')
