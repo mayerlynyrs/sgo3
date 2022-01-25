@@ -103,21 +103,44 @@ class RequerimientoCreateView(LoginRequiredMixin, PermissionRequiredMixin, Creat
 def create_requerimiento(request):
     if request.method == 'POST':
 
-        form = RequerimientoCreateForm(data=request.POST, files=request.FILES, user=request.user)
+        requer_form = RequerimientoCreateForm(data=request.POST)
+        print(request.POST)
 
-        if form.is_valid():
-            requerimiento = form.save()
+        if requer_form.is_valid():
+            requerimiento = requer_form.save(commit=False)
+            requerimiento.status = True
+            requerimiento.save()
+            requerimiento = requer_form.save()
 
             messages.success(request, 'Requerimiento Creado Exitosamente')
             return redirect('requerimientos:list')
+            # return redirect('utils:create_cliente', requerimiento_id=requerimiento.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        form = RequerimientoCreateForm(user=request.user)
-
+        requer_form = RequerimientoCreateForm()
+    
     return render(request, 'requerimientos/requerimiento_create.html', {
-        'form': form,
+        'form': requer_form,
     })
+
+    # if request.method == 'POST':
+
+    #     form = RequerimientoCreateForm(data=request.POST, files=request.FILES)
+
+    #     if form.is_valid():
+    #         requerimiento = form.save()
+
+    #         messages.success(request, 'Requerimiento Creado Exitosamente')
+    #         return redirect('requerimientos:list')
+    #     else:
+    #         messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    # else:
+    #     form = RequerimientoCreateForm()
+
+    # return render(request, 'requerimientos/requerimiento_create.html', {
+    #     'form': form,
+    # })
 
 
 @login_required
