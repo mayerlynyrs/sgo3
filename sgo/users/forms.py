@@ -143,8 +143,8 @@ class CrearUsuarioForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'oninput': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',}))
-    
+                          'placeholder': '987654321',})
+                          )    
     
 
     def __init__(self, *args, **kwargs):
@@ -320,9 +320,9 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    negocio = forms.ModelMultipleChoiceField(queryset=Negocio.objects.filter(status=True), required=True, label="Negocio",
+    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Plantas",
                                             widget=forms.SelectMultiple(
-                                                attrs={'class': 'selectpicker show-tick form-control',
+                                                attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
                                                        'data-live-search': 'true',
                                                        'data-live-search-normalize': 'true'
@@ -430,19 +430,19 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
             Row(
                 Column('cliente', css_class='form-group col-md-6 mb-0'),
-                Column('negocio', css_class='form-group col-md-6 mb-0'),
+                Column('planta', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
         )
 
         if self.fields['group'].queryset == 'Administrador':
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.negocio.all())
-            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
+            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.planta.all())
+            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
         else:
             self.fields['group'].queryset = Group.objects.all()
             self.fields['cliente'].queryset = Cliente.objects.all()
-            self.fields['negocio'].queryset = Negocio.objects.all()
+            self.fields['planta'].queryset = Planta.objects.all()
 
  
     class Meta:
@@ -450,7 +450,7 @@ class EditarUsuarioForm(forms.ModelForm):
         fields = ("group", "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
                   "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
                   "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen", 
-                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "negocio", "is_active", )
+                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "planta", "is_active", )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",

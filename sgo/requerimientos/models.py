@@ -51,7 +51,7 @@ class Requerimiento(BaseModel):
     codigo = models.CharField(
         'código',
         help_text='Identificador único de sistema de gestión.',
-        max_length=6,
+        max_length=8,
         unique=True,
         blank=True,
         null=True

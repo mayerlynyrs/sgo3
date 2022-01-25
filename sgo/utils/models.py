@@ -277,10 +277,13 @@ class Cliente(BaseModel):
         }
     )
     razon_social = models.CharField(max_length=100)
-    giro = models.CharField(max_length=150)
+    giro = models.CharField(max_length=150, blank=True, null=True)
+    abreviatura = models.CharField(max_length=4)
     email = models.EmailField(
         'correo',
         unique=True,
+        blank=True,
+        null=True,
         error_messages={
             'unique': 'Ya existe un cliente con este email registrado.'
         }
@@ -316,13 +319,11 @@ class Cliente(BaseModel):
     # region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
     # provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
     # ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
     direccion = models.CharField(
-        max_length=200,
-        null=True,
-        blank=True
+        max_length=200
     )
     status = models.BooleanField(
         default=True,
@@ -343,9 +344,10 @@ class Negocio(BaseModel):
     """
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, null=True, blank=True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
     archivo = models.FileField(
         upload_to='archivo_negocio/',
+        blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
     status = models.BooleanField(
@@ -386,19 +388,12 @@ class Planta(models.Model):
     nombre = models.CharField(max_length=100)
 
     rut_gerente = models.CharField(
-        max_length=12,
-        # validators=[rut_regex, ],
-        unique=True,
-        error_messages={
-            'unique': 'Ya existe un rut de gerente con este RUT registrado.'
-        }
+        max_length=12
     )
     nombre_gerente = models.CharField(max_length=100)
 
     direccion_gerente = models.CharField(
         max_length=200,
-        null=True,
-        blank=True
     )
 
     telefono_regex = RegexValidator(
@@ -415,7 +410,8 @@ class Planta(models.Model):
     )
     email = models.EmailField(
         'email address',
-        unique=True,
+        null=True,
+        blank=True,
         error_messages={
             'unique': 'Ya existe un negocio con este email registrado.'
         }
@@ -425,28 +421,27 @@ class Planta(models.Model):
 
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
-    gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True, blank=True)
+    gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True,)
 
+    examen = models.ManyToManyField("examenes.Examen",
+        blank=True,
+        help_text='Seleccione una o mas examenes para esta planta.')
 
     bono = models.ManyToManyField(
         Bono,
+        blank=True,
         help_text='Seleccione una o mas Bonos para esta planta.'
     )
 
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, )
 
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, )
 
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, )
 
     direccion = models.CharField(
         max_length=200,
-        null=True,
-        blank=True
     )
-
-    examen = models.ManyToManyField("examenes.Examen",
-        help_text='Seleccione una o mas examenes para esta planta.')
 
     status = models.BooleanField(
         default=True,
