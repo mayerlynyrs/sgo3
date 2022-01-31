@@ -1,6 +1,9 @@
 """Users Forms"""
 
 # Django
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group, User
 from datetime import datetime
 
 from django.forms import *
@@ -9,12 +12,11 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.forms import TextInput
 # sgo Model
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad , Planta
 from examenes.models import Evaluacion , Examen
-from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser
+from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser, ListaNegra
 
 User = get_user_model()
 
@@ -77,7 +79,7 @@ class CrearUsuarioForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -274,8 +276,8 @@ class EditarUsuarioForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     
-    fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"egreso"}))
+    fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%y"], label="Fecha de Nacimiento",
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -306,7 +308,7 @@ class EditarUsuarioForm(forms.ModelForm):
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label="Perfil",
+    group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -468,6 +470,48 @@ class EditarUsuarioForm(forms.ModelForm):
                 'id':"start"
                 }),
         }
+
+
+class ListaNegraForm(forms.ModelForm):
+    LISTA_NEGRA = 'LN'
+    LISTA_NEGRA_PLANTA = 'LNP'
+
+    TIPO_LN = (
+        (LISTA_NEGRA, 'Lista Negra'),
+        (LISTA_NEGRA_PLANTA, 'Lista Negra por Planta'),
+    )
+
+    tipo = forms.ChoiceField(choices = TIPO_LN, required=True,
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    descripcion = forms.CharField (required=True, label="Observaciones",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+    user = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True), required=True, label="Usuario",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=False, label="Plantas",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ListaNegraForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = ListaNegra
+        fields = ("tipo", "descripcion", "user", "planta", )
 
 
 class ProfesionUserForm(forms.ModelForm):

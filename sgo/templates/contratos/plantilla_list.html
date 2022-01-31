@@ -26,8 +26,8 @@
     justify-content: center;
 }
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #00acac !important;
-    border-color: #00acac !important;
+    background: #153264!important;
+    border-color: #153264 !important;
     color: #fff;
 }
 {% endblock %}
@@ -55,20 +55,7 @@
   </div>
   <div class="panel-body">
 
-    {% block buscador %}
-      <form method="get">
-        <div class="input-group col-md-12">
-          <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">
-              <i class="fas fa-search fa-sm"></i>
-            </button>
-          </div>
-        </div>
-      </form>
-    {% endblock buscador %}<br>
-
-    <table class="table table-bordered table-hover">
+    <table id="data-table-default" class="table table-bordered table-hover">
       <thead>
           <tr>
               <th class="text-center" width="45%">Plantilla de Contratos</th>

@@ -3,8 +3,8 @@
 # Django
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 # Utilities
-from import_export import resources
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
@@ -103,6 +103,7 @@ class TipoArchivoSetResource(resources.ModelResource):
 
 
 class UserSetResource(resources.ModelResource):
+    groups = fields.Field(column_name='groups', attribute='groups', widget=ForeignKeyWidget(Group, 'name'))
 
     class Meta:
         model = User
@@ -293,9 +294,12 @@ class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
                        'banco', 'tipo_cuenta', 'cuenta', 'cliente', 'planta', 'cambiar_clave', 'atributos', )
         }),
     )
-    list_display = ('id', 'rut', 'pasaporte', 'first_name', 'last_name', 'email', 'is_active')
-    list_filter = ('region', 'provincia', 'ciudad', 'planta', 'is_staff', 'created', 'modified')
-    search_fields = ('first_name', 'last_name', 'email', 'rut', 'pasaporte', 'region__nombre', 'provincia__nombre', 'ciudad__nombre', 'negocio__nombre')
+    list_display = ('id', 'groups_list', 'rut', 'first_name', 'last_name', 'is_active')
+    list_filter = ('region', 'provincia', 'ciudad', 'planta', 'groups', 'is_staff', 'created', 'modified')
+    search_fields = ('first_name', 'last_name', 'email', 'rut', 'pasaporte', 'groups__name', 'region__nombre', 'provincia__nombre', 'ciudad__nombre', 'planta__nombre')
+
+    def groups_list(self, obj):
+        return u", ".join(o.name for o in obj.groups.all())
 
 
 @admin.register(ArchivoUser)

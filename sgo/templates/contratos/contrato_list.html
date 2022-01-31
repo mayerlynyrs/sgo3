@@ -25,8 +25,8 @@
     justify-content: center;
 }
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #00acac !important;
-    border-color: #00acac !important;
+    background: #153264!important;
+    border-color: #153264 !important;
     color: #fff;
 }
 {% endblock %}
@@ -53,29 +53,14 @@
   </div>
   <div class="panel-body">
     <div class="table-responsive">
-
-      {% block buscador %}
-        <form method="get">
-          <div class="input-group col-md-12">
-            <input type="text" class="form-control" placeholder="Buscar..." name="q" value = "{{ request.GET.q }}">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search fa-sm"></i>
-              </button>
-            </div>
-          </div>
-        </form>
-      {% endblock buscador %}<br>
-    <table class="table table-bordered table-hover">
+    <table id="data-table-default" class="table table-bordered table-hover">
       <thead>
           <tr>
               <th class="text-center" width="5%">#</th>
               <th class="text-center" width="25%">Contratos</th>
               <th class="text-center" width="20%">Planta</th>
               <th class="text-center" width="20%">Estado</th>
-              <th class="text-center" width="10%">Inicio</th>
-              <th class="text-center" width="10%">Término</th>
-              <th class="text-center" width="10%">Fecha Creación</th>
+              <th class="text-center" width="10%">Fecha<br><small>F. Inicio - f. Término</small></th>
           </tr>
       </thead>
       <tbody>
@@ -94,16 +79,6 @@
             </td>
             <td class="text-center">
               {{ obj.estado|estado_contrato|safe }}
-            </td>
-            <td>
-               <p class="text-center">
-                  {{ obj.modified|date:'d/M/Y' }} <br>
-               </p>
-            </td>
-            <td>
-               <p class="text-center">
-                  {{ obj.modified|date:'d/M/Y' }} <br>
-               </p>
             </td>
             <td>
                <p class="text-center">

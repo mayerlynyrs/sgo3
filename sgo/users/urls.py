@@ -91,6 +91,11 @@ urlpatterns = [
         name='especialidad'
      ),
     path(
+        route='lista_negra',
+        view=views.ListaNegraView.as_view(),
+        name='lista_negra'
+     ),
+    path(
         route='change_password/',
         view=views.PasswordChangeView.as_view(),
         name='change_password'
