@@ -37,8 +37,8 @@ img {
     justify-content: center;
 }
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #00acac !important;
-    border-color: #00acac !important;
+    background: #153264!important;
+    border-color: #153264 !important;
     color: #fff;
 }
 
@@ -72,7 +72,7 @@ img {
     <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
       <thead>
           <tr>
-              <th class="text-center">Datos Usuario</th>
+              <th class="text-center">Datos Usuarios</th>
               <th class="text-center">Clientes</th>
               <th class="text-center">Plantas</th>
               <th class="text-center">Acciones</th>
@@ -90,18 +90,18 @@ img {
                     {{ usr.is_active|tag_active|safe }}
                   </div>
                   <span class="text-name text-success">
-                    {{ usr.first_name|title }} {{ usr.last_name|title }} -
-                    {{ usr.rut|upper }}
+                    {{ usr.rut|upper }} 
+                    {{ usr.first_name|title }} {{ usr.last_name|title }} 
                   </span>
                 </a>
                 <p class="text-desc">
-                  {{ usr.groups.first.name|title }}
+                  {{ usr.fecha_nacimiento|date:"SHORT_DATE_FORMAT" }}
                 </p>
                 <p class="text-desc">
-                  <i class="fas fa-at fa-xs"></i>
-                  {{ usr.email|lower }}
-                  <i class="fas fa-phone fa-xs"></i>
-                  {{ usr.telefono|lower }}
+                  <i class="fas fa-info fa-xs"></i>
+                  {{ usr.ciudad|title }} /
+                  <i class="fa-xs"></i>
+                  {{ usr.especialidad|title }}
                 </p>
             </td>
             <td class="list-clientes">
@@ -124,7 +124,7 @@ img {
             </td>
             <td>
               <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp &nbsp
-              <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp &nbsp
+              <!-- <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp &nbsp -->
               <a title="Historial" href="#" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a>
             </td>
           </tr>
@@ -139,6 +139,7 @@ img {
 </div>
 <!-- end panel -->
 {% endblock %}
+
 {% block scripts %}
 
   {% if messages %}

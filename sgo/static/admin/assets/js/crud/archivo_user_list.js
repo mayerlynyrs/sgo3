@@ -20,7 +20,7 @@ function getData3() {
             {"data": "tipo_archivo"},
             {"data": "archivo",
             "render": function(data, type, row, meta){
-                data = '<a href="//192.168.0.9:8000/media/' + data + '">' + ' <i class="fa fa-download" aria-hidden="true"></i></a> ';
+                data = '<a href="../../../media/' + data + '">' + ' <i class="fa fa-download" aria-hidden="true"></i></a> ';
                 return data;
             }},
             {"data": "id"},

@@ -414,7 +414,7 @@ class User(BaseModel, AbstractUser):
 
     def __str__(self):
         """Return RUT."""
-        return self.rut
+        return self.first_name + " " + self.last_name + " - " + self.rut
 
     def get_short_name(self):
         """Return RUT."""
@@ -464,7 +464,7 @@ class ListaNegra(BaseModel):
     )
     tipo = models.CharField(max_length=3, choices=TIPO_LN, default=LISTA_NEGRA)
     descripcion = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
     status = models.BooleanField(
         default=True,
@@ -473,6 +473,13 @@ class ListaNegra(BaseModel):
     
     def __str__(self):
         return str(self.user)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['user'] = self.user.first_name + " " + self.user.last_name + " - " + self.user.rut
+        item['planta'] = self.planta.nombre
+        item['planta_id'] = self.planta.id
+        return item
 
 class Parentesco(models.Model):
     nombre = models.CharField(

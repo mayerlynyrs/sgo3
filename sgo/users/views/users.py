@@ -1,8 +1,10 @@
 """Users views."""
 
+from asyncio.windows_events import NULL
 import json
 # Django
 import os
+from queue import Empty
 from subprocess import Popen
 from datetime import datetime
 from django.contrib import messages
@@ -28,12 +30,12 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser
+from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser, ListaNegra
 from utils.models import Cliente, Negocio, Planta, Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 from examenes.models import Evaluacion
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, TipoArchivoCreateForm , EvaluacionAchivoForm
+from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, ListaNegraForm, EvaluacionAchivoForm
 
 User = get_user_model()
 
@@ -875,6 +877,60 @@ class UserDetailView(LoginRequiredMixin, DetailView):
             if not self.object == self.request.user:
                 raise Http404
 
+        return context
+
+
+class ListaNegraView(TemplateView):
+    template_name = 'users/lista_negra_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in ListaNegra.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                lnegra = ListaNegra()
+                lnegra.tipo = request.POST['tipo']
+                lnegra.descripcion = request.POST['descripcion']
+                lnegra.user_id = request.POST['user']
+                if request.POST['tipo'] == 'LN':
+                    lnegra.planta_id = None
+                else:
+                    lnegra.planta_id = request.POST['planta']
+                lnegra.status = True
+                # lnegra.created_date = request.POST['created_date']
+                lnegra.save()
+            elif action == 'edit':
+                lnegra = ListaNegra.objects.get(pk=request.POST['id'])
+                lnegra.tipo = request.POST['tipo']
+                lnegra.descripcion = request.POST['descripcion']
+                lnegra.user_id = request.POST['user']
+                lnegra.planta_id = request.POST['planta']
+                lnegra.save()
+            elif action == 'delete':
+                lnegra = ListaNegra.objects.get(pk=request.POST['id'])
+                lnegra.status = False
+                lnegra.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Lista Negra'
+        context['list_url'] = reverse_lazy('users:lista_negra')
+        context['entity'] = 'ListaNegra'
+        context['form'] = ListaNegraForm()
         return context
 
 
