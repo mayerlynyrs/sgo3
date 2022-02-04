@@ -28,11 +28,6 @@ urlpatterns = [
         view=views.UserListView.as_view(),
         name='list'
     ),
-    path(
-        route='<int:user_id>/attribute/',
-        view=views.update_a_user,
-        name="attribute"
-    ),
     # Crea el usuario
     path(
         route='create',
@@ -118,5 +113,5 @@ urlpatterns = [
     path('ajax/load-ciudades/', views.load_ciudades, name='ajax_load_ciudades'), # AJAX
     
     
-    path('ajax/load-negocios/', views.load_negocios, name='ajax_load_negocios'), # AJAX
+    path('ajax/load-plantas/', views.load_plantas, name='ajax_load_plantas'), # AJAX
 ]

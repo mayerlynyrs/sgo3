@@ -139,7 +139,7 @@
 			  <div>
 					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" action="{% url 'users:update' user_id %}" autocomplete="off" novalidate id="CrearUsuarioForm" data-negocios-url="{% url 'users:ajax_load_negocios' %}">
+            <form method="post" action="{% url 'users:update' usuario.id %}" autocomplete="off" novalidate id="CrearUsuarioForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
 							<!-- begin fieldset -->
 							<fieldset>
 								<!-- begin row -->
@@ -149,9 +149,9 @@
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Usuario</legend><hr /><br>
 										<!-- begin form-group row -->
                     {% csrf_token %}
-                    {% crispy form1 %}
+                    {% crispy form %}
                     <input name="action" type="hidden" value="add_usuario">
-                    <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                    <input name="user_id" id="user_id" type="hidden" value="{{ usuario.id }}">
                   </div>
 									<!-- end col-8 -->
 								</div>
@@ -226,7 +226,8 @@
                                               <div class="container-fluid">
                                                   <input name="action" type="hidden" value="add">
                                                   <input name="id" id="id" type="hidden" value="0">
-                                                  <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                                                  <input name="user_id" id="user_id" type="hidden" value="{{ usuario.id }}">
+                                                  {% csrf_token %}
                                                   {% for field in form2.visible_fields %}
                                                       <div class="form-group">
                                                           <label for="email">{{ field.label }}:</label>
@@ -303,7 +304,8 @@
                                                 <div class="container-fluid">
                                                     <input name="action" type="hidden" value="add">
                                                     <input name="id" id="id" type="hidden" value="0">
-                                                    <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                                                    <input name="user_id" id="user_id" type="hidden" value="{{ usuario.id }}">
+                                                    {% csrf_token %}
                                                     {% for field in form3.visible_fields %}
                                                         <div class="form-group">
                                                             <label for="email">{{ field.label }}:</label>
@@ -371,6 +373,7 @@
                                               <div class="container-fluid">
                                                   <input name="action" type="hidden" value="add">
                                                   <input name="id" id="id" type="hidden" value="0">
+                                                  {% csrf_token %}
                                                   {% for field in form4.visible_fields %}
                                                       <div class="form-group">
                                                           <label for="email">{{ field.label }}:</label>
@@ -438,10 +441,11 @@
                                         <div class="container-fluid">
                                             <input name="action" type="hidden" value="planta_add">
                                             <input name="id" id="id" type="hidden" value="0">
-                                            <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                                            <input name="user_id" id="user_id" type="hidden" value="{{ usuario.id }}">
                                             <div class="row col-md-12">
                                                 <div class="form-group col-md-6">
                                                     <label for="email"> Fecha Examen</label>
+                                                    {% csrf_token %}
                                                     {{ form5.fecha_examen }}
                                                 </div>
                                                 <div class="form-group col-md-6">
@@ -536,18 +540,18 @@
         });
   
       });
-      // negocios
+      // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-negocios-url");  // get the url of the `load_negocios` view
+        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_negocios' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-negocios/)
+          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
           data: {
             'cliente': clienteId       // add the cliente id to the GET parameters
           },
-          success: function (data) {   // `data` is the return of the `load_negocios` view function
-            $("#id_negocio").html(data);  // replace the contents of the negocio input with the data that came from the server
+          success: function (data) {   // `data` is the return of the `load_plantas` view function
+            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
           }
         });
   

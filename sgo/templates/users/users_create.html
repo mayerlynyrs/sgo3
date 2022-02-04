@@ -113,7 +113,7 @@
 			  <div>
 					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" autocomplete="off" novalidate id="CrearUsuarioForm" data-negocios-url="{% url 'users:ajax_load_negocios' %}">
+            <form method="post" autocomplete="off" novalidate id="CrearUsuarioForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
 							<!-- begin fieldset -->
 							<fieldset>
 								<!-- begin row -->
@@ -183,18 +183,18 @@
         });
   
       });
-      // negocios
+      // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-negocios-url");  // get the url of the `load_negocios` view
+        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_negocios' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-negocios/)
+          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
           data: {
             'cliente': clienteId       // add the cliente id to the GET parameters
           },
-          success: function (data) {   // `data` is the return of the `load_negocios` view function
-            $("#id_negocio").html(data);  // replace the contents of the negocio input with the data that came from the server
+          success: function (data) {   // `data` is the return of the `load_plantas` view function
+            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
           }
         });
   
