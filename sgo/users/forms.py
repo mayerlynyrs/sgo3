@@ -276,7 +276,7 @@ class EditarUsuarioForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     
-    fecha_nacimiento = forms.DateField(required=True, input_formats=["%d/%m/%y"], label="Fecha de Nacimiento",
+    fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -336,6 +336,7 @@ class EditarUsuarioForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        print('edit')
         print(user)
         super(EditarUsuarioForm, self).__init__(*args, **kwargs)
 
@@ -437,9 +438,10 @@ class EditarUsuarioForm(forms.ModelForm):
             ),
         )
 
-        if self.fields['group'].queryset == 'Administrador':
+        if not user.groups.filter(name='Administrador').exists():
+            # if self.fields['group'].queryset == 'Administrador':
             self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.planta.all())
+            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
             self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
         else:
             self.fields['group'].queryset = Group.objects.all()

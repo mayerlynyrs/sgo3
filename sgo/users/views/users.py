@@ -1,10 +1,9 @@
 """Users views."""
 
-from asyncio.windows_events import NULL
+
 import json
 # Django
 import os
-from queue import Empty
 from subprocess import Popen
 from datetime import datetime
 from django.contrib import messages
@@ -16,8 +15,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q, F, ProtectedError
-from django.core.paginator import Paginator
+from django.db.models import Q, F
 from django.http import Http404, JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
@@ -53,18 +51,285 @@ def load_ciudades(request):
     context = {'ciudades': ciudades}
     return render(request, 'users/ciudad.html', context)
 
-# Negocio
-def load_negocios(request):
+# Planta
+def load_plantas(request):
     cliente_id = request.GET.get('cliente')    
-    negocios = Negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
-    context = {'negocios': negocios}
-    return render(request, 'users/negocio.html', context)
+    plantas = Planta.objects.filter(cliente_id=cliente_id).order_by('nombre')
+    context = {'plantas': plantas}
+    return render(request, 'users/planta.html', context)
 
 
 class SignInView(auth_views.LoginView):
     """Login view."""
 
     template_name = 'users/login.html'
+
+
+class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = User
+    template_name = "users/users_list.html"
+    paginate_by = 25
+    ordering = ['first_name', 'last_name']
+
+    permission_required = 'users.view_user'
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+
+        if self.request.user.groups.filter(name__in=['Administrador']).exists():
+            institutions = Planta.objects.values(
+                    value=F('id'),
+                    title=F('nombre')).all().order_by('nombre')
+                #cache.set('institutions', institutions)
+            institutions = Sexo.objects.values(
+                    value=F('id'),
+                    title=F('nombre')).all().order_by('nombre')
+
+            context['plantas'] = institutions
+            context['planta'] = self.kwargs.get('planta_id', None)
+
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        planta = self.kwargs.get('planta_id', None)
+
+        if planta == '':
+            planta = None
+
+        if search:
+            # No es administrador y recibe parametro de busqueda
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = User.objects.select_related('planta').filter(
+                    Q(cliente__in=self.request.user.cliente.all()),
+                    Q(planta__in=self.request.user.planta.all()),
+                    Q(first_name__icontains=search) |
+                    Q(last_name__icontains=search) |
+                    Q(username__icontains=search)).exclude(
+                    groups__name__in=['Administrador']).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+            else:
+                # Es administrador y recibe parametro de busqueda
+                queryset = super(UserListView, self).get_queryset().filter(
+                                        Q(first_name__icontains=search) |
+                                        Q(last_name__icontains=search) |
+                                        Q(rut__icontains=search) |
+                                        Q(groups__name__icontains=search) |
+                                        Q(username__icontains=search)).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+        else:
+            # Perfil no es Administrador
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                if planta is None:
+                    queryset = User.objects.filter(
+                        planta__in=self.request.user.planta.all()).exclude(
+                        groups__name__in=['Administrador']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # No es administrador y hay plantas seleccionadas
+                    queryset = User.objects.filter(
+                        planta__in=planta).exclude(
+                        groups__name__in=['Administrador']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+            else:
+                # Es administrador y no hay planta seleccionada.
+                if planta is None:
+                    queryset = super(UserListView, self).get_queryset().order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # Es administrador y hay plantas seleccionadas.
+                    queryset = super(UserListView, self).get_queryset().filter(
+                        planta__in=planta).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+        return queryset
+
+
+@login_required
+@permission_required('users.add_user', raise_exception=True)
+def create_user(request):
+    if request.method == 'POST':
+
+        user_form = CrearUsuarioForm(data=request.POST, user=request.user)
+        #profile_form = ProfileForm(data=request.POST, user=request.user)
+
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            print(request.POST.getlist('group'))
+            if request.POST.getlist('group') == ['1']:
+                user.is_superuser = True
+                user.is_staff = True
+                user.atributos = 'NO APLICA'
+            # exit()
+            email = user.email
+            now_date = datetime.now()
+            user.username = email[:email.find('@')] + now_date.strftime("-%y%m%H%M%S")
+            user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
+            user.is_active = True
+            user.save()
+            user = user_form.save()
+
+            #profile = profile_form.save(commit=False)
+
+            user.groups.add(user_form.cleaned_data['group'])
+
+            # current_site = str(get_current_site(request))
+            #
+            # # task para enviar mail de activacion
+            # send_activation_mail.apply_async(
+            #     queue='high_priority',
+            #     kwargs={'current_site': current_site,
+            #             'user_id': user.pk
+            #             }
+            # )
+
+            messages.success(request, 'Usuario Creado Exitosamente')
+            return redirect('users:list')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        user_form = CrearUsuarioForm(user=request.user)
+        #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
+    
+    return render(request, 'users/users_create.html', {
+        'form': user_form,
+    })
+
+
+@login_required
+@permission_required('users.add_user', raise_exception=True)
+def update_user(request, user_id):
+    """Update a user's profile view."""
+
+    user = get_object_or_404(User, pk=user_id)
+
+    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
+    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+        if not user == request.user:
+            raise Http404
+
+    # Se obtiene el perfil y las plantas del usuario.
+    try:
+        current_group = user.groups.get()
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
+        #plantas_usuario[::1]
+    except:
+        current_group = ''
+        plantas_usuario = ''
+
+    if request.method == 'POST':
+        print('paso post')
+        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
+        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+        print('tambien user_form')
+
+        if user_form.is_valid():
+            user.is_active = True
+            user_form.save()
+            #profile_form.save()
+
+            # Solo el Administrador puede cambiar el perfil del usuario
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                user.groups.clear()
+                user.groups.add(user_form.cleaned_data['group'])
+
+            messages.success(request, ('Usuario actualizado'))
+
+            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+                response = redirect('users:create', user_id)
+                return response
+            else:
+                return redirect('home')
+
+        else:
+            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+    else:
+
+        user_form = EditarUsuarioForm(
+            instance=user,
+            initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
+            user=request.user
+        )
+        #profile_form = ProfileForm(instance=profile)
+
+    return render(
+        request=request,
+        template_name='users/create_users.html',
+        context={
+            'usuario': user,
+            'form': user_form,
+        }
+    )
+
+
+@login_required(login_url='users:signin')
+def update_profile(request, user_id,):
+    """Update a user's profile view."""
+
+    user = get_object_or_404(User, pk=user_id)
+
+    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+    if not request.user.groups.filter(name__in=['Administrador', ]).exists():
+        if not user == request.user:
+            raise Http404
+
+    # Se obtiene el perfil y las negocios del usuario.
+    try:
+        current_group = user.groups.get()
+        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
+        #negocios_usuario[::1]
+    except:
+        current_group = ''
+        negocios_usuario = ''
+
+    if request.method == 'POST':
+        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
+        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+
+        if user_form.is_valid():
+            user_form.save()
+            #profile_form.save()
+
+            # Solo el Administrador puede cambiar el perfil del usuario
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                user.groups.clear()
+                user.groups.add(user_form.cleaned_data['group'])
+
+            messages.success(request, ('Usuario actualizado'))
+
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                page = request.GET.get('page')
+                if page != '':
+                    response = redirect('users:detail', pk=user_id)
+                    response['Location'] += '?page=' + page
+                    return response
+                else:
+                    return redirect('users:detail', pk=user_id)
+            else:
+                return redirect('home')
+
+        else:
+            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+    else:
+
+        user_form = EditarUsuarioForm(
+            instance=user,
+            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
+            user=request.user
+        )
+        #profile_form = ProfileForm(instance=profile)
+
+    return render(
+        request=request,
+        template_name='users/users_create.html',
+        context={
+            'usuario': user,
+            'form': user_form
+        }
+    )
 
 
 class UsersIdView(TemplateView):
@@ -74,6 +339,8 @@ class UsersIdView(TemplateView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    user = get_object_or_404(User, pk=1)
 
     def post(self, request, user_id, *args, **kwargs):
         data = {}
@@ -178,21 +445,86 @@ class UsersIdView(TemplateView):
         # return JsonResponse({'data': 'data'},{'data2': 'data2'})
         # return JsonResponse(data, safe=False)
 
-    def get_context_data(self, user_id, **kwargs):
-        
+    def get_context_data(request, user_id, **kwargs):
+
         user = get_object_or_404(User, pk=user_id)
+
+        # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+        # Se valida que solo los administradores puedan editar el perfil de otro usuario.
+        if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+            if not user == request.user:
+                raise Http404
+
+        # Se obtiene el perfil y las plantas del usuario.
+        try:
+            current_group = user.groups.get()
+            plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
+            #plantas_usuario[::1]
+        except:
+            current_group = ''
+            plantas_usuario = ''
+
+            print('paso post')
+            user_form = EditarUsuarioForm(instance=user, user=request.user)
+            #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+            print('tambien user_form')
+
+            if user_form.is_valid():
+                user.is_active = True
+                user_form.save()
+                #profile_form.save()
+
+                # Solo el Administrador puede cambiar el perfil del usuario
+                if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                    user.groups.clear()
+                    user.groups.add(user_form.cleaned_data['group'])
+
+                messages.success(request, ('Usuario actualizado'))
+
+                if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+                    response = redirect('users:update', user_id)
+                    return response
+                else:
+                    return redirect('home')
+
+            else:
+                messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+        else:
+
+            user_form = EditarUsuarioForm(
+                instance=user,
+                initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
+                user=request.user
+            )
 
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
         context['update_url'] = reverse_lazy('users:update')
         context['entity'] = 'Contactos'
+        context['usuario'] = user
         context['user_id'] = user_id
-        context['form1'] = EditarUsuarioForm(instance=user)
+        context['form'] = user_form
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionUserForm()
         context['form4'] = ArchivoUserForm()
         context['form5'] = EvaluacionAchivoForm()
+        return context
+
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "users/users_detail.html"
+    context_object_name = "usuario"
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+
+        # Se valida que solo el administrador pueda editar el perfil de otro usuario.
+        if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT',]).exists():
+            if not self.object == self.request.user:
+                raise Http404
+
         return context
 
 
@@ -402,486 +734,12 @@ class EspecialidadView(TemplateView):
         return context
 
 
-class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    model = User
-    template_name = "users/users_list.html"
-    paginate_by = 25
-    ordering = ['first_name', 'last_name']
-
-    permission_required = 'users.view_user'
-    raise_exception = True
-
-    def get_context_data(self, **kwargs):
-        context = super(UserListView, self).get_context_data(**kwargs)
-
-        if self.request.user.groups.filter(name__in=['Administrador']).exists():
-            institutions = Planta.objects.values(
-                    value=F('id'),
-                    title=F('nombre')).all().order_by('nombre')
-                #cache.set('institutions', institutions)
-            institutions = Sexo.objects.values(
-                    value=F('id'),
-                    title=F('nombre')).all().order_by('nombre')
-
-            context['plantas'] = institutions
-            context['planta'] = self.kwargs.get('planta_id', None)
-
-        return context
-
-    def get_queryset(self):
-        search = self.request.GET.get('q')
-        planta = self.kwargs.get('planta_id', None)
-
-        if planta == '':
-            planta = None
-
-        if search:
-            # No es administrador y recibe parametro de busqueda
-            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
-                queryset = User.objects.select_related('planta').filter(
-                    Q(cliente__in=self.request.user.cliente.all()),
-                    Q(planta__in=self.request.user.planta.all()),
-                    Q(first_name__icontains=search) |
-                    Q(last_name__icontains=search) |
-                    Q(username__icontains=search)).exclude(
-                    groups__name__in=['Administrador']).order_by(
-                    'first_name', 'last_name').distinct('first_name', 'last_name')
-            else:
-                # Es administrador y recibe parametro de busqueda
-                queryset = super(UserListView, self).get_queryset().filter(
-                                        Q(first_name__icontains=search) |
-                                        Q(last_name__icontains=search) |
-                                        Q(rut__icontains=search) |
-                                        Q(groups__name__icontains=search) |
-                                        Q(username__icontains=search)).order_by(
-                    'first_name', 'last_name').distinct('first_name', 'last_name')
-        else:
-            # Perfil no es Administrador
-            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                if planta is None:
-                    queryset = User.objects.filter(
-                        planta__in=self.request.user.planta.all()).exclude(
-                        groups__name__in=['Administrador']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-                else:
-                    # No es administrador y hay plantas seleccionadas
-                    queryset = User.objects.filter(
-                        planta__in=planta).exclude(
-                        groups__name__in=['Administrador']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-
-            else:
-                # Es administrador y no hay planta seleccionada.
-                if planta is None:
-                    queryset = super(UserListView, self).get_queryset().order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-                else:
-                    # Es administrador y hay plantas seleccionadas.
-                    queryset = super(UserListView, self).get_queryset().filter(
-                        planta__in=planta).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
-
-        return queryset
-
-
-@login_required
-@permission_required('users.add_user', raise_exception=True)
-def create_user(request):
-    if request.method == 'POST':
-
-        user_form = CrearUsuarioForm(data=request.POST, user=request.user)
-        print(request.POST)
-        #profile_form = ProfileForm(data=request.POST, user=request.user)
-
-        if user_form.is_valid():
-            user = user_form.save(commit=False)
-            # print(request.POST.getlist('group'))
-            if request.POST.getlist('group') == ['1']:
-                user.is_superuser = True
-                user.is_staff = True
-                user.atributos = 'NO APLICA'
-            # exit()
-            email = user.email
-            now_date = datetime.now()
-            user.username = email[:email.find('@')] + now_date.strftime("-%y%m%H%M%S")
-            user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
-            user.is_active = True
-            user.save()
-            user = user_form.save()
-
-            #profile = profile_form.save(commit=False)
-
-            user.groups.add(user_form.cleaned_data['group'])
-
-            # current_site = str(get_current_site(request))
-            #
-            # # task para enviar mail de activacion
-            # send_activation_mail.apply_async(
-            #     queue='high_priority',
-            #     kwargs={'current_site': current_site,
-            #             'user_id': user.pk
-            #             }
-            # )
-
-            messages.success(request, 'Usuario Creado Exitosamente')
-            return redirect('users:create', user_id=user.id)
-            # return redirect('users:list')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        user_form = CrearUsuarioForm(user=request.user)
-        #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
-    
-    return render(request, 'users/users_create.html', {
-        'form': user_form,
-    })
-
-
-@login_required
-@permission_required('users.add_user', raise_exception=True)
-def users_create(request, user_id):
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    # Se obtiene el perfil y las plantas del usuario.
-    try:
-        current_group = user.groups.get()
-        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
-        #negocios_usuario[::1]
-    except:
-        current_group = ''
-        plantas_usuario = ''
-
-    if request.method == 'POST':
-        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user_form.save()
-            #profile_form.save()
-
-            # Solo el Administrador puede cambiar el perfil del usuario
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                user.groups.clear()
-                user.groups.add(user_form.cleaned_data['group'])
-
-            messages.success(request, ('Usuario actualizado'))
-
-            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-                page = request.GET.get('page')
-                if page != '':
-                    response = redirect('users:detail', pk=user_id)
-                    response['Location'] += '?page=' + page
-                    return response
-                else:
-                    return redirect('users:detail', pk=user_id)
-            else:
-                return redirect('home')
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarUsuarioForm(
-            instance=user,
-            initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    if request.method == 'POST':
-
-        contacto_user_form = ContactoForm(data=request.POST)
-        
-        if contacto_user_form.is_valid():
-            contacto = contacto_user_form.save(commit=False)
-            contacto.status = True
-            now_date = datetime.now()
-            contacto.created_date = now_date
-            contacto.user_id = user_id
-            print("2do-", user_id)
-            contacto.save()
-            contacto = contacto_user_form.save()
-            
-
-            messages.success(request, 'Contacto Usuario Creado Exitosamente')
-            # return redirect('users:add_contacto', user_id=profesion_user.id)
-            # return redirect('users:list')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-
-        profesion_user_form = ProfesionUserForm(data=request.POST)
-        print("3ero-", user_id)
-
-        if profesion_user_form.is_valid():
-            profesion_user = profesion_user_form.save(commit=False)
-            profesion_user.status = True
-            now_date = datetime.now()
-            profesion_user.created_date = now_date
-            profesion_user.user_id = user_id
-            print("4to-", user_id)
-            profesion_user.save()
-            profesion_user = profesion_user_form.save()
-            
-
-            messages.success(request, 'Profesion Usuario Creado Exitosamente')
-            # return redirect('users:add_contacto', user_id=user_id)
-            # return redirect('users:list')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-
-        doc_user_form = ArchivoUserForm(data=request.POST)
-        print("5to-", user_id)
-
-        if doc_user_form.is_valid():
-            archivo_user = doc_user_form.save(commit=False)
-            archivo_user.status = True
-            now_date = datetime.now()
-            archivo_user.created_date = now_date
-            archivo_user.user_id = user_id
-            print("6to-", user_id)
-            archivo_user.save()
-            archivo_user = doc_user_form.save()
-            
-
-            messages.success(request, 'Archivos del Usuario Creado Exitosamente')
-            # return redirect('users:add_contacto', user_id=user_id)
-            # return redirect('users:list')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        contacto_user_form = ContactoForm(user=request.user)
-        profesion_user_form = ProfesionUserForm(user=request.user)
-        doc_user_form = ArchivoUserForm(user=request.user)
-        #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
-
-    
-    return render(request, 'users/create_users.html', {
-        'form2': contacto_user_form,
-        'form3': profesion_user_form,
-        'form4': doc_user_form,
-        'form': user_form
-    })
-
-
-
-@login_required(login_url='users:signin')
-def update_user(request, user_id):
-    """Update a user's profile view."""
-    print('aqui')
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    # Se obtiene el perfil y las negocios del usuario.
-    try:
-        current_group = user.groups.get()
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
-        #negocios_usuario[::1]
-    except:
-        current_group = ''
-        negocios_usuario = ''
-
-    if request.method == 'POST':
-        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user.is_active = True
-            user_form.save()
-            #profile_form.save()
-
-            # Solo el Administrador puede cambiar el perfil del usuario
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                user.groups.clear()
-                user.groups.add(user_form.cleaned_data['group'])
-
-            messages.success(request, ('Usuario actualizado'))
-
-            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-                page = request.GET.get('page')
-                if page != '':
-                    response = redirect('users:create', user_id)
-                    # response['Location'] += '?page=' + page
-                    return response
-                else:
-                    return redirect('users:create', user_id)
-
-            # if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-            #     page = request.GET.get('page')
-            #     if page != '':
-            #         response = redirect('users:create', user_id)
-            #         return response
-            #     else:
-            #         return redirect('users:create', user_id)
-            else:
-                return redirect('home')
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarUsuarioForm(
-            instance=user,
-            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    return render(
-        request=request,
-        template_name='users/create_users.html',
-        context={
-            'usuario': user,
-            'form1': user_form
-        }
-    )
-
-
-@login_required(login_url='users:signin')
-def update_profile(request, user_id,):
-    """Update a user's profile view."""
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    # Se obtiene el perfil y las negocios del usuario.
-    try:
-        current_group = user.groups.get()
-        negocios_usuario = Negocio.objects.values_list('id', flat=True).filter(user=user_id)
-        #negocios_usuario[::1]
-    except:
-        current_group = ''
-        negocios_usuario = ''
-
-    if request.method == 'POST':
-        user_form = EditarUsuarioForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user_form.save()
-            #profile_form.save()
-
-            # Solo el Administrador puede cambiar el perfil del usuario
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                user.groups.clear()
-                user.groups.add(user_form.cleaned_data['group'])
-
-            messages.success(request, ('Usuario actualizado'))
-
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                page = request.GET.get('page')
-                if page != '':
-                    response = redirect('users:detail', pk=user_id)
-                    response['Location'] += '?page=' + page
-                    return response
-                else:
-                    return redirect('users:detail', pk=user_id)
-            else:
-                return redirect('home')
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarUsuarioForm(
-            instance=user,
-            initial={'group': current_group.pk, 'negocio': list(negocios_usuario), },
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    return render(
-        request=request,
-        template_name='users/users_create.html',
-        context={
-            'usuario': user,
-            'form': user_form
-        }
-    )
-
-
-@login_required(login_url='users:signin')
-def update_a_user(request, user_id):
-    """Update a user's profile view (attributes)."""
-
-    user = get_object_or_404(User, pk=user_id)
-
-    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
-    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-        if not user == request.user:
-            raise Http404
-
-    if request.method == 'POST':
-        user_form = EditarAtributosForm(request.POST or None, instance=user, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-
-        if user_form.is_valid():
-            user_form.save()
-            #profile_form.save()
-
-            messages.success(request, ('Usuario actualizado'))
-
-            return redirect('users:attribute', user_id)
-
-        else:
-            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
-    else:
-
-        user_form = EditarAtributosForm(
-            instance=user,
-            user=request.user
-        )
-        #profile_form = ProfileForm(instance=profile)
-
-    # Obtengo todos los documentos del contrato
-    contratos = Contrato.objects.filter(user=user)
-
-    return render(
-        request=request,
-        template_name='users/users_attribute.html',
-        context={
-            'usuario': user,
-            'form': user_form,
-            'contratos': contratos
-        }
-    )
-
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
-    template_name = "users/users_detail.html"
-    context_object_name = "usuario"
-
-    def get_context_data(self, **kwargs):
-        context = super(UserDetailView, self).get_context_data(**kwargs)
-
-        # Se valida que solo el administrador pueda editar el perfil de otro usuario.
-        if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT',]).exists():
-            if not self.object == self.request.user:
-                raise Http404
-
-        return context
-
-
 class ListaNegraView(TemplateView):
     template_name = 'users/lista_negra_list.html'
+    
+
+    permission_required = 'users.lista_negra'
+    raise_exception = True
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
