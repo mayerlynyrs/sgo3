@@ -477,6 +477,7 @@ class ListaNegra(BaseModel):
     def toJSON(self):
         item = model_to_dict(self)
         item['user'] = self.user.first_name + " " + self.user.last_name + " - " + self.user.rut
+        item['user_id'] = self.user.id
         item['planta'] = self.planta.nombre
         item['planta_id'] = self.planta.id
         return item

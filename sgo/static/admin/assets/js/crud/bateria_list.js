@@ -17,7 +17,7 @@ function getData() {
         },
         columns: [
             {"data": "nombre"},
-            {"data": "examen[].nombre"},
+            {"data": "examen[ <br> ].nombre"},
             {"data": "id"},
         ],
         columnDefs: [

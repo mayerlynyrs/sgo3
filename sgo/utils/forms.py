@@ -1,4 +1,4 @@
-"""Users Forms"""
+"""Utils Forms"""
 
 # Django
 from django import forms
@@ -325,7 +325,7 @@ class NegocioForm(forms.ModelForm):
         fields = ("nombre", "descripcion", "archivo")
 
 class PlantaForm(forms.ModelForm):
-    negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), required=True, label="Negocio",
+    negocio = forms.ModelChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control ',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -339,11 +339,11 @@ class PlantaForm(forms.ModelForm):
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           ) 
-    nombre = forms.CharField(required=True, label="Razon social",
+    nombre = forms.CharField(required=True, label="Razón Social",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
-    direccion = forms.CharField (required=True, label="direccion",
+    direccion = forms.CharField (required=True, label="Dirección",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    rut_gerente = forms.CharField(required=True, label="RUT gerente",
+    rut_gerente = forms.CharField(required=True, label="RUT Gerente",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
                           'oninput': "checkRut(this)",
@@ -358,28 +358,28 @@ class PlantaForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
-    gratificacion = forms.ModelChoiceField(queryset=Gratificacion.objects.all(), required=True, label="Gratificacion",
+    gratificacion = forms.ModelChoiceField(queryset=Gratificacion.objects.all(), required=True, label="Gratificación",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=True, label="region",
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=True, label="Región",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.all(), required=True, label="ciudad",
+    provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(), required=True, label="Provincia",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(), required=True, label="provincia",
+    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.all(), required=True, label="Ciudad",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -394,7 +394,7 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Examenes",
+    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Exámenes",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -404,7 +404,18 @@ class PlantaForm(forms.ModelForm):
                                             )
 
     def __init__(self, *args, **kwargs):
-        Planta = kwargs.pop('planta', None)
+        planta = kwargs.pop('planta', None)
+        print('planta')
+        print(planta)
+        cliente = kwargs.pop('cliente', None)
+        print('cliente')
+        print(cliente)
+        cliente_id = kwargs.pop('cliente_id', None)
+        print('cliente_id')
+        print(cliente_id)
+        maye = kwargs.pop('maye', None)
+        print('maye')
+        print(maye)
         super(PlantaForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -448,6 +459,14 @@ class PlantaForm(forms.ModelForm):
             ),         
 
         )
+
+        if self.fields['negocio'].queryset == 'x1x2x3':
+            # if not planta.groups.filter(name='Administrador').exists():
+            # self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
+            self.fields['negocio'].queryset = Negocio.objects.filter(id__in=planta.cliente.all())
+        else:
+            # self.fields['group'].queryset = Group.objects.all()
+            self.fields['negocio'].queryset = Negocio.objects.filter(cliente_id=cliente_id)
 
     class Meta:
         model = Planta

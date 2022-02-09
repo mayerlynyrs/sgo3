@@ -73,6 +73,8 @@ img {
       <thead>
           <tr>
               <th class="text-center">Datos Cliente</th>
+              <th>Cuidad</th>
+              <th>Estado</th>
           </tr>
       </thead>
       <tbody>
@@ -85,8 +87,7 @@ img {
                     <!-- {{ c.razon_social }} -->
                     {{ clte.razon_social|upper }}<br>
                     {{ clte.giro|title }}<br>
-                    {{ clte.rut }}<br>
-                    {{ clte.status|tag_active|safe }}
+                    {{ clte.rut }}
                   </span>
                 </a>
                 <!-- <p class="text-desc">
@@ -99,6 +100,8 @@ img {
                   {{ clte.telefono|lower }}
                 </p>
             </td>
+            <td>{{ clte.ciudad }}</td>
+            <td>{{ clte.status|tag_active|safe }}</td>
             <!-- <td class="list-negocios"> -->
               <!-- {% for n in business %} -->
                 <!-- <ul>

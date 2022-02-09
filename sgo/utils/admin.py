@@ -92,14 +92,14 @@ class NegocioSetResource(resources.ModelResource):
 class PlantaSetResource(resources.ModelResource):
 
     ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
-    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'razon_social'))
-    gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'razon_social'))
+    negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'nombre'))
+    gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
     examen = fields.Field(column_name='examen', attribute='examen', widget=ManyToManyWidget(Examen, 'nombre'))
     bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
 
     class Meta:
         model = Planta
-        fields = ('id', 'nombre', 'cliente', 'ciudad', 'direccion_comercial', 'provincia', 'region', 'rut_representante', 'representante_legal', 'examen',)
+        fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region', 'provincia', 'ciudad', 'direccion_comercial', 'examen',)
 
 class PuestaDisposicionSetResource(resources.ModelResource):
 
@@ -246,7 +246,7 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
     resource_class = PlantaSetResource
-    fields = ('cliente', 'negocio', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'examen', 'status',)
+    fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'examen', 'status',)
     list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]
 

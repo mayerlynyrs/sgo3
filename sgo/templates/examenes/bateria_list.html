@@ -28,6 +28,11 @@
     color: #fff;
 }
 {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
@@ -116,8 +121,11 @@
             </div>
         </form>
     </div>
-{% endblock %}
 <!-- end panel -->
+{% endblock %}
 {% block librerias %}
+<script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+<!-- jquery validation -->
 <script src="{% static 'admin/assets/js/crud/bateria_list.js' %}"></script>
 {% endblock %}

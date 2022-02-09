@@ -135,6 +135,7 @@ class Evaluacion(BaseModel):
         item = model_to_dict(self)
         item['archivo'] = str(self.archivo).zfill(0)
         item['examen'] = self.examen.nombre
+        item['examen_id'] = self.examen.id
         item['resultado'] = self.resultado
         return item
 
