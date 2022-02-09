@@ -64,7 +64,7 @@ $(function () {
         var data = tblplanta.row(tr.row).data();
         $('input[name="action"]').val('planta_edit');
         $('input[name="id"]' ).val(data.id);
-        $('select[name="negocio"]').val(data.negocio);
+        $('select[name="negocio"]').val(data.negocio_id).trigger("change");
         $('input[name="rut"]').val(data.rut);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
@@ -73,9 +73,12 @@ $(function () {
         $('select[name="provincia"]').val(data.provincia_id);
         $('select[name="ciudad"]').val(data.ciudad_id);
         $('input[name="direccion"]').val(data.direccion);
-        $('select[name="bono"]').val(data.bono);
-        $('select[name="gratificacion"]').val(data.gratificacion_id);
-        $('select[name="examen"]').val(data.examen_id);
+        $('select[name="bono"]').val([1,2]).trigger("change");
+        $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
+        data.examen.forEach(function(examens, index) {
+        $('select[name="examen"]').val(examens.id,).trigger("change");
+        });
+        // $('select[name="examen"]').val(data.examen.id);
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direccion_gerente"]').val(data.direccion_gerente);
@@ -90,7 +93,7 @@ $(function () {
         var data = tblplanta.row(tr.row).data();
         $('input[name="action"]').val('planta_delete');
         $('input[name="id"]' ).val(data.id);
-        $('select[name="negocio"]').val(data.negocio);
+        $('select[name="negocio"]').val(data.negocio_id).trigger("change");
         $('input[name="rut"]').val(data.rut);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
@@ -100,7 +103,7 @@ $(function () {
         $('select[name="ciudad"]').val(data.ciudad_id);
         $('input[name="direccion"]').val(data.direccion);
         $('select[name="bono"]').val(data.bono_id);
-        $('select[name="gratificacion"]').val(data.gratificacion_id);
+        $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
         $('select[name="examen"]').val(data.examen_id);
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);

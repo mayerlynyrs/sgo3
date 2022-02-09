@@ -63,10 +63,10 @@ $(function () {
         var data = tblListNegra.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="user"]').val(data.user);
+        $('select[name="user"]').val(data.user_id).trigger("change");
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
-        $('input[name="planta"]').val(data.planta);
+        $('select[name="planta"]').val(data.planta_id).trigger("change");
         $('#ModalListaNegra').modal('show');
     });
 
@@ -78,10 +78,10 @@ $(function () {
         var data = tblListNegra.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
-        $('input[name="user"]').val(data.user);
+        $('select[name="user"]').val(data.user_id).trigger("change");
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
-        $('input[name="planta"]').val(data.planta);
+        $('select[name="planta"]').val(data.planta_id).trigger("change");
         $('#ModalListaNegra').modal('show');
     }); 
 

@@ -459,6 +459,7 @@ class Planta(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['negocio'] = self.negocio.nombre
+        item['negocio_id'] = self.negocio.id
         item['region_id'] = self.region.id
         item['provincia_id'] = self.provincia.id
         item['bono'] =  [t.toJSON() for t in self.bono.all()]

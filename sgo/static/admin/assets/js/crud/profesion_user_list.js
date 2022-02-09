@@ -73,7 +73,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
-        $('select[name="profesion"]').val(data.profesion_id);
+        $('select[name="profesion"]').val(data.profesion_id).trigger("change");
         $('#myModalProfesionUser').modal('show');
     });
 
@@ -87,7 +87,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
-        $('select[name="profesion"]').val(data.profesion_id);
+        $('select[name="profesion"]').val(data.profesion_id).trigger("change");
         $('#myModalProfesionUser').modal('show');
     }); 
 

@@ -66,7 +66,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
-        $('select[name="parentesco"]').val(data.parentesco_id);
+        $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
         $('#myModalcontacto').modal('show');
         console.log("imprimir data");
         console.log(data);
@@ -83,7 +83,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
-        $('select[name="parentesco"]').val(data.parentesco_id);
+        $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
         $('#myModalcontacto').modal('show');
     }); 
 

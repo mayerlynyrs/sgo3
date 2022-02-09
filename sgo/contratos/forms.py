@@ -9,9 +9,9 @@ from utils.models import Cliente, Planta
 
 class CrearPlantillaForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                             widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
     clientes = forms.ModelMultipleChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
-                                   widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control-lg',
+                                   widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -46,7 +46,7 @@ class CrearPlantillaForm(forms.ModelForm):
 
 class ActualizarPlantillaForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
-                             widget=forms.TextInput(attrs={'class': "form-control-lg"}))
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
 
     clientes = forms.ModelMultipleChoiceField(queryset=Cliente.objects.none(), required=True, label="Cliente",
                                             widget=forms.SelectMultiple(

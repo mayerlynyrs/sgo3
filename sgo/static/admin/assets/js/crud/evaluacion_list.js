@@ -94,8 +94,12 @@ $(function () {
         $('input[name="fecha_examen"]').val(data.fecha_examen);
         $('input[name="fecha_vigencia"]').val(data.fecha_vigencia);
         $('input[name="valor_examen"]').val(data.valor_examen);
-        $('select[name="examen"]').val(data.examen.id);
-        $('file[name="archivo"]').val(data.archivo);
+        $('select[name="examen"]').val(data.examen_id).trigger("change");
+        $('select[name="resultado"]').val(data.resultado).trigger("change");
+        $('select[name="planta"]').val(data.planta).trigger("change");
+        $('input:checkbox[name=referido]').attr('checked',data.referido);
+        $('file[name="archivo_0"]').val(data.archivo);
+        $('textarea[name="descripcion"]').val(data.descripcion);
         $('#myModalEvaluacion').modal('show');
     });
 
@@ -107,8 +111,15 @@ $(function () {
         var data = tblExamenes.row(tr.row).data();
         $('input[name="action"]').val('evaluacion_delete');
         $('input[name="id"]').val(data.id);
-        $('select[name="tipo_archivo"]').val(data.tipo_archivo_id);
+        $('input[name="fecha_examen"]').val(data.fecha_examen);
+        $('input[name="fecha_vigencia"]').val(data.fecha_vigencia);
+        $('input[name="valor_examen"]').val(data.valor_examen);
+        $('select[name="examen"]').val(data.examen_id).trigger("change");
+        $('select[name="resultado"]').val(data.resultado).trigger("change");
+        $('select[name="planta"]').val(data.planta).trigger("change");
+        $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('file[name="archivo"]').val(data.archivo);
+        $('textarea[name="descripcion"]').val(data.descripcion);
         $('#myModalEvaluacion').modal('show');
     }); 
 

@@ -555,6 +555,9 @@ def update_cliente(request, cliente_id):
 
 class ClienteIdView(TemplateView):
     template_name = 'utils/create_cliente.html'
+    cliente_id=Cliente
+    
+    cliente = get_object_or_404(Cliente, pk=1)
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -605,7 +608,8 @@ class ClienteIdView(TemplateView):
                     rut_gerente = request.POST['rut_gerente'],
                     direccion_gerente = request.POST['direccion_gerente'],
                     gratificacion_id = request.POST['gratificacion'],
-                    cliente_id = cliente_id                )
+                    cliente_id = cliente_id
+                    )
                 for i in bono:
                     planta.bono.add(i)
                 for e in examen:
@@ -627,8 +631,9 @@ class ClienteIdView(TemplateView):
                     nombre_gerente = request.POST['nombre_gerente'],
                     rut_gerente = request.POST['rut_gerente'],
                     direccion_gerente = request.POST['direccion_gerente'],
-                    gratificacion_id = request.POST['gratificacion'],
-                    cliente_id = cliente_id                )
+                    gratificacion = request.POST['gratificacion'],
+                    cliente_id = cliente_id
+                    )
                 for i in bono:
                     planta.bono.add(i)
                 for e in examen:
@@ -644,25 +649,30 @@ class ClienteIdView(TemplateView):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-    def get_context_data(self, cliente_id, **kwargs):
+
+    def get_context_data(request, cliente_id, **kwargs):
 
         cliente = get_object_or_404(Cliente, pk=cliente_id)
+        print('cliente views')
+        print(cliente)
 
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
         context['update_url'] = reverse_lazy('utils:update_cliente')
+        context['cliente'] = cliente
         context['entity'] = 'Contactos'
         context['cliente_id'] = cliente_id
         context['form1'] = CrearClienteForm(instance=cliente)
         context['form2'] = NegocioForm()
-        context['form3'] = PlantaForm()
+        context['form3'] = PlantaForm(instance=cliente, cliente_id=cliente_id)
+        # context['form3'] = PlantaForm(instance=cliente, cliente=request.cliente)
         return context
 
 
 class NegocioView(TemplateView):
-    """Profesion List
-    Vista para listar todos los profesion según el usuario y sus las negocios
+    """Negocio List
+    Vista para listar todos los negocios según el usuario y sus las negocios
     relacionadas.
     """
     template_name = 'utils/create_cliente.html'
@@ -688,8 +698,8 @@ class NegocioView(TemplateView):
 
 
 class PlantaView(TemplateView):
-    """Profesion List
-    Vista para listar todos los profesion según el usuario y sus las negocios
+    """Planta List
+    Vista para listar todos las plantas según el usuario y sus las negocios
     relacionadas.
     """
     template_name = 'utils/create_cliente.html'
@@ -705,7 +715,7 @@ class PlantaView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata2':
                 data = []
-                for i in Planta.objects.filter(cliente=cliente_id, status=True):
+                for i in Planta.objects.filter(cliente=cliente_id):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

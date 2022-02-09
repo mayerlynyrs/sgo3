@@ -25,16 +25,17 @@ class BateriaForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Exámenes",
-                                            widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
+                                            widget=forms.SelectMultiple(
+                                                attrs={'class': 'selectpicker show-tick form-control',
+                                                       'data-size': '5',
+                                                       'data-live-search': 'true',
+                                                       'data-live-search-normalize': 'true'
+                                                        })
+                                            )
 
     def __init__(self, *args, **kwargs):
         super(BateriaForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Bateria
-        fields = ("nombre", "examen")
+        fields = ('nombre', 'examen', )
