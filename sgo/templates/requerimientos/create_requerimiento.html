@@ -59,7 +59,7 @@
     <div class="card-body">
       <div id="wizard" class="sw-main sw-theme-default">
 				<ul>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-1">
               <span class="number">1</span> 
 							<span class="info">
@@ -68,7 +68,7 @@
 							</span>
 						</a>
 					</li>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-2">
               <span class="number">2</span> 
 							<span class="info">
@@ -77,10 +77,10 @@
 							</span>
 						</a>
 					</li>
-          <li class="nav-item">
+          <li class="nav-item done">
             <a href="#step-3">
-              <span class="number">3</span> 
-							<span class="info">
+              <span class="number ">3</span> 
+				<span class="info">
                 Trabajadores Area-Cargo
                 <small>Trabajadores en Requerimiento </small>
 							</span>
@@ -88,7 +88,7 @@
 					</li>
 				</ul>
 			  <div>
-					<div id="step-1">
+            <div id="step-1">
             <form method="post" autocomplete="off" novalidate>
 							<fieldset>
 								<div class="row">
@@ -121,36 +121,36 @@
                                             {{ form.regimen }}
                                             </div>
                                         </div>
-                                        <div class="row col-md-12">
-                                          <div class="form-group col-md-6">
-                                              <label for="email">Cliente</label>
-                                              {{ form.cliente }}
-                                          </div>
-                                          <div class="form-group col-md-6">
-                                          <label for="email">Planta</label>
-                                          {{ form.planta }}
-                                          </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                          <div class="form-group col-md-4">
-                                              <label for="email">Causal</label>
-                                              {{ form.causal }}
-                                              </div>
-                                          <div class="form-group col-md-4">
-                                              <label for="email">Fecha Inicia</label>
-                                              {{ form.fecha_inicio }}
-                                          </div>
-                                          <div class="form-group col-md-4">
-                                          <label for="email">Fecha Término</label>
-                                          {{ form.fecha_termino }}
-                                          </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                          <div class="form-group col-md-12">
-                                              <label for="email">Motivo</label>
-                                              {{ form.descripcion }}
-                                          </div>
-                                      </div>
+                                            <div class="row col-md-12">
+                                                <div class="form-group col-md-6">
+                                                    <label for="email">Cliente</label>
+                                                    {{ form.cliente }}
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                <label for="email">Planta</label>
+                                                {{ form.planta }}
+                                                </div>
+                                            </div>
+                                            <div class="row col-md-12">
+                                                <div class="form-group col-md-4">
+                                                    <label for="email">Causal</label>
+                                                    {{ form.causal }}
+                                                    </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="email">Fecha Inicia</label>
+                                                    {{ form.fecha_inicio }}
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                <label for="email">Fecha Término</label>
+                                                {{ form.fecha_termino }}
+                                                </div>
+                                            </div>
+                                            <div class="row col-md-12">
+                                                <div class="form-group col-md-12">
+                                                    <label for="email">Motivo</label>
+                                                    {{ form.descripcion }}
+                                                </div>
+                                            </div>
                                     </div>
 								</div>
 							</fieldset>
@@ -163,7 +163,83 @@
                 </div>
               </div>
             </form>
-					</div>
+			</div>
+            <div id="step-2">
+                <!-- begin fieldset -->
+                <fieldset>
+                    <!-- begin row -->
+                    <div class="row">
+                        <!-- begin col-8 -->
+                        <div class="col-xl-8 offset-xl-2">
+                            <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Contacto(s) del Usuario</legend><hr /><br>
+                            <!-- begin form-group row -->
+        <div class="row col-md-12">
+          <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
+            <i class="fas fa-plus"></i> Nuevo registro
+          </a>
+        </div>
+        <br>
+            
+          <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
+            <thead>
+              <tr>
+                  <th >Nombre</th>
+                  <th >Teléfono</th>
+                  <th >Parentesco</th>
+                  <th>Acciones</th>
+              </tr>
+            </thead>
+            {% block rows2 %}
+
+            {% endblock %}
+          
+          </table>
+
+          {% block javascript2 %}
+              <!-- Modal -->
+              <div class="modal fade" id="myModalcontacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <form method="post" action="." enctype="multipart/form-data">
+                      <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title">
+                                      <b><i class="fas fa-search"></i> <span></span></b>
+                                  </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <div class="container-fluid">
+                                      <input name="action" type="hidden" value="add">
+                                      <input name="id" id="id" type="hidden" value="0">
+                                      <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
+                                      {% for field in form2.visible_fields %}
+                                          <div class="form-group">
+                                              <label for="email">{{ field.label }}:</label>
+                                              {{ field }}
+                                          </div>
+                                      {% endfor %}
+                                  </div>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                  <button type="submit" class="btn btn-info btn-flat btnAdd2"> Guardar</button>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          {% endblock %}
+
+      </div>
+                        <!-- end col-8 -->
+                    </div>
+                    <!-- end row -->
+                </fieldset>
+                <!-- end fieldset -->
+        </div>
 			</div>
 		</div>
 
