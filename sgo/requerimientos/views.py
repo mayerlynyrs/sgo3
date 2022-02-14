@@ -5,6 +5,9 @@ from django.shortcuts import render
 
 # Django
 from django.contrib import messages
+from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, ProtectedError
@@ -113,7 +116,7 @@ def create_requerimiento(request):
             requerimiento = requer_form.save()
 
             messages.success(request, 'Requerimiento Creado Exitosamente')
-            return redirect('requerimientos:list')
+            return redirect('requerimientos:create_requerimiento', requerimiento_id=requerimiento.id)
             # return redirect('utils:create_cliente', requerimiento_id=requerimiento.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
@@ -124,23 +127,6 @@ def create_requerimiento(request):
         'form': requer_form,
     })
 
-    # if request.method == 'POST':
-
-    #     form = RequerimientoCreateForm(data=request.POST, files=request.FILES)
-
-    #     if form.is_valid():
-    #         requerimiento = form.save()
-
-    #         messages.success(request, 'Requerimiento Creado Exitosamente')
-    #         return redirect('requerimientos:list')
-    #     else:
-    #         messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    # else:
-    #     form = RequerimientoCreateForm()
-
-    # return render(request, 'requerimientos/requerimiento_create.html', {
-    #     'form': form,
-    # })
 
 
 @login_required
@@ -221,3 +207,106 @@ def delete_requerimiento(request, object_id, template_name='requerimientos/reque
         request=request
     )
     return JsonResponse(data)
+
+class RequerimientoIdView(TemplateView):
+    template_name = 'requerimientos/create_requerimiento.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, requerimiento_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                print(requerimiento_id)
+                data = []
+                for i in Requerimiento.objects.filter(id=requerimiento_id, status=True):
+                    data.append(i.toJSON())
+            elif action == 'negocio_add':
+                negocio = Negocio()
+                negocio.nombre = request.POST['nombre']
+                negocio.descripcion = request.POST['descripcion']
+                negocio.archivo = request.FILES['archivo']
+                negocio.cliente_id = requerimiento_id
+                negocio.save()
+            elif action == 'negocio_edit':
+                negocio = Negocio.objects.get(pk=request.POST['id'])
+                negocio.nombre = request.POST['nombre']
+                negocio.descripcion = request.POST['descripcion']
+                negocio.archivo = request.FILES['archivo']
+                negocio.cliente_id = requerimiento_id
+                negocio.save()
+            elif action == 'negocio_delete':
+                negocio = Negocio.objects.get(pk=request.POST['id'])
+                negocio.status = False
+                negocio.save()
+            elif action == 'planta_add':
+                bono = request.POST.getlist('bono')
+                examen = request.POST.getlist('examen')
+                planta = Planta.objects.create(
+                    negocio_id = request.POST['negocio'],
+                    rut = request.POST['rut'],
+                    nombre = request.POST['nombre'],
+                    telefono = request.POST['telefono'],
+                    email = request.POST['email'],
+                    region_id = request.POST['region'],
+                    provincia_id = request.POST['provincia'],
+                    ciudad_id = request.POST['ciudad'],
+                    direccion = request.POST['direccion'],
+                    nombre_gerente = request.POST['nombre_gerente'],
+                    rut_gerente = request.POST['rut_gerente'],
+                    direccion_gerente = request.POST['direccion_gerente'],
+                    gratificacion_id = request.POST['gratificacion'],
+                    cliente_id = requerimiento_id                )
+                for i in bono:
+                    planta.bono.add(i)
+                for e in examen:
+                    planta.examen.add(e)
+            elif action == 'planta_edit':
+
+                bono = request.POST.getlist('bono')
+                examen = request.POST.getlist('examen')
+                planta = Planta.objects.create(
+                    negocio_id = request.POST['negocio'],
+                    rut = request.POST['rut'],
+                    nombre = request.POST['nombre'],
+                    telefono = request.POST['telefono'],
+                    email = request.POST['email'],
+                    region_id = request.POST['region'],
+                    provincia_id = request.POST['provincia'],
+                    ciudad_id = request.POST['ciudad'],
+                    direccion = request.POST['direccion'],
+                    nombre_gerente = request.POST['nombre_gerente'],
+                    rut_gerente = request.POST['rut_gerente'],
+                    direccion_gerente = request.POST['direccion_gerente'],
+                    gratificacion_id = request.POST['gratificacion'],
+                    cliente_id = requerimiento_id                )
+                for i in bono:
+                    planta.bono.add(i)
+                for e in examen:
+                    planta.examen.add(e)
+                    
+            elif action == 'planta_delete':
+                archiv = Planta.objects.get(pk=request.POST['id'])
+                archiv.status = False
+                archiv.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, requerimiento_id, **kwargs):
+
+        requerimiento = get_object_or_404(Requerimiento, pk=requerimiento_id)
+
+        context = super().get_context_data(**kwargs)
+        context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
+        context['update_url'] = reverse_lazy('requerimientos:update')
+        context['entity'] = 'Contactos'
+        context['requerimiento_id'] = requerimiento_id
+        context['form'] = RequerimientoCreateForm(instance=requerimiento)
+        return context

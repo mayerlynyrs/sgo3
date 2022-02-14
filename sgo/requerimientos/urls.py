@@ -24,6 +24,11 @@ urlpatterns = [
         name="update"
     ),
     path(
+        route='<int:requerimiento_id>/create_requerimiento',
+        view=views.RequerimientoIdView.as_view(),
+        name='create_requerimiento'
+    ),
+    path(
         route='create',
         view=views.create_requerimiento,
         name="create"

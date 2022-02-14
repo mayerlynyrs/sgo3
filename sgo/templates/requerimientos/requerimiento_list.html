@@ -22,11 +22,6 @@
     align-items: center;
     justify-content: center;
 }
-.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #00acac !important;
-    border-color: #00acac !important;
-    color: #fff;
-}
 {% endblock %}
 {% block content %}
 <!-- begin breadcrumb -->
@@ -50,22 +45,19 @@
     <h4 class="panel-title">Todos los requerimientos</h4>
   </div>
   <div class="panel-body">
-    <div class="table-responsive">
-
-
     <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
       <thead>
           <tr>
-              <th class="text-center" width="45%">Requerimiento</th>
-              <th class="text-center" width="25%">Plazo</th>
-              <th class="text-center" width="15%">Planta</th>
-              <th class="text-center" width="15%"><i class="fas fa-calendar fa-fw"></i> Fecha</th>
+              <th class="text-center" >Requerimiento</th>
+              <th class="text-center" >Plazo</th>
+              <th class="text-center" >Cliente/Planta</th>
+              <th class="text-center" ></i> Causal</th>
           </tr>
       </thead>
       {% for obj in object_list  %}
           <tr>
             <td>
-                <a href="{% if perms.requerimientos.change_requerimiento %}{% url 'requerimientos:update' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
+                <a href="{% if perms.requerimientos.change_requerimiento %}{% url 'requerimientos:create_requerimiento' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
                     <span class="text-name text-success">
                         {{ obj.nombre|title }}
                     </span>
@@ -79,19 +71,17 @@
                   <li>Solicitud: <b> {{ obj.fecha_solicitud|date:'d/M/Y' }} </b></li>
                   <li>Inicio:    <b> {{ obj.fecha_inicio|date:'d/M/Y' }} </b></li>
                   <li>Término:   <b> {{ obj.fecha_termino|date:'d/M/Y' }} </b></li>
-                  
                 </ul>
             </td>
             <td class="list-plantas">
                 <ul>
-                  {{ obj.planta|title }}
+                  <li>Cliente: <b> {{ obj.cliente|title }} </b></li>
+                  <li>Planta:    <b> {{ obj.planta|title }} </b></li>
+                  
                 </ul>
             </td>
             <td class="estado-requerimiento">
-               <p class="text-desc">
-                {{ obj.status|tag_activo_fichero|safe }} <br>
-                  <i class="fas fa-calendar"></i> {{ obj.modified|date:'d/M/Y' }} <br>
-               </p>
+                {{ obj.causal}} <br>
             </td>
           </tr>
       {% empty %}
@@ -101,36 +91,8 @@
       {% endfor %}
       </tbody>
     </table>
-    {% if is_paginated %}
-      <!-- pagination -->
-     <ul class="pagination centrar">
-      <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}"
-           class="page-link">«</a>
-      </li>
-      {% for page in page_obj.paginator.page_range %}
-          {% if page_obj.number|add:'-5' <= page and page_obj.number|add:'5' >= page%}
-            <li class="page-item {% if page_obj.number == page %}active{% endif %}">
-              <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={{ page }}"
-                 class="page-link">{{ page }}</a>
-            </li>
-          {% endif %}
-      {% endfor %}
-      <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-        <a href="{{ request.path }}?{% if filtro %}q={{ filtro }}&{% endif %}page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}"
-           class="page-link">»</a>
-      </li>
-    </ul>
-      {% if page_obj.paginator.num_pages > 5 %}
-      <ul class="pager m-t-0 m-b-0">
-        <li class="page-item previous {% if not page_obj.has_previous %}disabled{% endif %}">
-          <a href="{{ request.path }}?page=1" class="page-link">← Primero</a></li>
-        <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
-          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="page-link">Último →</a></li>
-      </ul>
-     {% endif %}
-    {% endif %}
-    </div>
+    
+ 
   </div>
 </div>
 <div class="modal fade" id="modal-requerimiento">

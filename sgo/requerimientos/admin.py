@@ -27,11 +27,12 @@ class CausalSetResource(resources.ModelResource):
 class RequerimientoSetResource(resources.ModelResource):
     causal = fields.Field(column_name='causal', attribute='causal', widget=ForeignKeyWidget(Causal, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
+    cliente = fields.Field(column_name='cliente', attribute='cliente', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
         model = Requerimiento
         fields = ('id', 'codigo', 'centro_costo', 'nombre', 'fecha_solicitud', 'regimen', 'fecha_inicio', 'fecha_termino',
-                  'fecha_adendum', 'descripcion', 'bloqueo', 'causal', 'planta', 'status', )
+                  'fecha_adendum', 'descripcion', 'bloqueo', 'causal', 'planta', 'cliente', 'status', )
 
 
 class AreaCargoSetResource(resources.ModelResource):
@@ -78,10 +79,10 @@ class RequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = RequerimientoSetResource
     fields = ('codigo', 'centro_costo', 'nombre', 'fecha_solicitud', 'regimen', 'fecha_inicio', 'fecha_termino',
-              'fecha_adendum', 'descripcion', 'bloqueo', 'causal', 'planta', 'status', )
+              'fecha_adendum', 'descripcion', 'bloqueo', 'causal', 'planta','cliente','status', )
     list_display = ('id', 'codigo', 'nombre', 'causal', 'planta', 'status', 'modified',)
-    list_filter = ['causal', 'planta', ]
-    search_fields = ['codigo', 'causal__nombre', 'planta__nombre', ]
+    list_filter = ['causal', 'planta','cliente' ,]
+    search_fields = ['codigo', 'causal__nombre', 'planta__nombre', 'cliente__nombre',]
 
 
 @admin.register(AreaCargo)
