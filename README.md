@@ -17,9 +17,11 @@ la aplicación de manera local:
 *   Python: Tener instalado y funcionando python.
         (Durante la instalación, marque Agregar Python 3 a la RUTA `Add Python 3 to PATH`, luego haga clic en Personalizar instalación `Customize Installation` y asegúrese de que `pip` esté marcado.)
 
-    Visual Studio Code
-    Git
-    Postgres 12 Git (clave root)
+*   Visual Studio Code.
+
+*   Git.
+ 
+*   Postgres 12 (clave root)
 
 
 ### Instalación
@@ -62,6 +64,8 @@ comando para crear la base de datos del proyecto a partir de los modelos.
  ```
 python manage.py makemigrations
 python manage.py migrate
+python manage.py loaddata informatica.json  **json de test**
+python manage.py loaddata database.json     **json de producción**
 ``` 
 - Para correr el proyecto
 ```
@@ -101,8 +105,7 @@ Las siguientes características se han añadido a esta versión de la aplicació
 
 ### Version 0.1 alpha
 
-*   Se crearon los modulos base: cliente, planta, para el funcionamiento del sistema. El modulo de usuarios,
-    la recuperación de contraseña via correo electrónico y el modulo de ficheros digitales.
+*   Se crearon los modulos base: cliente, planta, para el funcionamiento del sistema. El modulo de usuarios, la recuperación de contraseña via correo electrónico y el modulo de ficheros digitales.
 
 ## Autor
 

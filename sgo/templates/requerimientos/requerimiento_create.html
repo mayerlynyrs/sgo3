@@ -64,7 +64,7 @@
               <span class="number">1</span> 
 							<span class="info">
 								Requerimientos
-								<small>Datos Requerimientos</small>
+								<small>Datos del Requerimientos</small>
 							</span>
 						</a>
 					</li>
@@ -72,8 +72,8 @@
             <a href="#step-2">
               <span class="number">2</span> 
 							<span class="info">
-                Areas-Cargos
-                <small>Areas y Cargos Requerimiento. </small>
+                Áreas-Cargos
+                <small>Áreas y Cargos del Requerimiento. </small>
 							</span>
 						</a>
 					</li>
@@ -81,7 +81,7 @@
             <a href="#step-3">
               <span class="number">3</span> 
 							<span class="info">
-                Trabajadores Area-Cargo
+                Trabajadores Área-Cargo
                 <small>Trabajadores en Requerimiento </small>
 							</span>
 						</a>
@@ -93,66 +93,67 @@
 							<fieldset>
 								<div class="row">
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Del Requerimiento</legend>
-                                          {% csrf_token %}
-                                        <div class="row col-md-12">
-                                            <div class="form-group col-md-6">
-                                                <label for="email">Código</label>
-                                                {{ form.codigo }}
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                            <label for="email">Centro de Costo</label>
-                                            {{ form.centro_costo }}
-                                            </div>
-                                        </div>
-                                        <div class="row col-md-12">
-                                            <div class="form-group col-md-12">
-                                                <label for="email">Nombre de la solicitud</label>
-                                                {{ form.nombre }}
-                                            </div>
-                                        </div>
-                                        <div class="row col-md-12">
-                                            <div class="form-group col-md-6">
-                                                <label for="email">Fecha Solicitud</label>
-                                                {{ form.fecha_solicitud }}
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                            <label for="email">Regimen</label>
-                                            {{ form.regimen }}
-                                            </div>
-                                        </div>
-                                        <div class="row col-md-12">
-                                          <div class="form-group col-md-6">
-                                              <label for="email">Cliente</label>
-                                              {{ form.cliente }}
-                                          </div>
-                                          <div class="form-group col-md-6">
-                                          <label for="email">Planta</label>
-                                          {{ form.planta }}
-                                          </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                          <div class="form-group col-md-4">
-                                              <label for="email">Causal</label>
-                                              {{ form.causal }}
-                                              </div>
-                                          <div class="form-group col-md-4">
-                                              <label for="email">Fecha Inicia</label>
-                                              {{ form.fecha_inicio }}
-                                          </div>
-                                          <div class="form-group col-md-4">
-                                          <label for="email">Fecha Término</label>
-                                          {{ form.fecha_termino }}
-                                          </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                          <div class="form-group col-md-12">
-                                              <label for="email">Motivo</label>
-                                              {{ form.descripcion }}
-                                          </div>
-                                      </div>
-                                    </div>
-								</div>
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Ingrese Datos Del Requerimiento</legend><hr /><br>
+                      {% csrf_token %}
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label for="email">Código</label>
+                            {{ form.codigo }}
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label for="email">Centro de Costo</label>
+                            {{ form.centro_costo }}
+                          </div>
+                        </div>
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-12">
+                            <label for="email">Nombre de la solicitud</label>
+                            {{ form.nombre }}
+                          </div>
+                        </div>
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label for="email">Fecha Solicitud</label>
+                            {{ form.fecha_solicitud }}
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label for="email">Régimen</label>
+                            {{ form.regimen }}
+                          </div>
+                        </div>
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label for="email">Cliente</label>
+                            {{ form.cliente }}
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label for="email">Planta</label>
+                            {{ form.planta }}
+                          </div>
+                        </div>
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-4">
+                            <label for="email">Causal</label>
+                            {{ form.causal }}
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="email">Fecha Inicia</label>
+                            {{ form.fecha_inicio }}
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="email">Fecha Término</label>
+                            {{ form.fecha_termino }}
+                          </div>
+                        </div>
+                        <div class="row col-md-12">
+                          <div class="form-group col-md-12">
+                            <label for="email">Motivo</label>
+                            {{ form.descripcion }}
+                          </div>
+                        </div>
+                      </div>
+							  	</div>
+                </div>
 							</fieldset>
 
               <div class="form-group row m-b-0">
@@ -200,18 +201,18 @@
         });
   
       });
-      // negocios
+      // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-negocios-url");  // get the url of the `load_negocios` view
+        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_negocios' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-negocios/)
+          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
           data: {
             'cliente': clienteId       // add the cliente id to the GET parameters
           },
-          success: function (data) {   // `data` is the return of the `load_negocios` view function
-            $("#id_negocio").html(data);  // replace the contents of the negocio input with the data that came from the server
+          success: function (data) {   // `data` is the return of the `load_plantas` view function
+            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
           }
         });
   
