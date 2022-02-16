@@ -80,7 +80,7 @@ class CrearClienteForm(forms.ModelForm):
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',}))
     
-    razon_social = forms.CharField(required=True, label="Razon Social",
+    razon_social = forms.CharField(required=True, label="Razón Social",
                              widget=forms.TextInput(attrs={'class': "form-control" }))
     giro = forms.CharField(required=True, label="Giro",
                              widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -101,7 +101,7 @@ class CrearClienteForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    area = forms.ModelMultipleChoiceField(queryset=Area.objects.all(), required=True, label="Areas",
+    area = forms.ModelMultipleChoiceField(queryset=Area.objects.all(), required=True, label="Áreas",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',

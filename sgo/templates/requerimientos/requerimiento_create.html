@@ -97,7 +97,7 @@
                       {% csrf_token %}
                         <div class="row col-md-12">
                           <div class="form-group col-md-6">
-                            <label for="email">Código</label>
+                            <label for="email">Código único del Sistema</label>
                             {{ form.codigo }}
                           </div>
                           <div class="form-group col-md-6">
@@ -151,11 +151,9 @@
                             {{ form.descripcion }}
                           </div>
                         </div>
-                      </div>
-							  	</div>
-                </div>
+                  </div>
+							  </div>
 							</fieldset>
-
               <div class="form-group row m-b-0">
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
@@ -165,42 +163,11 @@
               </div>
             </form>
 					</div>
-			</div>
+			  </div>
 		</div>
 
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
-      $("#id_region").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
-        var regionId = $(this).val();  // get the selected region ID from the HTML input
-  
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
-          data: {
-            'region': regionId       // add the region id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_provincias` view function
-            $("#id_provincia").html(data);  // replace the contents of the provincia input with the data that came from the server
-          }
-        });
-  
-      });
-      // this one is for fetching ciudad data
-      $("#id_provincia").change(function () { //django-model-form created this id
-        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
-        var provinciaId = $(this).val();  // get the selected region ID from the HTML input
-  
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
-          data: {
-            'provincia': provinciaId       // add the region id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_provincias` view function
-            $("#id_ciudad").html(data);  // replace the contents of the provincia input with the data that came from the server
-          }
-        });
-  
-      });
       // plantas
       $("#id_cliente").change(function () {
         var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
@@ -268,10 +235,6 @@
           },
           wrapper: "",
           rules: {
-                  codigo: {
-                    required: true,
-                    minlength: 6
-                  },
                   centro_costo: "required",
                   nombre: "required",
                   planta: {
@@ -280,10 +243,6 @@
                   }
                 },
                 messages: {
-                  codigo: {
-                    required: "Ingresa el código del requerimiento.",
-                    minlength: "Ingresa un código valido."
-                  },
                   centro_costo: "Ingresa el centro de costo.",
                   nombre: "Ingresa el nombre.",
                   planta: "Selecciona al menos una planta a la que pertenezca el usuario.",

@@ -2,7 +2,7 @@ var tblplanta;
 var modal_title;
 var cliente = null;
 
-function getData() {
+function getData2() {
     tblplanta = $('#data-table-buttons_wrapper').DataTable({
         responsive: true,
         autoWidth: false,
@@ -45,12 +45,13 @@ $(function () {
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
 
-    getData();
+    getData2();
 
     $('.btnAddplanta').on('click', function () {
         $('input[name="action"]').val('planta_add');
         modal_title.find('span').html('Planta <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
+        $('form')[2].reset();
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
         $('#myModalplanta').modal('show');
@@ -69,16 +70,25 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="email"]').val(data.email);
-        $('select[name="region"]').val(data.region_id);
-        $('select[name="provincia"]').val(data.provincia_id);
-        $('select[name="ciudad"]').val(data.ciudad_id);
-        $('input[name="direccion"]').val(data.direccion);
-        $('select[name="bono"]').val([1,2]).trigger("change");
+        $('select[name="region"]').val(data.region_id).trigger("change");
+        $('select[name="provincia"]').val(data.provincia_id).trigger("change");
+        $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
+        $('input[name="direccion"]').val(data.direccion);  
+        var bono2 = [];
+        data.bono.forEach(function(bonos, index) { 
+            var bonos1 = bonos.id;
+            bono2 = bono2.concat(bonos1);
+            });
+
+        var examen2 = [];
+        data.examen.forEach(function(examenes, index) { 
+            var examen1 = examenes.id;
+            examen2 = examen2.concat(examen1);
+            });
+            
+        $('select[name="bono"]').val(bono2).trigger("change");
         $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
-        data.examen.forEach(function(examens, index) {
-        $('select[name="examen"]').val(examens.id,).trigger("change");
-        });
-        // $('select[name="examen"]').val(data.examen.id);
+        $('select[name="examen"]').val(examen2).trigger("change");
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direccion_gerente"]').val(data.direccion_gerente);
@@ -98,13 +108,25 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="email"]').val(data.email);
-        $('select[name="region"]').val(data.region_id);
-        $('select[name="provincia"]').val(data.provincia_id);
-        $('select[name="ciudad"]').val(data.ciudad_id);
-        $('input[name="direccion"]').val(data.direccion);
-        $('select[name="bono"]').val(data.bono_id);
+        $('select[name="region"]').val(data.region_id).trigger("change");
+        $('select[name="provincia"]').val(data.provincia_id).trigger("change");
+        $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
+        $('input[name="direccion"]').val(data.direccion);  
+        var bono2 = [];
+        data.bono.forEach(function(bonos, index) { 
+            var bonos1 = bonos.id;
+            bono2 = bono2.concat(bonos1);
+            });
+
+        var examen2 = [];
+        data.examen.forEach(function(examenes, index) { 
+            var examen1 = examenes.id;
+            examen2 = examen2.concat(examen1);
+            });
+            
+        $('select[name="bono"]').val(bono2).trigger("change");
         $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
-        $('select[name="examen"]').val(data.examen_id);
+        $('select[name="examen"]').val(examen2).trigger("change");
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direcccion_gerente"]').val(data.direcccion_gerente);

@@ -419,7 +419,7 @@ class Planta(models.Model):
 
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
 
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True,)
 
@@ -462,6 +462,7 @@ class Planta(models.Model):
         item['negocio_id'] = self.negocio.id
         item['region_id'] = self.region.id
         item['provincia_id'] = self.provincia.id
+        item['ciudad_id'] = self.ciudad.id
         item['bono'] =  [t.toJSON() for t in self.bono.all()]
         item['examen'] = [t.toJSON() for t in self.examen.all()]
         return item

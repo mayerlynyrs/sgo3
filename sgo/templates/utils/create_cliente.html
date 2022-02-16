@@ -39,7 +39,7 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Cliente</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Clientes</a></li>
   <li class="breadcrumb-item active">Nuevo</li>
 </ol>
 <!-- end breadcrumb -->
@@ -122,7 +122,7 @@
 							<fieldset>
 								<div class="row">
 									<div class="col-xl-8 offset-xl-2">
-										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Cliente</legend><hr /><br>  
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Cliente</legend><hr /><br> 
                     {% csrf_token %}
                     {% crispy form1 %}
                     <input name="action" type="hidden" value="cliente_add">
@@ -262,6 +262,12 @@
                                     <input name="action" type="hidden" value="planta_add">
                                     <input name="id" id="id" type="hidden" value="0">
                                     <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
+                                    <!-- {% for field in form3.visible_fields %}
+                                      <div class="form-group">
+                                        <label for="email">{{ field.label }}:</label>
+                                          {{ field }}
+                                      </div>
+                                    {% endfor %} -->
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-6">
                                           <label for="email"> Negocio</label>
@@ -421,7 +427,7 @@
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
     <!-- jquery validation -->
-    <script src="{% static 'admin/assets/js/script.js' %}"></script>
+    <!-- <script src="{% static 'admin/assets/js/script.js' %}"></script> -->
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
     <script src="{% static 'admin/assets/js/crud/negocio_list.js' %}"></script>

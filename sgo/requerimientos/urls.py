@@ -39,6 +39,16 @@ urlpatterns = [
         name="detail"
     ),
     path(
+        route='<int:requerimiento_id>/acr/',
+        view=views.ACRView.as_view(),
+        name='acr'
+     ),
+    path(
+        route='<int:requerimiento_id>/requirement_users/',
+        view=views.RequirementUserView.as_view(),
+        name='requirement_users'
+     ),
+    path(
         route='<int:object_id>/delete/',
         view=views.delete_requerimiento,
         name="delete"

@@ -42,13 +42,18 @@ $(function () {
             var currentMonth = date.getMonth();
             var currentDate = date.getDate();
             var currentYear = date.getFullYear();
-            var fecha = date.toISOString().slice(0, 10);   
-            var fechaformat = fecha.split('-');
-            var fechaformateada = fechaformat[0] +","+fechaformat[1]+","+fechaformat[2];
-            $('#fecha_termino').datepicker('clearDates');
-            $('#fecha_termino').datepicker('setStartDate', getDate(selected));
-            $('#fecha_termino').datepicker('clearDates');
-            $('#fecha_termino').datepicker("setEndDate", new Date(fechaformateada))
+            
+            if (date != "Invalid Date"){
+                var fecha = date.toISOString().slice(0, 10);
+                console.log(fecha);
+                var fechaformat = fecha.split('-');
+                var fechaformateada = fechaformat[0] +","+fechaformat[1]+","+fechaformat[2];
+                $('#fecha_termino').datepicker('clearDates');
+                $('#fecha_termino').datepicker('setStartDate', getDate(selected));
+                $('#fecha_termino').datepicker('clearDates');
+                $('#fecha_termino').datepicker("setEndDate", new Date(fechaformateada))
+            }
+            
             
         });
     
