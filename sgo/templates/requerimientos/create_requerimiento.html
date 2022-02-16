@@ -13,12 +13,12 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Requerimientos</a></li>
-  <li class="breadcrumb-item active">{% if usuario %}{{ usuario.id }}{% else %}Nuevo{% endif %}</li>
+  <li class="breadcrumb-item"><a href="{% url 'requerimientos:list' %}">Requerimientos</a></li>
+  <li class="breadcrumb-item active">{% if requerimiento %}{{ requerimiento.id }}{% else %}Nuevo{% endif %}</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Requerimiento <small>{% if usuario %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<h1 class="page-header">Requerimiento <small>{% if requerimiento %}Editar{% else %}Nuevo{% endif %}</small></h1>
 <!-- end page-header -->
 
 <!-- begin panel -->
@@ -88,7 +88,7 @@
 					</li>
 				</ul>
 			  <div>
-            <div id="step-1">
+          <div id="step-1">
             <form method="post" autocomplete="off" novalidate>
 							<fieldset>
 								<div class="row">
@@ -163,83 +163,159 @@
                 </div>
               </div>
             </form>
-			</div>
-            <div id="step-2">
-                <!-- begin fieldset -->
-                <fieldset>
-                    <!-- begin row -->
-                    <div class="row">
-                        <!-- begin col-8 -->
-                        <div class="col-xl-8 offset-xl-2">
-                            <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Área(s) y Cargo(s) del Requerimiento</legend><hr /><br>
-                            <!-- begin form-group row -->
-        <div class="row col-md-12">
-          <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
-            <i class="fas fa-plus"></i> Nuevo registro
-          </a>
-        </div>
-        <br>
-            
-          <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
-            <thead>
-              <tr>
-                  <th >Nombre</th>
-                  <th >Teléfono</th>
-                  <th >Parentesco</th>
-                  <th>Acciones</th>
-              </tr>
-            </thead>
-            {% block rows2 %}
-
-            {% endblock %}
-          
-          </table>
-
-          {% block javascript2 %}
-              <!-- Modal -->
-              <div class="modal fade" id="myModalcontacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true">
-                  <form method="post" action="." enctype="multipart/form-data">
-                      <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <h5 class="modal-title">
-                                      <b><i class="fas fa-search"></i> <span></span></b>
-                                  </h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                              <div class="modal-body">
-                                  <div class="container-fluid">
-                                      <input name="action" type="hidden" value="add">
-                                      <input name="id" id="id" type="hidden" value="0">
-                                      <input name="user_id" id="user_id" type="hidden" value="{{ user_id }}">
-                                      {% for field in form2.visible_fields %}
-                                          <div class="form-group">
-                                              <label for="email">{{ field.label }}:</label>
-                                              {{ field }}
-                                          </div>
-                                      {% endfor %}
-                                  </div>
-                              </div>
-                              <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                  <button type="submit" class="btn btn-info btn-flat btnAdd2"> Guardar</button>
-                              </div>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          {% endblock %}
-
-      </div>
-                        <!-- end col-8 -->
+			    </div>
+					<!-- begin step-2 -->
+					<div id="step-2">
+						<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-8 -->
+									<div class="col-xl-8 offset-xl-2">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Área(s) y Cargo(s) del Requerimiento</legend><hr /><br>
+										<!-- begin form-group row -->
+                    <div class="row col-md-12">
+                      <a class="btn btn-primary btn-flat btnAdd" style="color: white;">
+                        <i class="fas fa-plus"></i> Nuevo registro
+                      </a>
                     </div>
-                    <!-- end row -->
-                </fieldset>
-                <!-- end fieldset -->
-        </div>
+                    <br>
+                        
+                      <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
+                        <thead>
+                          <tr>
+                              <th>Cantidad</th>
+                              <th>Áreas</th>
+                              <th>Cargos</th>
+                              <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        {% block rows2 %}
+
+                        {% endblock %}
+                      
+                      </table>
+
+                      {% block javascript2 %}
+                          <!-- Modal -->
+                          <div class="modal fade" id="myModalACR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                              aria-hidden="true">
+                              <form method="post" action="." enctype="multipart/form-data">
+                                  <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title">
+                                                  <b><i class="fas fa-search"></i> <span></span></b>
+                                              </h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                              </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div class="container-fluid">
+                                                  <input name="action" type="hidden" value="add">
+                                                  <input name="id" id="id" type="hidden" value="0">
+                                                  <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                                                  {% csrf_token %}
+                                                  {% for field in form2.visible_fields %}
+                                                      <div class="form-group">
+                                                          <label for="email">{{ field.label }}:</label>
+                                                          {{ field }}
+                                                      </div>
+                                                  {% endfor %}
+                                              </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                              <button type="submit" class="btn btn-info btn-flat btnAdd2"> Guardar</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      {% endblock %}
+
+                  </div>
+									<!-- end col-8 -->
+								</div>
+								<!-- end row -->
+							</fieldset>
+							<!-- end fieldset -->
+					</div>
+					<!-- end step-2 -->
+					<!-- begin step-3 -->
+					<div id="step-3">
+						<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-8 -->
+									<div class="col-xl-8 offset-xl-2">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Trabajador(es) del Requerimiento</legend><hr /><br>
+                      <!-- <div class="row col-md-12">
+                        <a class="btn btn-primary btn-flat btnAddProfes" style="color: white;">
+                          <i class="fas fa-plus"></i> Nuevo registro
+                        </a>
+                      </div>
+                      <br>
+                          
+                        <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
+                          <thead>
+                            <tr>
+                                <th >Egreso</th>
+                                <th >Institución</th>
+                                <th >Profesión</th>
+                                <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          {% block rows3 %}
+
+                          {% endblock %}
+                        
+                        </table>
+
+                        {% block javascript3 %}
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModalProfesionUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <form method="post" action="." enctype="multipart/form-data">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    <b><i class="fas fa-search"></i> <span></span></b>
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="container-fluid">
+                                                    <input name="action" type="hidden" value="add">
+                                                    <input name="id" id="id" type="hidden" value="0">
+                                                    <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                                                    {% csrf_token %}
+                                                    {% for field in form3.visible_fields %}
+                                                        <div class="form-group">
+                                                            <label for="email">{{ field.label }}:</label>
+                                                            {{ field }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                <button type="submit" class="btn btn-info btn-flat btnAdd3"> Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        {% endblock %}
+                  </div> -->
+								</div>
+							</fieldset>
+					  </div>
 			</div>
 		</div>
 
@@ -310,6 +386,9 @@
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
     <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+    
+    <script src="{% static 'admin/assets/js/crud/areacargo_r_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/requeri_user_list.js' %}"></script>
 {% endblock %}
 
 {% block scripts %}

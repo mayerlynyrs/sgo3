@@ -261,13 +261,13 @@
             </div>
           </div>
           <div class="form-group col-md-6 mb-0" >
-            <div id="div_id_negocio" class="form-group">
-              <label for="id_negocio">Negocio(s): </label>
+            <div id="div_id_planta" class="form-group">
+              <label for="id_planta">Planta(s): </label>
                 <ul>
-                {% for p in usuario.negocio.all %}
+                {% for p in usuario.planta.all %}
                   <li style="font-size: small;">{{ p.nombre|title }}</li>
                 {% empty %}
-                  <li>Sin negocio(s) asignada(s)</li>
+                  <li>Sin planta(s) asignada(s)</li>
                 {% endfor %}
               </ul>
           </div>
@@ -297,7 +297,7 @@
         {% if user.groups.first.name == 'Administrador' or user.groups.first.name == 'Administrador Contratos' %}
         <div class="col-md-4 col-sm-4 col-form-label">
           {% if usuario.groups.first.name == 'Trabajador' %}
-            <a href="{% url 'users:attribute' usuario.id %}?page={{ request.GET.page }}" class="btn btn-warning"><i class="fas fa-list-alt"></i> Contrato</a>
+            <a href="{% url 'users:detail' usuario.id %}?page={{ request.GET.page }}" class="btn btn-warning"><i class="fas fa-list-alt"></i> Contrato</a>
           {% endif %}
         </div>
         {% else %}
@@ -315,7 +315,7 @@
           {% if request.user.groups.first.name == 'Administrador Contratos' or request.user.groups.first.name == 'Administrador' %}
           <b>
             {% if usuario.groups.first.name == 'Trabajador' or request.user.groups.first.name == 'Administrador' %}
-            <a href="{% url 'users:profile' usuario.id %}?page={{ request.GET.page }}" class="btn btn-success">Editar</a>
+            <a href="{% url 'users:update' usuario.id %}?page={{ request.GET.page }}" class="btn btn-success">Editar</a>
             {% endif %}
           </b>
             

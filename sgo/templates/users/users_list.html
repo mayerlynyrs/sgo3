@@ -125,7 +125,7 @@ img {
             <td>
               <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp &nbsp
               <!-- <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp &nbsp -->
-              <a title="Historial" href="#" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a>
+              <a title="Historial" href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a>
             </td>
           </tr>
         

@@ -73,21 +73,22 @@ img {
       <thead>
           <tr>
               <th class="text-center">Datos Cliente</th>
-              <th>Cuidad</th>
-              <th>Estado</th>
+              <th>Negocio</th>
+              <th>Planta</th>
           </tr>
       </thead>
       <tbody>
       {% block contenido %}
-      {% for clte in clients  %}
+      {% for clte in consulta  %}
           <tr>
             <td>
                 <a title="Editar" href="{% url 'utils:create_cliente' clte.id %}?page={{ request.GET.page }}">
                   <span class="text-name text-success">
                     <!-- {{ c.razon_social }} -->
                     {{ clte.razon_social|upper }}<br>
-                    {{ clte.giro|title }}<br>
-                    {{ clte.rut }}
+                    {{ clte.giro|truncatewords:10 }}<br>
+                    <!-- consulta{{ consulta }}<br>
+                    clte{{ clte }}<br> -->
                   </span>
                 </a>
                 <!-- <p class="text-desc">
@@ -100,8 +101,9 @@ img {
                   {{ clte.telefono|lower }}
                 </p>
             </td>
-            <td>{{ clte.ciudad }}</td>
-            <td>{{ clte.status|tag_active|safe }}</td>
+            <td>{{ clte.nombre|upper }}<br>
+              {{ clte.negocio.nombre }}</td>
+            <td>{{ clte.plantas }}</td>
             <!-- <td class="list-negocios"> -->
               <!-- {% for n in business %} -->
                 <!-- <ul>
@@ -130,7 +132,7 @@ img {
             </td> -->
             <!-- <td class="list-plantas">
                 <ul>
-                  {% for p in clte.planta.all %}
+                  {% for p in clte.utild_planta %}
                     <li>{{ p.nombre }}</li>
                   {% empty %}
                     <li>Sin asignar</li>

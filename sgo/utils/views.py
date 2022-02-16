@@ -298,7 +298,8 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
             context['negocios'] = institutions
             context['negocio'] = self.kwargs.get('negocio_id', None)
-            negocios = Negocio.objects.filter(cliente=2)
+            negocios = Negocio.objects.filter(cliente=1)
+            clientes = Cliente.objects.all()
             context['clients'] = Cliente.objects.all()
             # context['clients'] = Cliente.objects.filter(
             #     status=True).order_by(
@@ -307,6 +308,12 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
             # context['business'] = Negocio.objects.filter(
             #     status=True).order_by('id', 'nombre').distinct('id', 'nombre')
+
+            ######## MAYE ########
+            context['consulta'] = Cliente.objects.raw('SELECT p.nombre as plantas, n.nombre, c.razon_social, c.id FROM utils_planta p FULL JOIN utils_negocio n ON p.negocio_id= n.id FULL JOIN utils_cliente c ON c.id = n.cliente_id')
+            # Cliente.objects.all().order_by('cliente', 'negocio')
+            # Planta.objects.filter(cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
+            # Cliente.objects.all().select_related('planta').values_list('id', 'planta__negocio')
 
         return context
 
@@ -594,46 +601,45 @@ class ClienteIdView(TemplateView):
             elif action == 'planta_add':
                 bono = request.POST.getlist('bono')
                 examen = request.POST.getlist('examen')
-                planta = Planta.objects.create(
-                    negocio_id = request.POST['negocio'],
-                    rut = request.POST['rut'],
-                    nombre = request.POST['nombre'],
-                    telefono = request.POST['telefono'],
-                    email = request.POST['email'],
-                    region_id = request.POST['region'],
-                    provincia_id = request.POST['provincia'],
-                    ciudad_id = request.POST['ciudad'],
-                    direccion = request.POST['direccion'],
-                    nombre_gerente = request.POST['nombre_gerente'],
-                    rut_gerente = request.POST['rut_gerente'],
-                    direccion_gerente = request.POST['direccion_gerente'],
-                    gratificacion_id = request.POST['gratificacion'],
-                    cliente_id = cliente_id
-                    )
+                planta = Planta()
+                planta.negocio_id = request.POST['negocio']
+                planta.rut = request.POST['rut']
+                planta.nombre = request.POST['nombre']
+                planta.telefono = request.POST['telefono']
+                planta.email = request.POST['email']
+                planta.region_id = request.POST['region']
+                planta.provincia_id = request.POST['provincia']
+                planta.ciudad_id = request.POST['ciudad']
+                planta.direccion = request.POST['direccion']
+                planta.nombre_gerente = request.POST['nombre_gerente']
+                planta.rut_gerente = request.POST['rut_gerente']
+                planta.direccion_gerente = request.POST['direccion_gerente']
+                planta.gratificacion_id = request.POST['gratificacion']
+                planta.cliente_id = cliente_id
+                planta.save()
                 for i in bono:
                     planta.bono.add(i)
                 for e in examen:
                     planta.examen.add(e)
             elif action == 'planta_edit':
-
                 bono = request.POST.getlist('bono')
                 examen = request.POST.getlist('examen')
-                planta = Planta.objects.create(
-                    negocio_id = request.POST['negocio'],
-                    rut = request.POST['rut'],
-                    nombre = request.POST['nombre'],
-                    telefono = request.POST['telefono'],
-                    email = request.POST['email'],
-                    region_id = request.POST['region'],
-                    provincia_id = request.POST['provincia'],
-                    ciudad_id = request.POST['ciudad'],
-                    direccion = request.POST['direccion'],
-                    nombre_gerente = request.POST['nombre_gerente'],
-                    rut_gerente = request.POST['rut_gerente'],
-                    direccion_gerente = request.POST['direccion_gerente'],
-                    gratificacion = request.POST['gratificacion'],
-                    cliente_id = cliente_id
-                    )
+                planta = Planta.objects.get(pk=request.POST['id'])
+                planta.negocio_id = request.POST['negocio']
+                planta.rut = request.POST['rut']
+                planta.nombre = request.POST['nombre']
+                planta.telefono = request.POST['telefono']
+                planta.email = request.POST['email']
+                planta.region_id = request.POST['region']
+                planta.provincia_id = request.POST['provincia']
+                planta.ciudad_id = request.POST['ciudad']
+                planta.direccion = request.POST['direccion']
+                planta.nombre_gerente = request.POST['nombre_gerente']
+                planta.rut_gerente = request.POST['rut_gerente']
+                planta.direccion_gerente = request.POST['direccion_gerente']
+                planta.gratificacion_id = request.POST['gratificacion']
+                planta.cliente_id = cliente_id
+                planta.save()
                 for i in bono:
                     planta.bono.add(i)
                 for e in examen:
@@ -653,8 +659,6 @@ class ClienteIdView(TemplateView):
     def get_context_data(request, cliente_id, **kwargs):
 
         cliente = get_object_or_404(Cliente, pk=cliente_id)
-        print('cliente views')
-        print(cliente)
 
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
@@ -715,7 +719,7 @@ class PlantaView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata2':
                 data = []
-                for i in Planta.objects.filter(cliente=cliente_id):
+                for i in Planta.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

@@ -6,6 +6,7 @@ from django.db import models
 import os
 # Django
 from django.utils import timezone
+from django.forms import model_to_dict
 #Utilities
 from utils.models import BaseModel, Planta, Area, Cargo, Cliente
 #User
@@ -101,6 +102,13 @@ class Requerimiento(BaseModel):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['cliente'] = self.cliente.nombre
+        item['cliente_id'] = self.cliente.id
+        item['cliente'] = self.cliente.abreviatura
+        return item
 
 
 class AreaCargo(BaseModel):
@@ -134,6 +142,18 @@ class AreaCargo(BaseModel):
 
     def __str__(self):
         return str(self.cantidad)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['area'] = self.area.nombre
+        item['area_id'] = self.area.id
+        item['cargo'] = self.cargo.nombre
+        item['cargo_id'] = self.cargo.id
+        # item['region_id'] = self.region.id
+        # item['provincia_id'] = self.provincia.id
+        # item['bono'] =  [t.toJSON() for t in self.bono.all()]
+        # item['examen'] = [t.toJSON() for t in self.examen.all()]
+        return item
 
 
 class RequerimientoUser(BaseModel):
@@ -182,6 +202,10 @@ class RequerimientoUser(BaseModel):
 
     def __str__(self):
         return str(self.tipo)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
 
 
 class Adendum(BaseModel):

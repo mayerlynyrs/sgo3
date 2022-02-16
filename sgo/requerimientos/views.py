@@ -17,10 +17,10 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Model
-from requerimientos.models import Requerimiento
+from requerimientos.models import Requerimiento, AreaCargo, RequerimientoUser
 from utils.models import Negocio, Planta
 # Form
-from requerimientos.forms import RequerimientoCreateForm
+from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriUserForm
 
 
 class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -107,12 +107,17 @@ def create_requerimiento(request):
     if request.method == 'POST':
 
         requer_form = RequerimientoCreateForm(data=request.POST)
-        print(request.POST)
+        # print(request.POST)
 
         if requer_form.is_valid():
             requerimiento = requer_form.save(commit=False)
             requerimiento.status = True
+            requerimiento.codigo = requerimiento.id
             requerimiento.save()
+            folio = Requerimiento.objects.filter(cliente__pk=requerimiento.cliente.id).count()
+            code = requerimiento.cliente.abreviatura + str (folio)
+            # code = requerimiento.cliente.abreviatura + str (requerimiento.id)
+            requerimiento.codigo = code
             requerimiento = requer_form.save()
 
             messages.success(request, 'Requerimiento Creado Exitosamente')
@@ -225,28 +230,28 @@ class RequerimientoIdView(TemplateView):
                 data = []
                 for i in Requerimiento.objects.filter(id=requerimiento_id, status=True):
                     data.append(i.toJSON())
-            elif action == 'negocio_add':
-                negocio = Negocio()
+            elif action == 'acr_add':
+                negocio = AreaCargo()
                 negocio.nombre = request.POST['nombre']
                 negocio.descripcion = request.POST['descripcion']
                 negocio.archivo = request.FILES['archivo']
                 negocio.cliente_id = requerimiento_id
                 negocio.save()
-            elif action == 'negocio_edit':
-                negocio = Negocio.objects.get(pk=request.POST['id'])
+            elif action == 'acr_edit':
+                negocio = AreaCargo.objects.get(pk=request.POST['id'])
                 negocio.nombre = request.POST['nombre']
                 negocio.descripcion = request.POST['descripcion']
                 negocio.archivo = request.FILES['archivo']
                 negocio.cliente_id = requerimiento_id
                 negocio.save()
-            elif action == 'negocio_delete':
-                negocio = Negocio.objects.get(pk=request.POST['id'])
+            elif action == 'acr_delete':
+                negocio = AreaCargo.objects.get(pk=request.POST['id'])
                 negocio.status = False
                 negocio.save()
-            elif action == 'planta_add':
+            elif action == 'requeri_user_add':
                 bono = request.POST.getlist('bono')
                 examen = request.POST.getlist('examen')
-                planta = Planta.objects.create(
+                planta = RequerimientoUser.objects.create(
                     negocio_id = request.POST['negocio'],
                     rut = request.POST['rut'],
                     nombre = request.POST['nombre'],
@@ -265,11 +270,11 @@ class RequerimientoIdView(TemplateView):
                     planta.bono.add(i)
                 for e in examen:
                     planta.examen.add(e)
-            elif action == 'planta_edit':
+            elif action == 'requeri_user_edit':
 
                 bono = request.POST.getlist('bono')
                 examen = request.POST.getlist('examen')
-                planta = Planta.objects.create(
+                planta = RequerimientoUser.objects.create(
                     negocio_id = request.POST['negocio'],
                     rut = request.POST['rut'],
                     nombre = request.POST['nombre'],
@@ -289,8 +294,8 @@ class RequerimientoIdView(TemplateView):
                 for e in examen:
                     planta.examen.add(e)
                     
-            elif action == 'planta_delete':
-                archiv = Planta.objects.get(pk=request.POST['id'])
+            elif action == 'requeri_user_delete':
+                archiv = RequerimientoUser.objects.get(pk=request.POST['id'])
                 archiv.status = False
                 archiv.save()
             else:
@@ -306,7 +311,63 @@ class RequerimientoIdView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
         context['update_url'] = reverse_lazy('requerimientos:update')
-        context['entity'] = 'Contactos'
+        context['entity'] = 'Requerimientos'
         context['requerimiento_id'] = requerimiento_id
         context['form'] = RequerimientoCreateForm(instance=requerimiento)
+        context['form2'] = ACRForm(instance=requerimiento)
+        context['form3'] = RequeriUserForm(instance=requerimiento)
         return context
+
+
+class ACRView(TemplateView):
+    """Areas y Cargos del Requerimiento List
+    Vista para listar todos los AreaCargo según el Requerimiento
+    relacionado.
+    """
+    template_name = 'requerimientos/create_requerimiento.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, requerimiento_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata2':
+                data = []
+                for i in AreaCargo.objects.filter(requerimiento=requerimiento_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class RequirementUserView(TemplateView):
+    """RequirementUser List
+    Vista para listar todos los requirementos del usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'requerimientos/create_requerimiento.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, area_cargo_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata3':
+                data = []
+                for i in RequerimientoUser.objects.filter(area_cargo=area_cargo_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
