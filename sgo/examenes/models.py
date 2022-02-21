@@ -168,7 +168,7 @@ class Requerimiento(BaseModel):
         help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
     )
 
-    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT, null=True, blank=True)
+    requerimiento_user = models.ForeignKey(RequerimientoUser, related_name="exam_requer_user", on_delete=models.PROTECT, null=True, blank=True)
 
     examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
 

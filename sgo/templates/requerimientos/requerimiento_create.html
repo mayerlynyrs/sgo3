@@ -89,7 +89,7 @@
 				</ul>
 			  <div>
 					<div id="step-1">
-            <form method="post" autocomplete="off" novalidate>
+            <form method="post" autocomplete="off" novalidate id="CrearRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
 							<fieldset>
 								<div class="row">
 									<div class="col-xl-8 offset-xl-2">
@@ -170,7 +170,7 @@
     <script>
       // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
+        var url = $("#CrearRequeriForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request

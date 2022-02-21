@@ -22,6 +22,13 @@ from utils.models import Negocio, Planta
 # Form
 from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriUserForm
 
+# Planta
+def load_plantas(request):
+    cliente_id = request.GET.get('cliente')    
+    plantas = Planta.objects.filter(cliente_id=cliente_id).order_by('nombre')
+    context = {'plantas': plantas}
+    return render(request, 'requerimientos/planta.html', context)
+
 
 class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Requerimiento List
@@ -116,7 +123,6 @@ def create_requerimiento(request):
             requerimiento.save()
             folio = Requerimiento.objects.filter(cliente__pk=requerimiento.cliente.id).count()
             code = requerimiento.cliente.abreviatura + str (folio)
-            # code = requerimiento.cliente.abreviatura + str (requerimiento.id)
             requerimiento.codigo = code
             requerimiento = requer_form.save()
 
@@ -148,18 +154,18 @@ def update_requerimiento(request, requerimiento_id):
 
     if request.method == 'POST':
 
-        form = RequerimientoCreateForm(data=request.POST, instance=requerimiento, files=request.FILES, user=request.user)
+        form = RequerimientoCreateForm(request.POST or None, instance=requerimiento)
 
         if form.is_valid():
             requerimiento = form.save()
             messages.success(request, 'Requerimiento Actualizado Exitosamente')
             page = request.GET.get('page')
             if page != '':
-                response = redirect('requerimientos:list')
-                response['Location'] += '?page=' + page
+                response = redirect('requerimientos:create_requerimiento', requerimiento_id)
+                # response['Location'] += '?page=' + str(page)
                 return response
             else:
-                return redirect('requerimientos:list')
+                return redirect('requerimientos:create_requerimiento', requerimiento_id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
@@ -231,73 +237,63 @@ class RequerimientoIdView(TemplateView):
                 for i in Requerimiento.objects.filter(id=requerimiento_id, status=True):
                     data.append(i.toJSON())
             elif action == 'acr_add':
-                negocio = AreaCargo()
-                negocio.nombre = request.POST['nombre']
-                negocio.descripcion = request.POST['descripcion']
-                negocio.archivo = request.FILES['archivo']
-                negocio.cliente_id = requerimiento_id
-                negocio.save()
+                ac_r = AreaCargo()
+                ac_r.cantidad = request.POST['cantidad']
+                ac_r.valor_aprox = request.POST['valor_aprox']
+                ac_r.fecha_ingreso = request.POST['fecha_ingreso']
+                ac_r.area_id = request.POST['area']
+                ac_r.cargo_id = request.POST['cargo']
+                ac_r.requerimiento_id = requerimiento_id
+                ac_r.save()
             elif action == 'acr_edit':
-                negocio = AreaCargo.objects.get(pk=request.POST['id'])
-                negocio.nombre = request.POST['nombre']
-                negocio.descripcion = request.POST['descripcion']
-                negocio.archivo = request.FILES['archivo']
-                negocio.cliente_id = requerimiento_id
-                negocio.save()
+                ac_r = AreaCargo.objects.get(pk=request.POST['id'])
+                ac_r.cantidad = request.POST['cantidad']
+                ac_r.valor_aprox = request.POST['valor_aprox']
+                ac_r.fecha_ingreso = request.POST['fecha_ingreso']
+                ac_r.area_id = request.POST['area']
+                ac_r.cargo_id = request.POST['cargo']
+                ac_r.requerimiento_id = requerimiento_id
+                ac_r.save()
             elif action == 'acr_delete':
-                negocio = AreaCargo.objects.get(pk=request.POST['id'])
-                negocio.status = False
-                negocio.save()
+                ac_r = AreaCargo.objects.get(pk=request.POST['id'])
+                ac_r.status = False
+                ac_r.save()
             elif action == 'requeri_user_add':
-                bono = request.POST.getlist('bono')
-                examen = request.POST.getlist('examen')
-                planta = RequerimientoUser.objects.create(
-                    negocio_id = request.POST['negocio'],
-                    rut = request.POST['rut'],
-                    nombre = request.POST['nombre'],
-                    telefono = request.POST['telefono'],
-                    email = request.POST['email'],
-                    region_id = request.POST['region'],
-                    provincia_id = request.POST['provincia'],
-                    ciudad_id = request.POST['ciudad'],
-                    direccion = request.POST['direccion'],
-                    nombre_gerente = request.POST['nombre_gerente'],
-                    rut_gerente = request.POST['rut_gerente'],
-                    direccion_gerente = request.POST['direccion_gerente'],
-                    gratificacion_id = request.POST['gratificacion'],
-                    cliente_id = requerimiento_id                )
-                for i in bono:
-                    planta.bono.add(i)
-                for e in examen:
-                    planta.examen.add(e)
+                trabaj = RequerimientoUser()
+                if "referido" in request.POST:
+                    estado = True
+                    trabaj.referido =  estado
+                else:
+                    estado = False
+                    trabaj.referido =  estado
+                trabaj.descripcion = request.POST['descripcion']
+                trabaj.tipo_id = request.POST['tipo']
+                trabaj.pension = request.POST['pension']
+                trabaj.user_id = request.POST['user']
+                trabaj.jefe_area_id = request.POST['jefe_area']
+                trabaj.area_cargo_id = 10
+                trabaj.requerimiento_id = requerimiento_id
+                trabaj.save()
             elif action == 'requeri_user_edit':
-
-                bono = request.POST.getlist('bono')
-                examen = request.POST.getlist('examen')
-                planta = RequerimientoUser.objects.create(
-                    negocio_id = request.POST['negocio'],
-                    rut = request.POST['rut'],
-                    nombre = request.POST['nombre'],
-                    telefono = request.POST['telefono'],
-                    email = request.POST['email'],
-                    region_id = request.POST['region'],
-                    provincia_id = request.POST['provincia'],
-                    ciudad_id = request.POST['ciudad'],
-                    direccion = request.POST['direccion'],
-                    nombre_gerente = request.POST['nombre_gerente'],
-                    rut_gerente = request.POST['rut_gerente'],
-                    direccion_gerente = request.POST['direccion_gerente'],
-                    gratificacion_id = request.POST['gratificacion'],
-                    cliente_id = requerimiento_id                )
-                for i in bono:
-                    planta.bono.add(i)
-                for e in examen:
-                    planta.examen.add(e)
-                    
+                trabaj = RequerimientoUser.objects.get(pk=request.POST['id'])
+                if "referido" in request.POST:
+                    estado = True
+                    trabaj.referido =  estado
+                else:
+                    estado = False
+                    trabaj.referido =  estado
+                trabaj.descripcion = request.POST['descripcion']
+                trabaj.tipo_id = request.POST['tipo']
+                trabaj.pension = request.POST['pension']
+                trabaj.user_id = request.POST['user']
+                trabaj.jefe_area_id = request.POST['jefe_area']
+                trabaj.area_cargo_id = 10
+                trabaj.requerimiento_id = requerimiento_id
+                trabaj.save()
             elif action == 'requeri_user_delete':
-                archiv = RequerimientoUser.objects.get(pk=request.POST['id'])
-                archiv.status = False
-                archiv.save()
+                trabaj = RequerimientoUser.objects.get(pk=request.POST['id'])
+                trabaj.status = False
+                trabaj.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -314,7 +310,10 @@ class RequerimientoIdView(TemplateView):
         context['entity'] = 'Requerimientos'
         context['requerimiento_id'] = requerimiento_id
         context['form'] = RequerimientoCreateForm(instance=requerimiento)
-        context['form2'] = ACRForm(instance=requerimiento)
+        context['form2'] = ACRForm(instance=requerimiento,
+                                   areas=requerimiento.cliente.area.all(),
+                                   cargos=requerimiento.cliente.cargo.all()
+                                   )
         context['form3'] = RequeriUserForm(instance=requerimiento)
         return context
 
@@ -358,13 +357,14 @@ class RequirementUserView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request, area_cargo_id, *args, **kwargs):
+    def post(self, request, requerimiento_id, *args, **kwargs):
         data = {}
         try:
             action = request.POST['action']
             if action == 'searchdata3':
                 data = []
-                for i in RequerimientoUser.objects.filter(area_cargo=area_cargo_id, status=True):
+                # for i in RequerimientoUser.objects.filter(area_cargo=area_cargo_id, status=True):
+                for i in RequerimientoUser.objects.filter(requerimiento=requerimiento_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

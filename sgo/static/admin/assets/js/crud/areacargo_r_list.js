@@ -64,9 +64,11 @@ $(function () {
         var data = tblAreaCargo.row(tr.row).data();
         $('input[name="action"]').val('acr_edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="nombre"]').val(data.nombre);
-        $('input[name="telefono"]').val(data.telefono);
-        $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
+        $('input[name="cantidad"]').val(data.cantidad);
+        $('input[name="valor_aprox"]').val(data.valor_aprox);
+        $('input[name="fecha_ingreso"]').val(data.fecha_ingreso);
+        $('select[name="area"]').val(data.area_id).trigger("change");
+        $('select[name="cargo"]').val(data.cargo_id).trigger("change");
         $('#myModalACR').modal('show');
         console.log("imprimir data");
         console.log(data);
@@ -81,9 +83,11 @@ $(function () {
         var data = tblAreaCargo.row(tr.row).data();
         $('input[name="action"]').val('acr_delete');
         $('input[name="id"]').val(data.id);
-        $('input[name="nombre"]').val(data.nombre);
-        $('input[name="telefono"]').val(data.telefono);
-        $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
+        $('input[name="cantidad"]').val(data.cantidad);
+        $('input[name="valor_aprox"]').val(data.valor_aprox);
+        $('input[name="fecha_ingreso"]').val(data.fecha_ingreso);
+        $('select[name="area"]').val(data.area_id).trigger("change");
+        $('select[name="cargo"]').val(data.cargo_id).trigger("change");
         $('#myModalACR').modal('show');
     }); 
 
@@ -93,14 +97,14 @@ $(function () {
 
     $('.btnAdd1').on('click', function () {
 
-        $('CrearUsuarioForm').on('submit', function (e) {
+        $('CrearRequeriForm').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
+                $('#myModalRequerUser').modal('hide');
                 tblProfesionUser.ajax.reload();
             }); 
         });
@@ -116,7 +120,7 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
+                $('#myModalRequerUser').modal('hide');
                 tblProfesionUser.ajax.reload();
             }); 
         });

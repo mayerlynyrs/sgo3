@@ -122,7 +122,7 @@ class AreaCargo(BaseModel):
         null=True
     )
 
-    valor_aprox = models.IntegerField(
+    valor_aprox = models.FloatField(
         blank=True,
         null=True
     )
@@ -196,6 +196,8 @@ class RequerimientoUser(BaseModel):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
     area_cargo = models.ForeignKey(AreaCargo, on_delete=models.PROTECT, null=True, blank=True)
 
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
@@ -205,6 +207,10 @@ class RequerimientoUser(BaseModel):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['user_id'] = self.user.id
+        item['user'] = self.user.first_name + self.user.last_name
+        item['jefe_area_id'] = self.jefe_area.id
+        item['jefe_area'] = self.jefe_area.first_name
         return item
 
 

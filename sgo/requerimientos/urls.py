@@ -53,4 +53,7 @@ urlpatterns = [
         view=views.delete_requerimiento,
         name="delete"
     ),
+    
+    
+    path('ajax/load-plantas/', views.load_plantas, name='ajax_load_plantas'), # AJAX
 ]

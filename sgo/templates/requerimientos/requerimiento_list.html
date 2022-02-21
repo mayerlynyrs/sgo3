@@ -59,6 +59,7 @@
             <td>
                 <a href="{% if perms.requerimientos.change_requerimiento %}{% url 'requerimientos:create_requerimiento' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
                     <span class="text-name text-success">
+                        {{ obj.codigo }}
                         {{ obj.nombre|title }}
                     </span>
                 </a>
