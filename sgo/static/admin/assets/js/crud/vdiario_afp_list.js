@@ -56,25 +56,29 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Valor Diario AFP<small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Valor Diario AFP<small style="font-size: 80%;"> Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblValorDiario.cell($(this).closest('td, li')).index();
         var data = tblValorDiario.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="valor_diario"]').val(data.valor_diario);
+        $('input[name="valor"]').val(data.valor);
+        $('select[name="afp"]').val(data.afp_id).trigger("change");
+        $('select[name="valor_diario"]').val(data.valor_diario_id).trigger("change");
         $('#myModalValorDiarioAfp').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('Valor Diario AFP<small style="font-size: 80%;">Eliminar</small>');
+        modal_title.find('span').html('Valor Diario AFP<small style="font-size: 80%;"> Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblValorDiario.cell($(this).closest('td, li')).index();
         var data = tblValorDiario.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
-        $('input[name="valor_diario"]').val(data.valor_diario);
+        $('input[name="valor"]').val(data.valor);
+        $('select[name="afp"]').val(data.afp_id).trigger("change");
+        $('select[name="valor_diario"]').val(data.valor_diario_id).trigger("change");
         $('#myModalValorDiarioAfp').modal('show');
     });
 

@@ -45,7 +45,7 @@ $(function () {
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('add');
-        modal_title.find('span').html('Areas' );
+        modal_title.find('span').html('Área' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
@@ -54,7 +54,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Edición de una Area');
+        modal_title.find('span').html('Edición de una Área');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblClient.cell($(this).closest('td, li')).index();
         var data = tblClient.row(tr.row).data();
@@ -66,7 +66,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('¿Desea Eliminar Area?');
+        modal_title.find('span').html('¿Desea Eliminar Área?');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblClient.cell($(this).closest('td, li')).index();
         var data = tblClient.row(tr.row).data();
