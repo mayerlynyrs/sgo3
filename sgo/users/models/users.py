@@ -161,6 +161,10 @@ class ValoresDiarioAfp(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['afp_id'] = self.afp.id
+        item['afp'] = self.afp.nombre
+        item['valor_diario_id'] = self.valor_diario.id
+        item['valor_diario'] = self.valor_diario.valor_diario
         return item
 
 
