@@ -89,7 +89,7 @@
 				</ul>
 			  <div>
           <div id="step-1">
-            <form method="post" autocomplete="off" novalidate>
+            <form method="post" action="{% url 'requerimientos:update' requerimiento_id %}" autocomplete="off" novalidate id="CrearRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
 							<fieldset>
 								<div class="row">
 									<div class="col-xl-8 offset-xl-2">
@@ -151,6 +151,8 @@
                           {{ form.descripcion }}
                         </div>
                       </div>
+                      <input name="action" type="hidden" value="add_requerimiento">
+                      <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
                     </div>
 								</div>
 							</fieldset>
@@ -159,7 +161,7 @@
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
                   <a href="{% url 'requerimientos:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                  <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+                  <button type="submit" class="btn btn-success BtnAdd1" id="btn-guardar">Guardar</button>
                 </div>
               </div>
             </form>
@@ -184,7 +186,7 @@
                       <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
                         <thead>
                           <tr>
-                              <th>Cantidad</th>
+                              <th>Cantidades</th>
                               <th>Áreas</th>
                               <th>Cargos</th>
                               <th>Acciones</th>
@@ -252,8 +254,8 @@
 									<!-- begin col-8 -->
 									<div class="col-xl-8 offset-xl-2">
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Trabajador(es) del Requerimiento</legend><hr /><br>
-                      <!-- <div class="row col-md-12">
-                        <a class="btn btn-primary btn-flat btnAddProfes" style="color: white;">
+                      <div class="row col-md-12">
+                        <a class="btn btn-primary btn-flat btnAddRequeUser" style="color: white;">
                           <i class="fas fa-plus"></i> Nuevo registro
                         </a>
                       </div>
@@ -262,9 +264,9 @@
                         <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
                           <thead>
                             <tr>
-                                <th >Egreso</th>
-                                <th >Institución</th>
-                                <th >Profesión</th>
+                                <th >Tipos</th>
+                                <th >Trabajadores</th>
+                                <th >Jefes</th>
                                 <th>Acciones</th>
                             </tr>
                           </thead>
@@ -276,7 +278,7 @@
 
                         {% block javascript3 %}
                             <!-- Modal -->
-                            <div class="modal fade" id="myModalProfesionUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            <div class="modal fade" id="myModalRequerUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
                                 <form method="post" action="." enctype="multipart/form-data">
                                     <div class="modal-dialog" role="document">
@@ -312,7 +314,7 @@
                                 </form>
                             </div>
                         {% endblock %}
-                  </div> -->
+                  </div>
 								</div>
 							</fieldset>
 					  </div>
@@ -321,40 +323,9 @@
 
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
-      $("#id_region").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
-        var regionId = $(this).val();  // get the selected region ID from the HTML input
-  
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
-          data: {
-            'region': regionId       // add the region id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_provincias` view function
-            $("#id_provincia").html(data);  // replace the contents of the provincia input with the data that came from the server
-          }
-        });
-  
-      });
-      // this one is for fetching ciudad data
-      $("#id_provincia").change(function () { //django-model-form created this id
-        var url = $("#CrearUsuarioForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
-        var provinciaId = $(this).val();  // get the selected region ID from the HTML input
-  
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
-          data: {
-            'provincia': provinciaId       // add the region id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_provincias` view function
-            $("#id_ciudad").html(data);  // replace the contents of the provincia input with the data that came from the server
-          }
-        });
-  
-      });
       // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
+        var url = $("#CrearRequeriForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request
@@ -400,7 +371,7 @@
 
       e.preventDefault();
 
-      var $form = $('form');
+      var $form = $('#CrearRequeriForm');
       var validator = $form.validate({
           ignore: "",
           errorClass: "is-invalid",
@@ -422,10 +393,6 @@
           },
           wrapper: "",
           rules: {
-                  codigo: {
-                    required: true,
-                    minlength: 6
-                  },
                   centro_costo: "required",
                   nombre: "required",
                   planta: {
@@ -434,10 +401,6 @@
                   }
                 },
                 messages: {
-                  codigo: {
-                    required: "Ingresa el código del requerimiento.",
-                    minlength: "Ingresa un código valido."
-                  },
                   centro_costo: "Ingresa el centro de costo.",
                   nombre: "Ingresa el nombre.",
                   planta: "Selecciona al menos una planta a la que pertenezca el usuario.",

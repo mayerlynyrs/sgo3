@@ -19,8 +19,8 @@ function getData2() {
         },
         columns: [
             {"data": "tipo"},
-            {"data": "pension"},
-            {"data": "area_cargo"},
+            {"data": "user"},
+            {"data": "jefe_area"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -53,45 +53,53 @@ $(function () {
 
     getData2();
 
-    $('.btnAddProfes').on('click', function () {
-        $('input[name="action"]').val('profesion_add');
-        modal_title.find('span').html('Profesión <small style="font-size: 80%;">Nuevo</small>' );
+    $('.btnAddRequeUser').on('click', function () {
+        $('input[name="action"]').val('requeri_user_add');
+        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
-        $('#myModalProfesionUser').modal('show');
+        $('#myModalRequerUser').modal('show');
     });
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Profesión <small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
         var data = tblRequeriUser.row(tr.row).data();
         $('form')[2].reset();
-        $('input[name="action"]').val('profesion_edit');
+        $('input[name="action"]').val('requeri_user_edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="egreso"]').val(data.egreso);
-        $('input[name="institucion"]').val(data.institucion);
-        $('select[name="profesion"]').val(data.profesion_id).trigger("change");
-        $('#myModalProfesionUser').modal('show');
+        $('input:checkbox[name=referido]').attr('checked',data.referido);
+        $('textarea[name="descripcion"]').val(data.descripcion);
+        $('select[name="tipo"]').val(data.tipo).trigger("change");
+        $('input[name="pension"]').val(data.pension);
+        $('select[name="user"]').val(data.user_id).trigger("change");
+        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
+        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
+        $('#myModalRequerUser').modal('show');
     });
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('Profesión <small style="font-size: 80%;">Eliminar</small>');
+        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
         var data = tblRequeriUser.row(tr.row).data();
-        $('input[name="action"]').val('profesion_delete');
+        $('input[name="action"]').val('requeri_user_delete');
         $('input[name="id"]').val(data.id);
-        $('input[name="egreso"]').val(data.egreso);
-        $('input[name="institucion"]').val(data.institucion);
-        $('select[name="profesion"]').val(data.profesion_id).trigger("change");
-        $('#myModalProfesionUser').modal('show');
+        $('input:checkbox[name=referido]').attr('checked',data.referido);
+        $('textarea[name="descripcion"]').val(data.descripcion);
+        $('select[name="tipo"]').val(data.tipo).trigger("change");
+        $('input[name="pension"]').val(data.pension);
+        $('select[name="user"]').val(data.user_id).trigger("change");
+        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
+        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
+        $('#myModalRequerUser').modal('show');
     }); 
 
-    $('#myModalProfesionUser').on('shown.bs.modal', function () {
+    $('#myModalRequerUser').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -102,12 +110,10 @@ $(function () {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalcontacto').modal('hide');
-                tblContact.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
+                $('#myModalACR').modal('hide');
+                tblAreaCargo.ajax.reload();
+                $('#myModalRequerUser').modal('hide');
                 tblRequeriUser.ajax.reload();
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
             }); 
         });
 
