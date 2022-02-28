@@ -116,7 +116,7 @@ class ContratoAdmin(admin.ModelAdmin):
 
     fields = ('sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'archivo' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
-        'fecha_aprobacion','fecha_aprobacion_baja','user','gratificacion','horario','planta','renuncia','requerimiento_user','status',)
+        'fecha_aprobacion','fecha_aprobacion_baja','user','gratificacion','horario','planta','causal','renuncia','requerimiento_user','obs','status',)
     list_display = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'archivo' ,'motivo', 'archivado',
         'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja',)

@@ -141,7 +141,7 @@ class AreaCargo(BaseModel):
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return str(self.cantidad)
+        return str(self.cantidad) +' '+ self.area.nombre +' - '+ self.cargo.nombre
     
     def toJSON(self):
         item = model_to_dict(self)
@@ -203,14 +203,18 @@ class RequerimientoUser(BaseModel):
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return str(self.tipo)
+        return str(self.tipo) + ' ' + str(self.user)
     
     def toJSON(self):
         item = model_to_dict(self)
         item['user_id'] = self.user.id
-        item['user'] = self.user.first_name + self.user.last_name
+        item['user_rut'] = self.user.rut
+        item['user'] = self.user.first_name +' '+ self.user.last_name
         item['jefe_area_id'] = self.jefe_area.id
         item['jefe_area'] = self.jefe_area.first_name
+        item['area_cargo_id'] = self.area_cargo.id
+        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') '+ self.area_cargo.area.nombre +' - '+ self.area_cargo.cargo.nombre
+        item['requerimiento'] = self.requerimiento.nombre
         return item
 
 

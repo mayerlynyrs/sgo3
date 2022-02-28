@@ -269,9 +269,9 @@ class RequerimientoIdView(TemplateView):
                 trabaj.descripcion = request.POST['descripcion']
                 trabaj.tipo_id = request.POST['tipo']
                 trabaj.pension = request.POST['pension']
+                trabaj.area_cargo_id = request.POST['area_cargo_id']
                 trabaj.user_id = request.POST['user']
                 trabaj.jefe_area_id = request.POST['jefe_area']
-                trabaj.area_cargo_id = 10
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
             elif action == 'requeri_user_edit':
@@ -285,6 +285,7 @@ class RequerimientoIdView(TemplateView):
                 trabaj.descripcion = request.POST['descripcion']
                 trabaj.tipo_id = request.POST['tipo']
                 trabaj.pension = request.POST['pension']
+                trabaj.area_cargo_id = request.POST['area_cargo']
                 trabaj.user_id = request.POST['user']
                 trabaj.jefe_area_id = request.POST['jefe_area']
                 trabaj.area_cargo_id = 10
@@ -303,6 +304,11 @@ class RequerimientoIdView(TemplateView):
     def get_context_data(self, requerimiento_id, **kwargs):
 
         requerimiento = get_object_or_404(Requerimiento, pk=requerimiento_id)
+        # Áreas - Cargos del Requerimiento
+        ac = AreaCargo.objects.filter(requerimiento_id=requerimiento_id)
+        # (cantidad) Trabajadores en el Área(s) y Cargo(s) del Requerimiento
+        pk = requerimiento_id
+        quantity = RequerimientoUser.objects.filter(requerimiento_id=pk).count()
 
         context = super().get_context_data(**kwargs)
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
@@ -312,9 +318,10 @@ class RequerimientoIdView(TemplateView):
         context['form'] = RequerimientoCreateForm(instance=requerimiento)
         context['form2'] = ACRForm(instance=requerimiento,
                                    areas=requerimiento.cliente.area.all(),
-                                   cargos=requerimiento.cliente.cargo.all()
+                                   cargos=requerimiento.cliente.cargo.all(),
+                                   cantidad=quantity
                                    )
-        context['form3'] = RequeriUserForm(instance=requerimiento)
+        context['form3'] = RequeriUserForm(instance=requerimiento, area_cargo=ac)
         return context
 
 

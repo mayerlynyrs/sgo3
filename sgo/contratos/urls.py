@@ -33,6 +33,22 @@ urlpatterns = [
         name="list"
     ),
     path(
+        route='create/',
+        view=views.create,
+        name="create"
+    ),
+    # path(
+    #     route='<int:requerimiento_id>/create_requerimiento',
+    #     view=views.RequerimientoIdView.as_view(),
+    #     name='create_requerimiento'
+    # ),
+    path(
+        # route='<int:requerimiento_user_id>/create_contrato/',
+        route='<int:requerimiento_user_id>/create_contrato/',
+        view=views.ContratoIdView.as_view(),
+        name="create_contrato"
+    ),
+    path(
         route='miscontratos/',
         view=views.ContratoMis.as_view(),
         name="miscontratos"

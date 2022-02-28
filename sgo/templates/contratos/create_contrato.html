@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block page_title %}Contratos{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'contratos:list-plantilla' %}">Contratos</a></li>
+  <li class="breadcrumb-item active">{% if plantilla %}{{ plantilla.id }}{% else %}Nueva{% endif %}</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Contrato <small>{% if plantilla %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<!-- end page-header -->
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">
+      {% if plantilla %}{{ plantilla.nombre|upper }}{% else %}Contrato Nuevo{% endif %}</h4>
+  </div>
+  <div class="panel-body">
+
+    {% if form.non_field_errors%}
+      <div class="alert alert-danger fade show">
+        <span class="close" data-dismiss="alert">×</span>
+        <h5><i class="fa fa-exclamation-triangle"></i> Revisa el fomulario!</h5>
+        {% for err in form.non_field_errors %}{{ err }}<br>{% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-danger fade show" id="msgbox" style="display: none;">
+        <span class="close" data-dismiss="alert">×</span>
+        <span>
+          <strong><i class="icon fa fa-exclamation-triangle text-danger pr-1"></i>
+            <span id="num-errors"></span></strong>
+          Revisa el formulario, sigue las instrucciones y completa los datos.</span>
+      </div>
+    {% endif %}
+    <div class="card-body">
+			<!-- begin step-1 -->
+			<div id="step-1">
+        <!-- begin col-10 -->
+        <div class="col-xl-10 offset-xl-1">
+          <form method="post" autocomplete="off" novalidate id="CrearContratoForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+			<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Trabajador</legend><hr /><br>
+              {% csrf_token  %}
+              <div class="row">
+                    <input name="area_cargo_id" id="area_cargo_id" type="hidden" value="">
+                {% for ru in datos %}
+                    <!-- {{ datos }} -->
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Nombres:</label>
+                        <div class="form-control">{{ ru.user__first_name }} {{ ru.user__last_name }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Rut:</label>
+                        <div class="form-control">{{ ru.user__rut }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Estado Civil:</label>
+                        <div class="form-control">{{ ru.user__estado_civil__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Fecha Nacimiento:</label>
+                        <div class="form-control">{{ ru.user__fecha_nacimiento }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Previsión:</label>
+                        <div class="form-control">{{ ru.user__afp__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Salud:</label>
+                        <div class="form-control">{{ ru.user__salud__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Teléfono:</label>
+                        <div class="form-control">{{ ru.user__telefono }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Nivel Educacional:</label>
+                        <div class="form-control">{{ ru.user__nivel_estudio__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Nacionalidad:</label>
+                        <div class="form-control">{{ ru.user__nacionalidad__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Ciudad:</label>
+                        <div class="form-control">{{ ru.user__ciudad__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Domicilio:</label>
+                        <div class="form-control-lg form-control">{{ ru.user__domicilio }}</div>
+                      </div>
+                    </div>
+                    <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos del Requerimiento<hr /></legend>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Nombre:</label>
+                        <div class="form-control-lg form-control">{{ ru.requerimiento__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Referido:</label>
+                        {% if ru.referido == True %}
+                            <input type="checkbox" checked="checked">
+                        {% else %}
+                            <input type="checkbox">
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Centro de Costo:</label>
+                        <div class="form-control">{{ ru.requerimiento__centro_costo }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Área:</label>
+                        <div class="form-control">{{ ru.area_cargo__area__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Cargo:</label>
+                        <div class="form-control">{{ ru.area_cargo__cargo__nombre }}</div>
+                      </div>
+                    </div>
+                    <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos de la Empresa<hr /></legend>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Razón Social:</label>
+                        <div class="form-control-lg form-control">{{ ru.requerimiento__cliente__razon_social }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-6">
+                        <label for="email">Rut:</label>
+                        <div class="form-control">{{ ru.requerimiento__cliente__rut }}</div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Planta:</label>
+                        <div class="form-control">{{ ru.requerimiento__planta__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-4">
+                        <label for="email">Región:</label>
+                        <div class="form-control">{{ ru.requerimiento__planta__region__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Provincia:</label>
+                        <div class="form-control">{{ ru.requerimiento__planta__provincia__nombre }}</div>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Ciudad:</label>
+                        <div class="form-control">{{ ru.requerimiento__planta__ciudad__nombre }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Dirección:</label>
+                        <div class="form-control-lg form-control">{{ ru.requerimiento__planta__direccion }}</div>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="form-group col-md-12">
+                        <label for="email">Gratificación:</label>
+                        <div class="form-control">{{ ru.requerimiento__planta__gratificacion__nombre }}</div>
+                      </div>
+                    </div>
+                    <input name="action" type="hidden" value="requeri_user_add">
+                    <input name="id" id="id" type="hidden" value="0">
+                    <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                {% endfor %}
+              </div>
+              <div class="form-group row m-b-0">
+                <div class="col-md-4 col-sm-4">
+                {% if plantilla and perms.ficheros.delete_fichero %}
+                    <button type="button" id="btn-delete" class="btn btn-danger">Eliminar</button>
+                {% endif %}
+                </div>
+                <!-- <div class="col-md-8 col-sm-8 text-right">
+                    <a href="{% url 'contratos:list-plantilla' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+                    <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+                </div> -->
+              </div>
+          </form>
+        </div>
+        <!-- end col-10 -->
+      </div>
+      <!-- end step-1 -->
+    </div>
+  </div>
+</div>
+<!-- end panel -->
+<div class="modal fade" id="modal-plantilla">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+{% endblock %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <!-- jquery validation -->
+    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/jquery-validation/dist/additional-methods.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
+    <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+{% endblock %}
+{% block scripts %}
+  var enviando = false;
+  //Submit form
+  $('#btn-guardar').on('click', function(e){
+      $(this).prop('disabled', true);
+      $(this).addClass('disabled');
+
+      e.preventDefault();
+
+      var $form = $('#CrearContratoForm');
+      var validator = $form.validate({
+          ignore: "",
+          errorClass: "is-invalid",
+          validClass: "is-valid",
+          errorElement: 'div',
+          errorPlacement: function ( error, element ) {
+            error.addClass("invalid-feedback");
+
+            if(element.prop("type") === "checkbox") {
+              error.insertAfter(element.parent("label"));
+            }else{
+              error.insertAfter(element);
+            }
+
+            // Add the span element, if doesn't exists, and apply the icon classes to it.
+            if (!element.next("div")[0]) {
+              $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+            }
+          },
+          wrapper: "",
+          rules: {
+                  tipo_contrato: "required",
+                  sueldo_base: "required",
+                  horario: "required",
+                  planta: "required",
+                },
+                messages: {
+                  tipo_contrato: "Selecciona un Tipo de Contrato.",
+                  sueldo_base: "Ingresa el sueldo base del Contrato.",
+                  horario: "Selecciona un Horario.",
+                  planta: "Selecciona una planta."
+          },
+          showErrors: function(errorMap, errorList) {
+              console.log('show messages', errorList.length);
+              if(errorList.length){
+                  $('#msgbox').show('slow');
+                  $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                  this.defaultShowErrors();
+                  console.log('Errores', errorMap, errorList);
+              }
+        }
+      });
+
+      if(validator.form()){
+          if(!enviando){
+              enviando = true;
+              $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+              $form.submit();
+          }else{
+              console.log("El formulario ya se esta enviando...");
+          }
+      }else{
+          console.log('Error en el formulario.');
+          $(this).removeClass('disabled');
+          $(this).prop('disabled', false);
+      }
+
+  })
+
+{% if plantilla and perms.plantilla.delete_plantilla %}
+  var deleteURL = "{% url 'contratos:delete-plantilla' plantilla.id %}";
+
+  $('#btn-delete').on('click', function(e){
+      e.preventDefault();
+
+      console.log('click delete object');
+      console.log(deleteURL);
+
+      $.ajax({
+        url: deleteURL,
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+          $("#modal-plantilla").modal("show");
+        },
+        success: function (data) {
+            $("#modal-plantilla .modal-content").html(data.html_form);
+        }
+      });
+  });
+{% endif %}
+
+{% if messages %}
+      console.log('mensajes');
+      {% for mensaje in messages %}
+          console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+          {% if mensaje.tags == 'success' %}
+            iziToast.success({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% elif mensaje.tags == 'error' %}
+            iziToast.error({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% endif %}
+      {% endfor %}
+
+  {% endif %}
+{% endblock %}
+

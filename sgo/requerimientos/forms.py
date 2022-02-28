@@ -98,9 +98,11 @@ class ACRForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         areas = kwargs.pop('areas', None)
-        print(areas)
+        # print(areas)
         cargos = kwargs.pop('cargos', None)
-        print(cargos)
+        # print(cargos)
+        cantidad = kwargs.pop('cantidad', None)
+        # print(cantidad)
         super(ACRForm, self).__init__(*args, **kwargs)
         
         self.fields['area'].queryset = areas
@@ -132,6 +134,13 @@ class RequeriUserForm(forms.ModelForm):
                                    )
     pension = forms.CharField(required=True, label="Pensión",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    area_cargo = forms.ModelChoiceField(queryset=AreaCargo.objects.none(), required=True, label="Área Cargo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
     user = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True, groups='5'), required=True, label="Trabajador",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -139,13 +148,6 @@ class RequeriUserForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    # area_cargo = forms.ModelChoiceField(queryset=AreaCargo.objects.filter(status=True), required=True, label="Área Cargo",
-    #                                widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-    #                                                           'data-size': '5',
-    #                                                           'data-live-search': 'true',
-    #                                                           'data-live-search-normalize': 'true'
-    #                                                           })
-    #                                )
     jefe_area = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True), required=True, label="Jefe del Área",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -157,8 +159,12 @@ class RequeriUserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        area_cargo = kwargs.pop('area_cargo', None)
+        total = kwargs.pop('total', None)
         super(RequeriUserForm, self).__init__(*args, **kwargs)
+        
+        self.fields['area_cargo'].queryset = area_cargo
 
     class Meta:
         model = RequerimientoUser
-        fields = ("referido", "descripcion", "tipo", "pension", "user", "jefe_area", )
+        fields = ("area_cargo", "tipo", "user", "pension", "jefe_area", "referido", "descripcion", "status")
