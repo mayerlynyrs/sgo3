@@ -79,6 +79,7 @@ class Contrato(BaseModel):
     fecha_termino_ultimo_anexo = models.DateField(blank=True, null=True)
     archivo = models.FileField(
         upload_to='contratoscreados/',
+        blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
     motivo = models.TextField(blank=True, null=True)
@@ -99,7 +100,7 @@ class Contrato(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
     horario = models.ForeignKey(Horario, on_delete=models.PROTECT)
-    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
+    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT, blank=True, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)

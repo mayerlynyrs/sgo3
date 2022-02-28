@@ -18,7 +18,12 @@ function getData2() {
             dataSrc: ""
         },
         columns: [
-            {"data": "tipo"},
+            {"data": "id",
+            "render": function(data, type, row, meta){
+                data = '<a href="../../../contratos/'+data+'/create_contrato/ ">' + data + ' </a> ';
+                return data;
+            }},
+            {"data": "area_cargo"},
             {"data": "user"},
             {"data": "jefe_area"},
             {"data": "id"},
@@ -30,7 +35,8 @@ function getData2() {
                 orderable: false,
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="edit" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
                     return buttons;
                 }
             },
@@ -77,7 +83,6 @@ $(function () {
         $('input[name="pension"]').val(data.pension);
         $('select[name="user"]').val(data.user_id).trigger("change");
         $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
-        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
         $('#myModalRequerUser').modal('show');
     });
 
@@ -95,9 +100,8 @@ $(function () {
         $('input[name="pension"]').val(data.pension);
         $('select[name="user"]').val(data.user_id).trigger("change");
         $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
-        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
         $('#myModalRequerUser').modal('show');
-    }); 
+    });
 
     $('#myModalRequerUser').on('shown.bs.modal', function () {
         //$('form')[0].reset();
@@ -113,6 +117,24 @@ $(function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
                 $('#myModalRequerUser').modal('hide');
+                tblRequeriUser.ajax.reload();
+            }); 
+        });
+
+    });
+
+    $('.btnAdd4').on('click', function () {
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalACR').modal('hide');
+                tblAreaCargo.ajax.reload();
+                $('#myModalRequerUser').modal('hide');
+                tblRequeriUser.ajax.reload();
+                $('#myModalRequerTrab').modal('hide');
                 tblRequeriUser.ajax.reload();
             }); 
         });

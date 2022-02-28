@@ -2,11 +2,14 @@
 
 import os
 # Django
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib import messages
 from django.db.models import Q
 from django.views.generic import TemplateView
 from django.db.models import Count
 from django.http import Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import (
@@ -26,7 +29,12 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
 # Models
 from ficheros.models import Fichero
-from contratos.models import Contrato, DocumentosContrato
+from contratos.models import Contrato, DocumentosContrato, ContratosBono
+from requerimientos.models import RequerimientoUser
+# Form
+from contratos.forms import CrearContratoForm
+from requerimientos.forms import RequeriUserForm
+from users.forms import EditarUsuarioForm
 
 
 class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -84,6 +92,134 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     ).distinct()
 
         return queryset
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def create(request):
+    if request.method == 'POST':
+
+        form = CrearContratoForm(data=request.POST, files=request.FILES, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Contrato Creado Exitosamente')
+
+            return redirect('contratos:list-plantilla')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        form = CrearContratoForm(user=request.user)
+
+    return render(request, 'contratos/contrato_create.html', {
+        'form': form,
+    })
+
+
+class ContratoIdView(TemplateView):
+    template_name = 'contratos/create_contrato.html'
+    # requerimiento_user_id=Contrato
+    
+    # # cliente = get_object_or_404(Contrato, pk=1)
+
+    # @method_decorator(csrf_exempt)
+    # @method_decorator(login_required)
+    # def dispatch(self, request, *args, **kwargs):
+    #     return super().dispatch(request, *args, **kwargs)
+
+    # def post(self, request, requerimiento_user_id, *args, **kwargs):
+    #     data = {}
+    #     try:
+    #         action = request.POST['action']
+    #         if action == 'searchdata':
+    #             print(requerimiento_user_id)
+    #             data = []
+    #             for i in RequerimientoUser.objects.filter(id=requerimiento_user_id, status=True):
+    #                 data.append(i.toJSON())
+    #         elif action == 'negocio_add':
+    #             negocio = ContratosBono()
+    #             negocio.nombre = request.POST['nombre']
+    #             negocio.descripcion = request.POST['descripcion']
+    #             negocio.archivo = request.FILES['archivo']
+    #             negocio.requerimiento_user_id = requerimiento_user_id
+    #             negocio.save()
+    #         elif action == 'negocio_edit':
+    #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
+    #             negocio.nombre = request.POST['nombre']
+    #             negocio.descripcion = request.POST['descripcion']
+    #             negocio.archivo = request.FILES['archivo']
+    #             negocio.requerimiento_user_id = requerimiento_user_id
+    #             negocio.save()
+    #         elif action == 'negocio_delete':
+    #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
+    #             negocio.status = False
+    #             negocio.save()
+    #         else:
+    #             data['error'] = 'Ha ocurrido un error'
+    #     except Exception as e:
+    #         data['error'] = str(e)
+    #     return JsonResponse(data, safe=False)
+
+
+    def get_context_data(self, requerimiento_user_id, **kwargs):
+
+        requer_user = get_object_or_404(RequerimientoUser, pk=requerimiento_user_id)
+        trabaj = RequerimientoUser.objects.filter(id=requerimiento_user_id).values(
+                'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre', 'user__fecha_nacimiento',
+                'user__domicilio', 'user__ciudad', 'user__afp', 'user__salud', 'user__nivel_estudio',
+                'user__telefono', 'user__nacionalidad', 'requerimiento__nombre',  'referido',
+                'requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
+                'requerimiento__cliente__rut', 'requerimiento__planta__nombre', 'requerimiento__planta__region',
+                'requerimiento__planta__ciudad', 'requerimiento__planta__direccion',
+                'requerimiento__planta__gratificacion', 'user__planta__nombre').order_by('user__planta')
+
+        context = super().get_context_data(**kwargs)
+    #     context['title'] = 'Listado de Contratos'
+    #     context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
+    #     context['update_url'] = reverse_lazy('utils:update_cliente')
+    #     context['cliente'] = cliente
+    #     context['entity'] = 'Contratos'
+        context['datos'] = RequerimientoUser.objects.filter(pk=requerimiento_user_id).values(
+                'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre',
+                'user__fecha_nacimiento', 'user__domicilio', 'user__ciudad__nombre', 'user__afp__nombre',
+                'user__salud__nombre',
+                'user__nivel_estudio__nombre', 'user__telefono', 'user__nacionalidad__nombre', 'requerimiento__nombre',
+                'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
+                'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre',
+                'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
+                'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
+                'requerimiento__planta__gratificacion__nombre').order_by('user__rut')
+    #     context['cliente_id'] = requerimiento_user_id
+        context['form3'] = RequeriUserForm(instance=requer_user, user=trabaj)
+        context['form1'] = CrearContratoForm(instance=requer_user)
+        return context
+
+
+class ContratosBonoView(TemplateView):
+    """ContratosBono List
+    Vista para listar todos los negocios según el usuario y sus las negocios
+    relacionadas.
+    """
+    template_name = 'utils/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in ContratosBono.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
 
 class ContratoMis(LoginRequiredMixin, TemplateView):

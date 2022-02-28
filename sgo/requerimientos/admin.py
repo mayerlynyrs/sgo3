@@ -52,7 +52,7 @@ class RequerimientoUserSetResource(resources.ModelResource):
 
     class Meta:
         mcausalodel = RequerimientoUser
-        fields = ('id', 'referido', 'descripcion', 'tipo', 'jefe_area', 'pension', 'user', 'area_cargo', 'status', )
+        fields = ('id', 'requerimiento', 'area_cargo', 'user', 'tipo', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
 
 
 class AdendumSetResource(resources.ModelResource):
@@ -101,8 +101,8 @@ class RequerimientoUserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RequerimientoUserAdmin model admin."""
 
     resource_class = RequerimientoUserSetResource
-    fields = ('referido', 'descripcion', 'tipo', 'jefe_area', 'pension', 'user', 'area_cargo', 'status', )
-    list_display = ('id', 'tipo', 'jefe_area', 'user', 'status', 'modified',)
+    fields = ('requerimiento', 'area_cargo', 'tipo', 'user', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
+    list_display = ('id', 'user', 'requerimiento', 'area_cargo', 'status', 'modified',)
     list_filter = ['jefe_area', 'user', 'area_cargo' ]
     search_fields = ['tipo', 'jefe_area__nombre', 'user__nombre', 'area_cargo' ]
 

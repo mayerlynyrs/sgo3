@@ -182,7 +182,7 @@
                       </a>
                     </div>
                     <br>
-                        
+                    <div class="table-responsive">
                       <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
                         <thead>
                           <tr>
@@ -197,6 +197,7 @@
                         {% endblock %}
                       
                       </table>
+                    </div>
 
                       {% block javascript2 %}
                           <!-- Modal -->
@@ -236,6 +237,69 @@
                               </form>
                           </div>
                       {% endblock %}
+                      <div class="modal fade" id="myModalRequerTrab" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <form method="post" action="." enctype="multipart/form-data">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Trabajador(es) <small>Nuevo</small></h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <fieldset>
+                                <div class="row">
+                                      {% csrf_token %}
+                                      <input name="area_cargo_id" id="area_cargo_id" type="hidden" value="">
+                                      <div class="row col-md-12">
+                                        <div class="form-group col-md-12">
+                                          <label for="email">Tipo:</label>
+                                          {{ form3.tipo }}
+                                        </div>
+                                      </div>
+                                      <div class="row col-md-12">
+                                        <div class="form-group col-md-12">
+                                          <label for="email">Trabajador:</label>
+                                          {{ form3.user }}
+                                        </div>
+                                      </div>
+                                      <div class="row col-md-12">
+                                        <div class="form-group col-md-6">
+                                          <label for="email">Pensión:</label>
+                                          {{ form3.pension }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                          <label for="email">Referido:</label>
+                                          {{ form3.referido }}
+                                        </div>
+                                      </div>
+                                      <div class="row col-md-12">
+                                        <div class="form-group col-md-12">
+                                          <label for="email">Jefe del Área:</label>
+                                          {{ form3.jefe_area }}
+                                        </div>
+                                      </div>
+                                      <div class="row col-md-12">
+                                        <div class="form-group col-md-12">
+                                          <label for="email">Observaciones:</label>
+                                          {{ form3.descripcion }}
+                                        </div>
+                                      </div>
+                                      <input name="action" type="hidden" value="requeri_user_add">
+                                      <input name="id" id="id" type="hidden" value="0">
+                                      <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                                </div>
+                              </fieldset>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                              <button type="submit" class="btn btn-info btn-flat btnAdd4"> Guardar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                      </div>
 
                   </div>
 									<!-- end col-8 -->
@@ -255,18 +319,19 @@
 									<div class="col-xl-8 offset-xl-2">
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Trabajador(es) del Requerimiento</legend><hr /><br>
                       <div class="row col-md-12">
-                        <a class="btn btn-primary btn-flat btnAddRequeUser" style="color: white;">
-                          <i class="fas fa-plus"></i> Nuevo registro
+                        <a class="btn btn-info btn-flat btnAddRequeUser" style="color: white;">
+                          <i class="fas fa-rocket"></i> Enviar Revisión de Exámenes
                         </a>
                       </div>
                       <br>
-                          
+                      <div class="table-responsive">
                         <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
                           <thead>
                             <tr>
-                                <th >Tipos</th>
-                                <th >Trabajadores</th>
-                                <th >Jefes</th>
+                                <th>ID</th>
+                                <th>Áreas-Cargos</th>
+                                <th>Trabajadores</th>
+                                <th>Jefes</th>
                                 <th>Acciones</th>
                             </tr>
                           </thead>
@@ -275,6 +340,7 @@
                           {% endblock %}
                         
                         </table>
+                      </div>
 
                         {% block javascript3 %}
                             <!-- Modal -->
