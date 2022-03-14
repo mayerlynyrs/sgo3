@@ -728,6 +728,7 @@ class PlantaView(TemplateView):
         return JsonResponse(data, safe=False)
 
 
+
 class SaludView(TemplateView):
     template_name = 'utils/salud_list.html'
 

@@ -23,6 +23,7 @@ urlpatterns = [
     path('contratos/', include(('contratos.urls', 'contratos'), namespace='contratos')),
     path('requerimientos/', include(('requerimientos.urls', 'requerimientos'), namespace='requerimientos')),
     path('examenes/', include(('examenes.urls', 'examenes'), namespace='examenes')),
+    path('psicologos/', include(('psicologos.urls', 'psicologos'), namespace='psicologos')),
     path('utils/', include(('utils.urls', 'utils'), namespace='profesiones')),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(

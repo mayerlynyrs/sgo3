@@ -49,6 +49,8 @@ function getData() {
 
 $(function () {
 
+
+
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
 
@@ -115,6 +117,9 @@ $(function () {
 
         $('form').on('submit', function (e) {
             e.preventDefault();
+            var traer = '/utils/'+cliente+'/plantas2/';
+            console.log(traer+'que onda');
+            $('.selectpicker').selectpicker('refresh');
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
