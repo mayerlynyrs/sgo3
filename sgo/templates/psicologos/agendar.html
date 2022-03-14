@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load user_tags %}
+{% block page_title %}Agendar Examen{% endblock %}
+{% block css %}
+
+<link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
+<link rel="stylesheet" href="{% static 'admin/assets/js/fullcalendar/lib/main.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<!-- begin breadcrumb -->
+<ol class="breadcrumb pull-right">
+  <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Psicologos / Agendar</a></li>
+  <li class="breadcrumb-item active">Listado</li>
+</ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+<h1 class="page-header">Agendar Hora  <small>Calendario</small></h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+    </div>
+    <h4 class="panel-title">Agenda Hora a Examen Psicologico</h4>
+  </div>
+  <div class="panel-body">
+    <div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style = "text-align:center">
+      Agendar
+    </button>
+    </div>
+    <div id="calendar" class="demo-calendar fc fc-media-screen fc-direction-ltr fc-theme-standard">
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <form method="post" id="form" action="{% url 'psicologos:create' %}" novalidate id="UserAgendar" enctype="multipart/form-data">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Agendar Examen</h5>
+          <button type="button" align="right" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="container-fluid">
+              <div class="row col-md-12">
+                <div class="form-group col-md-6">
+                  <label > Usuario</label>
+                    {{ form.user }}
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="email">Tipo</label>
+                    {{ form.tipo }}
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-md-6">
+                  <label for="email"> Fecha Ingreso</label>
+                    {{ form.fecha_ingreso_estimada }}
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="email"> Planta</label>
+                    {{ form.planta }}
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-md-4">
+                  <label for="email"> Cargo</label>
+                    {{ form.cargo }}
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="email"> Hal2</label>
+                    {{ form.Hal2 }}
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="email">Referido</label>
+                    {{ form.referido }}
+                </div>
+              </div>
+              <div class="row col-md-12">
+                <div class="form-group col-md-12">
+                  <label for="email">Observaciones</label>
+                    {{ form.obs }}
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" id="btn-guardar" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+{% endblock %}
+
+
+<!-- end panel -->
+{% block librerias %}
+<script src="{% static 'admin/assets/js/fullcalendar/lib/main.js' %}"></script>
+<script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+<script>
+
+
+  $('#fecha_examen, #fecha_vigencia').datepicker({
+      format: "yyyy-mm-dd",
+      language: 'es'
+  });
+  var color = null;
+  {% for agenda in object_list %}
+
+  {% endfor %}
+  
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      locale: 'es',
+      height: 650,
+      themeSystem: 'bootstrap5',
+      events: [
+        {% for agenda in object_list %}
+        {
+          title: "{{ agenda.user }}",
+          start: "{{ agenda.fecha_agenda_evaluacion | date:"Y-m-d" }}",
+          eventColor : '#378006',
+          
+        },
+        
+        {% endfor %}
+      ],
+ 
+      
+    });
+    calendar.render(); 
+  });
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+  var enviando = false;
+  //Submit form
+  $('#btn-guardar').on('click', function(e){
+      $(this).prop('disabled', true);
+      $(this).addClass('disabled');
+
+      e.preventDefault();
+
+      var $form = $('#form');
+      console.log($form);
+      var validator = $form.validate({
+          ignore: "",
+          errorClass: "is-invalid",
+          validClass: "is-valid",
+          errorElement: 'div',
+          errorPlacement: function ( error, element ) {
+            error.addClass("invalid-feedback");
+
+            if(element.prop("type") === "checkbox") {
+              error.insertAfter(element.parent("label"));
+            }else{
+              error.insertAfter(element);
+            }
+
+            // Add the span element, if doesn't exists, and apply the icon classes to it.
+            if (!element.next("div")[0]) {
+              $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+            }
+          },
+          wrapper: "",
+          rules: {
+                  fecha_ingreso_estimada: "required",
+                  fecha_agenda_evaluacion: "required"                  
+                },
+                messages: {
+                  fecha_ingreso_estimada: "Ingresa los fecha.",
+                  fecha_agenda_evaluacion: "Ingresa los fecha."
+          },
+          showErrors: function(errorMap, errorList) {
+              console.log('show messages', errorList.length);
+              if(errorList.length){
+                  $('#msgbox').show('slow');
+                  $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                  this.defaultShowErrors();
+                  console.log('Errores', errorMap, errorList);
+              }
+        }
+      });
+
+      if(validator.form()){
+          if(!enviando){
+              enviando = true;
+              $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+              $form.submit();
+          }else{
+              console.log("El formulario ya se esta enviando...");
+          }
+      }else{
+          console.log('Error en el formulario.');
+          $(this).removeClass('disabled');
+          $(this).prop('disabled', false);
+      }
+
+  })
+
+  {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}

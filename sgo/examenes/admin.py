@@ -10,7 +10,7 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ManyToManyWidget
 #Models
-from examenes.models import Examen, Bateria, Evaluacion, Requerimiento, Psicologico, PsicologicoTipo, EvaluacionPsicologico , Agenda
+from examenes.models import Examen, Bateria, Evaluacion, Requerimiento
 # Utils Model
 from utils.models import Planta
 # Requerimientos
@@ -56,43 +56,6 @@ class RequerimientoSetResource(resources.ModelResource):
         fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen',
                   'user', 'planta', 'status', )
 
-
-class PsicologicoSetResource(resources.ModelResource):
-    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
-    examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
-    planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
-
-    class Meta:
-        model = Psicologico
-        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen',
-                  'user', 'planta', 'status', )
-
-
-class PsicologicoTipoSetResource(resources.ModelResource):
-
-    class Meta:
-        model = PsicologicoTipo
-        fields = ('id', 'nombre', 'status', )
-
-
-class EvaluacionPsicologicoSetResource(resources.ModelResource):
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
-    psicologico_tipo = fields.Field(column_name='psicologico_tipo', attribute='psicologico_tipo', widget=ForeignKeyWidget(PsicologicoTipo, 'nombre'))
-
-    class Meta:
-        model = EvaluacionPsicologico
-        fields = ('id', 'nombre', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-                  'user', 'psicologico_tipo', 'status', )
-
-class AgendaSetResource(resources.ModelResource):
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
-    planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
-    evaluacion = planta = fields.Field(column_name='evaluacion', attribute='evaluacion', widget=ForeignKeyWidget(Evaluacion, 'nombre'))
-
-    class Meta:
-        model = Agenda
-        fields = ('id', 'tipo', 'referido', 'Hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado', 'status', )
 
 
 @admin.register(Examen)
@@ -140,50 +103,3 @@ class RequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'estado', 'requerimiento_user', 'planta', 'status', 'modified',)
     list_filter = ['requerimiento_user', 'examen', 'user', 'planta', ]
     search_fields = ['requerimiento_user__nombre', 'examen__nombre', 'user', 'planta__nombre', ]
-
-
-@admin.register(Psicologico)
-class PsicologicoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """PsicologicoAdmin model admin."""
-
-    resource_class = PsicologicoSetResource
-    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen', 'user',
-              'planta', 'status' )
-    list_display = ('id', 'estado', 'requerimiento_user', 'planta', 'status', 'created_date',)
-    list_filter = ['requerimiento_user', 'examen', 'user', 'planta', ]
-    search_fields = ['requerimiento_user__nombre', 'examen__nombre', 'user', 'planta__nombre', ]
-
-
-@admin.register(PsicologicoTipo)
-class PsicologicoTipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """PsicologicoTipoAdmin model admin."""
-
-    resource_class = PsicologicoTipoSetResource
-    fields = ('nombre', 'status', )
-    list_display = ('id', 'nombre', 'status', 'created_date',)
-    search_fields = ['nombre', ]
-
-
-@admin.register(EvaluacionPsicologico)
-class EvaluacionPsicologicoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """EvaluacionPsicologicoAdmin model admin."""
-
-    resource_class = EvaluacionPsicologicoSetResource
-    fields = ('nombre', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-              'user', 'psicologico_tipo', 'status', )
-    list_display = ('id', 'nombre', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-                    'user', 'psicologico_tipo', 'status', 'created_date',)
-    list_filter = ['nombre', 'estado', 'user', 'psicologico_tipo', ]
-    search_fields = ['nombre', 'user__nombre', 'psicologico_tipo__nombre', ]
-
-@admin.register(Agenda)
-class AgendaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """AgendaAdmin model admin."""
-
-    resource_class = AgendaSetResource
-    fields = ('tipo', 'referido', 'Hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado','obs',
-              'user', 'evaluacion', 'status', )
-    list_display = ('tipo', 'referido', 'Hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado','obs',
-                    'user', 'evaluacion', 'status',)
-    list_filter = [ 'estado', 'user', 'evaluacion', ]
-    search_fields = [ 'user__nombre', 'evaluacion__nombre', ]

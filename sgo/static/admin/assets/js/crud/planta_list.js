@@ -3,6 +3,7 @@ var modal_title;
 var cliente = null;
 
 function getData2() {
+    
     tblplanta = $('#data-table-buttons_wrapper').DataTable({
         responsive: true,
         autoWidth: false,
@@ -16,6 +17,7 @@ function getData2() {
             },
             dataSrc: ""
         },
+
         columns: [
             {"data": "nombre"},
             {"data": "rut"},
@@ -42,6 +44,12 @@ function getData2() {
 
 $(function () {
 
+    $('#id_negocio').change(function(){
+        $('#inputCIDADE')
+            .load('/utils/'+cliente+'/plantas2/')
+            .selectpicker('refresh');
+    });
+
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
 
@@ -52,6 +60,7 @@ $(function () {
         modal_title.find('span').html('Planta <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
         $('form')[2].reset();
+        
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
         $('#myModalplanta').modal('show');

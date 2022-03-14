@@ -16,14 +16,14 @@ LANGUAGE_CODE = 'es'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 # DATABASES
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            # 'NAME': 'sgo',
-            'NAME': 'sgo_actual',
+            'NAME': 'sgo3',
+            # 'NAME': 'sgo_actual',
             'USER': 'postgres',
             'PASSWORD': 'root',
             'HOST': 'localhost',
@@ -70,6 +70,7 @@ LOCAL_APPS = [
     'sgo.contratos.apps.ContratosConfig',
     #'sgo.api.apps.ApiAppConfig'
     'sgo.examenes.apps.ExamenesConfig',
+    'sgo.psicologos.apps.PsicologosConfig',
     'sgo.requerimientos.apps.RequerimientosConfig',
     
 ]

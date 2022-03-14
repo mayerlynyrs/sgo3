@@ -26,9 +26,13 @@
 	<link href="{% static 'admin/assets/css/default/theme/default.css' %}" id="theme" />
   	<link href="{% static 'admin/assets/plugins/iziToast/css/iziToast.min.css' %}" rel="stylesheet">
 	<link href="{% static 'admin/assets/plugins/smartwizard/dist/css/smart_wizard.css' %}" rel="stylesheet">
-
+	<link href="{% static 'admin/assets/js/datatable/DataTables-1.10.18/css/dataTables.bootstrap4.css' %}" rel="stylesheet">
 	<link href="{% static 'admin/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+	<link href="{% static 'admin/assets/jquery.datetimepicker.css' %}" rel="stylesheet">
 	<link href="{% static 'admin/assets/plugins/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet">
+	<link href="{% static 'admin/assets/js/jquery-datetimepicker/build/jquery.datetimepicker.min.css' %}" rel="stylesheet">
+
+
 
   {% block css %}{% endblock %}
 	<!-- ================== END BASE CSS STYLE ================== -->
@@ -135,16 +139,25 @@
 	<script src="{% static 'admin/assets/js/apps.min.js'%}"></script>
 	<script src="{% static 'admin/assets/js/demo/form-wizards.demo.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/smartwizard/dist/js/jquery.smartWizard.js'%}"></script>
-
 	<script src="{% static 'admin/assets/plugins/datatables.net/js/jquery.dataTables.min.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js'%}"></script>
 	<script src="{% static 'admin/assets/plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/datatables.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/Buttons-1.5.6/js/dataTables.buttons.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/JSZip-2.5.0/jszip.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/pdfmake-0.1.36/pdfmake.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/pdfmake-0.1.36/vfs_fonts.js'%}"></script>
+	<script src="{% static 'admin/assets/js/datatable/Buttons-1.5.6/js/buttons.html5.min.js'%}"></script>
 	<script src="{% static 'admin/assets/js/demo/table-manage-default.demo.js'%}"></script>
 	<script src="{% static 'admin/assets/js/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 	<script src="{% static 'admin/assets/js/datepicker/bootstrap-datepicker.min.js' %}"></script>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css" rel="stylesheet" />
+
+	<script src="{% static 'admin/assets/js/jquery-datetimepicker/build/jquery.datetimepicker.full.js'%}"></script>
+	<script src="{% static 'admin/assets/js/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js'%}"></script>
+	<script src="{% static 'admin/assets/js/jquery-datetimepicker/build/jquery.datetimepicker.min.js'%}"></script>
 
 	<script src="{% static 'admin/assets/js/functions.js'%}"></script>
 
