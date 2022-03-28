@@ -6,7 +6,7 @@ from django import forms
 # sgo Model
 from users.models import User
 from utils.models import Planta
-from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoUser
+from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoUser, Adendum
 from utils.models import Planta , Cliente, Area, Cargo
 
 
@@ -39,7 +39,7 @@ class RequerimientoCreateForm(forms.ModelForm):
                                    )
     fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_inicio", 'readonly' :'true'}))
-    fecha_termino = forms.CharField(required=True, label="Fecha Termino",
+    fecha_termino = forms.CharField(required=True, label="Fecha Término",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino",'readonly' :'true' }))
     descripcion = forms.CharField (required=True, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
@@ -168,3 +168,29 @@ class RequeriUserForm(forms.ModelForm):
     class Meta:
         model = RequerimientoUser
         fields = ("area_cargo", "tipo", "user", "pension", "jefe_area", "referido", "descripcion", "status")
+
+
+class AdendumForm(forms.ModelForm):
+    # fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
+    #                              widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off',  'id':"egreso"}))
+    fecha_termino = forms.CharField(required=True, label="Fecha Término",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino" }))
+                                #  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino",'readonly' :'true' }))
+
+    # requerimiento = forms.ModelChoiceField(queryset=Requerimiento.objects.all(), required=True,
+    #                                         widget=forms.Select(
+    #                                             attrs={'class': 'selectpicker show-tick form-control',
+    #                                                     'type': 'hidden',
+    #                                                    'data-size': '5',
+    #                                                    'data-live-search': 'true',
+    #                                                    'data-live-search-normalize': 'true'
+    #                                                    })
+    #                                         )
+
+    def __init__(self, *args, **kwargs):
+        super(AdendumForm, self).__init__(*args, **kwargs)
+        # self.fields['cargo'].queryset = cargos
+
+    class Meta:
+        model = Adendum
+        fields = ("fecha_termino", )

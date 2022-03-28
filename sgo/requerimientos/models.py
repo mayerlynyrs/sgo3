@@ -236,4 +236,12 @@ class Adendum(BaseModel):
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return str(self.fecha_inicio)
+        return str(self.fecha_termino)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['fecha_inicio'] = str(self.fecha_inicio)
+        item['fecha_termino'] = str(self.fecha_termino)
+        item['requerimiento_id'] = self.requerimiento.id
+        item['requerimiento'] = self.requerimiento.nombre
+        return item

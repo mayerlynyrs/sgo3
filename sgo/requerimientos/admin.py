@@ -91,7 +91,7 @@ class AreaCargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = AreaCargoSetResource
     fields = ('cantidad', 'valor_aprox', 'fecha_ingreso', 'requerimiento', 'area', 'cargo', 'status', )
-    list_display = ('id', 'cantidad', 'requerimiento', 'area', 'cargo', 'status', 'modified',)
+    list_display = ('id', 'cantidad', 'requerimiento', 'area', 'cargo', 'valor_aprox', 'status', 'modified',)
     list_filter = ['requerimiento', 'area', 'cargo', ]
     search_fields = ['area__nombre', 'cargo__nombre', 'requerimiento__nombre', ]
 
