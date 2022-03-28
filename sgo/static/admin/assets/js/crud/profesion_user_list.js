@@ -59,6 +59,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalProfesionUser').modal('show');
     });
 
@@ -74,6 +77,9 @@ $(function () {
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
         $('select[name="profesion"]').val(data.profesion_id).trigger("change");
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalProfesionUser').modal('show');
     });
 
@@ -88,6 +94,9 @@ $(function () {
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
         $('select[name="profesion"]').val(data.profesion_id).trigger("change");
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalProfesionUser').modal('show');
     }); 
 

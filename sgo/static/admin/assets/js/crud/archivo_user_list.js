@@ -56,6 +56,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[3].reset();
+        var btn = document.getElementById("boton2");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalArchivoUser').modal('show');
     });
 
@@ -83,6 +86,9 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id).trigger("change");
         $('file[name="archivo"]').val(data.archivo);
+        var btn = document.getElementById("boton2");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalArchivoUser').modal('show');
     }); 
 

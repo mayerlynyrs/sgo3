@@ -79,6 +79,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[3].reset();
+        var btn = document.getElementById("boton4");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalEvaluacion').modal('show');
     });
 
@@ -100,6 +103,9 @@ $(function () {
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('file[name="archivo_0"]').val(data.archivo);
         $('textarea[name="descripcion"]').val(data.descripcion);
+        var btn = document.getElementById("boton4");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalEvaluacion').modal('show');
     });
 
@@ -120,6 +126,9 @@ $(function () {
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('file[name="archivo"]').val(data.archivo);
         $('textarea[name="descripcion"]').val(data.descripcion);
+        var btn = document.getElementById("boton4");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalEvaluacion').modal('show');
     }); 
 

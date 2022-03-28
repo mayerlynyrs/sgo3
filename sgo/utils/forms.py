@@ -488,7 +488,7 @@ class SaludForm(forms.ModelForm):
 class AfpForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    tasa = forms.IntegerField(required=True, label="Tasa",
+    tasa = forms.FloatField(required=True, label="Tasa",
                                  widget=forms.NumberInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):

@@ -49,7 +49,7 @@ function getData() {
 
 $(function () {
 
-
+    
 
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
@@ -62,6 +62,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalnegocio').modal('show');
     });
 
@@ -76,6 +79,9 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('Textarea[name="descripcion"]').val(data.descripcion);
         $('file[name="archivo"]').val(data.archivo);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalnegocio').modal('show');
     });
 
@@ -90,6 +96,9 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('Textarea[name="descripcion"]').val(data.descripcion);
         $('file[name="archivo"]').val(data.archivo);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalnegocio').modal('show');
     }); 
 
