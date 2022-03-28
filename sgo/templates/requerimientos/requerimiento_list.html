@@ -45,13 +45,14 @@
     <h4 class="panel-title">Todos los requerimientos</h4>
   </div>
   <div class="panel-body">
+
     <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
       <thead>
           <tr>
               <th class="text-center" >Requerimientos</th>
               <th class="text-center" >Plazos</th>
               <th class="text-center" >Clientes/Plantas</th>
-              <th class="text-center" ></i> Causal</th>
+              <th class="text-center" ></i> Acciones</th>
           </tr>
       </thead>
       {% for obj in object_list  %}
@@ -66,6 +67,7 @@
                 <p class="text-desc">
                      {{ obj.descripcion|truncatewords:20 }}
                 </p>
+                Causal: {{ obj.causal}}<br>
             </td>
             <td class="list-plantas">
                 <ul>
@@ -77,12 +79,17 @@
             <td class="list-plantas">
                 <ul>
                   <li>Cliente: <b> {{ obj.cliente|title }} </b></li>
-                  <li>Planta:    <b> {{ obj.planta|title }} </b></li>
+                  <li>Planta:  <b> {{ obj.planta|title }} </b></li>
                   
                 </ul>
             </td>
             <td class="estado-requerimiento">
-                {{ obj.causal}} <br>
+              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum">
+                <i class="fas fa-audio-description"></i>
+              </button>
+              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary " title="Anexo Puesta Disposición">
+                <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
+              </button>
             </td>
           </tr>
       {% empty %}
@@ -92,11 +99,9 @@
       {% endfor %}
       </tbody>
     </table>
-    
- 
   </div>
 </div>
-<div class="modal fade" id="modal-requerimiento">
+<div class="modal fade" id="modal-adendum">
     <div class="modal-dialog">
       <div class="modal-content"></div>
     </div>
@@ -104,8 +109,28 @@
 <!-- end panel -->
 {% endblock %}
 {% block scripts %}
+    $('.btn-view-adendum').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        <!-- console.log('requerimiento_id', id); -->
+        var URL = '/requerimientos/'+id+'/adendum/';
 
-  {% if messages %}
+        console.log('URL', URL);
+
+        $.ajax({
+            url: URL,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#modal-adendum").modal("show");
+            },
+            success: function (data) {
+                $("#modal-adendum .modal-content").html(data.html_form);
+            }
+        });
+    });
+
+    {% if messages %}
         console.log('mensajes');
         {% for mensaje in messages %}
             console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");

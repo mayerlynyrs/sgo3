@@ -16,7 +16,7 @@ from django.forms import TextInput
 # sgo Model
 from utils.models import Cliente, Negocio, Region, Provincia, Ciudad , Planta
 from examenes.models import Evaluacion , Examen
-from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser, ListaNegra
+from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, NivelEstudio, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser, ListaNegra
 
 User = get_user_model()
 
@@ -101,6 +101,20 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    especialidad = forms.ModelChoiceField(queryset=Especialidad.objects.filter(status=True), required=True, label="Especialidad",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    nivel_estudio = forms.ModelChoiceField(queryset=NivelEstudio.objects.filter(status=True), required=True, label="Nivel de Estudio",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
     tipo_cuenta = forms.ModelChoiceField(queryset=TipoCta.objects.filter(status=True), required=True, label="Tipo Cuenta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -111,7 +125,7 @@ class CrearUsuarioForm(forms.ModelForm):
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
-                                   widget=forms.Select(attrs={'class': 'form-control ',
+                                   widget=forms.Select(attrs={'class': 'selectpicker form-control ',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'

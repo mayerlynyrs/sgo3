@@ -49,6 +49,21 @@ urlpatterns = [
         name='requirement_users'
      ),
     path(
+        route='<int:requerimiento_id>/adendum/',
+        view=views.adendum_requerimiento,
+        name="adendum"
+    ),
+    path(
+        route='create_adendum',
+        view=views.create_adendum,
+        name="create_adendum"
+    ),
+    path(
+        route='<int:requerimiento_id>/apd/',
+        view=views.a_puesta_disposicion,
+        name="apd"
+    ),
+    path(
         route='<int:object_id>/delete/',
         view=views.delete_requerimiento,
         name="delete"
