@@ -44,11 +44,6 @@ function getData2() {
 
 $(function () {
 
-    $('#id_negocio').change(function(){
-        $('#inputCIDADE')
-            .load('/utils/'+cliente+'/plantas2/')
-            .selectpicker('refresh');
-    });
 
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
@@ -59,10 +54,14 @@ $(function () {
         $('input[name="action"]').val('planta_add');
         modal_title.find('span').html('Planta <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
+        getData2();
         $('form')[2].reset();
         
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalplanta').modal('show');
     });
 
@@ -101,6 +100,9 @@ $(function () {
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direccion_gerente"]').val(data.direccion_gerente);
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalplanta').modal('show');
     });
 
@@ -139,6 +141,9 @@ $(function () {
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direcccion_gerente"]').val(data.direcccion_gerente);
+        var btn = document.getElementById("boton1");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalplanta').modal('show');
     }); 
 

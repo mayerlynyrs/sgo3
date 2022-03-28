@@ -49,6 +49,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalValorDiario').modal('show');
     });
 
@@ -61,6 +64,9 @@ $(function () {
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="valor_diario"]').val(data.valor_diario);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalValorDiario').modal('show');
     });
 
@@ -73,6 +79,9 @@ $(function () {
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
         $('input[name="valor_diario"]').val(data.valor_diario);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalValorDiario').modal('show');
     });
 

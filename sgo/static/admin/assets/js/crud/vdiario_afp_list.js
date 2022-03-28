@@ -51,6 +51,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalValorDiarioAfp').modal('show');
     });
 
@@ -65,6 +68,9 @@ $(function () {
         $('input[name="valor"]').val(data.valor);
         $('select[name="afp"]').val(data.afp_id).trigger("change");
         $('select[name="valor_diario"]').val(data.valor_diario_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalValorDiarioAfp').modal('show');
     });
 
@@ -79,6 +85,9 @@ $(function () {
         $('input[name="valor"]').val(data.valor);
         $('select[name="afp"]').val(data.afp_id).trigger("change");
         $('select[name="valor_diario"]').val(data.valor_diario_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalValorDiarioAfp').modal('show');
     });
 

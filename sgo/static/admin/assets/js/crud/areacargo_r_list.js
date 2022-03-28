@@ -58,6 +58,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalACR').modal('show');
     });
 
@@ -74,9 +77,10 @@ $(function () {
         $('input[name="fecha_ingreso"]').val(data.fecha_ingreso);
         $('select[name="area"]').val(data.area_id).trigger("change");
         $('select[name="cargo"]').val(data.cargo_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalACR').modal('show');
-        console.log("imprimir data");
-        console.log(data);
         return data;
     });
 
@@ -93,6 +97,9 @@ $(function () {
         $('input[name="fecha_ingreso"]').val(data.fecha_ingreso);
         $('select[name="area"]').val(data.area_id).trigger("change");
         $('select[name="cargo"]').val(data.cargo_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalACR').modal('show');
     });
 

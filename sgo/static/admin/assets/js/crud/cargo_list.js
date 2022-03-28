@@ -51,6 +51,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalcargo').modal('show');
     });
 
@@ -65,6 +68,9 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
         $('textarea[name="descripcion"]').val(data.descripcion);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalcargo').modal('show');
     });
 
@@ -79,6 +85,9 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
         $('textarea[name="descripcion"]').val(data.descripcion);
+        var btn = document.getElementById("boton");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalcargo').modal('show');
     }); 
 

@@ -62,6 +62,9 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
+        var btn = document.getElementById("btn-guardar");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalAgenda').modal('show');
     });
 
@@ -87,6 +90,9 @@ $(function () {
         $('input:checkbox[name=Hal2]').attr('checked',data.Hal2);  
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="obs"]').val(data.obs);
+        var btn = document.getElementById("btn-guardar");
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalAgenda').modal('show');
     });
 
@@ -107,6 +113,9 @@ $(function () {
         $('input:checkbox[name=Hal2]').attr('checked',data.Hal2);  
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="obs"]').val(data.obs);
+        var btn = document.getElementById("btn-guardar");
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalAgenda').modal('show');
     });
 
@@ -119,6 +128,7 @@ $(function () {
         modal_title.find('span').html('Evaluar <small style="font-size: 90%;"> <br> Nombre: '+data.user+
         ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Telefono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
         $('form')[0].reset();
+        $('input[name="id"]' ).val(data.id);
         $('input[name="user_id"]').val(data.user_id);
         $('select[name="planta"]').val(data.planta).trigger("change");
         $('select[name="cargo"]').val(data.cargo).trigger("change");
