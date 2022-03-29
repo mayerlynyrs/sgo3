@@ -82,7 +82,7 @@ img {
       {% for clte in consulta  %}
           <tr>
             <td>
-                <a title="Editar" href="{% url 'utils:create_cliente' clte.id %}?page={{ request.GET.page }}">
+                <a title="Editar" href="{% url 'clientes:create_cliente' clte.id %}?page={{ request.GET.page }}">
                   <span class="text-name text-success">
                     <!-- {{ c.razon_social }} -->
                     {{ clte.razon_social|upper }}<br>

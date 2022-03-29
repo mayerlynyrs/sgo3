@@ -4,8 +4,8 @@
 from django import forms
 from django.contrib.auth.models import Group
 # sgo Model
-from utils.models import Cliente, Planta
 from ficheros.models import Fichero
+from clientes.models import Cliente, Planta
 
 
 class FicheroCreateForm(forms.ModelForm):

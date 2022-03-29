@@ -1,15 +1,10 @@
 from django.db import models
-from django.core.validators import FileExtensionValidator
-from django.db.models.fields.related import ManyToManyField
 from django.utils import timezone
-from django.core.validators import RegexValidator
 from django.forms import model_to_dict
 
 # Create your models here.
 # Crum User
 from crum import get_current_user
-
-# from examenes.models import Examen
 
 
 
@@ -258,216 +253,6 @@ class Horario(models.Model):
         return item
 
 
-class Cliente(BaseModel):
-    """Modelo Cliente. """
-
-    # codigo = models.CharField(
-    #     'código',
-    #     help_text='Identificador único de sistema de gestión.',
-    #     max_length=6,
-    #     unique=True,
-    #     blank=True,
-    #     null=True
-    # )
-    rut = models.CharField(
-        max_length=12,
-        unique=True,
-        error_messages={
-            'unique': 'Ya existe un cliente con este RUT registrado.'
-        }
-    )
-    razon_social = models.CharField(max_length=100)
-    giro = models.CharField(max_length=150, blank=True, null=True)
-    abreviatura = models.CharField(max_length=4)
-    email = models.EmailField(
-        'correo',
-        unique=True,
-        blank=True,
-        null=True,
-        error_messages={
-            'unique': 'Ya existe un cliente con este email registrado.'
-        }
-    )
-
-    telefono_regex = RegexValidator(
-        regex=r'\+?1?\d{9,15}$',
-        message='El numero de telefono debe ser ingresado en el siguiente formato +999999999. Solo puede ingresar hasta 15 digitos.'
-    )
-
-    telefono = models.CharField(
-        'Teléfono',
-        validators=[telefono_regex, ],
-        max_length=15,
-        blank=True,
-        null=True
-    )
-    area = models.ManyToManyField(
-        Area,
-        help_text='Seleccione uno o mas area para este cliente.'
-    )
-
-    cargo = models.ManyToManyField(
-        Cargo,
-        help_text='Seleccione uno o mas cargo para este cliente.'
-    )
-
-    horario = models.ManyToManyField(
-        Horario,
-        help_text='Seleccione uno o mas horario para este cliente.'
-    )
-
-    # region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
-    # provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
-    # ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
-    direccion = models.CharField(
-        max_length=200
-    )
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el cliente, deshabilite esta casilla.'
-    )
-
-    def __str__(self):
-        return self.razon_social
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        return item
-
-
-class Negocio(BaseModel):
-    """Negocio model.
-
-    """
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
-    archivo = models.FileField(
-        upload_to='archivo_negocio/',
-        blank=True, null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
-    )
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la Negocio, deshabilite esta casilla.'
-    )
-    created_date = models.DateTimeField(
-            default=timezone.now,
-            null=True,
-            blank=True
-    )
-
-    def __str__(self):
-        return self.nombre 
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['archivo'] = str(self.archivo).zfill(0)
-        return item
-
-
-class Planta(models.Model):
-    """Modelo Planta.
-    """ 
-    rut_regex = RegexValidator(
-        regex=r'^[0-9]{7,9}[0-9kK]{1}$',
-        message='El RUT debe ser valido. Ingresalo sin puntos ni guiones.'
-    )
-
-    rut = models.CharField(
-        max_length=12,
-        # validators=[rut_regex, ],
-
-        error_messages={
-            'unique': 'Ya existe una planta con este RUT registrado.'
-        }
-    )
-    nombre = models.CharField(max_length=100)
-
-    rut_gerente = models.CharField(
-        max_length=12
-    )
-    nombre_gerente = models.CharField(max_length=100)
-
-    direccion_gerente = models.CharField(
-        max_length=200,
-    )
-
-    telefono_regex = RegexValidator(
-        regex=r'\+?1?\d{9,15}$',
-        message='El numero de telefono debe ser ingresado en el siguiente formato +999999999. Solo puede ingresar hasta 15 digitos.'
-    )
-
-    telefono = models.CharField(
-        'Teléfono',
-        validators=[telefono_regex, ],
-        max_length=15,
-        blank=True,
-        null=True
-    )
-    email = models.EmailField(
-        'email address',
-        null=True,
-        blank=True,
-        error_messages={
-            'unique': 'Ya existe un negocio con este email registrado.'
-        }
-    )
-
-    negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
-
-    cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
-
-    gratificacion = models.ForeignKey(Gratificacion, on_delete=models.SET_NULL, null=True,)
-
-    examen = models.ManyToManyField("examenes.Examen",
-        blank=True,
-        help_text='Seleccione una o mas examenes para esta planta.')
-
-    bono = models.ManyToManyField(
-        Bono,
-        blank=True,
-        help_text='Seleccione una o mas Bonos para esta planta.'
-    )
-
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, )
-
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, )
-
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, )
-
-    direccion = models.CharField(
-        max_length=200,
-    )
-
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la planta, deshabilite esta casilla.'
-    )
-
-    def __str__(self):
-        """Return RUT."""
-        return self.nombre
-
-    def get_short_name(self):
-        """Return RUT."""
-        return self.rut_gerente
-    
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['negocio'] = self.negocio.nombre
-        item['negocio_id'] = self.negocio.id
-        item['region_id'] = self.region.id
-        item['provincia_id'] = self.provincia.id
-        item['ciudad_id'] = self.ciudad.id
-        item['bono'] =  [t.toJSON() for t in self.bono.all()]
-        item['examen'] = [t.toJSON() for t in self.examen.all()]
-        return item
-
-
 class PuestaDisposicion(models.Model):
     """Modelo Puesta a Disposicion.
     """ 
@@ -502,7 +287,7 @@ class Abastecimiento(BaseModel):
         help_text='true.- EPP false.- Caja Herramientas.'
     )
     
-    negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+    negocio = models.ForeignKey('clientes.Negocio', on_delete=models.CASCADE)
 
     status = models.BooleanField(
         default=True,
@@ -533,7 +318,7 @@ class Equipo(models.Model):
     nombre = models.CharField(max_length=120)
     valor = models.IntegerField()
     tipo = models.CharField(max_length=4, choices=TIPO_EQUIPO, default=EPP)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey('clientes.Cliente', on_delete=models.CASCADE)
 
     status = models.BooleanField(
         default=True,

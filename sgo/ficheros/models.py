@@ -7,9 +7,9 @@ import os
 # Django
 # from django.db import models
 from django.core.validators import FileExtensionValidator
-#Utilities
-from utils.models import BaseModel, Cliente, Planta
-#User
+# Clientes
+from clientes.models import BaseModel, Cliente, Planta
+# User
 from users.models import Especialidad
 
 

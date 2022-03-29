@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 # Models
 from contratos.models import Plantilla
-from utils.models import Planta
+from clientes.models import Planta
 # From
 from contratos.forms import CrearPlantillaForm, ActualizarPlantillaForm
 

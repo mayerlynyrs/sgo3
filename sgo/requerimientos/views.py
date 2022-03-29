@@ -21,7 +21,8 @@ from django.views.generic import ListView, CreateView
 from django.conf import settings
 # Model
 from requerimientos.models import Requerimiento, AreaCargo, RequerimientoUser, Adendum
-from utils.models import Negocio, Planta, PuestaDisposicion, Gratificacion
+from clientes.models import Negocio, Planta
+from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
 # Form
 from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriUserForm, AdendumForm

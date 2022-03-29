@@ -21,6 +21,7 @@ urlpatterns = [
     path('users/', include(('users.urls', 'users'), namespace='users.profesiones')),
     path('ficheros/', include(('ficheros.urls', 'ficheros'), namespace='ficheros')),
     path('contratos/', include(('contratos.urls', 'contratos'), namespace='contratos')),
+    path('clientes/', include(('clientes.urls', 'clientes'), namespace='clientes')),
     path('requerimientos/', include(('requerimientos.urls', 'requerimientos'), namespace='requerimientos')),
     path('examenes/', include(('examenes.urls', 'examenes'), namespace='examenes')),
     path('psicologos/', include(('psicologos.urls', 'psicologos'), namespace='psicologos')),

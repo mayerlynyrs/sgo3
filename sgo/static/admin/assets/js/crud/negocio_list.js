@@ -9,7 +9,7 @@ function getData() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/utils/'+cliente+'/negocios/',
+            url: '/clientes/'+cliente+'/negocios/',
             type: 'POST',
             data: {
                 'action': 'searchdata'

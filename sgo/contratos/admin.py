@@ -9,8 +9,10 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
 from contratos.models import Plantilla, Contrato, DocumentosContrato, TipoDocumento, Finiquito, ContratosBono, ContratosEquipo, Renuncia, Anexo, Revision
-from requerimientos.models import RequerimientoUser,  Causal
-from utils.models import Gratificacion, Horario, Planta, Bono, Equipo
+from requerimientos.models import RequerimientoUser, Causal
+# Clientes
+from clientes.models import Planta
+from utils.models import Gratificacion, Horario, Bono, Equipo
 from users.models import User
 
 class RenunciaSetResource(resources.ModelResource):

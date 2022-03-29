@@ -14,7 +14,8 @@ from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
 from django.forms import TextInput
 # sgo Model
-from utils.models import Cliente, Negocio, Region, Provincia, Ciudad , Planta
+from clientes.models import Cliente, Negocio, Planta
+from utils.models import Region, Provincia, Ciudad
 from examenes.models import Evaluacion , Examen
 from users.models import Civil, Salud, Afp, Profesion, ProfesionUser, Especialidad, NivelEstudio, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoUser, ListaNegra
 

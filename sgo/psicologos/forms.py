@@ -1,24 +1,19 @@
 """Requerimiento Forms"""
 
 # Django
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 
 from django.forms import *
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column
 from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
 from django.forms import TextInput
 # sgo Model
 from psicologos.models import Agenda , PsicologicoTipo, EvaluacionPsicologico 
-from utils.models import Planta , Cargo
+from clientes.models import Planta
+from utils.models import Cargo
 
 User = get_user_model()
-
-
 
 
 class UserAgendar(forms.ModelForm):
@@ -65,14 +60,9 @@ class UserAgendar(forms.ModelForm):
                                                               })
                                    )
           
-
-
-
     class Meta:
         model = Agenda
         fields = ("user", "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta","cargo")
-
-
 
 
 class AgendaPsicologos(forms.ModelForm):
@@ -146,8 +136,6 @@ class AgendaPsicologos(forms.ModelForm):
         
         self.fields['psico'].queryset = users_evaluador
 
-
-    
     class Meta:
         model = Agenda
         fields = ("user", "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta", "estado", "cargo","psico")
@@ -170,7 +158,6 @@ class EvaluacionPsicologica(forms.ModelForm):
         (NO_RECOMENDABLE, 'No Recomendable'),
 
     )
-
                                
     tipo = forms.ChoiceField(choices = TIPO_ESTADO, required=True, label="Tipo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -218,7 +205,6 @@ class EvaluacionPsicologica(forms.ModelForm):
                                                               })
                                    )                                
 
-    
     class Meta:
         model = EvaluacionPsicologico
         fields = ("estado", "fecha_inicio", "fecha_termino", "resultado", "archivo", "archivo2", "psicologico_tipo","planta","cargo", "referido","tipo")

@@ -2902,7 +2902,7 @@
     }
   },
 {
-  "model": "utils.cliente",
+  "model": "clientes.cliente",
   "pk": 1,
   "fields": {
     "created": "2022-01-24T15:05:24.937Z",
@@ -2947,7 +2947,7 @@
   }
 },
 {
-  "model": "utils.cliente",
+  "model": "clientes.cliente",
   "pk": 2,
   "fields": {
     "created": "2022-01-24T18:08:32.387Z",
@@ -2986,7 +2986,7 @@
   }
 },
 {
-  "model": "utils.cliente",
+  "model": "clientes.cliente",
   "pk": 3,
   "fields": {
     "created": "2022-01-24T18:14:02.953Z",
@@ -3019,7 +3019,7 @@
   }
 },
 {
-  "model": "utils.cliente",
+  "model": "clientes.cliente",
   "pk": 4,
   "fields": {
     "created": "2022-01-24T18:40:26.200Z",
@@ -3051,7 +3051,7 @@
   }
 },
 {
-  "model": "utils.negocio",
+  "model": "clientes.negocio",
   "pk": 1,
   "fields": {
     "created": "2022-01-24T15:22:34.619Z",
@@ -3067,7 +3067,7 @@
   }
 },
 {
-  "model": "utils.negocio",
+  "model": "clientes.negocio",
   "pk": 2,
   "fields": {
     "created": "2022-01-24T18:19:10.868Z",
@@ -3083,7 +3083,7 @@
   }
 },
 {
-  "model": "utils.negocio",
+  "model": "clientes.negocio",
   "pk": 3,
   "fields": {
     "created": "2022-01-24T18:42:34.255Z",
@@ -3099,7 +3099,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 1,
   "fields": {
     "rut": "",
@@ -3128,7 +3128,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 2,
   "fields": {
     "rut": "",
@@ -3157,7 +3157,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 3,
   "fields": {
     "rut": "",
@@ -3186,7 +3186,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 4,
   "fields": {
     "rut": "",
@@ -3213,7 +3213,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 5,
   "fields": {
     "rut": "",
@@ -3241,7 +3241,7 @@
   }
 },
 {
-  "model": "utils.planta",
+  "model": "clientes.planta",
   "pk": 6,
   "fields": {
     "rut": "",
@@ -14165,7 +14165,7 @@
     }
   },
   {
-    "model": "examenes.psicologicotipo",
+    "model": "psicologos.psicologicotipo",
     "pk": 1,
     "fields": {
       "nombre": "Supervisor",
@@ -14174,7 +14174,7 @@
     }
   },
   {
-    "model": "examenes.psicologicotipo",
+    "model": "psicologos.psicologicotipo",
     "pk": 2,
     "fields": {
       "nombre": "Técnico",

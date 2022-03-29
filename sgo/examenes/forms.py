@@ -3,7 +3,7 @@
 # Django
 from django import forms
 # sgo Model
-from utils.models import Cliente
+from clientes.models import Cliente
 from examenes.models import Examen, Bateria
 
 

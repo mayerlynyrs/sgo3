@@ -8,7 +8,7 @@ from django.contrib.auth.models import Group
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
-from utils.models import Planta
+from clientes.models import Planta
 
 # Models
 from users.models import User, Sexo, Civil, Nacionalidad, Salud, Afp, ValoresDiario, ValoresDiarioAfp, Banco, TipoCta, NivelEstudio, Especialidad, TipoArchivo, ArchivoUser, ListaNegra, Profesion, ProfesionUser, Parentesco, Contacto

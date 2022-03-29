@@ -7,8 +7,10 @@ from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 # Models
 from users.models import User
+# Clientes
+from clientes.models import Planta
 # Utilities
-from utils.models import BaseModel, Bono, Equipo, Gratificacion, Horario, Planta
+from utils.models import BaseModel, Bono, Equipo, Gratificacion, Horario
 from contratos.models import TipoDocumento
 from requerimientos.models import RequerimientoUser, Causal
 

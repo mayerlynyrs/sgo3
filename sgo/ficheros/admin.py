@@ -1,4 +1,4 @@
-"""Utils Admin."""
+"""Ficheros Admin."""
 
 # Django
 from django.contrib import admin
@@ -8,8 +8,8 @@ from import_export.widgets import ManyToManyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
 from ficheros.models import Fichero, Publicacion
-# Utils Model
-from utils.models import Cliente, Planta
+# Clientes Model
+from clientes.models import Cliente, Planta
 #User
 from users.models import Especialidad
 

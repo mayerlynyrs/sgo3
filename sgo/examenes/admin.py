@@ -11,8 +11,8 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ManyToManyWidget
 #Models
 from examenes.models import Examen, Bateria, Evaluacion, Requerimiento
-# Utils Model
-from utils.models import Planta
+# Clientes
+from clientes.models import Planta
 # Requerimientos
 from requerimientos.models import RequerimientoUser
 #User
