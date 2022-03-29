@@ -29,7 +29,8 @@ from mailmerge import MailMerge
 from django.conf import settings
 # Models
 from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser, ListaNegra
-from utils.models import Cliente, Negocio, Planta, Region, Provincia, Ciudad
+from clientes.models import Cliente, Negocio, Planta
+from utils.models import Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 from examenes.models import Evaluacion
 # Forms

@@ -5,7 +5,6 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, ProtectedError
 from django.http import Http404, JsonResponse
 from django.template.loader import render_to_string
@@ -17,6 +16,8 @@ from psicologos.forms import UserAgendar, AgendaPsicologos, EvaluacionPsicologic
 from psicologos.models import Agenda, EvaluacionPsicologico
 from users.models import User
 # Create your views here.
+
+
 class PsicologosCalendarioView(ListView):
     template_name = 'psicologos/agendar.html'
     model = Agenda
@@ -32,6 +33,7 @@ class PsicologosCalendarioView(ListView):
         context['form'] = UserAgendar()
   
         return context
+
 
 class AgendaCreateView(TemplateView):
 
@@ -53,6 +55,7 @@ class AgendaCreateView(TemplateView):
         return render(request, 'psicologos/agendar.html', {
             'form': agenda_form,
         })
+
 
 class AgendaList(TemplateView):
     template_name = 'psicologos/tabla_agenda.html'
@@ -139,6 +142,7 @@ class AgendaList(TemplateView):
         context['form1'] = EvaluacionPsicologica()
         return context
 
+
 class EvalTerminadasView(TemplateView):
     template_name = 'psicologos/evaluacionesTerminadas.html'
 
@@ -172,14 +176,3 @@ class EvalTerminadasView(TemplateView):
         context['entity'] = 'Salud'
         context['form'] = ReportForm()
         return context
-
-
-
-
-
-    
-
-    
-   
-
- 

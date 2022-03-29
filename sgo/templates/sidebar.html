@@ -86,17 +86,17 @@
 
 
 
-      {% if perms.utils.view_cliente %}
-      <li class="has-sub {% if menu_app == 'utils' %}active{% endif %}">
+      {% if perms.clientes.view_cliente %}
+      <li class="has-sub {% if menu_app == 'clientes' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
           <i class="far fa-lg fa-fw m-r-10 fa-building"></i>
           <span>Clientes </span>
         </a>
         <ul class="sub-menu"> 
-          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'utils:list_cliente' %}">Ver Clientes </a></li>
-        {% if perms.utils.add_cliente %}
-          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'utils:create_cliente' %}">Crear Cliente</a></li>
+          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'clientes:list_cliente' %}">Ver Clientes </a></li>
+        {% if perms.clientes.add_cliente %}
+          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'clientes:create_cliente' %}">Crear Cliente</a></li>
         {% endif %}
         </ul>
       </li>
@@ -186,6 +186,12 @@
         {% if perms.users.lista_negra %}
         <li {% if menu_app == 'users.listanegra' and menu_page == 'lista_negra' %} class="active"{% endif %}><a href="{% url 'users:lista_negra' %}">Lista Negra</a></li>
         {% endif %}
+        {% if perms.users.view_profesion %}
+				<li {% if menu_module == 'users' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
+        {% endif %}
+        {% if perms.users.view_especialidad %}
+        <li {% if menu_module == 'users' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
+        {% endif %}
         </ul>
       </li>
       {% endif %}
@@ -205,30 +211,24 @@
         {% endif %}
         {% if perms.users.view_afp %}
           <li class="has-sub {% if menu_module == 'afp' %}expand{% else %}closed{% endif %}">
-								<a href="javascript:;">
-									<b class="caret"></b>
-									AFP
-								</a>
-								<ul class="sub-menu" style="{% if menu_module == 'afp' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == 'afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
-                  {% if perms.users.add_afp %}
-									<li {% if menu_module == 'valores_diarios' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
-									<li {% if menu_module == 'vdiarios_afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
-                  {% endif %}
-								</ul>
-							</li>
+						<a href="javascript:;">
+							<b class="caret"></b>
+							AFP
+						</a>
+						<ul class="sub-menu" style="{% if menu_module == 'afp' %}display: block;{% else %}display: none;{% endif %}">
+							<li {% if menu_module == 'afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
+                {% if perms.users.add_afp %}
+							<li {% if menu_module == 'valores_diarios' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
+							<li {% if menu_module == 'vdiarios_afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
+                {% endif %}
+						</ul>
+					</li>
         {% endif %}
         {% if perms.users.view_salud %}
         <li {% if menu_module == 'users' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:salud' %}">Sistema de Salud</a></li>
         {% endif %}
         {% if perms.utils.view_bono %}
         <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Bonos</a></li>
-        {% endif %}
-        {% if perms.users.view_profesion %}
-									<li {% if menu_module == 'users' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
-        {% endif %}
-        {% if perms.users.view_especialidad %}
-        <li {% if menu_module == 'users' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
         {% endif %}
         {% if perms.utils.view_horario %}
         <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>

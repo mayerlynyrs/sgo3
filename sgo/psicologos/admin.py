@@ -6,8 +6,8 @@ from import_export.admin import ImportExportModelAdmin
 #Models
 from psicologos.models import  Psicologico, PsicologicoTipo, EvaluacionPsicologico , Agenda
 from examenes.models import Examen, Evaluacion
-# Utils Model
-from utils.models import Planta
+# Clientes
+from clientes.models import Planta
 # Requerimientos
 from requerimientos.models import RequerimientoUser
 #User

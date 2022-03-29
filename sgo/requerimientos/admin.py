@@ -11,8 +11,10 @@ from import_export.widgets import ManyToManyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
 from requerimientos.models import Causal, Requerimiento, AreaCargo, RequerimientoUser, Adendum
+# Clientes
+from clientes.models import Planta
 # Utils Model
-from utils.models import Planta, Area, Cargo
+from utils.models import Area, Cargo
 #User
 from users.models import User
 

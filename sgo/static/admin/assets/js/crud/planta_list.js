@@ -10,7 +10,7 @@ function getData2() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/utils/'+cliente+'/plantas/',
+            url: '/clientes/'+cliente+'/plantas/',
             type: 'POST',
             data: {
                 'action': 'searchdata2'

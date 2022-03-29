@@ -6,7 +6,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 # Model
 from contratos.models import Plantilla, Contrato
-from utils.models import Cliente, Planta
+from clientes.models import Cliente, Planta
 
 
 class CrearContratoForm(forms.ModelForm):

@@ -22,7 +22,7 @@ USE_TZ = False
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'sgo3',
+            'NAME': 'sgoiii',
             # 'NAME': 'sgo_actual',
             'USER': 'postgres',
             'PASSWORD': 'root',
@@ -64,6 +64,7 @@ THIRD_PARTY_APPS = [
     #'corsheaders',
 ]
 LOCAL_APPS = [
+    'sgo.clientes.apps.ClientesConfig',
     'sgo.utils.apps.UtilsConfig',
     'sgo.users.apps.UsersConfig',
     'sgo.ficheros.apps.FicherosConfig',

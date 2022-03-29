@@ -7,8 +7,8 @@ from django.utils import timezone
 
 # Mailmerge
 from mailmerge import MailMerge
-#Utilities
-from utils.models import BaseModel, Cliente, Planta
+# Clientes
+from clientes.models import BaseModel, Cliente, Planta
 
 
 class TipoDocumento(BaseModel):

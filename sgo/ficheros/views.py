@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Model
 from ficheros.models import Fichero
-from utils.models import Planta
+from clientes.models import Planta
 # Form
 from ficheros.forms import FicheroCreateForm
 

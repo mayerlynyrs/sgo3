@@ -9,8 +9,8 @@ import os
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 from django.forms import model_to_dict
-#Utilities
-from utils.models import BaseModel, Planta
+# Clientes
+from clientes.models import BaseModel, Planta
 #Requerimientos
 from requerimientos.models import RequerimientoUser
 #User

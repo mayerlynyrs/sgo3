@@ -5,9 +5,9 @@ from tokenize import group
 from django import forms
 # sgo Model
 from users.models import User
-from utils.models import Planta
 from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoUser, Adendum
-from utils.models import Planta , Cliente, Area, Cargo
+from clientes.models import Planta , Cliente
+from utils.models import Area, Cargo
 
 
 class RequerimientoCreateForm(forms.ModelForm):

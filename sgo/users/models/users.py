@@ -13,12 +13,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
 #Utilities
-from utils.models import BaseModel, Cliente, Negocio, Planta, Region, Provincia, Ciudad
+from clientes.models import Cliente, Negocio, Planta
+from utils.models import BaseModel, Region, Provincia, Ciudad
 from .especialidads import Especialidad
-#Users
-# from users import User, Sexo, Civil, Nacionalidad, Salud, Afp, Banco, TipoCta
-# atributos, cambiar_clave, codigo, email, rut, sexo, estado_civil, fecha_nacimiento, telefono,
-# nacionalidad, domicilio, planta, salud, afp, banco, tipo_cta, cuenta
 
 
 class Sexo(models.Model):

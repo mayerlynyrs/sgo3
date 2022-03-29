@@ -7,8 +7,10 @@ import os
 # Django
 from django.utils import timezone
 from django.forms import model_to_dict
+# Clientes
+from clientes.models import Cliente, Planta
 #Utilities
-from utils.models import BaseModel, Planta, Area, Cargo, Cliente
+from utils.models import BaseModel, Area, Cargo
 #User
 from users.models import User
 

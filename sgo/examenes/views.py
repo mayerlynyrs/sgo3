@@ -17,7 +17,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic import TemplateView
 # Model
-from utils.models import Planta
+from clientes.models import Planta
 from examenes.models import Examen, Bateria
 # Form
 from examenes.forms import ExamenForm, BateriaForm
