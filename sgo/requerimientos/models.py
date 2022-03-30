@@ -19,7 +19,7 @@ class Causal(models.Model):
     """Modelo Causal.
     """
     nombre = models.CharField(max_length=250)
-    descripcion = models.TextField()
+    descripcion = models.TextField('Descripción')
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la causal, deshabilite esta casilla.'
@@ -133,12 +133,12 @@ class AreaCargo(BaseModel):
 
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el area cargo, deshabilite esta casilla.'
+        help_text='Para desactivar el área cargo, deshabilite esta casilla.'
     )
 
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
 
-    area = models.ForeignKey(Area, on_delete=models.PROTECT, null=True, blank=True)
+    area = models.ForeignKey(Area, verbose_name='Área', on_delete=models.PROTECT, null=True, blank=True)
 
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -184,9 +184,10 @@ class RequerimientoUser(BaseModel):
 
     tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
 
-    jefe_area = models.ForeignKey(User, related_name='jefearea_requerimientouser_set', on_delete=models.PROTECT, null=True, blank=True)
+    jefe_area = models.ForeignKey(User, verbose_name='Jefe Área', related_name='jefearea_requerimientouser_set', on_delete=models.PROTECT, null=True, blank=True)
 
     pension = models.IntegerField(
+        'Pensión',
         blank=True,
         null=True
     )

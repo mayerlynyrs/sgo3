@@ -25,7 +25,7 @@ class CargoForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     alias = forms.CharField(required=True,
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    descripcion = forms.CharField (required=True, label="Descripcion",
+    descripcion = forms.CharField (required=True, label="Descripción",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
@@ -39,7 +39,7 @@ class CargoForm(forms.ModelForm):
 class HorarioForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    descripcion = forms.CharField (required=True, label="Descripcion",
+    descripcion = forms.CharField (required=True, label="Descripción",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):

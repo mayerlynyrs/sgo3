@@ -257,7 +257,7 @@ class EditarClienteForm(forms.ModelForm):
 class NegocioForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    descripcion = forms.CharField (required=True, label="Descripcion",
+    descripcion = forms.CharField (required=True, label="Descripción",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     archivo = forms.FileField()
 
