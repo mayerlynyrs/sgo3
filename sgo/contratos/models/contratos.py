@@ -207,7 +207,7 @@ class DocumentosContrato(BaseModel):
 
 class ContratosBono(models.Model):
     valor = models.IntegerField(default=0)
-    descripcion = models.TextField()
+    descripcion = models.TextField('Descripción')
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
 

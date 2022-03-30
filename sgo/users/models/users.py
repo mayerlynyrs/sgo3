@@ -464,7 +464,7 @@ class ListaNegra(BaseModel):
         (LISTA_NEGRA_PLANTA, 'Lista Negra por Planta'),
     )
     tipo = models.CharField(max_length=3, choices=TIPO_LN, default=LISTA_NEGRA)
-    descripcion = models.TextField()
+    descripcion = models.TextField('Descripción')
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
     status = models.BooleanField(
@@ -474,14 +474,19 @@ class ListaNegra(BaseModel):
     
     def __str__(self):
         return str(self.user)
-
+        
     def toJSON(self):
         item = model_to_dict(self)
         item['user'] = self.user.first_name + " " + self.user.last_name + " - " + self.user.rut
         item['user_id'] = self.user.id
-        item['planta'] = self.planta.nombre
-        item['planta_id'] = self.planta.id
+        if(self.planta):
+            item['planta'] = self.planta.nombre
+            item['planta_id'] = self.planta.id
+        else:
+            item['planta'] = "No Especificada"
+
         return item
+
 
 class Parentesco(models.Model):
     nombre = models.CharField(

@@ -129,7 +129,7 @@ class Bono(models.Model):
         max_length=120,
         unique=True
     )
-    descripcion = models.TextField(blank=True, null=True)
+    descripcion = models.TextField('Descripción', blank=True, null=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
@@ -152,7 +152,7 @@ class Gratificacion(models.Model):
     """
 
     nombre = models.CharField(max_length=250)
-    descripcion = models.TextField(blank=True, null=True)
+    descripcion = models.TextField('Descripción', blank=True, null=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la gratificacion, deshabilite esta casilla.'
@@ -179,6 +179,7 @@ class Cargo(models.Model):
         default='General'
     )
     descripcion = models.TextField(
+        'Descripción',
         max_length=300,
         unique=True
     )
@@ -215,7 +216,7 @@ class Area(models.Model):
     )
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el area, deshabilite esta casilla.'
+        help_text='Para desactivar el área, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -234,7 +235,7 @@ class Area(models.Model):
 class Horario(models.Model):
    
     nombre = models.CharField(max_length=120)
-    descripcion = models.TextField(blank=True, null=True)
+    descripcion = models.TextField('Descripción', blank=True, null=True)
 
     status = models.BooleanField(
         default=True,

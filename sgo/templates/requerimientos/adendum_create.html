@@ -1,0 +1,86 @@
+<form method="post" action="{% url 'requerimientos:create_adendum' %}" enctype="multipart/form-data">
+    <div class="modal-header">
+        <h4 class="modal-title">Adendum Requerimiento</h4>
+        <!-- <h4 class="modal-title">{{ requerimiento|title }}</h4> -->
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
+    <div class="modal-body">
+        {% csrf_token %}
+        <div class="row col-md-12">
+            <div class="form-group col-md-12">
+                <label for="email">Nombre:</label>
+                {{ requerimiento|title }}
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="form-group col-md-12">
+                <!-- Fecha de Término del Requerimiento -->
+                <label for="email">Fecha Inicio:</label>
+                {{ fecha_termino }}
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="form-group col-md-12">
+                <label for="email">Motivo:</label>
+                {{ descripcion|truncatewords:10 }}
+            </div>
+        </div>
+        <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ id }}">
+        <input name="fi_req" id="fi_req" type="hidden" value="{{ fecha_inicio|date:'Y-m-d' }}"><!-- fi_req -->
+        <input name="causal" id="causal" type="hidden" value="{{ causal }}">
+        <input name="fi_ad" id="fi_ad" type="hidden" value="{{ fecha_termino|date:'Y-m-d' }}"><!-- fi_ad -->
+        <input name="ft_req" id="ft_req" type="hidden" value="{{ fecha_termino }}"><!-- ft_req -->
+        <p class="mt-1">
+            {{ form }}
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
+        <button type="submit" class="btn btn-info btn-flat"> Guardar</button>
+    </div>
+</form>
+<script>
+
+
+    $('#fecha_inicio, #fecha_termino').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'es'
+    });
+
+    $('#fecha_termino').datepicker({
+        startDate: '+5d',
+        endDate: '+35d',
+    }); 
+    var date = new Date($('#fi_req').val());
+    var causal = document.getElementById("causal").value;
+    
+    if (causal == 'B' || causal == 'E'){
+        var dias = 90; // Número de días a agregar
+    }
+    else if (causal == 'C' || causal == 'D' ){
+        var dias = 180;
+    }else{
+        dias = 700;
+    }
+    // console.log(causal);
+    date.setDate(date.getDate() + dias);
+    var currentMonth = date.getMonth();
+    var currentDate = date.getDate();
+    var currentYear = date.getFullYear();
+            
+    if (date != "Invalid Date"){
+        var fin = date.toISOString().slice(0, 10);
+        console.log('fin', fin, 'FECHA Límite del Req.');
+        var inicio = new Date($('#fi_ad').val());
+        if (inicio == "Invalid Date"){
+            var inicio = new Date($('#ft_req').val());
+        }
+        // console.log('inicio', inicio)
+        $('#fecha_termino').datepicker('clearDates');
+        $('#fecha_termino').datepicker("setStartDate", new Date(inicio))
+        $('#fecha_termino').datepicker('clearDates');
+        $('#fecha_termino').datepicker("setEndDate", new Date(fin))
+    }
+    
+   
+</script>
