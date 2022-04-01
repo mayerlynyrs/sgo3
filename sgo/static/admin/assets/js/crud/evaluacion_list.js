@@ -2,6 +2,9 @@ var tblExamenes;
 var modal_title;
 var user = null;
 var MEDIA_URL;
+var enviando = false;
+var boton_numero4 = document.getElementById("boton3");
+boton_numero4.addEventListener("click", guardar_evaluacion); 
 
 function getdata5() {
     tblExamenes = $('#data-table-responsive').DataTable({
@@ -54,7 +57,7 @@ $(function () {
     }
 
     $('#fecha_examen, #fecha_vigencia').datepicker({
-        format: "dd-mm-yyyy",
+        format: "yyyy-mm-dd",
         language: 'es'
     });
     
@@ -78,8 +81,8 @@ $(function () {
         modal_title.find('span').html('Examen <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
-        $('form')[3].reset();
-        var btn = document.getElementById("boton4");
+        $('form')[4].reset();
+        var btn = document.getElementById("boton3");
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalEvaluacion').modal('show');
@@ -91,7 +94,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblExamenes.cell($(this).closest('td, li')).index();
         var data = tblExamenes.row(tr.row).data();
-        $('form')[3].reset();
+        $('form')[4].reset();
         $('input[name="action"]').val('evaluacion_edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="fecha_examen"]').val(data.fecha_examen);
@@ -103,7 +106,7 @@ $(function () {
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('file[name="archivo_0"]').val(data.archivo);
         $('textarea[name="descripcion"]').val(data.descripcion);
-        var btn = document.getElementById("boton4");
+        var btn = document.getElementById("boton3");
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalEvaluacion').modal('show');
@@ -126,7 +129,7 @@ $(function () {
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('file[name="archivo"]').val(data.archivo);
         $('textarea[name="descripcion"]').val(data.descripcion);
-        var btn = document.getElementById("boton4");
+        var btn = document.getElementById("boton3");
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalEvaluacion').modal('show');
@@ -135,24 +138,19 @@ $(function () {
     $('#myModalEvaluacion').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
+});
 
-    $('.btnAdd5').on('click', function () {
-
+function guardar_evaluacion() { 
+    if (enviando == false){ 
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalcontacto').modal('hide');
-                tblContact.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
-                tblProfesionUser.ajax.reload();
                 $('#myModalEvaluacion').modal('hide');
                 tblExamenes.ajax.reload();
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
-            }); 
-        });
-
-    });
-});
+            });
+            enviando = True; 
+        });  
+    }
+  }

@@ -1,6 +1,9 @@
 var tblProfesionUser;
 var modal_title;
 var user = null;
+var enviando = false;
+var boton_numero2 = document.getElementById("boton1");
+boton_numero2.addEventListener("click", guardar_profesion);  
 
 
 function getData2() {
@@ -59,9 +62,6 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
-        var btn = document.getElementById("boton1");
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Guardar';
         $('#myModalProfesionUser').modal('show');
     });
 
@@ -77,9 +77,6 @@ $(function () {
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
         $('select[name="profesion"]').val(data.profesion_id).trigger("change");
-        var btn = document.getElementById("boton1");
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Editar';
         $('#myModalProfesionUser').modal('show');
     });
 
@@ -94,9 +91,6 @@ $(function () {
         $('input[name="egreso"]').val(data.egreso);
         $('input[name="institucion"]').val(data.institucion);
         $('select[name="profesion"]').val(data.profesion_id).trigger("change");
-        var btn = document.getElementById("boton1");
-        btn.style.backgroundColor= '#de555e';
-        btn.innerHTML = 'Eliminar';
         $('#myModalProfesionUser').modal('show');
     }); 
 
@@ -104,21 +98,19 @@ $(function () {
         //$('form')[0].reset();
     });
 
-    $('.btnAdd3').on('click', function () {
+});
 
+function guardar_profesion() { 
+    if (enviando == false){ 
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalcontacto').modal('hide');
-                tblContact.ajax.reload();
                 $('#myModalProfesionUser').modal('hide');
                 tblProfesionUser.ajax.reload();
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
-            }); 
+            });
+            enviando = True; 
         });
-
-    });
-});
+    }
+  }

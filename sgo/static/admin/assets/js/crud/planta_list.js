@@ -1,6 +1,9 @@
 var tblplanta;
 var modal_title;
 var cliente = null;
+var enviando = false;
+var boton_numero2 = document.getElementById("boton1");
+boton_numero2.addEventListener("click", guardar_planta);
 
 function getData2() {
     
@@ -151,21 +154,20 @@ $(function () {
         //$('form')[0].reset();
     });
 
-    $('.btnAdd3').on('click', function () {
 
+});
+
+function guardar_planta() { 
+    if (enviando == false){
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalnegocio').modal('hide');
-                tblnegocio.ajax.reload();
                 $('#myModalplanta').modal('hide');
                 tblplanta.ajax.reload();
-            }); 
-        });
-
-    });
-
-
-});
+            });
+            enviando = True;   
+        });  
+    }
+  }

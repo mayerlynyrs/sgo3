@@ -1,6 +1,9 @@
 var tblnegocio;
 var modal_title;
 var cliente = null;
+var enviando = false;
+var boton_numero1 = document.getElementById("boton");
+boton_numero1.addEventListener("click", guardar_negocio);
 
 function getData() {
     tblnegocio = $('#data-table-default').DataTable({
@@ -122,22 +125,19 @@ $(function () {
 
     });
 
-    $('.btnAdd2').on('click', function () {
+});
 
+function guardar_negocio() { 
+    if (enviando == false){
         $('form').on('submit', function (e) {
             e.preventDefault();
-            var traer = '/utils/'+cliente+'/plantas2/';
-            console.log(traer+'que onda');
-            $('.selectpicker').selectpicker('refresh');
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalnegocio').modal('hide');
                 tblnegocio.ajax.reload();
-                $('#myModalplanta').modal('hide');
-                tblplanta.ajax.reload();
-            }); 
-        });
-
-    });
-});
+            });
+            enviando = True;   
+        });  
+    }
+  }
