@@ -29,21 +29,60 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Agenda Hora a Examen Psicologico</h4>
+    <h4 class="panel-title">Agenda Hora a Examenes</h4>
   </div>
-  <div class="panel-body">
-    <div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style = "text-align:center">
-      Agendar
-    </button>
-    </div>
-    <div id="calendar" class="demo-calendar fc fc-media-screen fc-direction-ltr fc-theme-standard">
-    </div>
 
+  <div class="card-body">
+    <div id="wizard" class="sw-main sw-theme-default">
+      <ul>
+        <li class="nav-item">
+          <a href="#step-1">
+            <span class="number">1</span> 
+            <span class="info">
+              Examenes psicologico
+              <small>Agendar</small>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item done">
+          <a href="#step-2">
+            <span class="number">2</span> 
+            <span class="info">
+              Examenes Generales
+              <small>Agendar </small>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div>
+        <div id="step-1">
+          <div class="panel-body">      
+            <div>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalPsico" style = "text-align:center">Agendar
+              </button>
+            </div>
+            <div id="calendar" class="demo-calendar fc fc-media-screen fc-direction-ltr fc-theme-standard">
+          </div>
+        </div>
+        </div>
+        <div id="step-2">
+          <div class="panel-body">      
+            <div>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style = "text-align:center">Agendar
+              </button>
+            </div>
+            <div id="calendar2" class="demo-calendar fc fc-media-screen fc-direction-ltr fc-theme-standard">
+          </div>
+        </div>
+        </div>
+      </div>
   </div>
+  </div>
+
+  
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="ModalPsico" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <form method="post" id="form" action="{% url 'psicologos:create' %}" novalidate id="UserAgendar" enctype="multipart/form-data">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -121,13 +160,10 @@
 
 
   $('#fecha_examen, #fecha_vigencia').datepicker({
-      format: "yyyy-mm-dd",
+      format: "dd-mm-yyyy",
       language: 'es'
   });
-  var color = null;
-  {% for agenda in object_list %}
-
-  {% endfor %}
+ 
   
   document.addEventListener('DOMContentLoaded', function(){
     var calendarUI = document.getElementById('calendar');
@@ -148,6 +184,17 @@
       ],
  
       
+    });
+    calendar.render(); 
+  });
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI = document.getElementById('calendar2');
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      locale: 'es',
+      height: 650,
+      themeSystem: 'bootstrap5',
+
     });
     calendar.render(); 
   });

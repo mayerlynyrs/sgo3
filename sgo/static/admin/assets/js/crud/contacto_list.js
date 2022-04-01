@@ -1,6 +1,9 @@
 var tblContact;
 var modal_title;
 var user = null;
+var enviando = false;
+var boton_numero1 = document.getElementById("boton");
+boton_numero1.addEventListener("click", guardar_contacto);
 
 function getData() {
     tblContact = $('#data-table-default').DataTable({
@@ -53,9 +56,6 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
-        var btn = document.getElementById("boton");
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Guardar';
         $('#myModalcontacto').modal('show');
     });
 
@@ -71,9 +71,8 @@ $(function () {
         $('input[name="telefono"]').val(data.telefono);
         $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
         $('#myModalcontacto').modal('show');
-        var btn = document.getElementById("boton");
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Editar';
+        console.log("imprimir data");
+        console.log(data);
         return data;
     });
 
@@ -88,9 +87,6 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
-        var btn = document.getElementById("boton");
-        btn.style.backgroundColor= '#de555e';
-        btn.innerHTML = 'Eliminar';
         $('#myModalcontacto').modal('show');
     }); 
 
@@ -116,8 +112,11 @@ $(function () {
 
     });
 
-    $('.btnAdd2').on('click', function () {
+ 
+});
 
+function guardar_contacto() { 
+    if (enviando == false){
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
@@ -125,13 +124,8 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalcontacto').modal('hide');
                 tblContact.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
-                tblProfesionUser.ajax.reload();
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
-            }); 
-        });
-
-    });
-
-});
+            });
+            enviando = True;   
+        });  
+    }
+  }
