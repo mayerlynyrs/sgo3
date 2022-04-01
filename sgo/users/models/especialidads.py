@@ -27,6 +27,7 @@ class Especialidad(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
 
     # class Meta:

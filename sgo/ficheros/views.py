@@ -106,7 +106,10 @@ def create_fichero(request):
         form = FicheroCreateForm(data=request.POST, files=request.FILES, user=request.user)
 
         if form.is_valid():
+            fichero = form.save(commit=False)
+            fichero.nombre = fichero.nombre.lower()
             fichero = form.save()
+            # fichero = form.save()
 
             messages.success(request, 'Fichero Creado Exitosamente')
             return redirect('ficheros:list')
@@ -136,7 +139,11 @@ def update_fichero(request, fichero_id):
 
         form = FicheroCreateForm(data=request.POST, instance=fichero, files=request.FILES, user=request.user)
 
+        # if form.is_valid():
+        #     fichero = form.save()
         if form.is_valid():
+            fichero = form.save(commit=False)
+            fichero.nombre = fichero.nombre.lower()
             fichero = form.save()
             messages.success(request, 'Fichero Actualizado Exitosamente')
             page = request.GET.get('page')

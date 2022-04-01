@@ -129,7 +129,16 @@ class Bono(models.Model):
         max_length=120,
         unique=True
     )
+    alias = models.CharField(
+        max_length=120,
+        default='General'
+    )
     descripcion = models.TextField('Descripción', blank=True, null=True)
+    nombre_alias = models.CharField(
+        max_length=240,
+        null=True,
+        unique=True
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
@@ -140,10 +149,12 @@ class Bono(models.Model):
         blank=True
     )
     def __str__(self):
-        return self.nombre
+        return self.nombre +' - '+ self.alias
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        item['alias'] = self.alias.title()
         return item
 
 
@@ -203,6 +214,8 @@ class Cargo(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        item['alias'] = self.alias.title()
         return item
     
 
@@ -229,6 +242,7 @@ class Area(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
 
 
@@ -251,6 +265,8 @@ class Horario(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        item['descripcion'] = self.descripcion
         return item
 
 

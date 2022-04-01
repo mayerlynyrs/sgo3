@@ -106,13 +106,13 @@ class AreaView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 area = Area()
-                area.nombre = request.POST['nombre']
+                area.nombre = request.POST['nombre'].lower()
                 area.status = True
                 # espec.created_date = request.POST['created_date']
                 area.save()
             elif action == 'edit':
                 area = Area.objects.get(pk=request.POST['id'])
-                area.nombre = request.POST['nombre']
+                area.nombre = request.POST['nombre'].lower()
                 area.save()
             elif action == 'delete':
                 area = Area.objects.get(pk=request.POST['id'])
@@ -151,8 +151,8 @@ class CargoView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 cargo = Cargo()
-                cargo.nombre = request.POST['nombre']
-                cargo.alias = request.POST['alias']
+                cargo.nombre = request.POST['nombre'].lower()
+                cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
                 cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
                 cargo.status = True
@@ -160,8 +160,8 @@ class CargoView(TemplateView):
                 cargo.save()
             elif action == 'edit':
                 cargo = Cargo.objects.get(pk=request.POST['id'])
-                cargo.nombre = request.POST['nombre']
-                cargo.alias = request.POST['alias']
+                cargo.nombre = request.POST['nombre'].lower()
+                cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
                 cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
                 cargo.save()
@@ -201,14 +201,14 @@ class HorarioView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 horario = Horario()
-                horario.nombre = request.POST['nombre']
+                horario.nombre = request.POST['nombre'].lower()
                 horario.descripcion = request.POST['descripcion']
                 horario.status = True
                 # espec.created_date = request.POST['created_date']
                 horario.save()
             elif action == 'edit':
                 horario = Horario.objects.get(pk=request.POST['id'])
-                horario.nombre = request.POST['nombre']
+                horario.nombre = request.POST['nombre'].lower()
                 horario.descripcion = request.POST['descripcion']
                 horario.save()
             elif action == 'delete':
@@ -247,15 +247,19 @@ class BonoView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 bono = Bono()
-                bono.nombre = request.POST['nombre']
+                bono.nombre = request.POST['nombre'].lower()
+                bono.alias = request.POST['alias'].lower()
                 bono.descripcion = request.POST['descripcion']
+                bono.nombre_alias = request.POST['nombre']+request.POST['alias']
                 bono.status = True
                 # espec.created_date = request.POST['created_date']
                 bono.save()
             elif action == 'edit':
                 bono = Bono.objects.get(pk=request.POST['id'])
-                bono.nombre = request.POST['nombre']
+                bono.nombre = request.POST['nombre'].lower()
+                bono.alias = request.POST['alias'].lower()
                 bono.descripcion = request.POST['descripcion']
+                bono.nombre_alias = request.POST['nombre']+request.POST['alias']
                 bono.save()
             elif action == 'delete':
                 bono = Bono.objects.get(pk=request.POST['id'])
@@ -294,13 +298,13 @@ class SaludView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 salud = Salud()
-                salud.nombre = request.POST['nombre']
+                salud.nombre = request.POST['nombre'].lower()
                 salud.status = True
                 # espec.created_date = request.POST['created_date']
                 salud.save()
             elif action == 'edit':
                 salud = Salud.objects.get(pk=request.POST['id'])
-                salud.nombre = request.POST['nombre']
+                salud.nombre = request.POST['nombre'].lower()
                 salud.save()
             elif action == 'delete':
                 salud = Salud.objects.get(pk=request.POST['id'])
@@ -339,14 +343,14 @@ class AfpView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 previs = Afp()
-                previs.nombre = request.POST['nombre']
+                previs.nombre = request.POST['nombre'].lower()
                 previs.tasa = request.POST['tasa']
                 previs.status = True
                 # espec.created_date = request.POST['created_date']
                 previs.save()
             elif action == 'edit':
                 previs = Afp.objects.get(pk=request.POST['id'])
-                previs.nombre = request.POST['nombre']
+                previs.nombre = request.POST['nombre'].lower()
                 previs.tasa = request.POST['tasa']
                 previs.save()
             elif action == 'delete':

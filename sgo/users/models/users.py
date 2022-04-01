@@ -36,6 +36,7 @@ class Sexo(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Civil(models.Model):
     nombre = models.CharField(
         max_length=120,
@@ -54,6 +55,7 @@ class Civil(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Nacionalidad(models.Model):
     nombre = models.CharField(
         max_length=120,
@@ -71,6 +73,7 @@ class Nacionalidad(models.Model):
     
     def __str__(self):
         return self.nombre
+
 
 class Salud(models.Model):
     nombre = models.CharField(
@@ -92,7 +95,9 @@ class Salud(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
+
 
 class Afp(models.Model):
     nombre = models.CharField(
@@ -115,7 +120,9 @@ class Afp(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
+
 
 class ValoresDiario(models.Model):
     valor_diario = models.IntegerField(
@@ -159,7 +166,7 @@ class ValoresDiarioAfp(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['afp_id'] = self.afp.id
-        item['afp'] = self.afp.nombre
+        item['afp'] = self.afp.nombre.title()
         item['valor_diario_id'] = self.valor_diario.id
         item['valor_diario'] = self.valor_diario.valor_diario
         return item
@@ -182,6 +189,7 @@ class NivelEstudio(models.Model):
     
     def __str__(self):
         return self.nombre
+
 
 class Banco(models.Model):
     nombre = models.CharField(
@@ -208,6 +216,7 @@ class Banco(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class TipoCta(models.Model):
     nombre = models.CharField(
         max_length=120,
@@ -225,6 +234,7 @@ class TipoCta(models.Model):
     
     def __str__(self):
         return self.nombre
+
 
 class TipoArchivo(models.Model):
     nombre = models.CharField(
@@ -427,6 +437,7 @@ class User(BaseModel, AbstractUser):
         item['foto'] = str(self.foto).zfill(0)
         return item
 
+
 class ArchivoUser(models.Model):
     archivo = models.FileField(
         upload_to='archivousuario/',
@@ -449,7 +460,7 @@ class ArchivoUser(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
-        item['tipo_archivo'] = self.tipo_archivo.nombre
+        item['tipo_archivo'] = self.tipo_archivo.nombre.title()
         item['tipo_archivo_id'] = self.tipo_archivo.id
         item['archivo'] = str(self.archivo).zfill(0)
         return item
@@ -480,7 +491,7 @@ class ListaNegra(BaseModel):
         item['user'] = self.user.first_name + " " + self.user.last_name + " - " + self.user.rut
         item['user_id'] = self.user.id
         if(self.planta):
-            item['planta'] = self.planta.nombre
+            item['planta'] = self.planta.nombre.title()
             item['planta_id'] = self.planta.id
         else:
             item['planta'] = "No Especificada"
@@ -506,6 +517,7 @@ class Parentesco(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Contacto(models.Model):
     nombre = models.CharField(
         max_length=120,
@@ -519,10 +531,16 @@ class Contacto(models.Model):
         validators=[telefono_regex, ],
         max_length=15,
         blank=True,
-        null=True
+        null=True,
+        unique=True
     )
     parentesco = models.ForeignKey(Parentesco, on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    nombre_parentesco_user = models.CharField(
+        max_length=240,
+        null=True,
+        unique=True
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el contacto, deshabilite esta casilla.'
@@ -538,6 +556,7 @@ class Contacto(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
-        item['parentesco'] = self.parentesco.nombre
+        item['nombre'] = self.nombre.title()
+        item['parentesco'] = self.parentesco.nombre.title()
         item['parentesco_id'] = self.parentesco.id
         return item

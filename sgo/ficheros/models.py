@@ -7,6 +7,7 @@ import os
 # Django
 # from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.forms import model_to_dict
 # Clientes
 from clientes.models import BaseModel, Cliente, Planta
 # User
@@ -58,6 +59,11 @@ class Fichero(BaseModel):
     def extension_archivo(self):
         name, extension = os.path.splitext(self.archivo.name)
         return extension
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        return item
 
 
 class Publicacion(BaseModel):

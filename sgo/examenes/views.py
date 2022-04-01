@@ -40,14 +40,14 @@ class ExamenView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 exam = Examen()
-                exam.nombre = request.POST['nombre']
+                exam.nombre = request.POST['nombre'].lower()
                 exam.valor = request.POST['valor']
                 exam.status = True
                 # espec.created_date = request.POST['created_date']
                 exam.save()
             elif action == 'edit':
                 exam = Examen.objects.get(pk=request.POST['id'])
-                exam.nombre = request.POST['nombre']
+                exam.nombre = request.POST['nombre'].lower()
                 exam.valor = request.POST['valor']
                 exam.save()
             elif action == 'delete':
@@ -89,7 +89,7 @@ class BateriaView(TemplateView):
             elif action == 'add':
                 examen = request.POST.getlist('examen')
                 exam = Bateria.objects.create(
-                    nombre = request.POST['nombre'],
+                    nombre = request.POST['nombre'].lower(),
                     status = True,
                     )
 
@@ -104,7 +104,7 @@ class BateriaView(TemplateView):
                 print(examenes)
                 print("----")
                 print(examen)
-                exam.nombre = request.POST['nombre']
+                exam.nombre = request.POST['nombre'].lower()
                 # exam.examen = request.POST['examen']
                 for i in examen:
                     exam.examen.add(i)

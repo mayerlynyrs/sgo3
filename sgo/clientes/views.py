@@ -334,14 +334,14 @@ class ClienteIdView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'negocio_add':
                 negocio = Negocio()
-                negocio.nombre = request.POST['nombre']
+                negocio.nombre = request.POST['nombre'].lower()
                 negocio.descripcion = request.POST['descripcion']
                 negocio.archivo = request.FILES['archivo']
                 negocio.cliente_id = cliente_id
                 negocio.save()
             elif action == 'negocio_edit':
                 negocio = Negocio.objects.get(pk=request.POST['id'])
-                negocio.nombre = request.POST['nombre']
+                negocio.nombre = request.POST['nombre'].lower()
                 negocio.descripcion = request.POST['descripcion']
                 negocio.archivo = request.FILES['archivo']
                 negocio.cliente_id = cliente_id
@@ -356,14 +356,14 @@ class ClienteIdView(TemplateView):
                 planta = Planta()
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
-                planta.nombre = request.POST['nombre']
+                planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email']
                 planta.region_id = request.POST['region']
                 planta.provincia_id = request.POST['provincia']
                 planta.ciudad_id = request.POST['ciudad']
                 planta.direccion = request.POST['direccion']
-                planta.nombre_gerente = request.POST['nombre_gerente']
+                planta.nombre_gerente = request.POST['nombre_gerente'].lower()
                 planta.rut_gerente = request.POST['rut_gerente']
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
@@ -379,14 +379,14 @@ class ClienteIdView(TemplateView):
                 planta = Planta.objects.get(pk=request.POST['id'])
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
-                planta.nombre = request.POST['nombre']
+                planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email']
                 planta.region_id = request.POST['region']
                 planta.provincia_id = request.POST['provincia']
                 planta.ciudad_id = request.POST['ciudad']
                 planta.direccion = request.POST['direccion']
-                planta.nombre_gerente = request.POST['nombre_gerente']
+                planta.nombre_gerente = request.POST['nombre_gerente'].lower()
                 planta.rut_gerente = request.POST['rut_gerente']
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
