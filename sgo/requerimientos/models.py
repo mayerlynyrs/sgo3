@@ -201,7 +201,7 @@ class RequerimientoUser(BaseModel):
 
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
 
-    area_cargo = models.ForeignKey(AreaCargo, on_delete=models.PROTECT, null=True, blank=True)
+    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
 
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
 

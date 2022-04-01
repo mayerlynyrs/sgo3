@@ -354,17 +354,19 @@ class UsersIdView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'contacto_add':
                 contact = Contacto()
-                contact.nombre = request.POST['nombre']
+                contact.nombre = request.POST['nombre'].lower()
                 contact.telefono = request.POST['telefono']
                 contact.parentesco_id = request.POST['parentesco']
                 contact.user_id = user_id
+                contact.nombre_parentesco_user = request.POST['nombre']+str(request.POST['parentesco'])+str(user_id)
                 contact.save()
             elif action == 'contacto_edit':
                 contact = Contacto.objects.get(pk=request.POST['id'])
-                contact.nombre = request.POST['nombre']
+                contact.nombre = request.POST['nombre'].lower()
                 contact.telefono = request.POST['telefono']
                 contact.parentesco_id = request.POST['parentesco']
                 contact.user_id = user_id
+                contact.nombre_parentesco_user = request.POST['nombre']+str(request.POST['parentesco'])+str(user_id)
                 contact.save()
             elif action == 'contacto_delete':
                 contact = Contacto.objects.get(pk=request.POST['id'])
@@ -373,14 +375,15 @@ class UsersIdView(TemplateView):
             elif action == 'profesion_add':
                 profes = ProfesionUser()
                 profes.egreso = request.POST['egreso']
-                profes.institucion = request.POST['institucion']
+                profes.institucion = request.POST['institucion'].lower()
                 profes.profesion_id = request.POST['profesion']
                 profes.user_id = user_id
                 profes.save()
+                
             elif action == 'profesion_edit':
                 profes = ProfesionUser.objects.get(pk=request.POST['id'])
                 profes.egreso = request.POST['egreso']
-                profes.institucion = request.POST['institucion']
+                profes.institucion = request.POST['institucion'].lower()
                 profes.profesion_id = request.POST['profesion']
                 profes.user_id = user_id
                 profes.save()
@@ -663,13 +666,13 @@ class ProfesionView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 espec = Profesion()
-                espec.nombre = request.POST['nombre']
+                espec.nombre = request.POST['nombre'].lower()
                 espec.status = True
                 # espec.created_date = request.POST['created_date']
                 espec.save()
             elif action == 'edit':
                 espec = Profesion.objects.get(pk=request.POST['id'])
-                espec.nombre = request.POST['nombre']
+                espec.nombre = request.POST['nombre'].lower()
                 espec.save()
             elif action == 'delete':
                 espec = Profesion.objects.get(pk=request.POST['id'])
@@ -708,13 +711,13 @@ class EspecialidadView(TemplateView):
                     data.append(i.toJSON())
             elif action == 'add':
                 espec = Especialidad()
-                espec.nombre = request.POST['nombre']
+                espec.nombre = request.POST['nombre'].lower()
                 espec.status = True
                 # espec.created_date = request.POST['created_date']
                 espec.save()
             elif action == 'edit':
                 espec = Especialidad.objects.get(pk=request.POST['id'])
-                espec.nombre = request.POST['nombre']
+                espec.nombre = request.POST['nombre'].lower()
                 espec.save()
             elif action == 'delete':
                 espec = Especialidad.objects.get(pk=request.POST['id'])

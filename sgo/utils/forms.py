@@ -53,7 +53,9 @@ class HorarioForm(forms.ModelForm):
 class BonoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    descripcion = forms.CharField (required=True, label="Descripcion", max_length=500,
+    alias = forms.CharField(required=True,
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    descripcion = forms.CharField (required=True, label="Descripción", max_length=500,
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
@@ -61,7 +63,7 @@ class BonoForm(forms.ModelForm):
 
     class Meta:
         model = Bono
-        fields = ("nombre", "descripcion",)
+        fields = ("nombre", "alias", "descripcion",)
 
 
 class SaludForm(forms.ModelForm):

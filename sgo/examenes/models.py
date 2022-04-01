@@ -37,6 +37,7 @@ class Examen(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
 
 class Bateria(models.Model):
@@ -66,6 +67,7 @@ class Bateria(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         item['examen'] = [t.toJSON() for t in self.examen.all()]
         # item['examen'] = [model_to_dict(t) for t in self.examen.all()]
         return item

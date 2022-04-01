@@ -29,6 +29,7 @@ class Profesion(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         return item
 
 class ProfesionUser(models.Model):
@@ -57,6 +58,7 @@ class ProfesionUser(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
-        item['profesion'] = self.profesion.nombre
+        item['profesion'] = self.profesion.nombre.title()
         item['profesion_id'] = self.profesion.id
+        item['institucion'] = self.institucion.title()
         return item

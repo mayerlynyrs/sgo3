@@ -115,7 +115,7 @@ class Cliente(BaseModel):
     area = models.ManyToManyField(
         Area,
         'Área',
-        help_text='Seleccione uno o mas area para este cliente.'
+        help_text='Seleccione uno o mas área para este cliente.'
     )
 
     cargo = models.ManyToManyField(
@@ -178,6 +178,7 @@ class Negocio(BaseModel):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
         item['archivo'] = str(self.archivo).zfill(0)
         return item
 
@@ -273,7 +274,8 @@ class Planta(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
-        item['negocio'] = self.negocio.nombre
+        item['nombre'] = self.nombre.title()
+        item['negocio'] = self.negocio.nombre.title()
         item['negocio_id'] = self.negocio.id
         item['region_id'] = self.region.id
         item['provincia_id'] = self.provincia.id
