@@ -133,7 +133,7 @@ class AgendaList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        psicologos  = User.objects.filter(groups__name='Psicologos')
+        psicologos  = User.objects.filter(groups__name='Psicologo')
         # print ('psicologos', psicologos)
         context['title'] = 'Listado de Evaluaciones'
         context['list_url'] = reverse_lazy('psicologos:listAgenda')
