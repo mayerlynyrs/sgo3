@@ -233,9 +233,13 @@ class Agenda(BaseModel):
     def toJSON(self):
         item = model_to_dict(self)
         if (self.fecha_agenda_evaluacion):
-            item['fecha_agenda_evaluacion'] = self.fecha_agenda_evaluacion.strftime('%Y-%m-%d %H:%M')
+            item['fecha_agenda_evaluacion'] = self.fecha_agenda_evaluacion.strftime('%Y-%m-%d')
+        else:
+            item['fecha_agenda_evaluacion'] = "No Asignada"
         if (self.psico):
             item['psicologo'] = self.psico.first_name +" "+self.psico.last_name
+        else:
+            item['psicologo'] = "No Asignado"
 
         item['user_id'] = self.user.id
         item['user'] = self.user.first_name +" "+self.user.last_name
