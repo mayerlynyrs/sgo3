@@ -64,6 +64,10 @@ $(function () {
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
+        var btn = document.getElementById("boton3");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('form')[2].reset();
         $('#myModalRequerUser').modal('show');
     });
@@ -83,6 +87,10 @@ $(function () {
         $('input[name="pension"]').val(data.pension);
         $('select[name="user"]').val(data.user_id).trigger("change");
         $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
+        var btn = document.getElementById("boton3");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalRequerUser').modal('show');
     });
 
@@ -100,6 +108,10 @@ $(function () {
         $('input[name="pension"]').val(data.pension);
         $('select[name="user"]').val(data.user_id).trigger("change");
         $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
+        var btn = document.getElementById("boton3");
+        btn.style.borderColor= '#de555e';
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalRequerUser').modal('show');
     });
 

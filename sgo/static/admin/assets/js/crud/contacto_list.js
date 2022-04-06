@@ -56,6 +56,10 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar';
         $('#myModalcontacto').modal('show');
     });
 
@@ -70,9 +74,11 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#myModalcontacto').modal('show');
-        console.log("imprimir data");
-        console.log(data);
         return data;
     });
 
@@ -87,6 +93,10 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('select[name="parentesco"]').val(data.parentesco_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#myModalcontacto').modal('show');
     }); 
 

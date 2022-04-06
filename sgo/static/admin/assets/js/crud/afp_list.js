@@ -51,6 +51,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalAfp').modal('show');
@@ -67,6 +68,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="tasa"]').val(data.tasa);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalAfp').modal('show');
@@ -83,6 +85,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="tasa"]').val(data.tasa);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalAfp').modal('show');

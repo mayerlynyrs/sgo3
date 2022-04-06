@@ -60,6 +60,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[3].reset();
         var btn = document.getElementById("boton2");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalArchivoUser').modal('show');
@@ -75,7 +76,7 @@ $(function () {
         $('input[name="action"]').val('archivo_edit');
         $('input[name="id"]' ).val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id).trigger("change");
-        $('file[name="archivo"]').val(data.archivo);
+        $('file[name="archivo"]').val(data.archivo.trigger("change"));
         $('#myModalArchivoUser').modal('show');
     });
 
@@ -88,8 +89,10 @@ $(function () {
         $('input[name="action"]').val('archivo_delete');
         $('input[name="id"]').val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id).trigger("change");
-        $('file[name="archivo"]').val(data.archivo);
+        $('File[name="archivo"]').val('../../../media/'+data.archivo);
+        console.log(data.archivo);
         var btn = document.getElementById("boton2");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalArchivoUser').modal('show');

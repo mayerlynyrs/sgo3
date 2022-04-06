@@ -51,6 +51,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalhorario').modal('show');
@@ -67,6 +68,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('textarea[name="descripcion"]').val(data.descripcion);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalhorario').modal('show');
@@ -74,7 +76,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('¿Desea Eliminar Cargo?');
+        modal_title.find('span').html('¿Desea Eliminar Horario?');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblClient.cell($(this).closest('td, li')).index();
         var data = tblClient.row(tr.row).data();
@@ -83,6 +85,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('textarea[name="descripcion"]').val(data.descripcion);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalhorario').modal('show');

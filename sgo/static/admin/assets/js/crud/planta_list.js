@@ -63,6 +63,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
         var btn = document.getElementById("boton1");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalplanta').modal('show');
@@ -104,6 +105,7 @@ $(function () {
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direccion_gerente"]').val(data.direccion_gerente);
         var btn = document.getElementById("boton1");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalplanta').modal('show');
@@ -145,6 +147,7 @@ $(function () {
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direcccion_gerente"]').val(data.direcccion_gerente);
         var btn = document.getElementById("boton1");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalplanta').modal('show');

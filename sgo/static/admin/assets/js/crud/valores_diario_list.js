@@ -50,6 +50,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalValorDiario').modal('show');
@@ -65,6 +66,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="valor_diario"]').val(data.valor_diario);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalValorDiario').modal('show');
@@ -80,6 +82,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="valor_diario"]').val(data.valor_diario);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalValorDiario').modal('show');
