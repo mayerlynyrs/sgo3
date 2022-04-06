@@ -51,6 +51,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalBateria').modal('show');
@@ -67,6 +68,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('select[name="examen"]').val(data.examen_id);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalBateria').modal('show');
@@ -83,6 +85,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('select[name="examen"]').val(data.examen_id);
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalBateria').modal('show');

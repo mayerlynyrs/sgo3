@@ -59,6 +59,7 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('#myModalACR').modal('show');
@@ -78,6 +79,7 @@ $(function () {
         $('select[name="area"]').val(data.area_id).trigger("change");
         $('select[name="cargo"]').val(data.cargo_id).trigger("change");
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
         $('#myModalACR').modal('show');
@@ -98,6 +100,7 @@ $(function () {
         $('select[name="area"]').val(data.area_id).trigger("change");
         $('select[name="cargo"]').val(data.cargo_id).trigger("change");
         var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
         $('#myModalACR').modal('show');

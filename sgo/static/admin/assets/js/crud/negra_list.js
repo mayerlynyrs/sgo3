@@ -52,6 +52,10 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Guardar'
         $('#ModalListaNegra').modal('show');
     });
 
@@ -67,6 +71,10 @@ $(function () {
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
         $('select[name="planta"]').val(data.planta_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Editar';
         $('#ModalListaNegra').modal('show');
     });
 
@@ -82,6 +90,10 @@ $(function () {
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
         $('select[name="planta"]').val(data.planta_id).trigger("change");
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#de555e';
+        btn.style.backgroundColor= '#de555e';
+        btn.innerHTML = 'Eliminar';
         $('#ModalListaNegra').modal('show');
     }); 
 
