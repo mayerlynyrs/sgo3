@@ -222,7 +222,7 @@ def create_cliente(request):
             cliente.save()
             cliente = cliente_form.save()
             messages.success(request, 'Cliente Creado Exitosamente')
-            return redirect('utils:create_cliente', cliente_id=cliente.id)
+            return redirect('Clientes:create_cliente', cliente_id=cliente.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
@@ -275,11 +275,11 @@ def update_cliente(request, cliente_id):
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
                 page = request.GET.get('page')
                 if page != '':
-                    response = redirect('utils:create_cliente', cliente_id)
+                    response = redirect('clientes:create_cliente', cliente_id)
                     # response['Location'] += '?page=' + page
                     return response
                 else:
-                    return redirect('utils:create_cliente', cliente_id)
+                    return redirect('clientes:create_cliente', cliente_id)
 
             # if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
             #     page = request.GET.get('page')
