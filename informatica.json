@@ -40,6 +40,14 @@
     }
   },
   {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+      "name": "Psicologo",
+      "permissions": []
+    }
+  },
+  {
     "model": "users.user",
     "pk": 1,
     "fields": {
@@ -47,8 +55,8 @@
       "last_login": "2022-01-26T13:17:08.437Z",
       "is_superuser": true,
       "username": "admin",
-      "first_name": "Mayerlyn",
-      "last_name": "Rodriguez",
+      "first_name": "Administrador",
+      "last_name": "Sistema",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2022-01-21T14:57:00Z",

@@ -358,15 +358,19 @@ class UsersIdView(TemplateView):
                 contact.telefono = request.POST['telefono']
                 contact.parentesco_id = request.POST['parentesco']
                 contact.user_id = user_id
-                contact.nombre_parentesco_user = request.POST['nombre']+str(request.POST['parentesco'])+str(user_id)
-                contact.save()
+                if Contacto.objects.filter(telefono=request.POST['telefono'], user_id=user_id).exists():
+                    print('si existe')
+                    messages.success(request, 'El fono ya esta ingresado para este trabajador.')
+                else:
+                    print('no existe')
+                    contact.save()
+                    print('save')
             elif action == 'contacto_edit':
                 contact = Contacto.objects.get(pk=request.POST['id'])
                 contact.nombre = request.POST['nombre'].lower()
                 contact.telefono = request.POST['telefono']
                 contact.parentesco_id = request.POST['parentesco']
                 contact.user_id = user_id
-                contact.nombre_parentesco_user = request.POST['nombre']+str(request.POST['parentesco'])+str(user_id)
                 contact.save()
             elif action == 'contacto_delete':
                 contact = Contacto.objects.get(pk=request.POST['id'])

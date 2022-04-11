@@ -69,7 +69,7 @@ class BaseModel(models.Model):
 class Region(models.Model):
     """Modelo Region.
     """
-    nombre = models.CharField(max_length=250)
+    nombre = models.CharField(max_length=250, unique=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la region, deshabilite esta casilla.'
@@ -162,7 +162,7 @@ class Gratificacion(models.Model):
     """Modelo Gratificacion.
     """
 
-    nombre = models.CharField(max_length=250)
+    nombre = models.CharField(max_length=250, unique=True)
     descripcion = models.TextField('Descripción', blank=True, null=True)
     status = models.BooleanField(
         default=True,
@@ -248,8 +248,8 @@ class Area(models.Model):
 
 class Horario(models.Model):
    
-    nombre = models.CharField(max_length=120)
-    descripcion = models.TextField('Descripción', blank=True, null=True)
+    nombre = models.CharField(max_length=120, unique=True)
+    descripcion = models.TextField('Descripción', blank=True, null=True, unique=True)
 
     status = models.BooleanField(
         default=True,
