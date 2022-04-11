@@ -20,7 +20,7 @@ from users.models import User
 class Examen(models.Model):
     """Modelo Examen.
     """
-    nombre = models.CharField(max_length=250)
+    nombre = models.CharField(max_length=250, unique=True)
     valor = models.IntegerField()
     status = models.BooleanField(
         default=True,
@@ -45,7 +45,7 @@ class Bateria(models.Model):
     """
 
 
-    nombre = models.CharField(max_length=250)
+    nombre = models.CharField(max_length=250, unique=True)
     examen = models.ManyToManyField(
         Examen,
         related_name="examenes",
@@ -180,5 +180,3 @@ class Requerimiento(BaseModel):
 
     def __str__(self):
         return self.resultado
-
-

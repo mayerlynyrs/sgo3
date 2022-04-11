@@ -571,6 +571,17 @@ class ContactoForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super(ContactoForm, self).__init__(*args, **kwargs)
 
+    # validamos el campo "materia"
+    def clean_materia(self):
+        # Obtenermos los datos del form
+        parentesco = self.cleaned_data.get('parentesco')
+
+        # Si existe una instancia con el mismo docente y materia entramos al if
+        if Contacto.objects.filter(nombre='marina', parentesco_id = parentesco.id, user_id=2).exists():
+            print('se repite')
+            # Mandamos un error al form con un mensaje
+            raise forms.ValidationError('No se puede asignar la misma materia a un docente 2 veses')
+
     class Meta:
         model = Contacto
         fields = ("nombre", "telefono", "parentesco", )

@@ -270,5 +270,3 @@ class Revision(BaseModel):
     )
     def __str__(self):
         return self.nombre
-
-    

@@ -531,16 +531,15 @@ class Contacto(models.Model):
         validators=[telefono_regex, ],
         max_length=15,
         blank=True,
-        null=True,
-        unique=True
+        null=True
     )
     parentesco = models.ForeignKey(Parentesco, on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
-    nombre_parentesco_user = models.CharField(
-        max_length=240,
-        null=True,
-        unique=True
-    )
+    # nombre_parentesco_user = models.CharField(
+    #     max_length=240,
+    #     null=True,
+    #     unique=True
+    # )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el contacto, deshabilite esta casilla.'
