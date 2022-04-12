@@ -43,7 +43,7 @@ class UserAgendar(forms.ModelForm):
                                    )
     fecha_ingreso_estimada = forms.CharField(required=True, label="Fecha Estimada Ingreso",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_examen", }))
-    obs = forms.CharField (required=True, label="Observaciones",
+    obs = forms.CharField (required=False, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -98,7 +98,7 @@ class AgendaPsicologos(forms.ModelForm):
                                  
     fecha_agenda_evaluacion = forms.CharField(required=True, label="Fecha Evaluacion",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_evaluacion"}))
-    obs = forms.CharField (required=True, label="Observaciones",
+    obs = forms.CharField (label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -181,15 +181,8 @@ class EvaluacionPsicologica(forms.ModelForm):
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     archivo = forms.FileField(required=True, label="Archivo",
                                  widget=forms.FileInput(attrs={'class': "form-control"}))
-    archivo2 = forms.FileField(label="Archivo",
+    archivo2 = forms.FileField(required=False,label="Archivo",
                                  widget=forms.FileInput(attrs={'class': "form-control"}))                                 
-    psicologico_tipo = forms.ModelChoiceField(queryset=PsicologicoTipo.objects.filter(status=True), required=True, label="Tipo",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
