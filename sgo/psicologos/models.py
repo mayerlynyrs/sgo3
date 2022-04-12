@@ -151,7 +151,7 @@ class EvaluacionPsicologico(models.Model):
     )
 
     def __str__(self):
-        return self.nombre +' '+ str(self.fecha_inicio)
+        return str(self.fecha_inicio)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -178,6 +178,7 @@ class EvaluacionPsicologico(models.Model):
         item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
         item['planta_nombre'] = self.planta.nombre
         item['cargo_nombre'] = self.cargo.nombre
+        item['archivo2'] = ''
         return item
 
 class Agenda(BaseModel):

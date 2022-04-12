@@ -117,7 +117,6 @@ class AgendaList(TemplateView):
                 evaluacion.tipo = request.POST['tipo']
                 evaluacion.resultado = request.POST['resultado']
                 evaluacion.fecha_termino = fechafinal2
-                evaluacion.psicologico_tipo_id = request.POST['psicologico_tipo']
                 evaluacion.user_id = request.POST['user_id']
                 evaluacion.psicologo_id = request.POST['psicologo']
                 evaluacion.planta_id = request.POST['planta']
