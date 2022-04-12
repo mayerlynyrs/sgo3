@@ -122,7 +122,8 @@ class AgendaList(TemplateView):
                 evaluacion.planta_id = request.POST['planta']
                 evaluacion.cargo_id = request.POST['cargo']
                 evaluacion.archivo = request.FILES['archivo']
-                evaluacion.archivo2 = request.FILES['archivo2']
+                if "archivo2" in request.FILES:
+                    evaluacion.archivo2 = request.FILES['archivo2']
                 evaluacion.save()
                 agenda = Agenda.objects.get(pk=request.POST['id'])
                 agenda.estado = 'A'
