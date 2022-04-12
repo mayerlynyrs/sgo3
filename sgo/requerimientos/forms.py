@@ -74,9 +74,9 @@ class RequerimientoCreateForm(forms.ModelForm):
 
 class ACRForm(forms.ModelForm):
     cantidad = forms.IntegerField(required=True,
-                                 widget=forms.TextInput(attrs={'class': "form-control",'min':1, 'type': 'number'}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     valor_aprox = forms.FloatField(required=True, label="Valor Aproximado",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     fecha_ingreso = forms.CharField(required=True, label="Fecha Ingreso",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off',  'id':"egreso"}))
 

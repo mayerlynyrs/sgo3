@@ -12,7 +12,7 @@ from users.models import User
 class Profesion(models.Model):
     nombre = models.CharField(
         max_length=120,
-        
+        unique=True        
     )
     status = models.BooleanField(
         default=True,

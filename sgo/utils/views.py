@@ -399,8 +399,8 @@ class ValoresDiarioView(TemplateView):
                 vdiario.save()
             elif action == 'delete':
                 vdiario = ValoresDiario.objects.get(pk=request.POST['id'])
-                vdiario.status = False
-                vdiario.save()
+                # vdiario.status = False
+                vdiario.delete()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

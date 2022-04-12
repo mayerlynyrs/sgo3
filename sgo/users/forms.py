@@ -95,6 +95,8 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    pacto_uf = forms.CharField(required=True, label="Pacto UF",
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -124,7 +126,7 @@ class CrearUsuarioForm(forms.ModelForm):
                                                               })
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
-                                widget=forms.TextInput(attrs={'class': "form-control"}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
                                    widget=forms.Select(attrs={'class': 'selectpicker form-control ',
                                                               'data-size': '5',
@@ -161,7 +163,9 @@ class CrearUsuarioForm(forms.ModelForm):
                           'oninput': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
-                          )    
+                          )
+    calzado = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     
 
     def __init__(self, *args, **kwargs):
@@ -307,6 +311,8 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    pacto_uf = forms.CharField(required=True, label="Pacto UF",
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -322,7 +328,7 @@ class EditarUsuarioForm(forms.ModelForm):
                                                               })
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
-                                widget=forms.TextInput(attrs={'class': "form-control"}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     group = forms.ModelChoiceField(queryset=Group.objects.none(), required=True, label="Perfil",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -346,7 +352,10 @@ class EditarUsuarioForm(forms.ModelForm):
                                                        })
                                             )
     rut = forms.CharField(required=True, label="RUT",
-                          widget=forms.TextInput(attrs={'class': "form-control"}))
+                          widget=forms.TextInput(attrs={'class': "form-control"})
+                          )
+    calzado = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
 
         
     def __init__(self, *args, **kwargs):
