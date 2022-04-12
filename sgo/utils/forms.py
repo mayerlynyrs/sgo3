@@ -82,7 +82,7 @@ class AfpForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     tasa = forms.FloatField(required=True, label="Tasa",
-                                 widget=forms.NumberInput(attrs={'class': "form-control"}))
+                                 widget=forms.NumberInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
 
     def __init__(self, *args, **kwargs):
         super(AfpForm, self).__init__(*args, **kwargs)
@@ -94,7 +94,7 @@ class AfpForm(forms.ModelForm):
 
 class ValoresDiarioForm(forms.ModelForm):
     valor_diario = forms.CharField(required=True, label="Valor Diario",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
 
     def __init__(self, *args, **kwargs):
         super(ValoresDiarioForm, self).__init__(*args, **kwargs)
@@ -106,7 +106,7 @@ class ValoresDiarioForm(forms.ModelForm):
 
 class ValoresDiarioAfpForm(forms.ModelForm):
     valor = forms.CharField(required=True, label="Valor",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.all(), required=True, label="Afp",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',

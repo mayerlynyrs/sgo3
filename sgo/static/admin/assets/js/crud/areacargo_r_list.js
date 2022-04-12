@@ -1,6 +1,9 @@
 var tblAreaCargo;
 var modal_title;
 var requerimiento = null;
+var enviando = false;
+var boton_numero1 = document.getElementById("boton");
+boton_numero1.addEventListener("click", guardar_area_cargo);
 
 function getData() {
     tblAreaCargo = $('#data-table-default').DataTable({
@@ -139,8 +142,10 @@ $(function () {
 
     });
 
-    $('.btnAdd2').on('click', function () {
+});
 
+function guardar_area_cargo() { 
+    if (enviando == false){
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
@@ -148,11 +153,8 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
-                $('#myModalRequerUser').modal('hide');
-                tblProfesionUser.ajax.reload();
-            }); 
-        });
-
-    });
-
-});
+            });
+            enviando = True;   
+        });  
+    }
+  }
