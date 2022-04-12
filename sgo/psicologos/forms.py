@@ -181,7 +181,7 @@ class EvaluacionPsicologica(forms.ModelForm):
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     archivo = forms.FileField(required=True, label="Archivo",
                                  widget=forms.FileInput(attrs={'class': "form-control"}))
-    archivo2 = forms.FileField(required=True, label="Archivo",
+    archivo2 = forms.FileField(label="Archivo",
                                  widget=forms.FileInput(attrs={'class': "form-control"}))                                 
     psicologico_tipo = forms.ModelChoiceField(queryset=PsicologicoTipo.objects.filter(status=True), required=True, label="Tipo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',

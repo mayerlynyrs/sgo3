@@ -125,6 +125,9 @@ class AgendaList(TemplateView):
                 evaluacion.archivo = request.FILES['archivo']
                 evaluacion.archivo2 = request.FILES['archivo2']
                 evaluacion.save()
+                agenda = Agenda.objects.get(pk=request.POST['id'])
+                agenda.estado = 'A'
+                agenda.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
