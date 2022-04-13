@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, ProtectedError
 from django.http import Http404, JsonResponse
 from django.template.loader import render_to_string
@@ -13,12 +14,17 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from psicologos.forms import UserAgendar, AgendaPsicologos, EvaluacionPsicologica, ReportForm
-from psicologos.models import Agenda, EvaluacionPsicologico
+# Model
+from psicologos.models import Psicologico, Agenda, EvaluacionPsicologico
 from users.models import User
 # Create your views here.
 
 
 class PsicologosCalendarioView(ListView):
+    """Psicologos Calendario List
+    Vista para listar todos los psicologo según el usuario y sus las plantas
+    relacionadas.
+    """
     template_name = 'psicologos/agendar.html'
     model = Agenda
 
@@ -35,7 +41,7 @@ class PsicologosCalendarioView(ListView):
         return context
 
 
-class AgendaCreateView(TemplateView):
+class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
@@ -55,6 +61,9 @@ class AgendaCreateView(TemplateView):
         return render(request, 'psicologos/agendar.html', {
             'form': agenda_form,
         })
+
+    permission_required = 'psicologos.add_agenda'
+    raise_exception = True
 
 
 class AgendaList(TemplateView):
@@ -146,8 +155,16 @@ class AgendaList(TemplateView):
         return context
 
 
-class EvalTerminadasView(TemplateView):
+class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Psicologo List
+    Vista para listar todos los psicologo según el usuario y sus las plantas
+    relacionadas.
+    """
+
+    model = EvaluacionPsicologico
     template_name = 'psicologos/evaluacionesTerminadas.html'
+    permission_required = 'psicologos.view_evaluacionpsicologico'
+    raise_exception = True
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)

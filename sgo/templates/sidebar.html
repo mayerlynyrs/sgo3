@@ -68,7 +68,7 @@
       </li>
       {% endif %}
 
-      {% if perms.psicologos.view_requerimiento %}
+      {% if perms.psicologos.view_psicologico %}
       <li class="has-sub {% if menu_app == 'psicologos' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -76,9 +76,13 @@
           <span>Psicologos </span>
         </a>
         <ul class="sub-menu">
+        {% if perms.psicologos.add_agenda %}
           <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Agendar </a></li>
+        {% endif %}
           <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
+        {% if perms.psicologos.view_evaluacionpsicologico %}
           <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas </a></li>
+        {% endif %}
           <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revision Solicitudes </a></li>
         </ul>
       </li>
