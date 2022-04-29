@@ -66,6 +66,22 @@ class SignInView(auth_views.LoginView):
     template_name = 'users/login.html'
 
 
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "users/users_detail.html"
+    context_object_name = "usuario"
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+
+        # Se valida que solo el administrador pueda editar el perfil de otro usuario.
+        if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT',]).exists():
+            if not self.object == self.request.user:
+                raise Http404
+
+        return context
+
+
 class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = User
     template_name = "users/users_list.html"
@@ -675,7 +691,7 @@ class TrabajadoresIdView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
-        context['update_url'] = reverse_lazy('users:update')
+        context['update_url'] = reverse_lazy('users:create_trabajador')
         context['entity'] = 'Contactos'
         context['trabajador'] = trabajador
         context['trabajador_id'] = trabajador.id
@@ -864,7 +880,7 @@ def update_trabajador(request, trabajador_id):
 
     return render(
         request=request,
-        template_name='users/create_users.html',
+        template_name='users/create_trabajadores.html',
         context={
             'trabajador': user,
             'form': trabajador_form,
