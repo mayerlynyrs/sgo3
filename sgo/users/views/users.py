@@ -793,18 +793,18 @@ def create_trabajador(request):
             user.is_staff = False
             user.is_active = True
             user.save()
-            # # Perfil
-            # group = request.POST.getlist('group')
-            # for i in group:
-            #     user.groups.add(i)
-            # # Cliente
-            # client = request.POST.getlist('cliente')
-            # for i in client:
-            #     user.cliente.add(i)
-            # # Planta
-            # plant = request.POST.getlist('planta')
-            # for i in plant:
-            #     user.planta.add(i)
+            # Perfil
+            group = request.POST.getlist('group')
+            for i in group:
+                user.groups.add(i)
+            # Cliente
+            client = request.POST.getlist('cliente')
+            for i in client:
+                user.cliente.add(i)
+            # Planta
+            plant = request.POST.getlist('planta')
+            for i in plant:
+                user.planta.add(i)
 
                     
             trabajador = trabajador_form.save(commit=False)
