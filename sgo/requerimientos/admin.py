@@ -10,13 +10,13 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.widgets import ManyToManyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from requerimientos.models import Causal, Requerimiento, AreaCargo, RequerimientoUser, Adendum
+from requerimientos.models import Causal, Requerimiento, AreaCargo, RequerimientoTrabajador, Adendum
 # Clientes
 from clientes.models import Planta
 # Utils Model
 from utils.models import Area, Cargo
 #User
-from users.models import User
+from users.models import User, Trabajador
 
 
 class CausalSetResource(resources.ModelResource):
@@ -47,14 +47,14 @@ class AreaCargoSetResource(resources.ModelResource):
         fields = ('id', 'cantidad', 'valor_aprox', 'fecha_ingreso', 'requerimiento', 'area', 'cargo', 'status', )
 
 
-class RequerimientoUserSetResource(resources.ModelResource):
-    jefe_area = fields.Field(column_name='jefe_area', attribute='jefe_area', widget=ForeignKeyWidget(User, 'nombre'))
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+class RequerimientoTrabajadorSetResource(resources.ModelResource):
+    jefe_area = fields.Field(column_name='jefe_area', attribute='jefe_area', widget=ForeignKeyWidget(Trabajador, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
     area_cargo = fields.Field(column_name='area_cargo', attribute='area_cargo', widget=ForeignKeyWidget(AreaCargo, 'nombre'))
 
     class Meta:
-        mcausalodel = RequerimientoUser
-        fields = ('id', 'requerimiento', 'area_cargo', 'user', 'tipo', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
+        mcausalodel = RequerimientoTrabajador
+        fields = ('id', 'requerimiento', 'area_cargo', 'trabajador', 'tipo', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
 
 
 class AdendumSetResource(resources.ModelResource):
@@ -98,15 +98,15 @@ class AreaCargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ['area__nombre', 'cargo__nombre', 'requerimiento__nombre', ]
 
 
-@admin.register(RequerimientoUser)
-class RequerimientoUserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """RequerimientoUserAdmin model admin."""
+@admin.register(RequerimientoTrabajador)
+class RequerimientoTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """RequerimientoTrabajadorAdmin model admin."""
 
-    resource_class = RequerimientoUserSetResource
-    fields = ('requerimiento', 'area_cargo', 'tipo', 'user', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
-    list_display = ('id', 'user', 'requerimiento', 'area_cargo', 'status', 'modified',)
-    list_filter = ['jefe_area', 'user', 'area_cargo' ]
-    search_fields = ['tipo', 'jefe_area__nombre', 'user__nombre', 'area_cargo' ]
+    resource_class = RequerimientoTrabajadorSetResource
+    fields = ('requerimiento', 'area_cargo', 'tipo', 'trabajador', 'pension', 'jefe_area', 'referido', 'descripcion', 'status', )
+    list_display = ('id', 'trabajador', 'requerimiento', 'area_cargo', 'status', 'modified',)
+    list_filter = ['jefe_area', 'trabajador', 'area_cargo' ]
+    search_fields = ['tipo', 'jefe_area__nombre', 'trabajador__first_name', 'trabajador__last_name', 'area_cargo' ]
 
 
 @admin.register(Adendum)

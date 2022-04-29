@@ -68,31 +68,8 @@
       "cambiar_clave": true,
       "email": "superuser@yopmail.com",
       "rut": "12345678",
-      "pasaporte": null,
-      "sexo": null,
-      "estado_civil": null,
       "fecha_nacimiento": null,
       "telefono": null,
-      "telefono2": null,
-      "licencia_conducir": "NG",
-      "talla_polera": null,
-      "talla_pantalon": null,
-      "calzado": null,
-      "nivel_estudio": null,
-      "especialidad": null,
-      "nacionalidad": null,
-      "region": 8,
-      "provincia": 29,
-      "ciudad": 163,
-      "domicilio": null,
-      "examen": false,
-      "foto": "",
-      "afp": null,
-      "salud": null,
-      "pacto_uf": null,
-      "banco": null,
-      "tipo_cuenta": null,
-      "cuenta": null,
       "groups": [
         1
       ],
@@ -114,6 +91,76 @@
       "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$MWxabW9YTHNnMFpvbFQwUHBVcDRtSw$Rh98TFeiLBc98mfWcEXS8g",
       "last_login": null,
       "is_superuser": false,
+      "username": "vane.andrea-2201131117",
+      "first_name": "Vanesa Andrea",
+      "last_name": "Leiva Cáceres",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-01-24T16:11:17.119Z",
+      "created": "2022-01-24T16:11:17.261Z",
+      "created_by": 1,
+      "modified": "2022-01-24T16:11:17.288Z",
+      "modified_by": 1,
+      "atributos": null,
+      "cambiar_clave": true,
+      "email": "vane.andrea@gmail.com",
+      "rut": "19.966.024-1",
+      "fecha_nacimiento": "1990-07-26",
+      "telefono": "954670103",
+      "groups": [
+        2
+      ],
+      "user_permissions": [],
+      "cliente": [
+        1
+      ],
+      "planta": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$SEJUNFRCbVJnRnplNXVBVnNJUEV1dA$0f+0aAYl1NlM+mPYsRtmWQ",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "cami-2201162547",
+      "first_name": "Camila Soledad",
+      "last_name": "Fuente Beltran",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-01-24T19:25:47.310Z",
+      "created": "2022-01-24T19:25:47.475Z",
+      "created_by": 1,
+      "modified": "2022-01-24T19:26:02.896Z",
+      "modified_by": 1,
+      "atributos": null,
+      "cambiar_clave": true,
+      "email": "cami@gmail.com",
+      "rut": "18.752.819-4",
+      "fecha_nacimiento": "1997-11-06",
+      "telefono": "995648530",
+      "groups": [
+        6
+      ],
+      "user_permissions": [],
+      "cliente": [
+        4
+      ],
+      "planta": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$MWxabW9YTHNnMFpvbFQwUHBVcDRtSw$Rh98TFeiLBc98mfWcEXS8g",
+      "last_login": null,
+      "is_superuser": false,
       "username": "lindseynavarretemoyano21-2201131117",
       "first_name": "Lindsey Vannia",
       "last_name": "Navarrete Moyano",
@@ -126,6 +173,68 @@
       "modified_by": 1,
       "atributos": null,
       "cambiar_clave": true,
+      "email": "lindseynavarretemoyano21@gmail.com",
+      "rut": "18.565.128-2",
+      "fecha_nacimiento": "1993-09-06",
+      "telefono": "954230197",
+      "groups": [
+        5
+      ],
+      "user_permissions": [],
+      "cliente": [
+        1
+      ],
+      "planta": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$SEJUNFRCbVJnRnplNXVBVnNJUEV1dA$0f+0aAYl1NlM+mPYsRtmWQ",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "totimorales1629-2201162547",
+      "first_name": "Guillermo",
+      "last_name": "Garcia Morales",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-01-24T19:25:47.310Z",
+      "created": "2022-01-24T19:25:47.475Z",
+      "created_by": 1,
+      "modified": "2022-01-24T19:26:02.896Z",
+      "modified_by": 1,
+      "atributos": null,
+      "cambiar_clave": true,
+      "email": "totimorales1629@gmail.com",
+      "rut": "21.107.768-9",
+      "fecha_nacimiento": "1994-11-15",
+      "telefono": "995171530",
+      "groups": [
+        5
+      ],
+      "user_permissions": [],
+      "cliente": [
+        4
+      ],
+      "planta": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "users.trabajador",
+    "pk": 1,
+    "fields": {
+      "first_name": "Lindsey Vannia",
+      "last_name": "Navarrete Moyano",
+      "is_active": true,
+      "created": "2022-01-24T16:11:17.261Z",
+      "created_by": 1,
+      "modified": "2022-01-24T16:11:17.288Z",
+      "modified_by": 1,
       "email": "lindseynavarretemoyano21@gmail.com",
       "rut": "18.565.128-2",
       "pasaporte": null,
@@ -153,37 +262,20 @@
       "banco": 2,
       "tipo_cuenta": 5,
       "cuenta": "18565128",
-      "groups": [
-        5
-      ],
-      "user_permissions": [],
-      "cliente": [
-        1
-      ],
-      "planta": [
-        2
-      ]
+      "user": 4
     }
   },
   {
-    "model": "users.user",
-    "pk": 3,
+    "model": "users.trabajador",
+    "pk": 2,
     "fields": {
-      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$SEJUNFRCbVJnRnplNXVBVnNJUEV1dA$0f+0aAYl1NlM+mPYsRtmWQ",
-      "last_login": null,
-      "is_superuser": false,
-      "username": "totimorales1629-2201162547",
       "first_name": "Guillermo",
       "last_name": "Garcia Morales",
-      "is_staff": false,
       "is_active": true,
-      "date_joined": "2022-01-24T19:25:47.310Z",
       "created": "2022-01-24T19:25:47.475Z",
       "created_by": 1,
       "modified": "2022-01-24T19:26:02.896Z",
       "modified_by": 1,
-      "atributos": null,
-      "cambiar_clave": true,
       "email": "totimorales1629@gmail.com",
       "rut": "21.107.768-9",
       "pasaporte": null,
@@ -211,50 +303,7 @@
       "banco": 2,
       "tipo_cuenta": 5,
       "cuenta": "21107768",
-      "groups": [
-        5
-      ],
-      "user_permissions": [],
-      "cliente": [
-        4
-      ],
-      "planta": [
-        6
-      ]
-    }
-  },
-  {
-    "model": "users.contacto",
-    "pk": 1,
-    "fields": {
-      "nombre": "Romina Moyano",
-      "telefono": "56976543457",
-      "parentesco": 2,
-      "user": 2,
-      "status": true,
-      "created_date": "2022-01-24T16:12:37.608Z"
-    }
-  },
-  {
-    "model": "users.archivouser",
-    "pk": 1,
-    "fields": {
-      "archivo": "archivousuario/afp.pdf",
-      "user": 2,
-      "tipo_archivo": 1,
-      "status": true,
-      "created_date": "2022-01-24T16:13:50.106Z"
-    }
-  },
-  {
-    "model": "users.archivouser",
-    "pk": 2,
-    "fields": {
-      "archivo": "archivousuario/afp_HbeKzVr.pdf",
-      "user": 2,
-      "tipo_archivo": 1,
-      "status": true,
-      "created_date": "2022-01-24T16:13:50.120Z"
+      "user": 5
     }
   },
   {

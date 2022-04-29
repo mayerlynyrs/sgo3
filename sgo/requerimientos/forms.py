@@ -4,8 +4,8 @@
 from tokenize import group
 from django import forms
 # sgo Model
-from users.models import User
-from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoUser, Adendum
+from users.models import User, Trabajador
+from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoTrabajador, Adendum
 from clientes.models import Planta , Cliente
 from utils.models import Area, Cargo
 
@@ -113,7 +113,7 @@ class ACRForm(forms.ModelForm):
         fields = ("cantidad", "valor_aprox", "fecha_ingreso", "area", "cargo", )
 
 
-class RequeriUserForm(forms.ModelForm):
+class RequeriTrabajadorForm(forms.ModelForm):
 
     SUPERVISOR = 'SUP'
     TECNICO = 'TEC'
@@ -141,14 +141,14 @@ class RequeriUserForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    user = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True, groups='5'), required=True, label="Trabajador",
+    trabajador = forms.ModelChoiceField(queryset=Trabajador.objects.filter(is_active=True), required=True, label="Trabajador",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    jefe_area = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True), required=True, label="Jefe del Área",
+    jefe_area = forms.ModelChoiceField(queryset=Trabajador.objects.filter(is_active=True), required=True, label="Jefe del Área",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -161,13 +161,13 @@ class RequeriUserForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         area_cargo = kwargs.pop('area_cargo', None)
         total = kwargs.pop('total', None)
-        super(RequeriUserForm, self).__init__(*args, **kwargs)
+        super(RequeriTrabajadorForm, self).__init__(*args, **kwargs)
         
         self.fields['area_cargo'].queryset = area_cargo
 
     class Meta:
-        model = RequerimientoUser
-        fields = ("area_cargo", "tipo", "user", "pension", "jefe_area", "referido", "descripcion", "status")
+        model = RequerimientoTrabajador
+        fields = ("area_cargo", "tipo", "trabajador", "pension", "jefe_area", "referido", "descripcion", "status")
 
 
 class AdendumForm(forms.ModelForm):

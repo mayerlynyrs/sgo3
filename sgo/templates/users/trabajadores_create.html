@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load widget_tweaks %}
-{% block page_title %}Usuarios{% endblock %}
+{% block page_title %}Trabajadores{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
@@ -13,12 +13,12 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Usuarios</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Usuarios / Trabajadores</a></li>
   <li class="breadcrumb-item active">{% if usuario %}{{ usuario.id }}{% else %}Nuevo{% endif %}</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Usuarios <small>{% if usuario %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<h1 class="page-header">Trabajadores <small>{% if usuario %}Editar{% else %}Nuevo{% endif %}</small></h1>
 <!-- end page-header -->
 
 <!-- begin panel -->
@@ -37,7 +37,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
     </div>
     <h4 class="panel-title">
-      {% if usuario %}{{ usuario.first_name|upper }} {{ usuario.last_name|upper }}{% else %}Nuevo Usuario{% endif %}</h4>
+      {% if usuario %}{{ usuario.first_name|upper }} {{ usuario.last_name|upper }}{% else %}Nuevo Trabajador{% endif %}</h4>
   </div>
   <div class="panel-body">
 
@@ -57,45 +57,136 @@
       </div>
     {% endif %}
     <div class="card-body">
-      <form method="post" autocomplete="off" novalidate id="CrearUsuarioForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
-				<!-- begin fieldset -->
-				<fieldset>
-					<!-- begin row -->
-					<div class="row">
-						<!-- begin col-8 -->
-						<div class="col-xl-8 offset-xl-2">
-							<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Usuario</legend><hr /><br>
-								<!-- begin form-group row -->
-                  {% csrf_token %}
-                  <!-- {% include 'basic_form.html' with form=form %} -->
-                  {% crispy form %}
-            </div>
-						<!-- end col-8 -->
-					</div>
-					<!-- end row -->
-				</fieldset>
-				<!-- end fieldset -->
-          <!-- Alerta RUT-->
-          <div id="alerta" class="alert alert-info alert-dismissible fade show text-center" role="alert">
-            <span id="mensaje">Ingrese un RUT en el siguiente campo de texto para validar si es correcto o no.</span>
-          </div>
-          <!-- FIN ALERTA -->
-          <!-- BOTONES -->
-          <div class="form-group row m-b-0">
-            <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
-              <div class="col-md-8 col-sm-8 text-right">
-                <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+      
+      <!-- {% include 'basic_form.html' with form=form %} -->
+      <div id="wizard">
+			  <!-- begin wizard-step -->
+				<ul>
+          <li class="nav-item">
+            <a href="#step-1">
+              <span class="number">1</span> 
+							<span class="info">
+								Datos personales
+								<small>Dirección, Cuenta...</small>
+							</span>
+						</a>
+					</li>
+          <li class="nav-item">
+            <a href="#step-2">
+              <span class="number">2</span> 
+							<span class="info">
+                Contactos
+                <small>Parentesco. es requerido</small>
+							</span>
+						</a>
+					</li>
+          <li class="nav-item">
+            <a href="#step-3">
+              <span class="number">3</span> 
+							<span class="info">
+                Profesiones
+                <small>Institución y profesión.</small>
+							</span>
+						</a>
+					</li>
+          <li class="nav-item">
+            <a href="#step-4">
+              <span class="number">4</span> 
+							<span class="info">
+                Documentos
+                <small>Certificados AFP...</small>
+							</span>
+						</a>
+					</li>
+          <li class="nav-item">
+            <a href="#step-5">
+              <span class="number">5</span> 
+							<span class="info">
+                Exámenes
+                <small>Valor, Planta...</small>
+							</span>
+						</a>
+					</li>
+				</ul>
+			  <!-- end wizard-step -->
+			  <!-- begin wizard-content -->
+			  <div>
+					<!-- begin step-1 -->
+					<div id="step-1">
+            <form method="post" autocomplete="off" novalidate id="CrearTrabajadorForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+							<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-8 -->
+									<div class="col-xl-8 offset-xl-2">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Datos del Trabajador</legend><hr /><br>
+										<!-- begin form-group row -->
+                    {% csrf_token %}
+                    {% crispy form %}
+                    <input type="hidden" name="group" value="5" required id="id_group">
+                  </div>
+									<!-- end col-8 -->
+								</div>
+								<!-- end row -->
+							</fieldset>
+							<!-- end fieldset -->
+                <!-- Alerta RUT-->
+                <div id="alerta" class="alert alert-info alert-dismissible fade show text-center" role="alert">
+                  <span id="mensaje">Ingrese un RUT en el siguiente campo de texto para validar si es correcto o no.</span>
+                </div>
+                <!-- FIN ALERTA -->
+                <!-- BOTONES -->
+              <div class="form-group row m-b-0">
+                <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
+                <div class="col-md-8 col-sm-8 text-right">
+                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
                   <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
+                </div>
               </div>
-          </div>
-      </form>
+            </form>
+					</div>
+					<!-- end step-1 -->
+			</div>
+			<!-- end wizard-content -->
 		</div>
 
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
+      $("#id_region").change(function () {
+        var url = $("#CrearTrabajadorForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+        var regionId = $(this).val();  // get the selected region ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url: "{% url 'users:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
+          data: {
+            'region': regionId       // add the region id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_provincias` view function
+            $("#id_provincia").html(data);  // replace the contents of the provincia input with the data that came from the server
+          }
+        });
+  
+      });
+      // this one is for fetching ciudad data
+      $("#id_provincia").change(function () { //django-model-form created this id
+        var url = $("#CrearTrabajadorForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+        var provinciaId = $(this).val();  // get the selected region ID from the HTML input
+  
+        $.ajax({                       // initialize an AJAX request
+          url: "{% url 'users:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
+          data: {
+            'provincia': provinciaId       // add the region id to the GET parameters
+          },
+          success: function (data) {   // `data` is the return of the `load_provincias` view function
+            $("#id_ciudad").html(data);  // replace the contents of the provincia input with the data that came from the server
+          }
+        });
+  
+      });
       // plantas
       $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
+        var url = $("#CrearTrabajadorForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
         $.ajax({                       // initialize an AJAX request
@@ -140,7 +231,7 @@
 
       e.preventDefault();
 
-      var $form = $('#CrearUsuarioForm');
+      var $form = $('form');
       var validator = $form.validate({
           ignore: "",
           errorClass: "is-invalid",
@@ -178,7 +269,7 @@
                     minlength: 4
                   },
                   group: "required",
-                  planta: {
+                  negocio: {
                     required: true
                     
                   }
@@ -195,7 +286,7 @@
                     digits: "Ingrese un número de teléfono valido.",
                     minlength: "Ingrese un número de teléfono valido."
                   },
-                  planta: "Selecciona al menos una planta a la que pertenezca el usuario.",
+                  negocio: "Selecciona al menos una negocio a la que pertenezca el usuario.",
                   group: "Selecciona un perfil para el usuario.",
                   email: {
                     required: "Ingresa el email del usuario.",

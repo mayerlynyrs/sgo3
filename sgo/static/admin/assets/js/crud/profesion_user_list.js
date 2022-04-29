@@ -1,19 +1,19 @@
-var tblProfesionUser;
+var tblProfesionTrab;
 var modal_title;
-var user = null;
+var trabajador = null;
 var enviando = false;
 var boton_numero2 = document.getElementById("boton1");
 boton_numero2.addEventListener("click", guardar_profesion);  
 
 
 function getData2() {
-    tblProfesionUser = $('#data-table-buttons_wrapper').DataTable({
+    tblProfesionTrab = $('#data-table-buttons_wrapper').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+user+'/profesion_users/',
+            url: '/users/'+trabajador+'/profesion_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata3'
@@ -52,7 +52,7 @@ $(function () {
     });
     
     modal_title = $('.modal-title');
-    user = document.getElementById("user_id").value;
+    trabajador = document.getElementById("trabajador_id").value;
 
     getData2();
 
@@ -66,15 +66,15 @@ $(function () {
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
-        $('#myModalProfesionUser').modal('show');
+        $('#myModalProfesionTrab').modal('show');
     });
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
     
         modal_title.find('span').html('Profesión <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblProfesionUser.cell($(this).closest('td, li')).index();
-        var data = tblProfesionUser.row(tr.row).data();
+        var tr = tblProfesionTrab.cell($(this).closest('td, li')).index();
+        var data = tblProfesionTrab.row(tr.row).data();
         $('form')[2].reset();
         $('input[name="action"]').val('profesion_edit');
         $('input[name="id"]' ).val(data.id);
@@ -85,15 +85,15 @@ $(function () {
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
-        $('#myModalProfesionUser').modal('show');
+        $('#myModalProfesionTrab').modal('show');
     });
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="delete"]', function (){
     
         modal_title.find('span').html('Profesión <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblProfesionUser.cell($(this).closest('td, li')).index();
-        var data = tblProfesionUser.row(tr.row).data();
+        var tr = tblProfesionTrab.cell($(this).closest('td, li')).index();
+        var data = tblProfesionTrab.row(tr.row).data();
         $('input[name="action"]').val('profesion_delete');
         $('input[name="id"]').val(data.id);
         $('input[name="egreso"]').val(data.egreso);
@@ -103,10 +103,10 @@ $(function () {
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar'
-        $('#myModalProfesionUser').modal('show');
+        $('#myModalProfesionTrab').modal('show');
     }); 
 
-    $('#myModalProfesionUser').on('shown.bs.modal', function () {
+    $('#myModalProfesionTrab').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -119,8 +119,8 @@ function guardar_profesion() {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalProfesionUser').modal('hide');
-                tblProfesionUser.ajax.reload();
+                $('#myModalProfesionTrab').modal('hide');
+                tblProfesionTrab.ajax.reload();
             });
             enviando = True; 
         });

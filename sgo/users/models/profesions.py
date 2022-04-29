@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.forms import model_to_dict
 
 #Users
-from users.models import User
+from users.models import User, Trabajador
 
 
 class Profesion(models.Model):
@@ -32,7 +32,7 @@ class Profesion(models.Model):
         item['nombre'] = self.nombre.title()
         return item
 
-class ProfesionUser(models.Model):
+class ProfesionTrabajador(models.Model):
     egreso = models.DateField(
         null=True,
         blank=True,
@@ -42,7 +42,7 @@ class ProfesionUser(models.Model):
         max_length=120
     )
     profesion = models.ForeignKey(Profesion, on_delete=models.PROTECT, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la profesion del usuario, deshabilite esta casilla.'

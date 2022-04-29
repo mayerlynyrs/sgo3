@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load user_tags %}
-{% block page_title %}Usuarios{% endblock %}
+{% block page_title %}Trabajadores{% endblock %}
 {% block styles %}
 img {
   width: 3em;
@@ -47,12 +47,12 @@ img {
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Usuarios</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Usuarios / Trabajadores</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Usuarios <small>Listado</small></h1>
+<h1 class="page-header">Trabajadores <small>Listado</small></h1>
 <!-- end page-header -->
 
 <!-- begin panel -->
@@ -64,7 +64,7 @@ img {
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
     </div>
-    <h4 class="panel-title">Todos los usuarios</h4>
+    <h4 class="panel-title">Todos los trabajadores</h4>
   </div>
     </header>
     <div class="panel-body">
@@ -72,7 +72,7 @@ img {
     <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
       <thead>
           <tr>
-              <th class="text-center">Datos Usuarios</th>
+              <th class="text-center">Datos Trabajadores</th>
               <th class="text-center">Clientes</th>
               <th class="text-center">Plantas</th>
               <th class="text-center">Acciones</th>
@@ -84,7 +84,7 @@ img {
         {% if not usr.id == request.user.id %}
           <tr>
             <td>
-                <a title="Editar" href="{% url 'users:create' usr.id %}?page={{ request.GET.page }}">
+                <a title="Editar" href="{% url 'users:create_trabajador' usr.id %}?page={{ request.GET.page }}">
                   <div class="img-div">
                     {{ usr.groups.first.name|image_profile|safe }}<br>
                     {{ usr.is_active|tag_active|safe }}
@@ -123,9 +123,9 @@ img {
                 </ul>
             </td>
             <td>
-              <!-- <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp &nbsp -->
+              <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp &nbsp
               <!-- <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp &nbsp -->
-              <!-- <a title="Historial" href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> -->
+              <a title="Historial" href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a>
             </td>
           </tr>
         

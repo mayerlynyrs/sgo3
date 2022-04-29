@@ -13,7 +13,7 @@ function getdata5() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+user+'/evaluacion_users/',
+            url: '/users/'+user+'/evaluacion_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata5'

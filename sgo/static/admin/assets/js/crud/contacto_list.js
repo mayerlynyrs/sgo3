@@ -1,6 +1,6 @@
 var tblContact;
 var modal_title;
-var user = null;
+var trabajador = null;
 var enviando = false;
 var boton_numero1 = document.getElementById("boton");
 boton_numero1.addEventListener("click", guardar_contacto);
@@ -12,7 +12,7 @@ function getData() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+user+'/contactos/',
+            url: '/users/'+trabajador+'/contactos/',
             type: 'POST',
             data: {
                 'action': 'searchdata2'
@@ -46,7 +46,8 @@ function getData() {
 $(function () {
 
     modal_title = $('.modal-title');
-    user = document.getElementById("user_id").value;
+    trabajador = document.getElementById("trabajador_id").value;
+
 
     getData();
 
@@ -113,10 +114,10 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalcontacto').modal('hide');
                 tblContact.ajax.reload();
-                $('#myModalProfesionUser').modal('hide');
-                tblProfesionUser.ajax.reload();
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
+                $('#myModalProfesionTrab').modal('hide');
+                tblProfesionTrab.ajax.reload();
+                $('#myModalArchivoTrab').modal('hide');
+                tblArchivoTrab.ajax.reload();
             }); 
         });
 

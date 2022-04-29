@@ -14,9 +14,9 @@ from examenes.models import Examen, Bateria, Evaluacion, Requerimiento
 # Clientes
 from clientes.models import Planta
 # Requerimientos
-from requerimientos.models import RequerimientoUser
-#User
-from users.models import User
+from requerimientos.models import RequerimientoTrabajador
+#trabajador
+from users.models import Trabajador
 
 
 class ExamenSetResource(resources.ModelResource):
@@ -35,26 +35,26 @@ class BateriaSetResource(resources.ModelResource):
 
 
 class EvaluacionSetResource(resources.ModelResource):
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
     examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
         model = Evaluacion
         fields = ('id', 'nombre', 'fecha_examen', 'fecha_vigencia', 'descripcion', 'valor_examen', 'referido', 'resultado',
-                  'archivo', 'user', 'examen', 'planta', 'status', )
+                  'archivo', 'trabajador', 'examen', 'planta', 'status', )
 
 
 class RequerimientoSetResource(resources.ModelResource):
-    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
+    requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
     examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
         model = Requerimiento
-        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen',
-                  'user', 'planta', 'status', )
+        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen',
+                  'trabajador', 'planta', 'status', )
 
 
 
@@ -87,10 +87,10 @@ class EvaluacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = EvaluacionSetResource
     fields = ('nombre', 'fecha_examen', 'fecha_vigencia', 'descripcion', 'valor_examen', 'referido', 'resultado',
-              'archivo', 'user', 'examen', 'planta', 'status', )
-    list_display = ('id', 'nombre', 'fecha_examen', 'user', 'status', 'modified',)
-    list_filter = ['user', 'examen', 'planta', ]
-    search_fields = ['user__nombre', 'examen__nombre', 'planta__nombre', ]
+              'archivo', 'trabajador', 'examen', 'planta', 'status', )
+    list_display = ('id', 'nombre', 'fecha_examen', 'trabajador', 'status', 'modified',)
+    list_filter = ['trabajador', 'examen', 'planta', ]
+    search_fields = ['trabajador__first_name', 'examen__nombre', 'planta__nombre', ]
 
 
 @admin.register(Requerimiento)
@@ -98,8 +98,8 @@ class RequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RequerimientoAdmin model admin."""
 
     resource_class = RequerimientoSetResource
-    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen', 'user',
+    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen', 'trabajador',
               'planta', 'status' )
-    list_display = ('id', 'estado', 'requerimiento_user', 'planta', 'status', 'modified',)
-    list_filter = ['requerimiento_user', 'examen', 'user', 'planta', ]
-    search_fields = ['requerimiento_user__nombre', 'examen__nombre', 'user', 'planta__nombre', ]
+    list_display = ('id', 'estado', 'requerimiento_trabajador', 'planta', 'status', 'modified',)
+    list_filter = ['requerimiento_trabajador', 'examen', 'trabajador', 'planta', ]
+    search_fields = ['requerimiento_trabajador__nombre', 'examen__nombre', 'trabajador', 'planta__nombre', ]
