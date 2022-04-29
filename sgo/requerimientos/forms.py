@@ -22,8 +22,8 @@ class RequerimientoCreateForm(forms.ModelForm):
         (URGENCIA, 'Urgencia'),
     )
 
-    codigo = forms.CharField(required=False, label="Código único del Sistema",
-                             widget=forms.TextInput(attrs={'class': "form-control", 'readonly':'readonly', }))
+    codigo = forms.CharField(required=False, label="Código",
+                             widget=forms.TextInput(attrs={'placeholder': 'Código único del Sistema', 'class': "form-control", 'readonly':'readonly', }))
     centro_costo = forms.CharField(required=True, label="Centro de Costo",
                              widget=forms.TextInput(attrs={'class': "form-control" }))
     nombre = forms.CharField(required=True, label="Nombre Solicitud",

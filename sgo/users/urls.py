@@ -28,6 +28,11 @@ urlpatterns = [
         view=views.UserListView.as_view(),
         name='list'
     ),
+    path(
+        route='<int:pk>/detail/',
+        view=views.UserDetailView.as_view(),
+        name='detail'
+    ),
     # Crea el usuario
     path(
         route='create',
@@ -40,9 +45,9 @@ urlpatterns = [
         name='create'
         ),
     path(
-        route='<int:pk>/detail/',
+        route='<int:pk>/detail_trabajador/',
         view=views.TrabajadorDetailView.as_view(),
-        name='detail'
+        name='detail_trabajador'
     ),
     path(
         route='<int:user_id>/update/',
