@@ -16,7 +16,7 @@ function getData() {
             dataSrc: ""
         },
         columns: [
-            {"data": "user"},
+            {"data": "trabajador"},
             {"data": "descripcion"},
             {"data": "tipo"},
             {"data": "planta"},
@@ -67,7 +67,7 @@ $(function () {
         var data = tblListNegra.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
-        $('select[name="user"]').val(data.user_id).trigger("change");
+        $('select[name="trabajador"]').val(data.trabajador_id).trigger("change");
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
         $('select[name="planta"]').val(data.planta_id).trigger("change");
@@ -86,7 +86,7 @@ $(function () {
         var data = tblListNegra.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
-        $('select[name="user"]').val(data.user_id).trigger("change");
+        $('select[name="trabajador"]').val(data.trabajador_id).trigger("change");
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('input[name="tipo"]').val(data.tipo);
         $('select[name="planta"]').val(data.planta_id).trigger("change");

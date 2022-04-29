@@ -44,7 +44,7 @@ urlpatterns = [
     # ),
     path(
         # route='<int:requerimiento_user_id>/create_contrato/',
-        route='<int:requerimiento_user_id>/create_contrato/',
+        route='<int:requerimiento_trabajador_id>/create_contrato/',
         view=views.ContratoIdView.as_view(),
         name="create_contrato"
     ),

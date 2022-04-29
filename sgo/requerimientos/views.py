@@ -20,12 +20,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.conf import settings
 # Model
-from requerimientos.models import Requerimiento, AreaCargo, RequerimientoUser, Adendum
+from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabajador, Adendum
 from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
 # Form
-from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriUserForm, AdendumForm
+from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriTrabajadorForm, AdendumForm
 from ficheros.models import Fichero
 
 # Planta
@@ -414,7 +414,7 @@ class RequerimientoIdView(TemplateView):
                 ac_r.status = False
                 ac_r.save()
             elif action == 'requeri_user_add':
-                trabaj = RequerimientoUser()
+                trabaj = RequerimientoTrabajador()
                 if "referido" in request.POST:
                     estado = True
                     trabaj.referido =  estado
@@ -425,12 +425,12 @@ class RequerimientoIdView(TemplateView):
                 trabaj.tipo_id = request.POST['tipo']
                 trabaj.pension = request.POST['pension']
                 trabaj.area_cargo_id = request.POST['area_cargo_id']
-                trabaj.user_id = request.POST['user']
+                trabaj.trabajador_id = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
             elif action == 'requeri_user_edit':
-                trabaj = RequerimientoUser.objects.get(pk=request.POST['id'])
+                trabaj = RequerimientoTrabajador.objects.get(pk=request.POST['id'])
                 if "referido" in request.POST:
                     estado = True
                     trabaj.referido =  estado
@@ -441,13 +441,13 @@ class RequerimientoIdView(TemplateView):
                 trabaj.tipo_id = request.POST['tipo']
                 trabaj.pension = request.POST['pension']
                 trabaj.area_cargo_id = request.POST['area_cargo']
-                trabaj.user_id = request.POST['user']
+                trabaj.trabajador = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
                 trabaj.area_cargo_id = 10
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
             elif action == 'requeri_user_delete':
-                trabaj = RequerimientoUser.objects.get(pk=request.POST['id'])
+                trabaj = RequerimientoTrabajador.objects.get(pk=request.POST['id'])
                 trabaj.status = False
                 trabaj.save()
             else:
@@ -463,7 +463,7 @@ class RequerimientoIdView(TemplateView):
         ac = AreaCargo.objects.filter(requerimiento_id=requerimiento_id)
         # (cantidad) Trabajadores en el Área(s) y Cargo(s) del Requerimiento
         pk = requerimiento_id
-        quantity = RequerimientoUser.objects.filter(requerimiento_id=pk).count()
+        quantity = RequerimientoTrabajador.objects.filter(requerimiento_id=pk).count()
 
         context = super().get_context_data(**kwargs)
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
@@ -476,7 +476,7 @@ class RequerimientoIdView(TemplateView):
                                    cargos=requerimiento.cliente.cargo.all(),
                                    cantidad=quantity
                                    )
-        context['form3'] = RequeriUserForm(instance=requerimiento, area_cargo=ac)
+        context['form3'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac)
         return context
 
 
@@ -507,8 +507,8 @@ class ACRView(TemplateView):
         return JsonResponse(data, safe=False)
 
 
-class RequirementUserView(TemplateView):
-    """RequirementUser List
+class RequirementTrabajadorView(TemplateView):
+    """RequirementTrabajador List
     Vista para listar todos los requirementos del usuario y sus las negocios
     relacionadas.
     """
@@ -525,8 +525,8 @@ class RequirementUserView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata3':
                 data = []
-                # for i in RequerimientoUser.objects.filter(area_cargo=area_cargo_id, status=True):
-                for i in RequerimientoUser.objects.filter(requerimiento=requerimiento_id, status=True):
+                # for i in RequerimientoTrabajador.objects.filter(area_cargo=area_cargo_id, status=True):
+                for i in RequerimientoTrabajador.objects.filter(requerimiento=requerimiento_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

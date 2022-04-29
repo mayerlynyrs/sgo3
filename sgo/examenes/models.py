@@ -12,9 +12,9 @@ from django.forms import model_to_dict
 # Clientes
 from clientes.models import BaseModel, Planta
 #Requerimientos
-from requerimientos.models import RequerimientoUser
+from requerimientos.models import RequerimientoTrabajador
 #User
-from users.models import User
+from users.models import User, Trabajador
 
 
 class Examen(models.Model):
@@ -124,7 +124,7 @@ class Evaluacion(BaseModel):
         help_text='Para desactivar el requerimiento, deshabilite esta casilla.'
     )
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -170,11 +170,11 @@ class Requerimiento(BaseModel):
         help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
     )
 
-    requerimiento_user = models.ForeignKey(RequerimientoUser, related_name="exam_requer_user", on_delete=models.PROTECT, null=True, blank=True)
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, related_name="exam_requer_trabajador", on_delete=models.PROTECT, null=True, blank=True)
 
     examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     planta = models.ForeignKey(Planta, related_name="exam_requerimiento_planta", on_delete=models.PROTECT, null=True, blank=True)
 

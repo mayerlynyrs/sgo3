@@ -6,13 +6,13 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 # Models
-from users.models import User
+from users.models import Trabajador
 # Clientes
 from clientes.models import Planta
 # Utilities
 from utils.models import BaseModel, Bono, Equipo, Gratificacion, Horario
 from contratos.models import TipoDocumento
-from requerimientos.models import RequerimientoUser, Causal
+from requerimientos.models import RequerimientoTrabajador, Causal
 
 User = get_user_model()
 
@@ -23,7 +23,7 @@ class Renuncia(BaseModel):
         validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', ])]
     )
     fecha_termino = models.DateField(blank=True, null=True)
-    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     
     
     status = models.BooleanField(
@@ -99,23 +99,23 @@ class Contrato(BaseModel):
     fecha_aprobacion_baja = models.DateTimeField(blank=True, null=True)
     nueva_renta = models.IntegerField(default=0)
     obs = models.TextField(blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
     horario = models.ForeignKey(Horario, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT, blank=True, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
-    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el contrato , deshabilite esta casilla.'
     )
     def __str__(self):
-        return str(self.user.rut) + '-' + str(self.id).zfill(4)
+        return str(self.trabajador.rut) + '-' + str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
-    return '/'.join(['contratos', str(instance.contrato.user.id), filename])
+    return '/'.join(['contratos', str(instance.contrato.trabajador.id), filename])
 
 class Anexo(BaseModel):
     POR_FIRMAR = 'PF'
@@ -167,19 +167,19 @@ class Anexo(BaseModel):
         help_text='Para desactivar el anexo, deshabilite esta casilla.'
     )
     
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
     contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
     renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
-    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT)
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
 
     def __str__(self):
-        return str(self.user.rut) + '-' + str(self.id).zfill(4)
+        return str(self.trabajador.rut) + '-' + str(self.id).zfill(4)
 
 
 def contrato_directory_path(instance, filename):
-    return '/'.join(['contratos', str(instance.contrato.user.id), filename])
+    return '/'.join(['contratos', str(instance.contrato.trabajador.id), filename])
 
 class DocumentosContrato(BaseModel):
     archivo = models.FileField(upload_to=contrato_directory_path,
@@ -198,7 +198,7 @@ class DocumentosContrato(BaseModel):
         verbose_name_plural = "Documentos"
 
     def __str__(self):
-        return str(self.contrato.user) + '-' + self.nombre_archivo
+        return str(self.contrato.trabajador) + '-' + self.nombre_archivo
 
     @property
     def nombre_archivo(self):
@@ -221,7 +221,7 @@ class ContratosBono(models.Model):
         blank=True
     )
     def __str__(self):
-        return self.nombre
+        return str(self.valor)
 
 
 class Finiquito(BaseModel):
@@ -234,7 +234,7 @@ class Finiquito(BaseModel):
     )
    
     def __str__(self):
-        return self.nombre
+        return str(self.total_pagar)
 
 class ContratosEquipo(BaseModel):
     cantidad = models.IntegerField(default=0)
@@ -246,7 +246,7 @@ class ContratosEquipo(BaseModel):
     )
     
     def __str__(self):
-        return self.nombre
+        return str(self.cantidad)
 
 class Revision(BaseModel):
 
@@ -269,4 +269,4 @@ class Revision(BaseModel):
         help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
     )
     def __str__(self):
-        return self.nombre
+        return self.estado

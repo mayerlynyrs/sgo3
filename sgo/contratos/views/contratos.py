@@ -30,10 +30,10 @@ from django.views.generic.edit import FormView
 # Models
 from ficheros.models import Fichero
 from contratos.models import Contrato, DocumentosContrato, ContratosBono
-from requerimientos.models import RequerimientoUser
+from requerimientos.models import RequerimientoTrabajador
 # Form
 from contratos.forms import CrearContratoForm
-from requerimientos.forms import RequeriUserForm
+from requerimientos.forms import RequeriTrabajadorForm
 from users.forms import EditarUsuarioForm
 
 
@@ -118,7 +118,7 @@ def create(request):
 
 class ContratoIdView(TemplateView):
     template_name = 'contratos/create_contrato.html'
-    # requerimiento_user_id=Contrato
+    # requerimiento_trabajador_id=Contrato
     
     # # cliente = get_object_or_404(Contrato, pk=1)
 
@@ -127,28 +127,28 @@ class ContratoIdView(TemplateView):
     # def dispatch(self, request, *args, **kwargs):
     #     return super().dispatch(request, *args, **kwargs)
 
-    # def post(self, request, requerimiento_user_id, *args, **kwargs):
+    # def post(self, request, requerimiento_trabajador_id, *args, **kwargs):
     #     data = {}
     #     try:
     #         action = request.POST['action']
     #         if action == 'searchdata':
-    #             print(requerimiento_user_id)
+    #             print(requerimiento_trabajador_id)
     #             data = []
-    #             for i in RequerimientoUser.objects.filter(id=requerimiento_user_id, status=True):
+    #             for i in RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id, status=True):
     #                 data.append(i.toJSON())
     #         elif action == 'negocio_add':
     #             negocio = ContratosBono()
     #             negocio.nombre = request.POST['nombre']
     #             negocio.descripcion = request.POST['descripcion']
     #             negocio.archivo = request.FILES['archivo']
-    #             negocio.requerimiento_user_id = requerimiento_user_id
+    #             negocio.requerimiento_trabajador_id = requerimiento_trabajador_id
     #             negocio.save()
     #         elif action == 'negocio_edit':
     #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
     #             negocio.nombre = request.POST['nombre']
     #             negocio.descripcion = request.POST['descripcion']
     #             negocio.archivo = request.FILES['archivo']
-    #             negocio.requerimiento_user_id = requerimiento_user_id
+    #             negocio.requerimiento_trabajador_id = requerimiento_trabajador_id
     #             negocio.save()
     #         elif action == 'negocio_delete':
     #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
@@ -161,10 +161,10 @@ class ContratoIdView(TemplateView):
     #     return JsonResponse(data, safe=False)
 
 
-    def get_context_data(self, requerimiento_user_id, **kwargs):
+    def get_context_data(self, requerimiento_trabajador_id, **kwargs):
 
-        requer_user = get_object_or_404(RequerimientoUser, pk=requerimiento_user_id)
-        trabaj = RequerimientoUser.objects.filter(id=requerimiento_user_id).values(
+        requer_user = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
+        trabaj = RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id).values(
                 'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre', 'user__fecha_nacimiento',
                 'user__domicilio', 'user__ciudad', 'user__afp', 'user__salud', 'user__nivel_estudio',
                 'user__telefono', 'user__nacionalidad', 'requerimiento__nombre',  'referido',
@@ -179,7 +179,7 @@ class ContratoIdView(TemplateView):
     #     context['update_url'] = reverse_lazy('utils:update_cliente')
     #     context['cliente'] = cliente
     #     context['entity'] = 'Contratos'
-        context['datos'] = RequerimientoUser.objects.filter(pk=requerimiento_user_id).values(
+        context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
                 'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre',
                 'user__fecha_nacimiento', 'user__domicilio', 'user__ciudad__nombre', 'user__afp__nombre',
                 'user__salud__nombre',
@@ -189,8 +189,8 @@ class ContratoIdView(TemplateView):
                 'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
                 'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
                 'requerimiento__planta__gratificacion__nombre').order_by('user__rut')
-    #     context['cliente_id'] = requerimiento_user_id
-        context['form3'] = RequeriUserForm(instance=requer_user, user=trabaj)
+    #     context['cliente_id'] = requerimiento_trabajador_id
+        context['form3'] = RequeriTrabajadorForm(instance=requer_user, user=trabaj)
         context['form1'] = CrearContratoForm(instance=requer_user)
         return context
 

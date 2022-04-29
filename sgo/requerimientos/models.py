@@ -12,7 +12,7 @@ from clientes.models import Cliente, Planta
 #Utilities
 from utils.models import BaseModel, Area, Cargo
 #User
-from users.models import User
+from users.models import User, Trabajador
 
 
 class Causal(models.Model):
@@ -158,8 +158,8 @@ class AreaCargo(BaseModel):
         return item
 
 
-class RequerimientoUser(BaseModel):
-    """RequerimientoUser Model
+class RequerimientoTrabajador(BaseModel):
+    """RequerimientoTrabajador Model
 
 
     """
@@ -184,7 +184,7 @@ class RequerimientoUser(BaseModel):
 
     tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
 
-    jefe_area = models.ForeignKey(User, verbose_name='Jefe Área', related_name='jefearea_requerimientouser_set', on_delete=models.PROTECT, null=True, blank=True)
+    jefe_area = models.ForeignKey(User, verbose_name='Jefe Área', related_name='jefearea_requerimientotrabajador_set', on_delete=models.PROTECT, null=True, blank=True)
 
     pension = models.IntegerField(
         'Pensión',
@@ -197,7 +197,7 @@ class RequerimientoUser(BaseModel):
         help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
     )
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -206,13 +206,13 @@ class RequerimientoUser(BaseModel):
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return str(self.tipo) + ' ' + str(self.user)
+        return str(self.tipo) + ' ' + str(self.trabajador)
     
     def toJSON(self):
         item = model_to_dict(self)
-        item['user_id'] = self.user.id
-        item['user_rut'] = self.user.rut
-        item['user'] = self.user.first_name +' '+ self.user.last_name
+        item['trabajador_id'] = self.trabajador.id
+        item['trabajador_rut'] = self.trabajador.rut
+        item['trabajador'] = self.trabajador.first_name +' '+ self.trabajador.last_name
         item['jefe_area_id'] = self.jefe_area.id
         item['jefe_area'] = self.jefe_area.first_name
         item['area_cargo_id'] = self.area_cargo.id

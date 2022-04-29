@@ -5,9 +5,9 @@ from django.forms import model_to_dict
 # Clientes
 from clientes.models import BaseModel, Planta
 from utils.models import Cargo
-from users.models import User
+from users.models import User, Trabajador
 from examenes.models import Examen
-from requerimientos.models import RequerimientoUser
+from requerimientos.models import RequerimientoTrabajador
 
 
 class Psicologico(models.Model):
@@ -38,7 +38,7 @@ class Psicologico(models.Model):
         help_text='Para desactivar el examen psicologico, deshabilite esta casilla.'
     )
 
-    requerimiento_user = models.ForeignKey(RequerimientoUser, on_delete=models.PROTECT, null=True, blank=True)
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -129,7 +129,7 @@ class EvaluacionPsicologico(models.Model):
 
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     referido = models.BooleanField(
         default=False,
@@ -171,9 +171,9 @@ class EvaluacionPsicologico(models.Model):
         item['tipo'] = tipo   
         item['referido2'] = estado2
         item['archivo'] = str(self.archivo).zfill(0)
-        item['user'] = self.user.first_name +" "+self.user.last_name
+        item['user'] = self.trabajador.first_name +" "+self.trabajador.last_name
         item['psicologo'] = self.psicologo.first_name +" "+self.psicologo.last_name
-        item['user_rut'] = self.user.rut
+        item['user_rut'] = self.trabajador.rut
         item['fecha_inicio'] = self.fecha_inicio.strftime('%d-%m-%Y')
         item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
         item['planta_nombre'] = self.planta.nombre
@@ -223,7 +223,7 @@ class Agenda(BaseModel):
         default=True,
         help_text='Para desactivar la evaluacion del examen psicologico, deshabilite esta casilla.'
     )
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
     psico = models.ForeignKey(User, related_name='psicologos_evalua', on_delete=models.PROTECT, null=True, blank=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
@@ -242,11 +242,11 @@ class Agenda(BaseModel):
         else:
             item['psicologo'] = "No Asignado"
 
-        item['user_id'] = self.user.id
-        item['user'] = self.user.first_name +" "+self.user.last_name
-        item['user_ciudad'] = self.user.ciudad.nombre
-        item['user_telefono'] = self.user.telefono
-        item['user_email'] = self.user.email
-        item['user_rut'] = self.user.rut
+        item['user_id'] = self.trabajador.id
+        item['user'] = self.trabajador.first_name +" "+self.trabajador.last_name
+        # item['user_ciudad'] = self.trabajador.ciudad.nombre
+        # item['user_telefono'] = self.trabajador.telefono
+        # item['user_email'] = self.trabajador.email
+        item['user_rut'] = self.trabajador.rut
         item['user_evalua'] = self.modified_by_id
         return item

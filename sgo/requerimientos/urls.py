@@ -44,9 +44,9 @@ urlpatterns = [
         name='acr'
      ),
     path(
-        route='<int:requerimiento_id>/requirement_users/',
-        view=views.RequirementUserView.as_view(),
-        name='requirement_users'
+        route='<int:requerimiento_id>/requirement_trabajadores/',
+        view=views.RequirementTrabajadorView.as_view(),
+        name='requirement_trabajadores'
      ),
     path(
         route='<int:requerimiento_id>/adendum/',

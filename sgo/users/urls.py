@@ -41,7 +41,7 @@ urlpatterns = [
         ),
     path(
         route='<int:pk>/detail/',
-        view=views.UserDetailView.as_view(),
+        view=views.TrabajadorDetailView.as_view(),
         name='detail'
     ),
     path(
@@ -54,25 +54,46 @@ urlpatterns = [
         view=views.update_profile,		
         name="profile"		
     ),
+    # Crea el trabajador
+    path(
+        route='list-trabajador',
+        view=views.TrabajadorListView.as_view(),
+        name='list_trabajador'
+     ),
+    path(
+        route='create-trabajador',
+        view=views.create_trabajador,
+        name="create_trabajador"
+    ),
+    path(
+        route='<int:user_id>/create_trabajador/', 
+        view=views.TrabajadoresIdView.as_view(),
+        name='create_trabajador'
+        ),
+    path(
+        route='<int:trabajador_id>/update_trabajador/',
+        view=views.update_trabajador,
+        name="update_trabajador"
+    ),
     path(
         route='<int:user_id>/contactos/',
         view=views.ContactoView.as_view(),
         name='contactos'
      ),
     path(
-        route='<int:user_id>/profesion_users/',
-        view=views.ProfesionUserView.as_view(),
-        name='profesion_users'
+        route='<int:user_id>/profesion_trabajadores/',
+        view=views.ProfesionTrabajadorView.as_view(),
+        name='profesion_trabajadores'
      ),
     path(
-        route='<int:user_id>/archivo_users/',
-        view=views.ArchivoUserView.as_view(),
-        name='archivo_users'
+        route='<int:user_id>/archivo_trabajadores/',
+        view=views.ArchivoTrabajadorView.as_view(),
+        name='archivo_trabajadores'
      ),
     path(
-        route='<int:user_id>/evaluacion_users/',
+        route='<int:user_id>/evaluacion_trabajadores/',
         view=views.EvaluacionUserView.as_view(),
-        name='evaluacion_users'
+        name='evaluacion_trabajadores'
      ),
     path(
         route='profesion',
@@ -86,7 +107,7 @@ urlpatterns = [
         name='especialidad'
      ),
     path(
-        route='lista_negra',
+        route='lista-negra',
         view=views.ListaNegraView.as_view(),
         name='lista_negra'
      ),

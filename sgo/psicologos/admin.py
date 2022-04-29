@@ -9,20 +9,20 @@ from examenes.models import Examen, Evaluacion
 # Clientes
 from clientes.models import Planta
 # Requerimientos
-from requerimientos.models import RequerimientoUser
+from requerimientos.models import RequerimientoTrabajador
 #User
-from users.models import User
+from users.models import User, Trabajador
 
 
 class PsicologicoSetResource(resources.ModelResource):
-    requerimiento_user = fields.Field(column_name='requerimiento_user', attribute='requerimiento_user', widget=ForeignKeyWidget(RequerimientoUser, 'nombre'))
+    requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
     examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
     user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
         model = Psicologico
-        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen',
+        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen',
                   'user', 'planta', 'status', )
 
 
@@ -43,7 +43,7 @@ class EvaluacionPsicologicoSetResource(resources.ModelResource):
                   'user', 'psicologico_tipo', 'status', )
 
 class AgendaSetResource(resources.ModelResource):
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
@@ -56,11 +56,11 @@ class PsicologicoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PsicologicoAdmin model admin."""
 
     resource_class = PsicologicoSetResource
-    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_user', 'examen', 'user',
+    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen', 'user',
               'planta', 'status' )
-    list_display = ('id', 'estado', 'requerimiento_user', 'planta', 'status', 'created_date',)
-    list_filter = ['requerimiento_user', 'examen', 'user', 'planta', ]
-    search_fields = ['requerimiento_user__nombre', 'examen__nombre', 'user', 'planta__nombre', ]
+    list_display = ('id', 'estado', 'requerimiento_trabajador', 'planta', 'status', 'created_date',)
+    list_filter = ['requerimiento_trabajador', 'examen', 'user', 'planta', ]
+    search_fields = ['requerimiento_trabajador__nombre', 'examen__nombre', 'user', 'planta__nombre', ]
 
 
 @admin.register(PsicologicoTipo)
@@ -79,10 +79,10 @@ class EvaluacionPsicologicoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = EvaluacionPsicologicoSetResource
     fields = ('estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-              'user', 'psicologico_tipo', 'status', )
+              'trabajador', 'psicologico_tipo', 'status', )
     list_display = ('id', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-                    'user', 'psicologico_tipo', 'status', 'created_date',)
-    list_filter = ['estado', 'user', 'psicologico_tipo', ]
+                    'trabajador', 'psicologico_tipo', 'status', 'created_date',)
+    list_filter = ['estado', 'trabajador', 'psicologico_tipo', ]
     search_fields = ['user__nombre', 'psicologico_tipo__nombre', ]
 
 @admin.register(Agenda)
@@ -91,8 +91,8 @@ class AgendaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = AgendaSetResource
     fields = ('tipo', 'referido', 'Hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado','obs',
-              'user', 'status', )
+              'trabajador', 'status', )
     list_display = ('tipo', 'referido', 'Hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado','obs',
-                    'user', 'status',)
-    list_filter = [ 'estado', 'user', ]
-    search_fields = [ 'user__nombre', 'evaluacion__nombre', ]
+                    'trabajador', 'status',)
+    list_filter = [ 'estado', 'trabajador', ]
+    search_fields = [ 'trabajador__first_name', 'evaluacion__nombre', ]

@@ -136,7 +136,7 @@ $(function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
                 $('#myModalRequerUser').modal('hide');
-                tblProfesionUser.ajax.reload();
+                tblProfesionTrab.ajax.reload();
             }); 
         });
 

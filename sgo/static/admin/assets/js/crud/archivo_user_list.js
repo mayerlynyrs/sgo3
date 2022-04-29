@@ -1,18 +1,18 @@
-var tblArchivoUser;
+var tblArchivoTrab;
 var modal_title;
-var user = null;
+var trabajador = null;
 var enviando = false;
 var boton_numero3 = document.getElementById("boton2");
 boton_numero3.addEventListener("click", guardar_archivo); 
 
 function getData3() {
-    tblArchivoUser = $('#data-table-fixed-header').DataTable({
+    tblArchivoTrab = $('#data-table-fixed-header').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+user+'/archivo_users/',
+            url: '/users/'+trabajador+'/archivo_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata4'
@@ -49,7 +49,7 @@ function getData3() {
 $(function () {
 
     modal_title = $('.modal-title');
-    user = document.getElementById("user_id").value;
+    trabajador = document.getElementById("trabajador_id").value;
 
     getData3();
 
@@ -63,29 +63,29 @@ $(function () {
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
-        $('#myModalArchivoUser').modal('show');
+        $('#myModalArchivoTrab').modal('show');
     });
 
     $('#data-table-fixed-header tbody').on('click', 'a[rel="edit"]', function (){
     
         modal_title.find('span').html('Archivo <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblArchivoUser.cell($(this).closest('td, li')).index();
-        var data = tblArchivoUser.row(tr.row).data();
+        var tr = tblArchivoTrab.cell($(this).closest('td, li')).index();
+        var data = tblArchivoTrab.row(tr.row).data();
         $('form')[3].reset();
         $('input[name="action"]').val('archivo_edit');
         $('input[name="id"]' ).val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id).trigger("change");
         $('file[name="archivo"]').val(data.archivo.trigger("change"));
-        $('#myModalArchivoUser').modal('show');
+        $('#myModalArchivoTrab').modal('show');
     });
 
     $('#data-table-fixed-header tbody').on('click', 'a[rel="delete"]', function (){
     
         modal_title.find('span').html('Archivo <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblArchivoUser.cell($(this).closest('td, li')).index();
-        var data = tblArchivoUser.row(tr.row).data();
+        var tr = tblArchivoTrab.cell($(this).closest('td, li')).index();
+        var data = tblArchivoTrab.row(tr.row).data();
         $('input[name="action"]').val('archivo_delete');
         $('input[name="id"]').val(data.id);
         $('select[name="tipo_archivo"]').val(data.tipo_archivo_id).trigger("change");
@@ -95,10 +95,10 @@ $(function () {
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
-        $('#myModalArchivoUser').modal('show');
+        $('#myModalArchivoTrab').modal('show');
     }); 
 
-    $('#myModalArchivoUser').on('shown.bs.modal', function () {
+    $('#myModalArchivoTrab').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -111,8 +111,8 @@ function guardar_archivo() {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalArchivoUser').modal('hide');
-                tblArchivoUser.ajax.reload();
+                $('#myModalArchivoTrab').modal('hide');
+                tblArchivoTrab.ajax.reload();
             });
             enviando = True; 
         });

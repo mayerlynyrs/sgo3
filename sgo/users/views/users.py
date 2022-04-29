@@ -28,13 +28,13 @@ from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
 from django.conf import settings
 # Models
-from users.models import Sexo, Profesion, User, ProfesionUser, Especialidad, Contacto, ArchivoUser, ListaNegra
+from users.models import User, Trabajador, Sexo, Profesion, ProfesionTrabajador, Especialidad, Contacto, ArchivoTrabajador, ListaNegra
 from clientes.models import Cliente, Negocio, Planta
 from utils.models import Region, Provincia, Ciudad
 from contratos.models import Plantilla, Contrato, DocumentosContrato
 from examenes.models import Evaluacion
 # Forms
-from users.forms import EditarAtributosForm, EditarUsuarioForm, CrearUsuarioForm, ProfesionForm, EspecialidadForm, ProfesionUserForm, ParentescoCreateForm, ContactoForm, ArchivoUserForm, ListaNegraForm, EvaluacionAchivoForm
+from users.forms import EditarUsuarioForm, CrearUsuarioForm, CrearTrabajadorForm, EditarTrabajadorForm, ProfesionForm, EspecialidadForm, ProfesionTrabajadorForm, ParentescoCreateForm, ContactoForm, ArchivoTrabajadorForm, ListaNegraForm, EvaluacionAchivoForm
 
 User = get_user_model()
 
@@ -157,12 +157,12 @@ def create_user(request):
         #profile_form = ProfileForm(data=request.POST, user=request.user)
 
         if user_form.is_valid():
+            print('4')
             user = user_form.save(commit=False)
             print(request.POST.getlist('group'))
             if request.POST.getlist('group') == ['1']:
                 user.is_superuser = True
                 user.is_staff = True
-                user.atributos = 'NO APLICA'
             # exit()
             email = user.email
             now_date = datetime.now()
@@ -171,6 +171,7 @@ def create_user(request):
             user.is_active = True
             user.save()
             user = user_form.save()
+            print('userrr', user.id)
 
             #profile = profile_form.save(commit=False)
 
@@ -189,7 +190,7 @@ def create_user(request):
             messages.success(request, 'Usuario Creado Exitosamente')
             return redirect('users:list')
         else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+            messages.error(request, 'Por favor =( revise el formulario e intentelo de nuevo.')
     else:
         user_form = CrearUsuarioForm(user=request.user)
         #profile_form = ProfileForm(initial={'institution': institution}, user=request.user)
@@ -228,6 +229,7 @@ def update_user(request, user_id):
         print('tambien user_form')
 
         if user_form.is_valid():
+            print('1')
             user.is_active = True
             user_form.save()
             #profile_form.save()
@@ -350,7 +352,7 @@ class UsersIdView(TemplateView):
             if action == 'searchdata':
                 print(user_id)
                 data = []
-                for i in User.objects.filter(id=user_id, is_active=True):
+                for i in Trabajador.objects.filter(user_id=user_id, is_active=True):
                     data.append(i.toJSON())
             elif action == 'contacto_add':
                 contact = Contacto()
@@ -377,32 +379,31 @@ class UsersIdView(TemplateView):
                 contact.status = False
                 contact.save()
             elif action == 'profesion_add':
-                profes = ProfesionUser()
+                profes = ProfesionTrabajador()
                 profes.egreso = request.POST['egreso']
                 profes.institucion = request.POST['institucion'].lower()
                 profes.profesion_id = request.POST['profesion']
                 profes.user_id = user_id
                 profes.save()
-                
             elif action == 'profesion_edit':
-                profes = ProfesionUser.objects.get(pk=request.POST['id'])
+                profes = ProfesionTrabajador.objects.get(pk=request.POST['id'])
                 profes.egreso = request.POST['egreso']
                 profes.institucion = request.POST['institucion'].lower()
                 profes.profesion_id = request.POST['profesion']
                 profes.user_id = user_id
                 profes.save()
             elif action == 'profesion_delete':
-                profes = ProfesionUser.objects.get(pk=request.POST['id'])
+                profes = ProfesionTrabajador.objects.get(pk=request.POST['id'])
                 profes.status = False
                 profes.save()
             elif action == 'archivo_add':
-                archiv = ArchivoUser()
+                archiv = ArchivoTrabajador()
                 archiv.tipo_archivo_id = request.POST['tipo_archivo']
                 archiv.archivo = request.FILES['archivo']
                 archiv.user_id = user_id
                 archiv.save()
             elif action == 'archivo_delete':
-                archiv = ArchivoUser.objects.get(pk=request.POST['id'])
+                archiv = ArchivoTrabajador.objects.get(pk=request.POST['id'])
                 archiv.status = False
                 archiv.save()
             elif action == 'evaluacion_add':
@@ -514,19 +515,19 @@ class UsersIdView(TemplateView):
         context['user_id'] = user_id
         context['form'] = user_form
         context['form2'] = ContactoForm()
-        context['form3'] = ProfesionUserForm()
-        context['form4'] = ArchivoUserForm()
+        context['form3'] = ProfesionTrabajadorForm()
+        context['form4'] = ArchivoTrabajadorForm()
         context['form5'] = EvaluacionAchivoForm()
         return context
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
+class TrabajadorDetailView(LoginRequiredMixin, DetailView):
+    model = Trabajador
     template_name = "users/users_detail.html"
     context_object_name = "usuario"
 
     def get_context_data(self, **kwargs):
-        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context = super(TrabajadorDetailView, self).get_context_data(**kwargs)
 
         # Se valida que solo el administrador pueda editar el perfil de otro usuario.
         if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT',]).exists():
@@ -534,6 +535,364 @@ class UserDetailView(LoginRequiredMixin, DetailView):
                 raise Http404
 
         return context
+
+
+class TrabajadoresIdView(TemplateView):
+    template_name = 'users/create_trabajadores.html'
+    # template_name = 'users/create_users.html'
+    
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    user = get_object_or_404(User, pk=1)
+
+    def post(self, request, user_id, *args, **kwargs):
+        
+        trabajador2 = Trabajador.objects.get(user_id=user_id, is_active=True)
+        print('trabajador2', trabajador2)
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Trabajador.objects.filter(user_id=user_id, is_active=True):
+                    data.append(i.toJSON())
+            elif action == 'contacto_add':
+                contact = Contacto()
+                contact.nombre = request.POST['nombre'].lower()
+                contact.telefono = request.POST['telefono']
+                contact.parentesco_id = request.POST['parentesco']
+                print("contacto trab",trabajador2.id)
+                contact.trabajador_id = trabajador2.id
+
+                if Contacto.objects.filter(telefono=request.POST['telefono'], trabajador_id=trabajador2.id).exists():
+                    print('si existe')
+                    messages.success(request, 'El fono ya esta ingresado para este trabajador.')
+                else:
+                    print('no existe')
+                    contact.save()
+                    print('save')
+            elif action == 'contacto_edit':
+                contact = Contacto.objects.get(pk=request.POST['id'])
+                contact.nombre = request.POST['nombre'].lower()
+                contact.telefono = request.POST['telefono']
+                contact.parentesco_id = request.POST['parentesco']
+                contact.trabajador_id = trabajador2.id
+                contact.save()
+            elif action == 'contacto_delete':
+                contact = Contacto.objects.get(pk=request.POST['id'])
+                contact.status = False
+                contact.save()
+            elif action == 'profesion_add':
+                profes = ProfesionTrabajador()
+                profes.egreso = request.POST['egreso']
+                profes.institucion = request.POST['institucion'].lower()
+                profes.profesion_id = request.POST['profesion']
+                profes.trabajador_id = trabajador2.id
+                profes.save()
+            elif action == 'profesion_edit':
+                profes = ProfesionTrabajador.objects.get(pk=request.POST['id'])
+                profes.egreso = request.POST['egreso']
+                profes.institucion = request.POST['institucion'].lower()
+                profes.profesion_id = request.POST['profesion']
+                profes.trabajador_id = trabajador2.id
+                profes.save()
+            elif action == 'profesion_delete':
+                profes = ProfesionTrabajador.objects.get(pk=request.POST['id'])
+                profes.status = False
+                profes.save()
+            elif action == 'archivo_add':
+                archiv = ArchivoTrabajador()
+                archiv.tipo_archivo_id = request.POST['tipo_archivo']
+                archiv.archivo = request.FILES['archivo']
+                archiv.trabajador_id = trabajador2.id
+                archiv.save()
+            elif action == 'archivo_delete':
+                archiv = ArchivoTrabajador.objects.get(pk=request.POST['id'])
+                archiv.status = False
+                archiv.save()
+            elif action == 'evaluacion_add':
+                evalu = Evaluacion()
+                evalu.fecha_examen = request.POST['fecha_examen']
+                evalu.fecha_vigencia = request.POST['fecha_vigencia']
+                evalu.descripcion = request.POST['descripcion']
+                if "referido" in request.POST:
+                    estado = True
+                    evalu.referido =  estado
+                else:
+                    estado = False
+                    evalu.referido =  estado
+                evalu.valor_examen = request.POST['valor_examen']
+                evalu.resultado = request.POST['resultado']
+                evalu.planta_id = request.POST['planta']
+                evalu.examen_id = request.POST['examen']
+                evalu.archivo = request.FILES['archivo']
+                evalu.trabajador_id = trabajador2.id
+                evalu.save()
+            elif action == 'evaluacion_edit':
+                evalu = Evaluacion.objects.get(pk=request.POST['id'])
+                evalu.fecha_examen = request.POST['fecha_examen']
+                evalu.fecha_vigencia = request.POST['fecha_vigencia']
+                evalu.descripcion = request.POST['descripcion']
+                if "referido" in request.POST:
+                    estado = True
+                    evalu.referido =  estado
+                else:
+                    estado = False
+                    evalu.referido =  estado
+                evalu.valor_examen = request.POST['valor_examen']
+                evalu.resultado = request.POST['resultado']
+                evalu.planta_id = request.POST['planta']
+                evalu.examen_id = request.POST['examen']
+                evalu.archivo = request.FILES['archivo']
+                evalu.trabajador_id = trabajador2.id
+                evalu.save()
+            elif action == 'evaluacion_delete':
+                evalu = Evaluacion.objects.get(pk=request.POST['id'])
+                evalu.status = False
+                evalu.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+        # return JsonResponse({'data': 'data'},{'data2': 'data2'})
+        # return JsonResponse(data, safe=False)
+
+    def get_context_data(request, user_id, **kwargs):
+
+        trabajador = get_object_or_404(Trabajador, user_id=user_id)
+
+        # trabajador2 = Trabajador.objects.get(user_id=user_id, is_active=True)
+      
+        
+        trabajador_form = EditarTrabajadorForm(
+            instance=trabajador,
+            trabajador=request.user
+            )
+      
+
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Contactos'
+        context['list_url'] = reverse_lazy('users:<int:user_id>/create')
+        context['update_url'] = reverse_lazy('users:update')
+        context['entity'] = 'Contactos'
+        context['trabajador'] = trabajador
+        context['trabajador_id'] = trabajador.id
+        context['form'] = trabajador_form
+        context['form2'] = ContactoForm()
+        context['form3'] = ProfesionTrabajadorForm()
+        context['form4'] = ArchivoTrabajadorForm()
+        context['form5'] = EvaluacionAchivoForm()
+        return context
+
+
+class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Trabajador
+    template_name = "users/trabajadores_list.html"
+    paginate_by = 25
+    ordering = ['first_name', 'last_name']
+
+    permission_required = 'users.view_trabajador'
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(TrabajadorListView, self).get_context_data(**kwargs)
+
+        if self.request.user.groups.filter(name__in=['Trabajador']).exists():
+            institutions = Planta.objects.values(
+                    value=F('id'),
+                    title=F('nombre')).all().order_by('nombre')
+
+            context['plantas'] = institutions
+            context['planta'] = self.kwargs.get('planta_id', None)
+            context['trabajador'] = Trabajador.objects.all()
+            # context['trabajador'] = Trabajador.objects.select_related('user').filter(
+
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        planta = self.kwargs.get('planta_id', None)
+
+        if planta == '':
+            planta = None
+
+        if search:
+            # No es Trabajador y recibe parametro de busqueda
+            if not self.request.user.groups.filter(name__in=['Trabajador', ]).exists():
+                queryset = Trabajador.objects.select_related('user').filter(
+                    Q(cliente__in=self.request.user.cliente.all()),
+                    Q(planta__in=self.request.user.planta.all()),
+                    Q(first_name__icontains=search) |
+                    Q(last_name__icontains=search) |
+                    Q(username__icontains=search)).exclude(
+                    groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo']).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+            else:
+                # Es Trabajador y recibe parametro de busqueda
+                queryset = super(TrabajadorListView, self).get_queryset().filter(
+                                        Q(first_name__icontains=search) |
+                                        Q(last_name__icontains=search) |
+                                        Q(rut__icontains=search) |
+                                        Q(groups__name__icontains=search) |
+                                        Q(username__icontains=search)).order_by(
+                    'first_name', 'last_name').distinct('first_name', 'last_name')
+        else:
+            # Perfil no es Trabajador
+            if not self.request.user.groups.filter(name__in=['Trabajador']).exists():
+                if planta is None:
+                    queryset = User.objects.filter(
+                        planta__in=self.request.user.planta.all()).exclude(
+                        groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo', 'Fiscalizador DT', 'Fiscalizador Interno']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # No es Trabajador y hay plantas seleccionadas
+                    queryset = User.objects.filter(
+                        planta__in=planta).exclude(
+                        groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo']).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+            else:
+                # Es administrador y no hay planta seleccionada.
+                if planta is None:
+                    queryset = super(TrabajadorListView, self).get_queryset().order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                else:
+                    # Es administrador y hay plantas seleccionadas.
+                    queryset = super(TrabajadorListView, self).get_queryset().filter(
+                        planta__in=planta).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
+
+        return queryset
+
+
+@login_required
+@permission_required('users.add_trabajador', raise_exception=True)
+def create_trabajador(request):
+    if request.method == 'POST':
+        trabajador_form = CrearTrabajadorForm(data=request.POST, user=request.user)
+
+        if trabajador_form.is_valid():       
+            user = User()
+            user.rut = request.POST['rut']
+            user.first_name = request.POST['first_name'].lower()
+            user.last_name = request.POST['last_name'].lower()
+            user.fecha_nacimiento = request.POST['fecha_nacimiento']
+            user.telefono2 = request.POST['telefono2']
+            user.email = request.POST['email'].lower()
+            email = user.email
+            now_date = datetime.now()
+            user.username = email[:email.find('@')] + now_date.strftime("-%y%m%H%M%S")
+            user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
+            # user.cliente = request.POST['cliente']
+            # user.planta = request.POST['planta']
+            user.is_superuser = False
+            user.is_staff = False
+            user.is_active = True
+            user.save()
+            # # Perfil
+            # group = request.POST.getlist('group')
+            # for i in group:
+            #     user.groups.add(i)
+            # # Cliente
+            # client = request.POST.getlist('cliente')
+            # for i in client:
+            #     user.cliente.add(i)
+            # # Planta
+            # plant = request.POST.getlist('planta')
+            # for i in plant:
+            #     user.planta.add(i)
+
+                    
+            trabajador = trabajador_form.save(commit=False)
+            trabajador.is_active = True
+            trabajador.user_id = user.id
+            trabajador.save()
+            trabajador = trabajador_form.save()
+
+            messages.success(request, 'Trabajador Creado Exitosamente')
+            print('=)')
+            return redirect('users:list_trabajador')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+            print(':(')
+    else:
+        trabajador_form = CrearTrabajadorForm(user=request.user)
+    
+    return render(request, 'users/trabajadores_create.html', {
+        'form': trabajador_form,
+    })
+
+
+@login_required
+@permission_required('users.add_user', raise_exception=True)
+def update_trabajador(request, trabajador_id):
+    """Update a user's profile view."""
+
+    trabajador = get_object_or_404(Trabajador, pk=trabajador_id)
+
+    # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
+    # Se valida que solo los administradores puedan editar el perfil de otro usuario.
+    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+        if not user == request.user:
+            raise Http404
+
+    # Se obtiene el perfil y las plantas del usuario.
+    try:
+        current_group = user.groups.get()
+        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=trabajador_id)
+        #plantas_usuario[::1]
+    except:
+        current_group = ''
+        plantas_usuario = ''
+
+    if request.method == 'POST':
+        print('paso post')
+        trabajador_form = EditarTrabajadorForm(request.POST or None, instance=trabajador, user=request.user)
+        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
+        print('tambien trabajador_form')
+
+        if trabajador_form.is_valid():
+            print('1')
+            trabajador.is_active = True
+            trabajador_form.save()
+            #profile_form.save()
+
+            # Solo el Administrador puede cambiar el perfil del usuario
+            if request.user.groups.filter(name__in=['Administrador', ]).exists():
+                user.groups.clear()
+                user.groups.add(trabajador_form.cleaned_data['group'])
+
+            messages.success(request, ('Trabajador actualizado'))
+
+            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+                response = redirect('users:create_trabajador', trabajador_id)
+                return response
+            else:
+                return redirect('home')
+
+        else:
+            messages.error(request, ('Revisa el formulario e intentalo de nuevo.'))
+    else:
+
+        trabajador_form = EditarTrabajadorForm(
+            instance=trabajador,
+            initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
+            user=request.user
+        )
+        #profile_form = ProfileForm(instance=profile)
+
+    return render(
+        request=request,
+        template_name='users/create_users.html',
+        context={
+            'trabajador': trabajador,
+            'form': trabajador_form,
+        }
+    )
 
 
 class ContactoView(TemplateView):
@@ -554,7 +913,7 @@ class ContactoView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata2':
                 data = []
-                for i in Contacto.objects.filter(user=user_id, status=True):
+                for i in Contacto.objects.filter(trabajador_id=user_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -563,7 +922,7 @@ class ContactoView(TemplateView):
         return JsonResponse(data, safe=False)
 
 
-class ProfesionUserView(TemplateView):
+class ProfesionTrabajadorView(TemplateView):
     """Profesion List
     Vista para listar todos los profesion según el usuario y sus las negocios
     relacionadas.
@@ -581,7 +940,7 @@ class ProfesionUserView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata3':
                 data = []
-                for i in ProfesionUser.objects.filter(user=user_id, status=True):
+                for i in ProfesionTrabajador.objects.filter(trabajador_id=user_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -591,7 +950,7 @@ class ProfesionUserView(TemplateView):
 
 
 
-class ArchivoUserView(TemplateView):
+class ArchivoTrabajadorView(TemplateView):
     """Profesion List
     Vista para listar todos los profesion según el usuario y sus las negocios
     relacionadas.
@@ -609,7 +968,7 @@ class ArchivoUserView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata4':
                 data = []
-                for i in ArchivoUser.objects.filter(user=user_id, status=True):
+                for i in ArchivoTrabajador.objects.filter(trabajador=user_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -766,7 +1125,7 @@ class ListaNegraView(TemplateView):
                 lnegra = ListaNegra()
                 lnegra.tipo = request.POST['tipo']
                 lnegra.descripcion = request.POST['descripcion']
-                lnegra.user_id = request.POST['user']
+                lnegra.trabajador_id = request.POST['trabajador']
                 if request.POST['tipo'] == 'LN':
                     lnegra.planta_id = None
                 else:
@@ -778,7 +1137,7 @@ class ListaNegraView(TemplateView):
                 lnegra = ListaNegra.objects.get(pk=request.POST['id'])
                 lnegra.tipo = request.POST['tipo']
                 lnegra.descripcion = request.POST['descripcion']
-                lnegra.user_id = request.POST['user']
+                lnegra.trabajador_id = request.POST['trabajador']
                 lnegra.planta_id = request.POST['planta']
                 lnegra.save()
             elif action == 'delete':

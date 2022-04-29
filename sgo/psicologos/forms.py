@@ -9,9 +9,10 @@ from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
 from django.forms import TextInput
 # sgo Model
-from psicologos.models import Agenda , PsicologicoTipo, EvaluacionPsicologico 
+from psicologos.models import Agenda , EvaluacionPsicologico 
 from clientes.models import Planta
 from utils.models import Cargo
+from users.models import Trabajador
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class UserAgendar(forms.ModelForm):
     )
 
 
-    user = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True), required=True, label="Trabajador",
+    trabajador = forms.ModelChoiceField(queryset=Trabajador.objects.filter(is_active=True), required=True, label="Trabajador",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -62,7 +63,7 @@ class UserAgendar(forms.ModelForm):
           
     class Meta:
         model = Agenda
-        fields = ("user", "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta","cargo")
+        fields = ("trabajador", "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta","cargo")
 
 
 class AgendaPsicologos(forms.ModelForm):
@@ -138,7 +139,7 @@ class AgendaPsicologos(forms.ModelForm):
 
     class Meta:
         model = Agenda
-        fields = ("user", "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta", "estado", "cargo","psico")
+        fields = ( "tipo", "referido", "Hal2", "fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta", "estado", "cargo","psico")
 
 
 class EvaluacionPsicologica(forms.ModelForm):

@@ -276,10 +276,70 @@ class User(BaseModel, AbstractUser):
     email = models.EmailField(
         'email address',
         unique=True,
+        max_length=50,
         error_messages={
             'unique': 'Ya existe un usuario con este email registrado.'
         }
     )
+
+    cliente = models.ManyToManyField(
+        Cliente,
+        help_text='Seleccione solo un cliente si el perfil que esta seleccionado es Trabajador.'
+    )
+
+    planta = models.ManyToManyField(
+        Planta,
+        help_text='Seleccione solo una planta si el perfil que esta seleccionado es Trabajador.'
+    )
+
+    rut_regex = RegexValidator(
+        regex=r'^[0-9]{7,9}[0-9kK]{1}$',
+        message='El RUT debe ser valido. Ingresalo sin puntos ni guiones.'
+    )
+
+    rut = models.CharField(
+        max_length=12,
+        # validators=[rut_regex, ],
+        unique=True,
+        error_messages={
+            'unique': 'Ya existe un usuario con este RUT registrado.'
+        }
+    )
+
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+
+    telefono_regex = RegexValidator(
+        regex=r'\+?1?\d{9,15}$',
+        message='El numero de telefono debe ser ingresado en el siguiente formato +999999999. Solo puede ingresar hasta 15 digitos.'
+    )
+
+    telefono = models.CharField(
+        'Teléfono',
+        validators=[telefono_regex, ],
+        max_length=15,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        """Return RUT."""
+        return self.first_name + " " + self.last_name + " - " + self.rut
+
+    def get_short_name(self):
+        """Return RUT."""
+        return self.rut
+        # return self.rut + '-' +str(self.foto).zfill(0)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+        
+    
+class Trabajador(BaseModel):
+    """Trabajador model.
+
+
+    """
 
     NINGUNA = 'NG'
     CLASE_A1 = 'A1'
@@ -307,28 +367,20 @@ class User(BaseModel, AbstractUser):
         (CLASE_F, 'Clase F'),
     )
 
-    cliente = models.ManyToManyField(
-        Cliente,
-        help_text='Seleccione solo un cliente si el perfil que esta seleccionado es Trabajador.'
-    )
-
-    planta = models.ManyToManyField(
-        Planta,
-        help_text='Seleccione solo una planta si el perfil que esta seleccionado es Trabajador.'
-    )
-
-    rut_regex = RegexValidator(
-        regex=r'^[0-9]{7,9}[0-9kK]{1}$',
-        message='El RUT debe ser valido. Ingresalo sin puntos ni guiones.'
-    )
-
     rut = models.CharField(
         max_length=12,
-        # validators=[rut_regex, ],
         unique=True,
         error_messages={
-            'unique': 'Ya existe un usuario con este RUT registrado.'
+            'unique': 'Ya existe un trabajador con este RUT registrado.'
         }
+    )
+    first_name = models.CharField(
+        max_length=120,
+        unique=True
+    )
+    last_name = models.CharField(
+        max_length=120,
+        unique=True
     )
 
     pasaporte = models.CharField(
@@ -346,6 +398,15 @@ class User(BaseModel, AbstractUser):
     estado_civil = models.ForeignKey(Civil, on_delete=models.PROTECT, null=True, blank=True)
 
     fecha_nacimiento = models.DateField(null=True, blank=True)
+
+    email = models.EmailField(
+        'email address',
+        unique=True,
+        max_length=50,
+        error_messages={
+            'unique': 'Ya existe un usuario con este email registrado.'
+        }
+    )
 
     telefono_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
@@ -367,6 +428,7 @@ class User(BaseModel, AbstractUser):
         blank=True,
         null=True
     )
+
     licencia_conducir = models.CharField(max_length=2, choices=LICENCIA_ESTADO, default=NINGUNA)
 
     talla_polera = models.CharField(
@@ -423,6 +485,13 @@ class User(BaseModel, AbstractUser):
         null=True
     )
 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+
+    is_active = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el trabajador, deshabilite esta casilla.'
+    )
+
     def __str__(self):
         """Return RUT."""
         return self.first_name + " " + self.last_name + " - " + self.rut
@@ -438,12 +507,12 @@ class User(BaseModel, AbstractUser):
         return item
 
 
-class ArchivoUser(models.Model):
+class ArchivoTrabajador(models.Model):
     archivo = models.FileField(
         upload_to='archivousuario/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
     tipo_archivo = models.ForeignKey(TipoArchivo, on_delete=models.PROTECT, null=True, blank=True)
     status = models.BooleanField(
         default=True,
@@ -456,7 +525,7 @@ class ArchivoUser(models.Model):
     )
     
     def __str__(self):
-        return self.user.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.archivo).zfill(0)
+        return self.trabajador.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.archivo).zfill(0)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -476,7 +545,7 @@ class ListaNegra(BaseModel):
     )
     tipo = models.CharField(max_length=3, choices=TIPO_LN, default=LISTA_NEGRA)
     descripcion = models.TextField('Descripción')
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
     status = models.BooleanField(
         default=True,
@@ -484,12 +553,12 @@ class ListaNegra(BaseModel):
     )
     
     def __str__(self):
-        return str(self.user)
+        return str(self.trabajador)
         
     def toJSON(self):
         item = model_to_dict(self)
-        item['user'] = self.user.first_name + " " + self.user.last_name + " - " + self.user.rut
-        item['user_id'] = self.user.id
+        item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + " - " + self.trabajador.rut
+        item['trabajador_id'] = self.trabajador.id
         if(self.planta):
             item['planta'] = self.planta.nombre.title()
             item['planta_id'] = self.planta.id
@@ -534,7 +603,7 @@ class Contacto(models.Model):
         null=True
     )
     parentesco = models.ForeignKey(Parentesco, on_delete=models.PROTECT, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
     # nombre_parentesco_user = models.CharField(
     #     max_length=240,
     #     null=True,

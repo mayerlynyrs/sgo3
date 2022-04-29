@@ -95,6 +95,7 @@ class Cliente(BaseModel):
         unique=True,
         blank=True,
         null=True,
+        max_length=50,
         error_messages={
             'unique': 'Ya existe un cliente con este email registrado.'
         }
@@ -228,6 +229,7 @@ class Planta(models.Model):
         'email address',
         null=True,
         blank=True,
+        max_length=50,
         error_messages={
             'unique': 'Ya existe un negocio con este email registrado.'
         }
@@ -283,3 +285,34 @@ class Planta(models.Model):
         item['bono'] =  [t.toJSON() for t in self.bono.all()]
         item['examen'] = [t.toJSON() for t in self.examen.all()]
         return item
+
+
+class contacto_planta(models.Model):
+    nombre = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+
+    telefono_regex = RegexValidator(
+        regex=r'\+?1?\d{9,15}$',
+        message='El numero de telefono debe ser ingresado en el siguiente formato +999999999. Solo puede ingresar hasta 15 digitos.'
+    )
+
+    telefono = models.CharField(
+        'Teléfono',
+        validators=[telefono_regex, ],
+        max_length=15,
+        blank=True,
+        null=True
+    )
+    email = models.EmailField(
+        'email address',
+        null=True,
+        blank=True,
+        max_length=50,
+        error_messages={
+            'unique': 'Ya existe un negocio con este email registrado.'
+        }
+    )
+
+    def __str__(self):
+        """Return RUT."""
+        return self.nombre

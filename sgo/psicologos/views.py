@@ -16,7 +16,7 @@ from django.views.generic import ListView, CreateView
 from psicologos.forms import UserAgendar, AgendaPsicologos, EvaluacionPsicologica, ReportForm
 # Model
 from psicologos.models import Psicologico, Agenda, EvaluacionPsicologico
-from users.models import User
+from users.models import User, Trabajador
 # Create your views here.
 
 

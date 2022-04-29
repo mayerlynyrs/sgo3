@@ -183,10 +183,38 @@
           <span>Usuarios </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'users' and menu_page == None %} class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
+          {% if perms.users.view_user %}
+            <li class="has-sub {% if menu_module == 'user' %}expand{% else %}closed{% endif %}">
+                  <a href="javascript:;">
+                    <b class="caret"></b>
+                    Usuarios
+                  </a>
+                  <ul class="sub-menu" style="{% if menu_module == 'user' %}display: block;{% else %}display: none;{% endif %}">
+                    <li {% if menu_module == 'user' and menu_page == 'None' %}class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
+                    {% if perms.users.add_user %}
+                    <li {% if menu_module == 'user' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
+                    {% endif %}
+                  </ul>
+                </li>
+          {% endif %}
+          {% if perms.users.view_trabajador %}
+            <li class="has-sub {% if menu_module == 'user' %}expand{% else %}closed{% endif %}">
+                  <a href="javascript:;">
+                    <b class="caret"></b>
+                    Trabajadores
+                  </a>
+                  <ul class="sub-menu" style="{% if menu_module == 'user' %}display: block;{% else %}display: none;{% endif %}">
+                    <li {% if menu_module == 'user' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'users:list_trabajador' %}">Ver Trabajadores</a></li>
+                    {% if perms.users.add_trabajador %}
+                    <li {% if menu_module == 'user' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create_trabajador' %}">Crear Trabajador</a></li>
+                    {% endif %}
+                  </ul>
+                </li>
+          {% endif %}
+        <!-- <li {% if menu_app == 'users' and menu_page == None %} class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
         {% if perms.users.add_user %}
         <li {% if menu_app == 'users' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
-        {% endif %}
+        {% endif %} -->
         {% if perms.users.lista_negra %}
         <li {% if menu_app == 'users.listanegra' and menu_page == 'lista_negra' %} class="active"{% endif %}><a href="{% url 'users:lista_negra' %}">Lista Negra</a></li>
         {% endif %}

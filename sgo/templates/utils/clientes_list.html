@@ -79,13 +79,14 @@ img {
       </thead>
       <tbody>
       {% block contenido %}
-      {% for clte in consulta  %}
+      {% for clte in clientes  %}
           <tr>
             <td>
                 <a title="Editar" href="{% url 'clientes:create_cliente' clte.id %}?page={{ request.GET.page }}">
                   <span class="text-name text-success">
                     <!-- {{ c.razon_social }} -->
-                    {{ clte.razon_social|upper }}<br>
+                    {{clte.razon_social}}
+                    <br>
                     {{ clte.giro|truncatewords:10 }}<br>
                     <!-- consulta{{ consulta }}<br>
                     clte{{ clte }}<br> -->
@@ -101,9 +102,23 @@ img {
                   {{ clte.telefono|lower }}
                 </p>
             </td>
-            <td>{{ clte.nombre|upper }}<br>
-              {{ clte.negocio.nombre }}</td>
-            <td>{{ clte.plantas }}</td>
+            <td> 
+              {% for neg in negocios  %}
+              {% if clte.id  == neg.cliente.id  %}
+              {{ neg.nombre|upper }}<br>
+              <!-- {{ neg.negocio.nombre }} -->
+              {% endif %}
+              {% endfor %}
+            </td>
+            <td>
+              {% for plant in plantas  %}
+              {% if clte.id  == plant.cliente.id  %}
+              {{ plant.nombre }}
+              <br>
+            {% endif %}
+            {% endfor %}
+            </td>
+              
             <!-- <td class="list-negocios"> -->
               <!-- {% for n in business %} -->
                 <!-- <ul>

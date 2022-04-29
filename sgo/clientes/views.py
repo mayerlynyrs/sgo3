@@ -5,6 +5,8 @@ from django.shortcuts import render
 
 # Django
 from django.contrib import messages
+
+from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, F
@@ -62,7 +64,17 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             #     status=True).order_by('id', 'nombre').distinct('id', 'nombre')
 
             ######## MAYE ########
-            context['consulta'] = Cliente.objects.raw('SELECT p.nombre as plantas, n.nombre, c.razon_social, c.id FROM clientes_planta p FULL JOIN clientes_negocio n ON p.negocio_id= n.id FULL JOIN clientes_cliente c ON c.id = n.cliente_id')
+       
+            
+
+            clientes= Cliente.objects.filter(status=True)
+            plantas = Planta.objects.filter(status=True)
+            negocios = Negocio.objects.filter(status=True)
+            context['clientes'] = clientes
+            context['negocios'] = negocios
+            context['plantas'] = plantas
+
+            print(clientes)
             # Cliente.objects.all().order_by('cliente', 'negocio')
             # Planta.objects.filter(cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
             # Cliente.objects.all().select_related('planta').values_list('id', 'planta__negocio')
