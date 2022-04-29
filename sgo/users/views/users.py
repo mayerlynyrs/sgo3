@@ -473,10 +473,8 @@ class UsersIdView(TemplateView):
             current_group = ''
             plantas_usuario = ''
 
-            print('paso post')
             user_form = EditarUsuarioForm(instance=user, user=request.user)
             #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-            print('tambien user_form')
 
             if user_form.is_valid():
                 user.is_active = True
@@ -814,11 +812,10 @@ def create_trabajador(request):
             trabajador = trabajador_form.save()
 
             messages.success(request, 'Trabajador Creado Exitosamente')
-            print('=)')
-            return redirect('users:list_trabajador')
+            return redirect('users:create_trabajador', user.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-            print(':(')
+ 
     else:
         trabajador_form = CrearTrabajadorForm(user=request.user)
     
@@ -832,7 +829,8 @@ def create_trabajador(request):
 def update_trabajador(request, trabajador_id):
     """Update a user's profile view."""
 
-    trabajador = get_object_or_404(Trabajador, pk=trabajador_id)
+    user = get_object_or_404(Trabajador, pk=trabajador_id)
+    pk = Trabajador.objects.values_list('user_id', flat=True).get(pk=trabajador_id)
 
     # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
     # Se valida que solo los administradores puedan editar el perfil de otro usuario.
@@ -840,36 +838,17 @@ def update_trabajador(request, trabajador_id):
         if not user == request.user:
             raise Http404
 
-    # Se obtiene el perfil y las plantas del usuario.
-    try:
-        current_group = user.groups.get()
-        plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=trabajador_id)
-        #plantas_usuario[::1]
-    except:
-        current_group = ''
-        plantas_usuario = ''
-
     if request.method == 'POST':
-        print('paso post')
-        trabajador_form = EditarTrabajadorForm(request.POST or None, instance=trabajador, user=request.user)
-        #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
-        print('tambien trabajador_form')
+        trabajador_form = EditarTrabajadorForm(request.POST or None, instance=user, user=request.user)
 
         if trabajador_form.is_valid():
-            print('1')
-            trabajador.is_active = True
+            user.is_active = True
             trabajador_form.save()
-            #profile_form.save()
-
-            # Solo el Administrador puede cambiar el perfil del usuario
-            if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                user.groups.clear()
-                user.groups.add(trabajador_form.cleaned_data['group'])
 
             messages.success(request, ('Trabajador actualizado'))
 
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-                response = redirect('users:create_trabajador', trabajador_id)
+                response = redirect('users:create_trabajador', pk)
                 return response
             else:
                 return redirect('home')
@@ -879,17 +858,15 @@ def update_trabajador(request, trabajador_id):
     else:
 
         trabajador_form = EditarTrabajadorForm(
-            instance=trabajador,
-            initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
+            instance=user,
             user=request.user
         )
-        #profile_form = ProfileForm(instance=profile)
 
     return render(
         request=request,
         template_name='users/create_users.html',
         context={
-            'trabajador': trabajador,
+            'trabajador': user,
             'form': trabajador_form,
         }
     )
