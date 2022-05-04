@@ -13,7 +13,7 @@ function getData2() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/requerimientos/'+requerimiento+'/requirement_users/',
+            url: '/requerimientos/'+requerimiento+'/requirement_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata3'

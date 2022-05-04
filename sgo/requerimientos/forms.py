@@ -148,7 +148,7 @@ class RequeriTrabajadorForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    jefe_area = forms.ModelChoiceField(queryset=Trabajador.objects.filter(is_active=True), required=True, label="Jefe del Área",
+    jefe_area = forms.ModelChoiceField(queryset=User.objects.filter(is_active=True), required=True, label="Jefe del Área",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
