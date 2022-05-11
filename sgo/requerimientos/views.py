@@ -1,22 +1,32 @@
 from django.shortcuts import render
-from datetime import date, datetime
 
 # Create your views here.
 """Requerimientos  Views."""
-from docxtpl import DocxTemplate
+
+
+import json
 # Django
 import os
+import pythoncom
+import win32com.client
+from docx2pdf import convert
+from datetime import datetime
 from django.contrib import messages
-from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, CreateView
+from django.conf import settings
+from docxtpl import DocxTemplate
 from django.db.models import Q, ProtectedError
 from django.http import Http404, JsonResponse
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.conf import settings
 # Model
@@ -24,9 +34,11 @@ from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabaja
 from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
+from users.models import User
 # Form
 from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriTrabajadorForm, AdendumForm
 from ficheros.models import Fichero
+from requerimientos.numero_letras import numero_a_letras, numero_a_moneda
 
 # Planta
 def load_plantas(request):
@@ -443,7 +455,7 @@ class RequerimientoIdView(TemplateView):
                 trabaj.area_cargo_id = request.POST['area_cargo']
                 trabaj.trabajador = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
-                trabaj.area_cargo_id = 10
+                # trabaj.area_cargo_id = 10
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
             elif action == 'requeri_user_delete':
@@ -538,7 +550,7 @@ class RequirementTrabajadorView(TemplateView):
 def a_puesta_disposicion(request, requerimiento_id):
 
     # Trae el id de la planta del Requerimiento
-    plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id)
+    plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Trae la plantilla que tiene la planta
     formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template)
     # requer = Requerimiento.objects.filter(pk=requerimiento_id).values('codigo', 'fecha_solicitud', 'planta__ciudad__nombre',
@@ -552,14 +564,14 @@ def a_puesta_disposicion(request, requerimiento_id):
     now = datetime.now()
 
     # cargos = AreaCargo.objects.filter(requerimiento=requerimiento_id).values('cargo__nombre')
-    razon_social = Requerimiento.objects.values_list('cliente__razon_social', flat=True).get(pk=requerimiento_id)
+    razon_social = Requerimiento.objects.values_list('cliente__razon_social', flat=True).get(pk=requerimiento_id, status=True)
 
     # Cargo(s) del requerimiento
-    acr = AreaCargo.objects.values('cargo__nombre', 'cantidad', 'area__nombre', ).filter(requerimiento=requerimiento_id)
+    acr = AreaCargo.objects.values('cargo__nombre', 'cantidad', 'area__nombre', ).filter(requerimiento=requerimiento_id, status=True)
     acreq = []
     for i in acr:
         acreq.append(i)
-        print('acreq', acreq)
+        # print('acreq', acreq)
 
     # # Cantidad de personas del requerimiento
     # cantidades = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id)
@@ -567,14 +579,15 @@ def a_puesta_disposicion(request, requerimiento_id):
     # for i in cantidades:
     #     numero.append(i)
 
-    fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id)
-    fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id)
+    fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
+    fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
     # Total de días del requerimiento
     duracion_requer = (fecha_termino - fecha_inicio).days
     # print('totalDiasRequerimiento', duracion_requer)
 
     for e in PuestaDisposicion.objects.all():
         gratificacion = (e.gratificacion)
+        # print('gratificacion', gratificacion)
 
     for e in PuestaDisposicion.objects.all():
         seguro_cesantia = (e.seguro_cesantia)
@@ -589,17 +602,18 @@ def a_puesta_disposicion(request, requerimiento_id):
         mutual = (e.mutual)
 
     # valor_aprox del requerimiento
-    valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id)
-    print('valor_aprox', valor_aprox)
+    valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
+    # print('valor_aprox', valor_aprox)
     
     k = 0
     sueldototal = []
     valortotal = []
     for sueldo_base in valor_aprox:
-        print('sueldo_base', sueldo_base)
+        # print('sueldo_base', sueldo_base)
         sueldototal.append((((sueldo_base+gratificacion)/30)*duracion_requer))
-        valortotal.append(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion_requer))
-        total= round(sum(valortotal), 2)
+        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion_requer)))
+        total = round(sum(valortotal))
+        totalpalabras = numero_a_letras(total)
         print('valortotal', total)
         k = k + 1
 
@@ -616,20 +630,20 @@ def a_puesta_disposicion(request, requerimiento_id):
     # doc = DocxTemplate("sgo/media/"+formato)
 
 
-    context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id)+'/'+str(now.year),
-                'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id),
-                'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id),
-                'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id),
+    context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True)+'/'+str(now.year),
+                'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
+                'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
                 'razonSocial': razon_social,
                 'razonSocialMayus': razon_social.upper(),
-                'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id),
-                'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id),
-                'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id),
-                'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id),
-                'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id),
-                'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id),
-                'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id),
-                'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id),
+                'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
+                'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
+                'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
                 'totalDiasRequerimiento': duracion_requer,
                 'fechainicioreq': fecha_inicio,
                 'fechaterminoreq': fecha_termino,
@@ -637,11 +651,30 @@ def a_puesta_disposicion(request, requerimiento_id):
                 # 'numero': numero,
                 'valor': valortotal,
                 'totalredondeado': total,
-                'totalredondeadopalabras': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id),}
+                'totalredondeadopalabras': totalpalabras,
+                }
 
     doc.render(context)
     # exit()
-    doc.save("sgo/media/plantillas/PuestaDisposicion#"+str(requerimiento_id)+".docx")
+    # Obtengo el usuario
+    usuario = get_object_or_404(User, pk=1)
+    # Obtengo todas las negocios a las que pertenece el usuario.
+    plantas = usuario.planta.all()
+    # Obtengo el set de contrato de la primera negocio relacionada.
+    plantillas_attr = list()
+    plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+    # Obtengo los atributos de cada plantilla
+    for p in plantillas:
+        plantillas_attr.extend(list(p.atributos))
+
+    path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+    doc.save(path + '/PuestaDisposicion#' + str(requerimiento_id) + '.docx')
+    win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+    # convert("PuestaDisposicion#1.docx")
+    convert(path + "PuestaDisposicion#" + str(requerimiento_id) + ".docx", path + "PuestaDisposicion#" + str(requerimiento_id) + ".pdf")
+
+    # Elimino el documento word.
+    os.remove(path + 'PuestaDisposicion#' + str(requerimiento_id) + '.docx')
 
     messages.success(request, 'Anexo Puesta Dispocisión Exitosamente')
 

@@ -48,6 +48,14 @@
     }
   },
   {
+    "model": "auth.group",
+    "pk": 7,
+    "fields": {
+      "name": "Contacto Planta",
+      "permissions": []
+    }
+  },
+  {
     "model": "users.user",
     "pk": 1,
     "fields": {
@@ -14202,6 +14210,20 @@
     }
   },
   {
+    "model": "utils.puestadisposicion",
+    "pk": 1,
+    "fields": {
+      "nombre": "Puesta Disposición",
+      "gratificacion": 138542,
+      "seguro_cesantia": 3.0,
+      "seguro_invalidez": 1.94,
+      "seguro_vida": 2000.0,
+      "mutual": 0.935,
+      "status": true,
+      "created_date": "2022-05-05T09:24:24.604"
+    }
+  },
+  {
     "model": "contratos.tipodocumento",
     "pk": 1,
     "fields": {
@@ -14215,7 +14237,37 @@
     "model": "contratos.tipodocumento",
     "pk": 2,
     "fields": {
-      "nombre": "Anexo de hora extras",
+      "nombre": "Anexo de Hora Extras",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 3,
+    "fields": {
+      "nombre": "Anexo Puesta Disposición",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 4,
+    "fields": {
+      "nombre": "Adendum",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 5,
+    "fields": {
+      "nombre": "Anexo de Contrato",
       "status": true,
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
@@ -14243,7 +14295,7 @@
     "model": "examenes.examen",
     "pk": 1,
     "fields": {
-      "nombre": "EXAMEN PREOCUPACIONAL",
+      "nombre": "Altura Física",
       "valor": 15,
       "status": true,
       "created_date": "2022-01-24T15:51:57.769Z"
@@ -14253,7 +14305,7 @@
     "model": "examenes.examen",
     "pk": 2,
     "fields": {
-      "nombre": "EXAMEN OCUPACIONAL",
+      "nombre": "Espacios Confinados",
       "valor": 10,
       "status": true,
       "created_date": "2022-01-24T15:52:23.431Z"

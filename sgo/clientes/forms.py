@@ -8,7 +8,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 
 # sgo Model
-from clientes.models import Cliente, Negocio, Planta
+from clientes.models import Cliente, Negocio, Planta, ContactoPlanta
 from utils.models import Area, Cargo, Horario, Bono, Gratificacion, Region, Ciudad, Provincia
 from examenes.models import Examen
 from users.models import Salud
@@ -420,3 +420,65 @@ class SaludForm(forms.ModelForm):
     class Meta:
         model = Salud
         fields = ("nombre",)
+
+
+class ContactoPlantaForm(forms.ModelForm): 
+    nombres = forms.CharField(required=True, label="Nombres",
+                                 widget=forms.TextInput(attrs={'class': "form-control "})) 
+    apellidos = forms.CharField(required=True, label="Apellidos",
+                                 widget=forms.TextInput(attrs={'class': "form-control "}))
+    telefono = forms.CharField(required=True, label="Teléfono",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    email = forms.EmailField(required=True,
+                             widget=forms.EmailInput(attrs={'class': "form-control"}))
+    fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))                              
+    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=False, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )                              
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.filter(status=True), required=False, label="Cliente",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    rut = forms.CharField(required=True, label="RUT",
+                          widget=forms.TextInput(attrs={'class': "form-control",
+                          'onkeypress': "return isNumber(event)",
+                        #   'oninput': "checkRut(this)",
+                          'title': "El RUT debe ser ingresado sin puntos ni guiones.",
+                          'placeholder': '987654321',})
+                          )
+
+    def __init__(self, *args, **kwargs):
+        # user = kwargs.pop('user', None)
+        # print(user)
+        super(ContactoPlantaForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('nombres', css_class='form-group col-md-6 mb-0'),
+                Column('apellidos', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('rut', css_class='form-group col-md-6 mb-0'),
+                Column('fecha_nacimiento', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('telefono', css_class='form-group col-md-6 mb-0'),
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),       
+
+        )
+
+    class Meta:
+        model = ContactoPlanta
+        fields = ("nombres", "apellidos", "rut", "telefono", "email", "fecha_nacimiento", "planta", "cliente", )

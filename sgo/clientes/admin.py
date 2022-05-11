@@ -10,9 +10,10 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ManyToManyWidget
 #Models
-from clientes.models import Cliente, Negocio, Planta
+from clientes.models import Cliente, Negocio, Planta, ContactoPlanta
 from utils.models import Region, Provincia, Ciudad, Bono, Gratificacion, Cargo, Area, Horario
 from examenes.models import Examen
+from users.models import User
 
 
 class ClienteSetResource(resources.ModelResource):
@@ -34,7 +35,6 @@ class NegocioSetResource(resources.ModelResource):
     class Meta:
         model = Negocio
         fields = ('id', 'nombre', 'descripcion', 'archivo', 'status',)
- 
 
 
 class PlantaSetResource(resources.ModelResource):
@@ -48,6 +48,17 @@ class PlantaSetResource(resources.ModelResource):
     class Meta:
         model = Planta
         fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region', 'provincia', 'ciudad', 'direccion_comercial', 'examen',)
+
+
+class ContactoPlantaSetResource(resources.ModelResource):
+
+    cliente = fields.Field(column_name='cliente', attribute='cliente',widget=ForeignKeyWidget(Cliente, 'razon_social'))
+    planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
+    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
+
+    class Meta:
+        model = ContactoPlanta
+        fields = ('id', 'rut', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'email', 'relacion', 'cliente', 'planta', 'user',)
 
 
 @admin.register(Cliente)
@@ -96,3 +107,13 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'examen', 'status',)
     list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]
+
+
+@admin.register(ContactoPlanta)
+class ContactoPlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """ContactoPlantaAdmin model admin."""
+
+    resource_class = ContactoPlantaSetResource
+    fields = ('rut', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'email', 'relacion', 'cliente', 'planta', 'user', 'status',)
+    list_display = ('id', 'nombres', 'apellidos', 'relacion', 'planta', 'user',)
+    search_fields = ['nombres', ]

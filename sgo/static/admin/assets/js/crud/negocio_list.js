@@ -2,10 +2,10 @@ var tblnegocio;
 var modal_title;
 var cliente = null;
 var enviando = false;
-var boton_numero1 = document.getElementById("boton");
+var boton_numero1 = document.getElementById("boton1");
 boton_numero1.addEventListener("click", guardar_negocio);
 
-function getData() {
+function getData2() {
     tblnegocio = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
@@ -15,7 +15,7 @@ function getData() {
             url: '/clientes/'+cliente+'/negocios/',
             type: 'POST',
             data: {
-                'action': 'searchdata'
+                'action': 'searchdata2'
             },
             dataSrc: ""
         },
@@ -26,7 +26,7 @@ function getData() {
             {"data": "descripcion"},
             {"data": "archivo",
             "render": function(data, type, row, meta){
-                data = '<a href="/../../media/' + data + '">' + ' <i class="fa fa-download" aria-hidden="true"></i></a> ';
+                data = '<a href="/../../media/' + data + '">' + ' <i class="fa fa-download" title="Descargar" aria-hidden="true"></i></a> ';
                 // data = '<a href="/../../media/' + data + '">' + ' <button data-id="1" type="button" class="btn btn-xs btn-success btn-view-fichero"><i class="fas fa-eye"></i> Visualizar</button></a> ';
                 return data;
             }},
@@ -38,8 +38,8 @@ function getData() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
                     return buttons;
                 }
             },
@@ -57,7 +57,7 @@ $(function () {
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
 
-    getData();
+    getData2();
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('negocio_add');
@@ -65,7 +65,7 @@ $(function () {
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[1].reset();
-        var btn = document.getElementById("boton");
+        var btn = document.getElementById("boton1");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
@@ -83,7 +83,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('Textarea[name="descripcion"]').val(data.descripcion);
         $('file[name="archivo"]').val(data.archivo);
-        var btn = document.getElementById("boton");
+        var btn = document.getElementById("boton1");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
@@ -101,7 +101,7 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('Textarea[name="descripcion"]').val(data.descripcion);
         $('file[name="archivo"]').val(data.archivo);
-        var btn = document.getElementById("boton");
+        var btn = document.getElementById("boton1");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';

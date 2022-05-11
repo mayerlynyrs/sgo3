@@ -1,34 +1,29 @@
-var tblRequeriUser;
+var tblContactoPlanta;
 var modal_title;
-var requerimiento = null;
+var cliente = null;
 var enviando = false;
-var boton_numero2 = document.getElementById("boton2");
-boton_numero2.addEventListener("click", guardar_req_usu);
+var boton_numero3 = document.getElementById("boton3");
+boton_numero3.addEventListener("click", guardar_contacto_planta);
 
 
-function getData2() {
-    tblRequeriUser = $('#data-table-buttons_wrapper').DataTable({
+function getData4() {
+    tblContactoPlanta = $('#data-table-responsive').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/requerimientos/'+requerimiento+'/requirement_trabajadores/',
+            url: '/clientes/'+cliente+'/planta_contactos/',
             type: 'POST',
             data: {
-                'action': 'searchdata3'
+                'action': 'searchdata4'
             },
             dataSrc: ""
         },
         columns: [
-            {"data": "id",
-            "render": function(data, type, row, meta){
-                data = '<a href="../../../contratos/'+data+'/create_contrato/ ">' + data + ' </a> ';
-                return data;
-            }},
-            {"data": "area_cargo"},
-            {"data": "user"},
-            {"data": "jefe_area"},
+            {"data": "nombres"},
+            {"data": "apellidos"},
+            {"data": "planta"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -37,9 +32,8 @@ function getData2() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="edit" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
+                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
                     return buttons;
                 }
             },
@@ -51,38 +45,37 @@ function getData2() {
 }
 
 $(function () {
-
-    $('#egreso').datepicker({
-        format: "yyyy-mm-dd",
-        language: 'es'
-    });
     
     modal_title = $('.modal-title');
-    requerimiento = document.getElementById("requerimiento_id").value;
+    cliente = document.getElementById("cliente_id").value;
 
-    getData2();
+    getData4();
 
     $('.btnAddRequeUser').on('click', function () {
-        $('input[name="action"]').val('requeri_user_add');
+        $('input[name="action"]').val('cp_contacto_add');
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
+        var tr = tblPlanta.cell($(this).closest('td, li')).index();
+        var data = tblPlanta.row(tr.row).data();
+        $('input[name="planta_id"]').val(data.id);
+        console.log(data.id);
         var btn = document.getElementById("boton3");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
         $('form')[2].reset();
-        $('#myModalRequerUser').modal('show');
+        $('#myModalContactoPlanta').modal('show');
     });
 
-    $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
+    $('#data-table-responsive tbody').on('click', 'a[rel="edit"]', function (){
     
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
-        var data = tblRequeriUser.row(tr.row).data();
+        var tr = tblContactoPlanta.cell($(this).closest('td, li')).index();
+        var data = tblContactoPlanta.row(tr.row).data();
         $('form')[2].reset();
-        $('input[name="action"]').val('requeri_user_edit');
+        $('input[name="action"]').val('cp_contacto_edit');
         $('input[name="id"]' ).val(data.id);
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="descripcion"]').val(data.descripcion);
@@ -94,16 +87,16 @@ $(function () {
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
-        $('#myModalRequerUser').modal('show');
+        $('#myModalContactoPlanta').modal('show');
     });
 
-    $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="delete"]', function (){
+    $('#data-table-responsive tbody').on('click', 'a[rel="delete"]', function (){
     
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
-        var data = tblRequeriUser.row(tr.row).data();
-        $('input[name="action"]').val('requeri_user_delete');
+        var tr = tblContactoPlanta.cell($(this).closest('td, li')).index();
+        var data = tblContactoPlanta.row(tr.row).data();
+        $('input[name="action"]').val('cp_contacto_delete');
         $('input[name="id"]').val(data.id);
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="descripcion"]').val(data.descripcion);
@@ -115,10 +108,10 @@ $(function () {
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
-        $('#myModalRequerUser').modal('show');
+        $('#myModalContactoPlanta').modal('show');
     });
 
-    $('#myModalRequerUser').on('shown.bs.modal', function () {
+    $('#myModalContactoPlanta').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -129,25 +122,25 @@ $(function () {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalACR').modal('hide');
-                tblAreaCargo.ajax.reload();
-                $('#myModalRequerUser').modal('hide');
-                tblRequeriUser.ajax.reload();
+                $('#myModalplanta').modal('hide');
+                tblPlanta.ajax.reload();
+                $('#myModalContactoPlanta').modal('hide');
+                tblContactoPlanta.ajax.reload();
             }); 
         });
 
     });
 });
 
-function guardar_req_usu() { 
+function guardar_contacto_planta() { 
     if (enviando == false){
         $('form').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalRequerTrab').modal('hide');
-                tblRequeriUser.ajax.reload();
+                $('#myModalContactoPlanta').modal('hide');
+                tblContactoPlanta.ajax.reload();
             });
             enviando = True;   
         });  

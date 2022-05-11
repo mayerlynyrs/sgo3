@@ -18,24 +18,24 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
-from clientes.forms import CrearClienteForm, EditarClienteForm, NegocioForm, PlantaForm
+from clientes.forms import CrearClienteForm, EditarClienteForm, NegocioForm, PlantaForm, ContactoPlantaForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.db.models import Count
 # Modelo
-from clientes.models import Negocio, Planta, Cliente
+from clientes.models import Negocio, Planta, Cliente, ContactoPlanta
 from users.models import User
 
 
 class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Planta
-    template_name = "utils/clientes_list.html"
+    template_name = "clientes/clientes_list.html"
     paginate_by = 25
     ordering = ['negocio', 'cliente']
 
-    permission_required = 'utils.view_client'
+    permission_required = 'clientes.view_client'
     raise_exception = True
 
     def get_context_data(self, **kwargs):
@@ -240,7 +240,7 @@ def create_cliente(request):
     else:
         cliente_form = CrearClienteForm(user=request.user)
     
-    return render(request, 'utils/cliente_create.html', {
+    return render(request, 'clientes/cliente_create.html', {
         'form': cliente_form,
     })
 
@@ -316,7 +316,7 @@ def update_cliente(request, cliente_id):
 
     return render(
         request=request,
-        template_name='utils/create_cliente.html',
+        template_name='clientes/create_cliente.html',
         context={
             'cliente': cliente,
             'form1': cliente_form
@@ -325,7 +325,7 @@ def update_cliente(request, cliente_id):
 
 
 class ClienteIdView(TemplateView):
-    template_name = 'utils/create_cliente.html'
+    template_name = 'clientes/create_cliente.html'
     cliente_id=Cliente
     
     cliente = get_object_or_404(Cliente, pk=1)
@@ -413,6 +413,36 @@ class ClienteIdView(TemplateView):
                 archiv = Planta.objects.get(pk=request.POST['id'])
                 archiv.status = False
                 archiv.save()
+            elif action == 'cp_contacto_add':
+                cp_contact = ContactoPlanta()
+                cp_contact.nombres = request.POST['nombres']
+                cp_contact.apellidos = request.POST['apellidos']
+                cp_contact.rut = request.POST['rut']
+                cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
+                cp_contact.telefono = request.POST['telefono']
+                cp_contact.email = request.POST['email']
+                # cp_contact.area_cargo_id = request.POST['area_cargo_id']
+                cp_contact.planta_id = request.POST['planta']
+                cp_contact.user_id = request.POST['user']
+                cp_contact.cliente_id = cliente_id
+                cp_contact.save()
+            elif action == 'cp_contacto_edit':
+                cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
+                cp_contact.nombres = request.POST['nombres']
+                cp_contact.apellidos = request.POST['apellidos']
+                cp_contact.rut = request.POST['rut']
+                cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
+                cp_contact.telefono = request.POST['telefono']
+                cp_contact.email = request.POST['email']
+                # cp_contact.area_cargo_id = request.POST['area_cargo']
+                cp_contact.planta = request.POST['planta']
+                cp_contact.user_id = request.POST['user']
+                cp_contact.cliente_id = cliente_id
+                cp_contact.save()
+            elif action == 'cp_contacto_delete':
+                cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
+                cp_contact.status = False
+                cp_contact.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -427,13 +457,14 @@ class ClienteIdView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
-        context['update_url'] = reverse_lazy('utils:update_cliente')
+        context['update_url'] = reverse_lazy('clientes:update_cliente')
         context['cliente'] = cliente
         context['entity'] = 'Contactos'
         context['cliente_id'] = cliente_id
         context['form1'] = CrearClienteForm(instance=cliente)
         context['form2'] = NegocioForm()
         context['form3'] = PlantaForm(instance=cliente, cliente_id=cliente_id)
+        context['form4'] = ContactoPlantaForm()
         # context['form3'] = PlantaForm(instance=cliente, cliente=request.cliente)
         return context
 
@@ -443,7 +474,7 @@ class NegocioView(TemplateView):
     Vista para listar todos los negocios según el usuario y sus las negocios
     relacionadas.
     """
-    template_name = 'utils/create_cliente.html'
+    template_name = 'clientes/create_cliente.html'
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -454,7 +485,7 @@ class NegocioView(TemplateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'searchdata':
+            if action == 'searchdata2':
                 data = []
                 for i in Negocio.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
@@ -470,7 +501,7 @@ class PlantaView(TemplateView):
     Vista para listar todos las plantas según el usuario y sus las negocios
     relacionadas.
     """
-    template_name = 'utils/create_cliente.html'
+    template_name = 'clientes/create_cliente.html'
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -481,9 +512,36 @@ class PlantaView(TemplateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'searchdata2':
+            if action == 'searchdata3':
                 data = []
                 for i in Planta.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class PlantaContactoView(TemplateView):
+    """PlantaContacto List
+    Vista para listar todos los contactos de la(s) planta(s) y sus las negocios
+    relacionadas.
+    """
+    template_name = 'clientes/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata4':
+                data = []
+                for i in ContactoPlanta.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
