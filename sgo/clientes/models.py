@@ -287,15 +287,38 @@ class Planta(models.Model):
         return item
 
 
-class contacto_planta(models.Model):
-    nombre = models.CharField(max_length=100)
+class ContactoPlanta(models.Model):
+    GERENTE = 'GTE'
+    SUBGERENTE = 'SGT'
+    JEFEPLANTA = 'JPT'
+    JEFETURNO = 'JTN'
+    JEFEDEPART = 'JDP'
+    SUPERVISOR = 'SUP'
+    OTROS = 'OTR'
+
+    RELACION_PLANTA = (
+        (GERENTE, 'Gerente'),
+        (SUBGERENTE, 'Sub Gerente'),
+        (JEFEPLANTA, 'Jefe Planta'),
+        (JEFETURNO, 'Jefe Turno'),
+        (JEFEDEPART, 'Jefe Departamento'),
+        (SUPERVISOR, 'Supervisor'),
+        (OTROS, 'Otros'),
+    )
+    rut = models.CharField(
+        max_length=12,
+        unique=True,
+        error_messages={
+            'unique': 'Ya existe un Contacto Planta con este RUT registrado.'
+        }
+    )
+    nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
 
     telefono_regex = RegexValidator(
         regex=r'\+?1?\d{9,15}$',
         message='El numero de telefono debe ser ingresado en el siguiente formato +999999999. Solo puede ingresar hasta 15 digitos.'
     )
-
     telefono = models.CharField(
         'Teléfono',
         validators=[telefono_regex, ],
@@ -304,15 +327,44 @@ class contacto_planta(models.Model):
         null=True
     )
     email = models.EmailField(
-        'email address',
+        'Correo',
         null=True,
         blank=True,
         max_length=50,
         error_messages={
-            'unique': 'Ya existe un negocio con este email registrado.'
+            'unique': 'Ya existe un Contacto Planta con este email registrado.'
         }
+    )
+    fecha_nacimiento = models.DateField('Fecha de Nacimiento', null=True, blank=True)
+
+    relacion = models.CharField('Relación', max_length=3, choices=RELACION_PLANTA)
+
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE
+    )
+    planta = models.ForeignKey(
+        Planta,
+        on_delete=models.CASCADE
+        # help_text='Seleccione solo una planta si el perfil que esta seleccionado es Trabajador.'
+    )
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el Contacto de esta Planta, deshabilite esta casilla.'
     )
 
     def __str__(self):
-        """Return RUT."""
-        return self.nombre
+        """Return Nombres."""
+        return self.nombres
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['user_id'] = self.user.id
+        item['user_rut'] = self.user.rut
+        # item['user'] = self.user.first_name +' '+ self.user.last_name
+        item['planta_id'] = self.planta.id
+        item['planta'] = self.planta.nombre
+        item['cliente'] = self.cliente.razon_social
+        return item

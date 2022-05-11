@@ -5,6 +5,7 @@ var enviando = false;
 var boton_numero1 = document.getElementById("boton");
 boton_numero1.addEventListener("click", guardar_area_cargo);
 
+
 function getData() {
     tblAreaCargo = $('#data-table-default').DataTable({
         responsive: true,
@@ -22,7 +23,7 @@ function getData() {
         columns: [
             {"data": "cantidad",
             "render": function(data, type, meta){
-                data = '0/'+ data;
+                data = ''+ data;
                 return data;
             }},
             {"data": "area"},
@@ -35,9 +36,9 @@ function getData() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" data-toggle="modal" data-target="#myModalRequerTrab" rel="agg" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-users"></i></a>';
+                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" data-toggle="modal" data-target="#myModalRequerTrab" rel="agg" title="Agregar Trabajador(es)" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-users"></i></a>';
                     return buttons;
                 }
             },
@@ -111,7 +112,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="agg"]', function (){
         $('input[name="action"]').val('requeri_user_add');
-        modal_title.find('span').html('Trabajadorw(es) <small style="font-size: 80%;">Nuevo</small>' );
+        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         var tr = tblAreaCargo.cell($(this).closest('td, li')).index();

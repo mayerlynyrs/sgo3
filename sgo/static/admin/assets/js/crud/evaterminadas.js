@@ -23,7 +23,7 @@ function getData() {
             {"data": "descripcion"},
             {"data": "archivo",
             "render": function(data, type, row, meta){
-                data = '<a href="/../../media/' + data + '">' + ' <i class="fa fa-download" aria-hidden="true"></i></a> ';
+                data = '<a href="/../../media/' + data + '">' + ' <i class="fa fa-download" title="Descargar" aria-hidden="true"></i></a> ';
                 // data = '<a href="/../../media/' + data + '">' + ' <button data-id="1" type="button" class="btn btn-xs btn-success btn-view-fichero"><i class="fas fa-eye"></i> Visualizar</button></a> ';
                 return data;
             }},

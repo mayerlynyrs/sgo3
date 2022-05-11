@@ -47,4 +47,9 @@ urlpatterns = [
         view=views.PlantaView.as_view(),
         name='plantas'
      ),
+    path(
+        route='<int:cliente_id>/planta_contactos/',
+        view=views.PlantaContactoView.as_view(),
+        name='planta_contactos'
+     ),
 ]

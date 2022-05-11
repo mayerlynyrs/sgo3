@@ -84,10 +84,10 @@
                 </ul>
             </td>
             <td class="estado-requerimiento">
-              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum">
+              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
                 <i class="fas fa-audio-description"></i>
-              </button>
-              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary " title="Anexo Puesta Disposición">
+              </button> &nbsp &nbsp
+              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
                 <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
               </button>
             </td>
