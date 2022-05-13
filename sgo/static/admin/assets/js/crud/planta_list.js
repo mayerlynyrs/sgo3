@@ -57,6 +57,11 @@ $(function () {
 
     getData3();
 
+    jQuery('#fecha').datetimepicker({
+        timepicker : false,
+        format:'Y-m-d',
+      });
+
     $('.btnAddplanta').on('click', function () {
         $('input[name="action"]').val('planta_add');
         modal_title.find('span').html('Planta <small style="font-size: 80%;">Nuevo</small>');
@@ -165,9 +170,10 @@ $(function () {
         modal_title.find('i').removeClass().addClass();
         var tr = tblPlanta.cell($(this).closest('td, li')).index();
         var data = tblPlanta.row(tr.row).data();
+        $('form')[3].reset();
         $('input[name="planta_id"]').val(data.id);
         console.log(data.id);
-        $('form')[3].reset();
+       
         $('#myModalContactoPlanta').modal('show');
     });
 

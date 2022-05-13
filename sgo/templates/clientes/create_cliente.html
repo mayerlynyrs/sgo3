@@ -378,40 +378,18 @@
                             <div class="modal-body">
                               <fieldset>
                                 <div class="row">
-                                      {% csrf_token %}
-                                      <input name="planta_id" id="planta_id" type="hidden" value="">
+                                      
+                                      
                                       <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Nombres</label>
-                                            {{ form4.nombres }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Apellidos</label>
-                                            {{ form4.apellidos }}
-                                        </div>
+                                        {% csrf_token %}
+                                        {% crispy form4 %}
                                       </div>
+                                      
                                       <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">RUT</label>
-                                            {{ form4.rut }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Fecha Nacimiento</label>
-                                            {{ form4.fecha_nacimiento }}
-                                        </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Teléfono</label>
-                                            {{ form4.telefono }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Correo</label>
-                                            {{ form4.email }}
-                                        </div>
                                       <input name="action" type="hidden" value="cp_contacto_add">
                                       <input name="id" id="id" type="hidden" value="0">
-                                      <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
+                                      <input name="planta_id" id="planta_id" type="hidden" value="">
+                                      <input name="cliente_id" id="cliente_id"  type="hidden" value="{{ cliente_id }}">
                                 </div>
                               </fieldset>
                             </div>
@@ -453,7 +431,7 @@
 
                     {% block javascript4 %}
                       <!-- Modal -->
-                      <div class="modal fade bd-example-modal-lg" id="myModalContactoPlanta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal fade bd-example-modal-lg" id="myModalContactoPlantaE" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <form method="post" action="." enctype="multipart/form-data">
                         <div class="modal-dialog modal-lg" role="document">
                           <div class="modal-content">
@@ -469,43 +447,19 @@
                                       {% csrf_token %}
                                       <input name="planta_id" id="planta_id" type="hidden" value="">
                                       <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Nombres</label>
-                                            {{ form4.nombres }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Apellidos</label>
-                                            {{ form4.apellidos }}
-                                        </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">RUT</label>
-                                            {{ form4.rut }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Fecha Nacimiento</label>
-                                            {{ form4.fecha_nacimiento }}
-                                        </div>
-                                      </div>
-                                      <div class="row col-md-12">
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Teléfono</label>
-                                            {{ form4.telefono }}
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                          <label for="email">Correo</label>
-                                            {{ form4.email }}
+
+                                        {% crispy form4 %}
                                         </div>
                                       <input name="action" type="hidden" value="cp_contacto_add">
-                                      <input name="id" id="id" type="hidden" value="0">
+                                      <input name="id" id="id" type="hidden" value="">
+                                      <input name="user_id" id="user_id" type="hidden" value="">
                                       <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
                                 </div>
                               </fieldset>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                              <button type="submit" id="boton2" class="btn btn-info btn-flat btnAdd4"> Guardar</button>
+                              <button type="submit" id="boton5" class="btn btn-info btn-flat btnAdd4"> Guardar</button>
                             </div>
                           </div>
                         </div>

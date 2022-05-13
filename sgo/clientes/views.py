@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.contrib import messages
 
 from django.contrib.postgres.aggregates import StringAgg
+from datetime import datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q, F
@@ -414,6 +415,24 @@ class ClienteIdView(TemplateView):
                 archiv.status = False
                 archiv.save()
             elif action == 'cp_contacto_add':
+                user = User()
+                user.first_name = request.POST['nombres']
+                user.last_name = request.POST['apellidos'] 
+                user.rut = request.POST['rut']
+                user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
+                user.telefono = request.POST['telefono']
+                user.email = request.POST['email']
+                user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
+                user.is_superuser = False
+                user.is_staff = False
+                user.is_active = True
+                email = user.email
+                now_date = datetime.now()
+                user.username = email[:email.find('@')] + now_date.strftime("-%y%m%H%M%S")
+                user.save()
+                user.groups.add(7)
+                user.cliente.add(cliente_id)
+                user.planta.add(request.POST['planta_id'])
                 cp_contact = ContactoPlanta()
                 cp_contact.nombres = request.POST['nombres']
                 cp_contact.apellidos = request.POST['apellidos']
@@ -421,25 +440,33 @@ class ClienteIdView(TemplateView):
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
                 cp_contact.email = request.POST['email']
-                # cp_contact.area_cargo_id = request.POST['area_cargo_id']
-                cp_contact.planta_id = request.POST['planta']
-                cp_contact.user_id = request.POST['user']
+                cp_contact.relacion = request.POST['relacion']
+                cp_contact.planta_id = request.POST['planta_id']
+                cp_contact.user_id = user.id
                 cp_contact.cliente_id = cliente_id
                 cp_contact.save()
             elif action == 'cp_contacto_edit':
+                user = User.objects.get(pk=request.POST['user_id'])
+                user.first_name = request.POST['nombres']
+                user.last_name = request.POST['apellidos'] 
+                user.rut = request.POST['rut']
+                user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
+                user.telefono = request.POST['telefono']
+                user.email = request.POST['email']
+                user.save()
                 cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
                 cp_contact.nombres = request.POST['nombres']
                 cp_contact.apellidos = request.POST['apellidos']
                 cp_contact.rut = request.POST['rut']
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
+                cp_contact.relacion = request.POST['relacion']
                 cp_contact.email = request.POST['email']
-                # cp_contact.area_cargo_id = request.POST['area_cargo']
-                cp_contact.planta = request.POST['planta']
-                cp_contact.user_id = request.POST['user']
-                cp_contact.cliente_id = cliente_id
                 cp_contact.save()
             elif action == 'cp_contacto_delete':
+                user = User.objects.get(pk=request.POST['user_id'])
+                user.is_active = False
+                user.save()
                 cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
                 cp_contact.status = False
                 cp_contact.save()
