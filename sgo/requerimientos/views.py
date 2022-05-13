@@ -1,3 +1,4 @@
+from queue import Empty
 from django.shortcuts import render
 
 # Create your views here.
@@ -317,6 +318,7 @@ def adendum_requerimiento(request, requerimiento_id, template_name='requerimient
         'fecha_termino': fi_ad,
         'causal': requerimiento.causal,
         'id': requerimiento_id,
+        'ad_list': Adendum.objects.filter(requerimiento_id=requerimiento_id, status=True),
         'form': AdendumForm
     }
     
@@ -340,11 +342,14 @@ def create_adendum(request):
         adendum_form = AdendumForm(data=request.POST)
         print(request.POST)
         print('adendum_form', adendum_form)
-        print('AdendumForm', AdendumForm)
+        # print('AdendumForm', AdendumForm)
 
         if adendum_form.is_valid():
             ad = adendum_form.save(commit=False)
-            ad.fecha_inicio = request.POST['fecha_inicio']
+            if request.POST['fi_ad'] == "":
+                ad.fecha_inicio = request.POST['ft_req']
+            else:
+                ad.fecha_inicio = request.POST['fi_ad']
             ad.requerimiento_id = request.POST['requerimiento_id']
             ad.status = True
             ad.save()
@@ -552,7 +557,7 @@ def a_puesta_disposicion(request, requerimiento_id):
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Trae la plantilla que tiene la planta
-    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template)
+    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=2)
     # requer = Requerimiento.objects.filter(pk=requerimiento_id).values('codigo', 'fecha_solicitud', 'planta__ciudad__nombre',
     #                                         'planta__direccion_gerente', 'cliente__razon_social', 'cliente__rut',
     #                                         'planta__nombre', 'planta__nombre_gerente', 'planta__rut', 'causal__nombre',
@@ -684,4 +689,127 @@ def a_puesta_disposicion(request, requerimiento_id):
     requer.save()
 
     messages.success(request, 'Requerimiento Bloqueado')
+    return redirect('requerimientos:list')
+
+
+def descargar_adendum(request, adendum_id):
+
+    # Trae el id del Requerimiento en el adendum
+    requerimiento_id = Adendum.objects.values_list('requerimiento_id', flat=True).get(pk=adendum_id, status=True)
+    print('requerimiento_id del adendum', requerimiento_id)
+
+    # Trae el id de la planta del Requerimiento
+    plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
+    # Trae la plantilla que tiene la planta
+    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=4)
+
+    # Fecha actual que se utiliza en el documento Puesta Disposición (codigo/año_actual)
+    now = datetime.now()
+
+    # cargos = AreaCargo.objects.filter(requerimiento=requerimiento_id).values('cargo__nombre')
+    razon_social = Requerimiento.objects.values_list('cliente__razon_social', flat=True).get(pk=requerimiento_id, status=True)
+
+    # Cargo(s) del requerimiento
+    acr = AreaCargo.objects.values('cargo__nombre', 'cantidad', 'area__nombre', ).filter(requerimiento=requerimiento_id, status=True)
+    acreq = []
+    for i in acr:
+        acreq.append(i)
+        # print('acreq', acreq)
+
+    fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
+    fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
+    # Total de días del requerimiento
+    duracion_requer = (fecha_termino - fecha_inicio).days
+    # print('totalDiasRequerimiento', duracion_requer)
+
+    for e in PuestaDisposicion.objects.all():
+        gratificacion = (e.gratificacion)
+        # print('gratificacion', gratificacion)
+
+    for e in PuestaDisposicion.objects.all():
+        seguro_cesantia = (e.seguro_cesantia)
+
+    for e in PuestaDisposicion.objects.all():
+        seguro_invalidez = (e.seguro_invalidez)
+
+    for e in PuestaDisposicion.objects.all():
+        seguro_vida = (e.seguro_vida)
+
+    for e in PuestaDisposicion.objects.all():
+        mutual = (e.mutual)
+
+    # valor_aprox del requerimiento
+    valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
+    # print('valor_aprox', valor_aprox)
+    
+    k = 0
+    sueldototal = []
+    valortotal = []
+    for sueldo_base in valor_aprox:
+        # print('sueldo_base', sueldo_base)
+        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion_requer))
+        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion_requer)))
+        total = round(sum(valortotal))
+        totalpalabras = numero_a_letras(total)
+        print('valortotal', total)
+        k = k + 1
+
+    # Documento word a trabajar, segun el requerimiento
+    doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
+    # doc = DocxTemplate("sgo/media/"+formato)
+
+    context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True) + '-' + str(now.year)+'/AD'+ str(adendum_id),
+                'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
+                'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'razonSocial': razon_social,
+                'razonSocialMayus': razon_social.upper(),
+                'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
+                'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
+                'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
+                'totalDiasRequerimiento': duracion_requer,
+                'fechainicioreq': fecha_inicio,
+                'fechaterminoreq': fecha_termino,
+                'cargo': acreq,    
+                # 'numero': numero,
+                'valor': valortotal,
+                'totalredondeado': total,
+                'totalredondeadopalabras': totalpalabras,
+                }
+
+    doc.render(context)
+    # exit()
+    # Obtengo el usuario
+    usuario = get_object_or_404(User, pk=1)
+    # Obtengo todas las negocios a las que pertenece el usuario.
+    plantas = usuario.planta.all()
+    # Obtengo el set de contrato de la primera negocio relacionada.
+    plantillas_attr = list()
+    plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+    # Obtengo los atributos de cada plantilla
+    for p in plantillas:
+        plantillas_attr.extend(list(p.atributos))
+
+    path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+    doc.save(path + '/Adendum#' + str(requerimiento_id) + '_' + str(adendum_id) + '.docx')
+    win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+    # convert("Adendum#1.docx")
+    convert(path + "Adendum#" + str(requerimiento_id) + '_' + str(adendum_id) + ".docx", path + "Adendum#" + str(requerimiento_id) + '_' + str(adendum_id) + ".pdf")
+
+    # Elimino el documento word.
+    os.remove(path + 'Adendum#' + str(requerimiento_id) + '_' + str(adendum_id) + '.docx')
+
+    messages.success(request, 'Adendum Exitosamente')
+
+    # requer = Requerimiento.objects.get(pk=requerimiento_id)
+    # requer.bloqueo = True
+    # requer.requerimiento_id = requerimiento_id
+    # requer.save()
+
+    # messages.success(request, 'Requerimiento Bloqueado')
     return redirect('requerimientos:list')
