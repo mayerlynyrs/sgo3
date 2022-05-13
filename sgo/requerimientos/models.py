@@ -10,7 +10,7 @@ from django.forms import model_to_dict
 # Clientes
 from clientes.models import Cliente, Planta
 #Utilities
-from utils.models import BaseModel, Area, Cargo
+from utils.models import BaseModel, Area, Cargo, PuestaDisposicion
 #User
 from users.models import User, Trabajador
 
@@ -221,22 +221,106 @@ class RequerimientoTrabajador(BaseModel):
         return item
 
 
+# Comienza nueva tabla Análisis Óscar
+class PuestaDisposicion(BaseModel):
+    """PuestaDisposicion Model
+
+
+    """
+    codigo_pd = models.CharField('Código', max_length=25)
+    fecha_pd = models.DateField('Fecha', null=True, blank=True)
+    motivo_pd = models.CharField('Motivo', max_length=200)
+    fecha_inicio = models.DateField('Fecha Inicio', null=True, blank=True)
+    fecha_termino = models.DateField('Fecha Término', null=True, blank=True)
+    fechainicio_text = models.CharField(
+        'Fecha Inicio Texto',
+        max_length=200,
+    )
+    fechatermino_text = models.CharField(
+        'Fecha Término Texto',
+        max_length=200,
+    )
+    dias_pd = models.IntegerField('Días')
+    dias_totales = models.BigIntegerField('Días Totales')
+    sueldo_base = models.BigIntegerField('Sueldo Base')
+    sueldo_base_gratif = models.BigIntegerField('Sueldo Base Gratif.')
+    subtotal_pd = models.BigIntegerField('Subtotal')
+    valor_total_pd = models.BigIntegerField('Valor Total')
+    total_redondeado = models.BigIntegerField('Total Redondeado')
+    total_redondeado_text = models.CharField(
+        'Total Redondeado Texto',
+        max_length=250,
+    )
+    cantidad_trabajadores = models.IntegerField()
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT)
+    causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
+    cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la Puesta Disposición, deshabilite esta casilla.'
+    )
+
+    def __str__(self):
+        return str(self.fecha_termino)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['fecha_termino'] = str(self.fecha_termino)
+        return item
+# Finaliza nueva tabla Análisis Óscar        
+
+
 class Adendum(BaseModel):
     """Adendum Model
 
 
     """
-
-    fecha_inicio = models.DateField(null=True, blank=True)
-
-    fecha_termino = models.DateField(null=True, blank=True)
+    # Comienza Análisis Óscar
+    fecha_ad = models.DateField('Fecha', null=False, blank=False)
+    motivo_ad = models.CharField(
+        'Motivo',
+        blank=False,
+        null=False,
+        max_length=200
+    )
+    # Finaliza Análisis Óscar
+    fecha_inicio = models.DateField('Fecha Inicio', null=True, blank=True)
+    fecha_termino = models.DateField('Fecha Término', null=True, blank=True)
+    # Comienza Análisis Óscar
+    fechainicio_text = models.CharField(
+        'Fecha Inicio Texto',
+        max_length=200,
+    )
+    fechatermino_text = models.CharField(
+        'Fecha Término Texto',
+        max_length=200,
+    )
+    dias_ad = models.BigIntegerField(
+        'Días',
+        blank=False,
+        null=False
+    )
+    dias_totales_ad = models.BigIntegerField('Días Totales')
+    sueldo_base = models.BigIntegerField('Sueldo Base')
+    sueldo_base_gratif = models.BigIntegerField('Sueldo Base Gratif.')
+    subtotal_ad = models.BigIntegerField('Subtotal')
+    valor_total_pd = models.BigIntegerField('Valor Total')
+    total_redondeado_ad = models.BigIntegerField('Total Redondeado')
+    total_redondeado_ad_text = models.CharField(
+        'Total Redondeado Texto',
+        max_length=250,
+    )
+    # Finaliza Análisis Óscar
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+    # Comienza Análisis Óscar
+    puesta_disposicion = models.ForeignKey(PuestaDisposicion, on_delete=models.PROTECT, blank=True)
+    # Finaliza Análisis Óscar
 
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el adendum, deshabilite esta casilla.'
     )
-
-    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return str(self.fecha_termino)

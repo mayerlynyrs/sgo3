@@ -39,6 +39,40 @@
         <button type="submit" class="btn btn-info btn-flat"> Guardar</button>
     </div>
 </form>
+<div class="panel-body">
+
+  <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
+    <thead>
+        <tr>
+            <th class="text-center">Fecha Inicio</th>
+            <th class="text-center">Fecha Término</th>
+            <th class="text-center"></i>Acciones</th>
+        </tr>
+    </thead>
+    {% for obj in ad_list  %}
+        <tr>
+            <td>
+                {{ obj.fecha_inicio }}
+            </td>
+            <td>
+                {{ obj.fecha_termino }}
+            </td>
+            <td class="estado-requerimiento">
+                <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Descargar Adendum">
+                    <a style="color:#FFFFFF;" href="{% url 'requerimientos:descargar_adendum' obj.id %}"><i class="fas fa-download"></i></a>
+                </button>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">
+                <div class="text-center">No hay adendums creados.</div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
 <script>
 
 
