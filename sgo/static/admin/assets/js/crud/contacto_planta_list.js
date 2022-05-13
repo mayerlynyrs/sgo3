@@ -2,9 +2,10 @@ var tblContactoPlanta;
 var modal_title;
 var cliente = null;
 var enviando = false;
-var boton_numero3 = document.getElementById("boton5");
+var boton_numero3 = document.getElementById("boton6");
+var boton_numero8 = document.getElementById("boton5");
 boton_numero3.addEventListener("click", guardar_contacto_planta);
-
+boton_numero8.addEventListener("click", guardar_contacto_planta);
 
 function getData4() {
     tblContactoPlanta = $('#data-table-responsive').DataTable({
@@ -68,7 +69,7 @@ $(function () {
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="email"]').val(data.email);
         $('input[name="user_id"]').val(data.user_id);
-        var btn = document.getElementById("boton5");
+        var btn = document.getElementById("boton6");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
@@ -92,7 +93,7 @@ $(function () {
         $('input[name="email"]').val(data.email);
         $('input[name="user_id"]').val(data.user_id);
 
-        var btn = document.getElementById("boton5");
+        var btn = document.getElementById("boton6");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
