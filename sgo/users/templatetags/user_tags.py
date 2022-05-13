@@ -25,6 +25,7 @@ def image_profile(value):
         'Fiscalizador DT': '<img src="{0}" alt="profile image" />'.format(static('img/fiscalizador_dirc_trab.png')),
         'Trabajador': '<img src="{0}" alt="profile image" />'.format(static('img/trabajador_masculino.png')),
         'Psicologo': '<img src="{0}" alt="profile image" />'.format(static('img/psicologo.png')),
+        'Contacto Planta': '<img src="{0}" alt="profile image" />'.format(static('img/psicologo.png')),
         '': '<img src="{0}" alt="profile image" />'.format(static('img/user_default.png'))
     }
 

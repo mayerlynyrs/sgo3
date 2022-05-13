@@ -422,7 +422,24 @@ class SaludForm(forms.ModelForm):
         fields = ("nombre",)
 
 
-class ContactoPlantaForm(forms.ModelForm): 
+class ContactoPlantaForm(forms.ModelForm):
+    GERENTE = 'GTE'
+    SUBGERENTE = 'SGT'
+    JEFEPLANTA = 'JPT'
+    JEFETURNO = 'JTN'
+    JEFEDEPART = 'JDP'
+    SUPERVISOR = 'SUP'
+    OTROS = 'OTR'
+
+    RELACION_PLANTA = (
+        (GERENTE, 'Gerente'),
+        (SUBGERENTE, 'Sub Gerente'),
+        (JEFEPLANTA, 'Jefe Planta'),
+        (JEFETURNO, 'Jefe Turno'),
+        (JEFEDEPART, 'Jefe Departamento'),
+        (SUPERVISOR, 'Supervisor'),
+        (OTROS, 'Otros'),
+    ) 
     nombres = forms.CharField(required=True, label="Nombres",
                                  widget=forms.TextInput(attrs={'class': "form-control "})) 
     apellidos = forms.CharField(required=True, label="Apellidos",
@@ -446,6 +463,13 @@ class ContactoPlantaForm(forms.ModelForm):
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
+                                   )                            
+    relacion = forms.ChoiceField(choices = RELACION_PLANTA, required=True, label="Cargo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
                                    )
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
@@ -461,24 +485,26 @@ class ContactoPlantaForm(forms.ModelForm):
         super(ContactoPlantaForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
+
             Row(
                 Column('nombres', css_class='form-group col-md-6 mb-0'),
                 Column('apellidos', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
+                css_class='form-row col-md-12'
             ),
             Row(
-                Column('rut', css_class='form-group col-md-6 mb-0'),
-                Column('fecha_nacimiento', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
+                Column('rut', css_class='form-group col-md-4 mb-0'),
+                Column('fecha_nacimiento', css_class='form-group col-md-4 mb-0'),          
+                Column('relacion', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row col-md-12'
             ),
             Row(
                 Column('telefono', css_class='form-group col-md-6 mb-0'),
                 Column('email', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
+                css_class='form-row col-md-12'
             ),       
 
         )
 
     class Meta:
         model = ContactoPlanta
-        fields = ("nombres", "apellidos", "rut", "telefono", "email", "fecha_nacimiento", "planta", "cliente", )
+        fields = ("nombres", "apellidos", "rut", "telefono", "email", "fecha_nacimiento", "planta", "cliente", "relacion", )

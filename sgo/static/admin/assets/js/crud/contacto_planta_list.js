@@ -2,7 +2,7 @@ var tblContactoPlanta;
 var modal_title;
 var cliente = null;
 var enviando = false;
-var boton_numero3 = document.getElementById("boton3");
+var boton_numero3 = document.getElementById("boton5");
 boton_numero3.addEventListener("click", guardar_contacto_planta);
 
 
@@ -51,22 +51,6 @@ $(function () {
 
     getData4();
 
-    $('.btnAddRequeUser').on('click', function () {
-        $('input[name="action"]').val('cp_contacto_add');
-        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
-        console.log(modal_title.find('i'));
-        modal_title.find('i').removeClass().addClass();
-        var tr = tblPlanta.cell($(this).closest('td, li')).index();
-        var data = tblPlanta.row(tr.row).data();
-        $('input[name="planta_id"]').val(data.id);
-        console.log(data.id);
-        var btn = document.getElementById("boton3");
-        btn.style.borderColor= '#153264';
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Guardar';
-        $('form')[2].reset();
-        $('#myModalContactoPlanta').modal('show');
-    });
 
     $('#data-table-responsive tbody').on('click', 'a[rel="edit"]', function (){
     
@@ -74,20 +58,21 @@ $(function () {
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblContactoPlanta.cell($(this).closest('td, li')).index();
         var data = tblContactoPlanta.row(tr.row).data();
-        $('form')[2].reset();
         $('input[name="action"]').val('cp_contacto_edit');
         $('input[name="id"]' ).val(data.id);
-        $('input:checkbox[name=referido]').attr('checked',data.referido);
-        $('textarea[name="descripcion"]').val(data.descripcion);
-        $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('input[name="pension"]').val(data.pension);
-        $('select[name="user"]').val(data.user_id).trigger("change");
-        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
-        var btn = document.getElementById("boton3");
+        $('input[name="nombres"]').val(data.nombres);
+        $('input[name="apellidos"]').val(data.apellidos);
+        $('input[name="rut"]').val(data.rut);
+        $('input[name="fecha_nacimiento"]').val(data.fecha_nacimiento);
+        $('select[name="relacion"]').val(data.relacion).trigger("change");
+        $('input[name="telefono"]').val(data.telefono);
+        $('input[name="email"]').val(data.email);
+        $('input[name="user_id"]').val(data.user_id);
+        var btn = document.getElementById("boton5");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
-        $('#myModalContactoPlanta').modal('show');
+        $('#myModalContactoPlantaE').modal('show');
     });
 
     $('#data-table-responsive tbody').on('click', 'a[rel="delete"]', function (){
@@ -97,21 +82,24 @@ $(function () {
         var tr = tblContactoPlanta.cell($(this).closest('td, li')).index();
         var data = tblContactoPlanta.row(tr.row).data();
         $('input[name="action"]').val('cp_contacto_delete');
-        $('input[name="id"]').val(data.id);
-        $('input:checkbox[name=referido]').attr('checked',data.referido);
-        $('textarea[name="descripcion"]').val(data.descripcion);
-        $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('input[name="pension"]').val(data.pension);
-        $('select[name="user"]').val(data.user_id).trigger("change");
-        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
-        var btn = document.getElementById("boton3");
+        $('input[name="id"]' ).val(data.id);
+        $('input[name="nombres"]').val(data.nombres);
+        $('input[name="apellidos"]').val(data.apellidos);
+        $('input[name="rut"]').val(data.rut);
+        $('input[name="fecha_nacimiento"]').val(data.fecha_nacimiento);
+        $('select[name="relacion"]').val(data.relacion).trigger("change");
+        $('input[name="telefono"]').val(data.telefono);
+        $('input[name="email"]').val(data.email);
+        $('input[name="user_id"]').val(data.user_id);
+
+        var btn = document.getElementById("boton5");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
-        $('#myModalContactoPlanta').modal('show');
+        $('#myModalContactoPlantaE').modal('show');
     });
 
-    $('#myModalContactoPlanta').on('shown.bs.modal', function () {
+    $('#myModalContactoPlantaE').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -122,9 +110,7 @@ $(function () {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalplanta').modal('hide');
-                tblPlanta.ajax.reload();
-                $('#myModalContactoPlanta').modal('hide');
+                $('#myModalContactoPlantaE').modal('hide');
                 tblContactoPlanta.ajax.reload();
             }); 
         });
@@ -139,7 +125,7 @@ function guardar_contacto_planta() {
             var parameters = new FormData(this);
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-                $('#myModalContactoPlanta').modal('hide');
+                $('#myModalContactoPlantaE').modal('hide');
                 tblContactoPlanta.ajax.reload();
             });
             enviando = True;   
