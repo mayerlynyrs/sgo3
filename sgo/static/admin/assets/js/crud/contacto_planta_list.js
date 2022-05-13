@@ -111,6 +111,7 @@ $(function () {
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalContactoPlantaE').modal('hide');
+                $('#myModalContactoPlanta').modal('hide');
                 tblContactoPlanta.ajax.reload();
             }); 
         });
@@ -126,6 +127,7 @@ function guardar_contacto_planta() {
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalContactoPlantaE').modal('hide');
+                $('#myModalContactoPlanta').modal('hide');
                 tblContactoPlanta.ajax.reload();
             });
             enviando = True;   
