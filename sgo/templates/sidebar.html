@@ -160,6 +160,18 @@
         </ul>
       </li>
       {% endif %}
+      {% if perms.consultas.view_consulta %}
+      <li class="has-sub {% if menu_app == 'consultas' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="fas fa-search"></i>
+          <span>Consultas </span>
+        </a>
+        <ul class="sub-menu">
+          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta_requerimiento' %}">Consulta General Requerimientos </a></li>
+        </ul>
+      </li>
+      {% endif %}
       {% if perms.ficheros.view_fichero %}
       <li class="has-sub {% if menu_app == 'ficheros' %}active{% endif %}">
         <a href="javascript:;">

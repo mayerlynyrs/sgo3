@@ -26,6 +26,7 @@ urlpatterns = [
     path('examenes/', include(('examenes.urls', 'examenes'), namespace='examenes')),
     path('psicologos/', include(('psicologos.urls', 'psicologos'), namespace='psicologos')),
     path('utils/', include(('utils.urls', 'utils'), namespace='profesiones')),
+    path('consultas/', include(('consultas.urls', 'consultas'), namespace='consultas')),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(
         html_email_template_name='registration/password_reset_email.html'), name='password_reset'),
