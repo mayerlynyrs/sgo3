@@ -73,6 +73,8 @@ LOCAL_APPS = [
     'sgo.examenes.apps.ExamenesConfig',
     'sgo.psicologos.apps.PsicologosConfig',
     'sgo.requerimientos.apps.RequerimientosConfig',
+    'sgo.consultas.apps.ConsultasConfig',
+
     
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
