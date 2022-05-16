@@ -63,12 +63,12 @@
                 </div>
                 <div class="form-group col-md-2">
                   <div>
-                    <input type="submit" class="btn btn-primary btn-flat btnBuscar" style="color: white;" value="Buscar">
+                    <input type="submit" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" disabled>
                   <a href="consulta_requerimiento" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
                   </div>
                 </div>
                 </div>
-            </div>
+            
         </fieldset>
       </form>
     </div>
@@ -96,6 +96,8 @@
             </tbody>
         </table>
     </div>
+  </div>
+</div>
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
 
@@ -105,6 +107,7 @@
       todos.addEventListener("change",function(event){
         if(event.target.checked){
           id_cliente.disabled = true;
+          buscar.disabled = false;
         }else{
           id_cliente.disabled = false;
         }
@@ -118,6 +121,7 @@
         var url = $("#consultaRequeriForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
         todos.disabled = true;
+        buscar.disabled = true;
         id_planta.disabled = false;
         $.ajax({                       // initialize an AJAX request
           url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
@@ -129,6 +133,11 @@
           }
         });
   
+      });
+    </script>
+    <script>
+      $("#id_planta").change(function () {
+        buscar.disabled = false;
       });
     </script>
 
