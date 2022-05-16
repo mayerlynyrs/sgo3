@@ -474,7 +474,7 @@ class ContactoPlantaForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                        #   'oninput': "checkRut(this)",
+                          'oninput': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )

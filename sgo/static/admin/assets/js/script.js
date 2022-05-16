@@ -67,18 +67,27 @@ function checkRut(rut) {
   // Validar que el Cuerpo coincide con su Dígito Verificador
   if (dvEsperado != dv) {
     rut.setCustomValidity("RUT Inválido");
+    document.getElementById("boton5").disabled = true;
+    document.getElementById("boton6").disabled = true;
+    document.getElementById("btn-guardar").disabled = true;
 
-    alerta.classList.remove('alert-info', 'alert-success');
-    alerta.classList.add('alert-danger');
-    mensaje.innerHTML = 'El RUT ingresado: ' + rut.value + ' Es <strong>INCORRECTO</strong>.';
+    iziToast.error({
+      message: 'El RUT ingresado: ' + rut.value + ' Es <strong>INCORRECTO</strong>.',
+      position: 'topRight',
+  });
 
     return false;
   } else {
-    rut.setCustomValidity("RUT Válido");
 
-    alerta.classList.remove('d-none', 'alert-danger');
-    alerta.classList.add('alert-success');
-    mensaje.innerHTML = 'El RUT ingresado: ' + rut.value + ' Es <strong>CORRECTO</strong>.';
+    rut.setCustomValidity("RUT Válido");
+    document.getElementById("boton5").disabled = false;
+    document.getElementById("boton6").disabled = false;
+    document.getElementById("btn-guardar").disabled = false;
+
+    iziToast.success({
+                  message: 'El RUT ingresado: ' + rut.value + ' Es <strong>CORRECTO</strong>.',
+                  position: 'topRight',
+              });
     return true;
   }
 }

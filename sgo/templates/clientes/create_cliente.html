@@ -395,7 +395,7 @@
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                              <button type="submit" id="boton5" class="btn btn-info btn-flat btnAdd4"> Guardar</button>
+                              <button type="submit" id="boton5" class="btn btn-info btn-flat btnAdd4" disabled> Guardar</button>
                             </div>
                           </div>
                         </div>
@@ -481,6 +481,7 @@
 
 
   <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/script.js' %}"></script>
   <script>
     $("#id_region").change(function () {
       var url = $("#CrearClienteForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
