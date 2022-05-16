@@ -43,8 +43,13 @@ def buscar_requerimiento(request):
             context = {'data': data}
             context ['form'] = ConsultaClienteForm(instance=Cliente)
             return render(request, 'consultas/consulta_requerimiento.html', context)
+        if planta:
+            data = Cliente.objects.raw("SELECT * FROM vista_consulta_requerimiento WHERE id = %s AND cliente_id = %s", [planta,cliente])
+            context = {'data': data}
+            context ['form'] = ConsultaClienteForm(instance=Cliente)
+            return render(request, 'consultas/consulta_requerimiento.html', context)
         else:
-            data = Cliente.objects.raw("SELECT * FROM vista_consulta_requerimiento WHERE id = %s", [planta])
+            data = Cliente.objects.raw("SELECT * FROM vista_consulta_requerimiento WHERE cliente_id = %s", [cliente])
             context = {'data': data}
             context ['form'] = ConsultaClienteForm(instance=Cliente)
             return render(request, 'consultas/consulta_requerimiento.html', context)
