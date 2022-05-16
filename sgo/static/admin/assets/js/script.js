@@ -30,7 +30,7 @@ function checkRut(rut) {
 
   // Si no cumple con el mínimo ej. (n.nnn.nnn)
   if (cuerpo.length < 7) {
-    rut.setCustomValidity("RUT Incompleto");
+    
     alerta.classList.remove('alert-success', 'alert-danger');
     alerta.classList.add('alert-info');
     mensaje.innerHTML = 'Ingresó un RUT muy corto, el RUT debe ser mayor a 7 Dígitos. Ej: x.xxx.xxx-x';
@@ -66,7 +66,7 @@ function checkRut(rut) {
 
   // Validar que el Cuerpo coincide con su Dígito Verificador
   if (dvEsperado != dv) {
-    rut.setCustomValidity("RUT Inválido");
+
     document.getElementById("boton5").disabled = true;
     document.getElementById("boton6").disabled = true;
     document.getElementById("btn-guardar").disabled = true;
@@ -79,7 +79,7 @@ function checkRut(rut) {
     return false;
   } else {
 
-    rut.setCustomValidity("RUT Válido");
+  
     document.getElementById("boton5").disabled = false;
     document.getElementById("boton6").disabled = false;
     document.getElementById("btn-guardar").disabled = false;
