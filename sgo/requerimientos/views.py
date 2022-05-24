@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from queue import Empty
 from django.shortcuts import render
 
@@ -557,7 +558,16 @@ def a_puesta_disposicion(request, requerimiento_id):
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Trae la plantilla que tiene la planta
-    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=2)
+    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
+
+    # if formato == '':
+    #     print('sin planilla')
+    #     messages.warning(request, 'La planta no posee Plantilla ')
+    #     return redirect('requerimientos:list')
+    # else:
+    #     print('con planilla')
+    #     print(formato)
+
     # requer = Requerimiento.objects.filter(pk=requerimiento_id).values('codigo', 'fecha_solicitud', 'planta__ciudad__nombre',
     #                                         'planta__direccion_gerente', 'cliente__razon_social', 'cliente__rut',
     #                                         'planta__nombre', 'planta__nombre_gerente', 'planta__rut', 'causal__nombre',
@@ -587,8 +597,8 @@ def a_puesta_disposicion(request, requerimiento_id):
     fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
     fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
     # Total de días del requerimiento
-    duracion_requer = (fecha_termino - fecha_inicio).days
-    # print('totalDiasRequerimiento', duracion_requer)
+    duracion = (fecha_termino - fecha_inicio).days
+    # print('totalDiasRequerimiento', duracion)
 
     for e in PuestaDisposicion.objects.all():
         gratificacion = (e.gratificacion)
@@ -609,20 +619,27 @@ def a_puesta_disposicion(request, requerimiento_id):
     # valor_aprox del requerimiento
     valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
     # print('valor_aprox', valor_aprox)
+
+    # valor_aprox = []
+    # if not valor_aprox:
+    #     print('sin total')
+    #     messages.warning(request, 'El requerimiento no posee Área-Cargo')
+    #     return redirect('requerimientos:list')
+    # else:
+    #     print('con total')
+    #     print(valor_aprox)
     
     k = 0
     sueldototal = []
     valortotal = []
     for sueldo_base in valor_aprox:
         # print('sueldo_base', sueldo_base)
-        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion_requer))
-        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion_requer)))
+        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion))
+        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion)))
         total = round(sum(valortotal))
         totalpalabras = numero_a_letras(total)
         print('valortotal', total)
         k = k + 1
-
-    
 
 
         # valor = [248886.4602, 248886.4602, 83137.20000000001]
@@ -649,7 +666,7 @@ def a_puesta_disposicion(request, requerimiento_id):
                 'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
                 'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
                 'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
-                'totalDiasRequerimiento': duracion_requer,
+                'totalDiasRequerimiento': duracion,
                 'fechainicioreq': fecha_inicio,
                 'fechaterminoreq': fecha_termino,
                 'cargo': acreq,    
@@ -719,8 +736,8 @@ def descargar_adendum(request, adendum_id):
     fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
     fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
     # Total de días del requerimiento
-    duracion_requer = (fecha_termino - fecha_inicio).days
-    # print('totalDiasRequerimiento', duracion_requer)
+    duracion = (fecha_termino - fecha_inicio).days
+    # print('totalDiasRequerimiento', duracion)
 
     for e in PuestaDisposicion.objects.all():
         gratificacion = (e.gratificacion)
@@ -747,8 +764,8 @@ def descargar_adendum(request, adendum_id):
     valortotal = []
     for sueldo_base in valor_aprox:
         # print('sueldo_base', sueldo_base)
-        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion_requer))
-        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion_requer)))
+        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion))
+        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion)))
         total = round(sum(valortotal))
         totalpalabras = numero_a_letras(total)
         print('valortotal', total)
@@ -757,6 +774,60 @@ def descargar_adendum(request, adendum_id):
     # Documento word a trabajar, segun el requerimiento
     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
     # doc = DocxTemplate("sgo/media/"+formato)
+    
+    # Fecha de Inicio en Palabras
+    if fecha_inicio.month == 1:
+        mes = 'Enero'
+    elif fecha_inicio.month == 2:
+        mes = 'Febrero'
+    elif fecha_inicio.month == 3:
+        mes = 'Marzo'
+    elif fecha_inicio.month == 4:
+        mes = 'Abril'
+    elif fecha_inicio.month == 5:
+        mes = 'Mayo'
+    elif fecha_inicio.month == 6:
+        mes = 'Junio'
+    elif fecha_inicio.month == 7:
+        mes = 'Julio'
+    elif fecha_inicio.month == 8:
+        mes = 'Agosto'
+    elif fecha_inicio.month == 9:
+        mes = 'Septiembre'
+    elif fecha_inicio.month == 10:
+        mes = 'Octubre'
+    elif fecha_inicio.month == 11:
+        mes = 'Noviembre'
+    elif fecha_inicio.month == 12:
+        mes = 'Diciembre'
+    fechainicio_palabras = str(fecha_inicio.day) + ' de ' + mes + ' de ' + str(fecha_inicio.year)
+    
+    # Fecha Término en Palabras 
+    if fecha_termino.month == 1:
+        mes = 'Enero'
+    elif fecha_termino.month == 2:
+        mes = 'Febrero'
+    elif fecha_termino.month == 3:
+        mes = 'Marzo'
+    elif fecha_termino.month == 4:
+        mes = 'Abril'
+    elif fecha_termino.month == 5:
+        mes = 'Mayo'
+    elif fecha_termino.month == 6:
+        mes = 'Junio'
+    elif fecha_termino.month == 7:
+        mes = 'Julio'
+    elif fecha_termino.month == 8:
+        mes = 'Agosto'
+    elif fecha_termino.month == 9:
+        mes = 'Septiembre'
+    elif fecha_termino.month == 10:
+        mes = 'Octubre'
+    elif fecha_termino.month == 11:
+        mes = 'Noviembre'
+    elif fecha_termino.month == 12:
+        mes = 'Diciembre'
+    fechatermino_palabras = str(fecha_termino.day) + ' de ' + mes + ' de ' + str(fecha_termino.year)
 
     context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True) + '-' + str(now.year)+'/AD'+ str(adendum_id),
                 'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
@@ -772,7 +843,7 @@ def descargar_adendum(request, adendum_id):
                 'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
                 'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
                 'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
-                'totalDiasRequerimiento': duracion_requer,
+                'totalDiasRequerimiento': duracion,
                 'fechainicioreq': fecha_inicio,
                 'fechaterminoreq': fecha_termino,
                 'cargo': acreq,    
@@ -785,7 +856,7 @@ def descargar_adendum(request, adendum_id):
     doc.render(context)
     # exit()
     # Obtengo el usuario
-    usuario = get_object_or_404(User, pk=1)
+    usuario = get_object_or_404(User, pk=request.user.id)
     # Obtengo todas las negocios a las que pertenece el usuario.
     plantas = usuario.planta.all()
     # Obtengo el set de contrato de la primera negocio relacionada.
@@ -803,6 +874,23 @@ def descargar_adendum(request, adendum_id):
 
     # Elimino el documento word.
     os.remove(path + 'Adendum#' + str(requerimiento_id) + '_' + str(adendum_id) + '.docx')
+
+    requer = Adendum.objects.get(pk=adendum_id)
+    # requer.fecha_inicio = fecha_inicio
+    requer.fechainicio_text = fechainicio_palabras
+    # requer.fecha_termino = fecha_termino
+    requer.fechatermino_text = fechatermino_palabras
+    requer.dias_ad = duracion
+    requer.dias_totales_ad = duracion
+    requer.sueldo_base = sueldo_base
+    # requer.sueldo_base_gratif = sueldo_base_gratif
+    # requer.subtotal_ad = subtotal_ad
+    # requer.valor_total_pd = valortotal
+    requer.total_redondeado_ad = total
+    requer.total_redondeado_ad_text = totalpalabras
+    # requer.requerimiento_id = requerimiento_id
+    requer.status = True
+    requer.save()
 
     messages.success(request, 'Adendum Exitosamente')
 
