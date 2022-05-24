@@ -277,11 +277,11 @@ class Adendum(BaseModel):
 
     """
     # Comienza Análisis Óscar
-    fecha_ad = models.DateField('Fecha', null=False, blank=False)
+    fecha_ad = models.DateField('Fecha', null=True, blank=True)
     motivo_ad = models.CharField(
         'Motivo',
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         max_length=200
     )
     # Finaliza Análisis Óscar
@@ -291,30 +291,36 @@ class Adendum(BaseModel):
     fechainicio_text = models.CharField(
         'Fecha Inicio Texto',
         max_length=200,
+        blank=True,
+        null=True
     )
     fechatermino_text = models.CharField(
         'Fecha Término Texto',
         max_length=200,
+        blank=True,
+        null=True
     )
     dias_ad = models.BigIntegerField(
         'Días',
-        blank=False,
-        null=False
+        blank=True,
+        null=True
     )
-    dias_totales_ad = models.BigIntegerField('Días Totales')
-    sueldo_base = models.BigIntegerField('Sueldo Base')
-    sueldo_base_gratif = models.BigIntegerField('Sueldo Base Gratif.')
-    subtotal_ad = models.BigIntegerField('Subtotal')
-    valor_total_pd = models.BigIntegerField('Valor Total')
-    total_redondeado_ad = models.BigIntegerField('Total Redondeado')
+    dias_totales_ad = models.BigIntegerField('Días Totales', null=True, blank=True)
+    sueldo_base = models.BigIntegerField('Sueldo Base', null=True, blank=True)
+    sueldo_base_gratif = models.BigIntegerField('Sueldo Base Gratif.', null=True, blank=True)
+    subtotal_ad = models.BigIntegerField('Subtotal', null=True, blank=True)
+    valor_total_pd = models.BigIntegerField('Valor Total', null=True, blank=True)
+    total_redondeado_ad = models.BigIntegerField('Total Redondeado', null=True, blank=True)
     total_redondeado_ad_text = models.CharField(
         'Total Redondeado Texto',
+        null=True,
+        blank=True,
         max_length=250,
     )
     # Finaliza Análisis Óscar
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
     # Comienza Análisis Óscar
-    puesta_disposicion = models.ForeignKey(PuestaDisposicion, on_delete=models.PROTECT, blank=True)
+    puesta_disposicion = models.ForeignKey(PuestaDisposicion, on_delete=models.PROTECT, blank=True, null=True)
     # Finaliza Análisis Óscar
 
     status = models.BooleanField(
