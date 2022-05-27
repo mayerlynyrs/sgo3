@@ -26,8 +26,8 @@ class PlantillaListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     model = Plantilla
     template_name = "contratos/plantilla_list.html"
-    paginate_by = 25
-    ordering = ['plantas', 'nombre', ]
+    # paginate_by = 25
+    # ordering = ['plantas', 'nombre', ]
 
     permission_required = 'contratos.view_plantilla'
     raise_exception = True

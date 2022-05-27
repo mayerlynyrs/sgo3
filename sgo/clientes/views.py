@@ -141,11 +141,11 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class clienteView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Cliente
-    template_name = "users/users_list.html"
+    template_name = "clientes/clientes_list.html"
     paginate_by = 25
     ordering = ['first_name', 'last_name']
 
-    permission_required = 'users.view_user'
+    permission_required = 'clientes.view_cliente'
     raise_exception = True
 
     def get_context_data(self, **kwargs):
@@ -222,7 +222,7 @@ class clienteView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 
 @login_required
-@permission_required('users.add_user', raise_exception=True)
+@permission_required('clientes.add_cliente', raise_exception=True)
 def create_cliente(request):
     if request.method == 'POST':
 
@@ -247,6 +247,7 @@ def create_cliente(request):
 
 
 @login_required(login_url='users:signin')
+@permission_required('clientes.change_cliente', raise_exception=True)
 def update_cliente(request, cliente_id):
     """Update a cliente's profile view."""
     print('aqui update_cliente')
@@ -288,6 +289,7 @@ def update_cliente(request, cliente_id):
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
                 page = request.GET.get('page')
                 if page != '':
+                    print('cliente_idcliente_id', cliente_id)
                     response = redirect('clientes:create_cliente', cliente_id)
                     # response['Location'] += '?page=' + page
                     return response

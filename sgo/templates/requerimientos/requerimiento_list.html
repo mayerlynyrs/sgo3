@@ -45,60 +45,61 @@
     <h4 class="panel-title">Todos los requerimientos</h4>
   </div>
   <div class="panel-body">
-
-    <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
-      <thead>
-          <tr>
-              <th class="text-center" >Requerimientos</th>
-              <th class="text-center" >Plazos</th>
-              <th class="text-center" >Clientes/Plantas</th>
-              <th class="text-center" ></i> Acciones</th>
-          </tr>
-      </thead>
-      {% for obj in object_list  %}
-          <tr>
-            <td>
-                <a href="{% if perms.requerimientos.change_requerimiento %}{% url 'requerimientos:create_requerimiento' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
-                    <span class="text-name text-success">
-                        {{ obj.codigo }}
-                        {{ obj.nombre|title }}
-                    </span>
-                </a>
-                <p class="text-desc">
-                     {{ obj.descripcion|truncatewords:20 }}
-                </p>
-                Causal: {{ obj.causal}}<br>
-            </td>
-            <td class="list-plantas">
-                <ul>
-                  <li>Solicitud: <b> {{ obj.fecha_solicitud|date:'d/M/Y' }} </b></li>
-                  <li>Inicio:    <b> {{ obj.fecha_inicio|date:'d/M/Y' }} </b></li>
-                  <li>Término:   <b> {{ obj.fecha_termino|date:'d/M/Y' }} </b></li>
-                </ul>
-            </td>
-            <td class="list-plantas">
-                <ul>
-                  <li>Cliente: <b> {{ obj.cliente|title }} </b></li>
-                  <li>Planta:  <b> {{ obj.planta|title }} </b></li>
-                  
-                </ul>
-            </td>
-            <td class="estado-requerimiento">
-              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
-                <i class="fas fa-audio-description"></i>
-              </button> &nbsp &nbsp
-              <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
-                <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
-              </button>
-            </td>
-          </tr>
-      {% empty %}
-        <tr><td colspan="4">
-          <div class="text-center">No hay requerimientos creados.</div>
-        </td></tr>
-      {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
+        <thead>
+            <tr>
+                <th class="text-center" >Requerimientos</th>
+                <th class="text-center" >Plazos</th>
+                <th class="text-center" >Clientes/Plantas</th>
+                <th class="text-center" ></i> Acciones</th>
+            </tr>
+        </thead>
+        {% for obj in object_list  %}
+            <tr>
+              <td>
+                  <a href="{% if perms.requerimientos.change_requerimiento %}{% url 'requerimientos:create_requerimiento' obj.id %}?page={{ request.GET.page }}{% else %}javascript:;{% endif %}">
+                      <span class="text-name text-success">
+                          {{ obj.codigo }}
+                          {{ obj.nombre|title }}
+                      </span>
+                  </a>
+                  <p class="text-desc">
+                      {{ obj.descripcion|truncatewords:20 }}
+                  </p>
+                  Causal: {{ obj.causal}}<br>
+              </td>
+              <td class="list-plantas">
+                  <ul>
+                    <li>Solicitud: <b> {{ obj.fecha_solicitud|date:'d/M/Y' }} </b></li>
+                    <li>Inicio:    <b> {{ obj.fecha_inicio|date:'d/M/Y' }} </b></li>
+                    <li>Término:   <b> {{ obj.fecha_termino|date:'d/M/Y' }} </b></li>
+                  </ul>
+              </td>
+              <td class="list-plantas">
+                  <ul>
+                    <li>Cliente: <b> {{ obj.cliente|title }} </b></li>
+                    <li>Planta:  <b> {{ obj.planta|title }} </b></li>
+                    
+                  </ul>
+              </td>
+              <td class="estado-requerimiento">
+                <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
+                  <i class="fas fa-audio-description"></i>
+                </button> &nbsp &nbsp
+                <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
+                  <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
+                </button>
+              </td>
+            </tr>
+        {% empty %}
+          <tr><td colspan="4">
+            <div class="text-center">No hay requerimientos creados.</div>
+          </td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 <div class="modal fade" id="modal-adendum">

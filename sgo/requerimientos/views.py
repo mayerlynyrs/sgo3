@@ -32,7 +32,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 from django.conf import settings
 # Model
-from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabajador, Adendum
+from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabajador, PuestaDisposicion as AnexoPuestaDisposicion, Adendum
 from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
@@ -619,6 +619,63 @@ def a_puesta_disposicion(request, requerimiento_id):
     # valor_aprox del requerimiento
     valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
     # print('valor_aprox', valor_aprox)
+    # doc = DocxTemplate("sgo/media/"+formato)
+    
+    # Fecha de Inicio en Palabras
+    if fecha_inicio.month == 1:
+        mes = 'Enero'
+    elif fecha_inicio.month == 2:
+        mes = 'Febrero'
+    elif fecha_inicio.month == 3:
+        mes = 'Marzo'
+    elif fecha_inicio.month == 4:
+        mes = 'Abril'
+    elif fecha_inicio.month == 5:
+        mes = 'Mayo'
+    elif fecha_inicio.month == 6:
+        mes = 'Junio'
+    elif fecha_inicio.month == 7:
+        mes = 'Julio'
+    elif fecha_inicio.month == 8:
+        mes = 'Agosto'
+    elif fecha_inicio.month == 9:
+        mes = 'Septiembre'
+    elif fecha_inicio.month == 10:
+        mes = 'Octubre'
+    elif fecha_inicio.month == 11:
+        mes = 'Noviembre'
+    elif fecha_inicio.month == 12:
+        mes = 'Diciembre'
+    fechainicio_palabras = str(fecha_inicio.day) + ' de ' + mes + ' de ' + str(fecha_inicio.year)
+    
+    # Fecha Término en Palabras 
+    if fecha_termino.month == 1:
+        mes = 'Enero'
+    elif fecha_termino.month == 2:
+        mes = 'Febrero'
+    elif fecha_termino.month == 3:
+        mes = 'Marzo'
+    elif fecha_termino.month == 4:
+        mes = 'Abril'
+    elif fecha_termino.month == 5:
+        mes = 'Mayo'
+    elif fecha_termino.month == 6:
+        mes = 'Junio'
+    elif fecha_termino.month == 7:
+        mes = 'Julio'
+    elif fecha_termino.month == 8:
+        mes = 'Agosto'
+    elif fecha_termino.month == 9:
+        mes = 'Septiembre'
+    elif fecha_termino.month == 10:
+        mes = 'Octubre'
+    elif fecha_termino.month == 11:
+        mes = 'Noviembre'
+    elif fecha_termino.month == 12:
+        mes = 'Diciembre'
+    fechatermino_palabras = str(fecha_termino.day) + ' de ' + mes + ' de ' + str(fecha_termino.year)
+    codigo= Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True)+'/'+str(now.year)
+    motivo = Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True)
 
     # valor_aprox = []
     # if not valor_aprox:
@@ -630,15 +687,49 @@ def a_puesta_disposicion(request, requerimiento_id):
     #     print(valor_aprox)
     
     k = 0
+    sueldo_base_gratif = 0
     sueldototal = []
+    subtotal_pd = 0
     valortotal = []
+    trabajadores = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id, status=True)
+    # cantidad_trabajadores = 0
+    cargos = AreaCargo.objects.values_list('cargo', flat=True).filter(requerimiento=requerimiento_id, status=True)
+    # cargo = 0
+    trabajador = []
+    cargo = []
     for sueldo_base in valor_aprox:
         # print('sueldo_base', sueldo_base)
         sueldototal.append((((sueldo_base+gratificacion)/30)*duracion))
+        sueldo_base_gratif=round((((sueldo_base+gratificacion)/30)*duracion))
         valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion)))
+        subtotal_pd=round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion))
         total = round(sum(valortotal))
         totalpalabras = numero_a_letras(total)
+    for trabajador, cargo in zip(trabajadores, cargos):
         print('valortotal', total)
+
+        requer = AnexoPuestaDisposicion()
+        requer.codigo_pd = codigo
+        requer.fecha_pd = now
+        requer.motivo_pd = motivo
+        requer.fecha_inicio = fecha_inicio
+        requer.fechainicio_text = fechainicio_palabras
+        requer.fecha_termino = fecha_termino
+        requer.fechatermino_text = fechatermino_palabras
+        requer.dias_pd = duracion
+        requer.dias_totales = duracion
+        requer.sueldo_base = sueldo_base
+        requer.sueldo_base_gratif = sueldo_base_gratif
+        requer.subtotal_pd = subtotal_pd
+        requer.valor_total_pd = total
+        requer.total_redondeado = total
+        requer.total_redondeado_text = totalpalabras
+        requer.cantidad_trabajadores = trabajador
+        requer.cargo_id = cargo
+        requer.causal_id = 1
+        requer.requerimiento_id = requerimiento_id
+        requer.status = True
+        requer.save()
         k = k + 1
 
 
@@ -649,10 +740,8 @@ def a_puesta_disposicion(request, requerimiento_id):
 
     # Documento word a trabajar, segun el requerimiento
     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-    # doc = DocxTemplate("sgo/media/"+formato)
 
-
-    context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True)+'/'+str(now.year),
+    context = { 'codigo': codigo,
                 'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
                 'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
                 'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
@@ -664,10 +753,10 @@ def a_puesta_disposicion(request, requerimiento_id):
                 'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
                 'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
                 'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
-                'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'motivo': motivo,
                 'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
                 'totalDiasRequerimiento': duracion,
-                'fechainicioreq': fecha_inicio,
+                'fechainicioreq': fechainicio_palabras,
                 'fechaterminoreq': fecha_termino,
                 'cargo': acreq,    
                 # 'numero': numero,

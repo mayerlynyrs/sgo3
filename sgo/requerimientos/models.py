@@ -261,6 +261,10 @@ class PuestaDisposicion(BaseModel):
         help_text='Para desactivar la Puesta Disposición, deshabilite esta casilla.'
     )
 
+    @property
+    def apd(self):
+      return self.codigo_pd
+
     def __str__(self):
         return str(self.fecha_termino)
     
