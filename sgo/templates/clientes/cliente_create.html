@@ -13,7 +13,7 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'users:list' %}">Clientes</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'clientes:list' %}">Clientes</a></li>
   <li class="breadcrumb-item active">{% if usuario %}{{ usuario.id }}{% else %}Nuevo{% endif %}</li>
 </ol>
 <!-- end breadcrumb -->
@@ -114,7 +114,7 @@
               <div class="form-group row m-b-0">
                 <label class="col-md-4 col-sm-4 col-form-label">&nbsp;</label>
                 <div class="col-md-8 col-sm-8 text-right">
-                  <a href="{% url 'users:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
+                  <a href="{% url 'clientes:list' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
                   <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
                 </div>
               </div>

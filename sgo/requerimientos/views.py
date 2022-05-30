@@ -431,7 +431,7 @@ class RequerimientoIdView(TemplateView):
                 ac_r = AreaCargo.objects.get(pk=request.POST['id'])
                 ac_r.status = False
                 ac_r.save()
-            elif action == 'requeri_user_add':
+            elif action == 'requeri_trab_add':
                 trabaj = RequerimientoTrabajador()
                 if "referido" in request.POST:
                     estado = True
@@ -445,9 +445,10 @@ class RequerimientoIdView(TemplateView):
                 trabaj.area_cargo_id = request.POST['area_cargo_id']
                 trabaj.trabajador_id = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
+                trabaj.id_requerimiento_trabajador = str(requerimiento_id)+str(request.POST['trabajador'])
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
-            elif action == 'requeri_user_edit':
+            elif action == 'requeri_trab_edit':
                 trabaj = RequerimientoTrabajador.objects.get(pk=request.POST['id'])
                 if "referido" in request.POST:
                     estado = True
@@ -459,12 +460,13 @@ class RequerimientoIdView(TemplateView):
                 trabaj.tipo_id = request.POST['tipo']
                 trabaj.pension = request.POST['pension']
                 trabaj.area_cargo_id = request.POST['area_cargo']
-                trabaj.trabajador = request.POST['trabajador']
+                trabaj.trabajador_id = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
                 # trabaj.area_cargo_id = 10
+                trabaj.id_requerimiento_trabajador = str(requerimiento_id)+request.POST['trabajador']
                 trabaj.requerimiento_id = requerimiento_id
                 trabaj.save()
-            elif action == 'requeri_user_delete':
+            elif action == 'requeri_trab_delete':
                 trabaj = RequerimientoTrabajador.objects.get(pk=request.POST['id'])
                 trabaj.status = False
                 trabaj.save()

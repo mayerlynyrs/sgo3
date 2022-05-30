@@ -192,11 +192,6 @@ class RequerimientoTrabajador(BaseModel):
         null=True
     )
 
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
-    )
-
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
 
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
@@ -204,6 +199,16 @@ class RequerimientoTrabajador(BaseModel):
     area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
 
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
+
+    id_requerimiento_trabajador = models.BigIntegerField(
+        null=True,
+        unique=True
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
+    )
 
     def __str__(self):
         return str(self.tipo) + ' ' + str(self.trabajador)

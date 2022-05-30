@@ -61,7 +61,7 @@ $(function () {
         modal_title.find('span').html('<b style="font-size: 1.25rem;">Área-Cargo Requerimiento </b><small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
-        $('form')[1].reset();
+        $('form')[2].reset();
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
@@ -111,15 +111,16 @@ $(function () {
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="agg"]', function (){
-        $('input[name="action"]').val('requeri_user_add');
+        $('input[name="action"]').val('requeri_trab_add');
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         var tr = tblAreaCargo.cell($(this).closest('td, li')).index();
         var data = tblAreaCargo.row(tr.row).data();
+        $('form')[3].reset();
         $('input[name="area_cargo_id"]').val(data.id);
         console.log(data.id);
-        $('form')[3].reset();
+    
         $('#myModalRequerTrab').modal('show');
     });
 
@@ -137,7 +138,7 @@ $(function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
                 $('#myModalRequerUser').modal('hide');
-                tblProfesionTrab.ajax.reload();
+                tblRequeriTrab.ajax.reload();
             }); 
         });
 
