@@ -1,6 +1,7 @@
 """Requerimiento Forms"""
 
 # Django
+from email.policy import default
 from tokenize import group
 from django import forms
 # sgo Model
@@ -115,17 +116,18 @@ class ACRForm(forms.ModelForm):
 
 class RequeriTrabajadorForm(forms.ModelForm):
 
-    SUPERVISOR = 'SUP'
+    
     TECNICO = 'TEC'
+    SUPERVISOR = 'SUP'
 
     TIPO_ESTADO = (
-        (SUPERVISOR, 'Supervisor'),
         (TECNICO, 'Técnico'),
+        (SUPERVISOR, 'Supervisor'),
     )
 
     descripcion = forms.CharField (required=True, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))                              
-    tipo = forms.ChoiceField(choices = TIPO_ESTADO, required=True, label="Tipo",
+    tipo = forms.ChoiceField(choices=TIPO_ESTADO, required=True, label="Tipo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',

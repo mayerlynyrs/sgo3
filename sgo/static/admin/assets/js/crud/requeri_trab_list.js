@@ -1,4 +1,4 @@
-var tblRequeriUser;
+var tblRequeriTrab;
 var modal_title;
 var requerimiento = null;
 var enviando = false;
@@ -7,7 +7,7 @@ boton_numero2.addEventListener("click", guardar_planta_contacto);
 
 
 function getData2() {
-    tblRequeriUser = $('#data-table-buttons_wrapper').DataTable({
+    tblRequeriTrab = $('#data-table-buttons_wrapper').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -21,11 +21,11 @@ function getData2() {
             dataSrc: ""
         },
         columns: [
-            {"data": "id",
-            "render": function(data, type, row, meta){
-                data = '<a href="../../../contratos/'+data+'/create_contrato/ ">' + data + ' </a> ';
-                return data;
-            }},
+            // {"data": "id",
+            // "render": function(data, type, row, meta){
+            //     data = '<a href="../../../contratos/'+data+'/create_contrato/ ">' + data + ' </a> ';
+            //     return data;
+            // }},
             {"data": "area_cargo"},
             {"data": "trabajador"},
             {"data": "jefe_area"},
@@ -39,7 +39,7 @@ function getData2() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="edit" title="Enviar a Revisión" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
+                    // buttons += '<a href="#" rel="edit" title="Enviar a Revisión" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
                     return buttons;
                 }
             },
@@ -62,34 +62,21 @@ $(function () {
 
     getData2();
 
-    $('.btnAddRequeUser').on('click', function () {
-        $('input[name="action"]').val('requeri_user_add');
-        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Nuevo</small>' );
-        console.log(modal_title.find('i'));
-        modal_title.find('i').removeClass().addClass();
-        var btn = document.getElementById("boton3");
-        btn.style.borderColor= '#153264';
-        btn.style.backgroundColor= '#153264';
-        btn.innerHTML = 'Guardar';
-        $('form')[2].reset();
-        $('#myModalRequerUser').modal('show');
-    });
-
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
     
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
-        var data = tblRequeriUser.row(tr.row).data();
-        $('form')[2].reset();
-        $('input[name="action"]').val('requeri_user_edit');
+        var tr = tblRequeriTrab.cell($(this).closest('td, li')).index();
+        var data = tblRequeriTrab.row(tr.row).data();
+        $('input[name="action"]').val('requeri_trab_edit');
         $('input[name="id"]' ).val(data.id);
+        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
+        $('select[name="tipo"]').val(data.tipo).trigger("change");
+        $('select[name="trabajador"]').val(data.trabajador_id).trigger("change");
+        $('input[name="pension"]').val(data.pension);
+        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="descripcion"]').val(data.descripcion);
-        $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('input[name="pension"]').val(data.pension);
-        $('select[name="user"]').val(data.user_id).trigger("change");
-        $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
         var btn = document.getElementById("boton3");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
@@ -101,15 +88,15 @@ $(function () {
     
         modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblRequeriUser.cell($(this).closest('td, li')).index();
-        var data = tblRequeriUser.row(tr.row).data();
-        $('input[name="action"]').val('requeri_user_delete');
+        var tr = tblRequeriTrab.cell($(this).closest('td, li')).index();
+        var data = tblRequeriTrab.row(tr.row).data();
+        $('input[name="action"]').val('requeri_trab_delete');
         $('input[name="id"]').val(data.id);
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('select[name="tipo"]').val(data.tipo).trigger("change");
         $('input[name="pension"]').val(data.pension);
-        $('select[name="user"]').val(data.user_id).trigger("change");
+        $('select[name="trabajador"]').val(data.trabajador_id).trigger("change");
         $('select[name="jefe_area"]').val(data.jefe_area_id).trigger("change");
         var btn = document.getElementById("boton3");
         btn.style.borderColor= '#de555e';
@@ -131,8 +118,9 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
+                $('#myModalRequerTrab').modal('hide');
                 $('#myModalRequerUser').modal('hide');
-                tblRequeriUser.ajax.reload();
+                tblRequeriTrab.ajax.reload();
             }); 
         });
 
@@ -147,7 +135,8 @@ function guardar_planta_contacto() {
             console.log(FormData);
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalRequerTrab').modal('hide');
-                tblRequeriUser.ajax.reload();
+                $('#myModalRequerUser').modal('hide');
+                tblRequeriTrab.ajax.reload();
             });
             enviando = True;   
         });  
