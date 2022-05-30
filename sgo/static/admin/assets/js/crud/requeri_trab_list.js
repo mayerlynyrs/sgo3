@@ -92,6 +92,7 @@ $(function () {
         var data = tblRequeriTrab.row(tr.row).data();
         $('input[name="action"]').val('requeri_trab_delete');
         $('input[name="id"]').val(data.id);
+        $('select[name="area_cargo"]').val(data.area_cargo_id).trigger("change");
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="descripcion"]').val(data.descripcion);
         $('select[name="tipo"]').val(data.tipo).trigger("change");
