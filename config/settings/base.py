@@ -70,6 +70,7 @@ LOCAL_APPS = [
     'sgo.ficheros.apps.FicherosConfig',
     'sgo.contratos.apps.ContratosConfig',
     #'sgo.api.apps.ApiAppConfig'
+    'sgo.agendamientos.apps.AgendamientosConfig',
     'sgo.examenes.apps.ExamenesConfig',
     'sgo.psicologos.apps.PsicologosConfig',
     'sgo.requerimientos.apps.RequerimientosConfig',
