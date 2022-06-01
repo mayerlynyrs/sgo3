@@ -16,6 +16,7 @@ from django.views.generic import ListView, CreateView
 from psicologos.forms import UserAgendar, AgendaPsicologos, EvaluacionPsicologica, ReportForm
 # Model
 from psicologos.models import Psicologico, Agenda, EvaluacionPsicologico
+from agendamientos.models import Agendamiento
 from users.models import User, Trabajador
 # Create your views here.
 
@@ -80,10 +81,10 @@ class AgendaList(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Agenda.objects.filter(Q(estado='E')| Q(estado='AG')):
+                for i in Agendamiento.objects.filter(Q(estado='E') & Q(tipo_evaluacion='PSI')):
                     data.append(i.toJSON())
             elif action == 'edit':
-                agenda = Agenda.objects.get(pk=request.POST['id'])
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
                 if "referido" in request.POST:
                     estado = True
                     agenda.referido =  estado
@@ -106,7 +107,7 @@ class AgendaList(TemplateView):
                 agenda.obs = request.POST['obs']
                 agenda.save()
             elif action == 'delete':
-                agenda = Agenda.objects.get(pk=request.POST['id'])
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
                 agenda.status = False
                 agenda.save()
             elif action == 'evaluacion_add':

@@ -13,14 +13,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic import TemplateView
 # Model
 from clientes.models import Planta
-from examenes.models import Examen, Bateria
+from examenes.models import Examen, Bateria, CentroMedico
+from agendamientos.models import Agendamiento
 # Form
-from examenes.forms import ExamenForm, BateriaForm
+from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm
 
 class ExamenView(TemplateView):
     template_name = 'examenes/examen_list.html'
@@ -125,4 +127,109 @@ class BateriaView(TemplateView):
         context['list_url'] = reverse_lazy('examenes:bateria')
         context['entity'] = 'Bateria'
         context['form'] = BateriaForm()
+        return context
+
+
+class AgendaList(TemplateView):
+    template_name = 'examenes/tabla_agenda.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Agendamiento.objects.filter(Q(estado='E') & Q(tipo_evaluacion='GEN')& Q(status=True)):
+                    data.append(i.toJSON())
+            elif action == 'edit':
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                if "referido" in request.POST:
+                    estado = True
+                    agenda.referido =  estado
+                else:
+                    estado = False
+                    agenda.referido =  estado
+                agenda.estado = request.POST['estado']
+                agenda.tipo = request.POST['tipo']
+                agenda.fecha_ingreso_estimada = request.POST['fecha_ingreso_estimada']
+                agenda.fecha_agenda_evaluacion = request.POST['fecha_agenda_evaluacion']
+                agenda.planta_id = request.POST['planta']
+                agenda.cargo_id = request.POST['cargo']
+                agenda.centro_id = request.POST['centromedico']
+                agenda.obs = request.POST['obs']
+                agenda.save()
+            elif action == 'delete':
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                agenda.status = False
+                agenda.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Evaluaciones'
+        context['list_url'] = reverse_lazy('examenes:listAgenda')
+        context['entity'] = 'Salud'
+        context['form'] = AgendaGeneralForm()
+        # context['form1'] = EvaluacionPsicologica()
+        return context
+
+class CentroMedicoView(TemplateView):
+    template_name = 'examenes/centromedico_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in CentroMedico.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                centro = CentroMedico()
+                centro.nombre = request.POST['nombre'].lower()
+                centro.direccion = request.POST['direccion'].lower()
+                centro.region_id = request.POST['region']
+                centro.provincia_id = request.POST['provincia']
+                centro.ciudad_id = request.POST['ciudad']
+                centro.status = True
+                centro.save()
+            elif action == 'edit':
+                centro = CentroMedico.objects.get(pk=request.POST['id'])
+                centro.nombre = request.POST['nombre'].lower()
+                centro.direccion = request.POST['direccion'].lower()
+                centro.region_id = request.POST['region']
+                centro.provincia_id = request.POST['provincia']
+                centro.ciudad_id = request.POST['ciudad']
+                centro.status = True
+                centro.save()
+            elif action == 'delete':
+                centro = CentroMedico.objects.get(pk=request.POST['id'])
+                centro.status = False
+                centro.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Centro Medico'
+        context['list_url'] = reverse_lazy('examenes:bateria')
+        context['entity'] = 'Centro Medico'
+        context['form'] = CentroForm()
         return context

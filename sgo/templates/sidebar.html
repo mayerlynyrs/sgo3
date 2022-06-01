@@ -67,41 +67,36 @@
         </ul>
       </li>
       {% endif %}
-
+      {% if perms.agendamientos.view_agendamiento%}
+      <li class="has-sub {% if menu_app == 'agendamientos' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="far fa-lg fa-fw me-10px fa-calendar-plus"></i>
+          <span>Agendamiento </span>
+        </a>
+        <ul class="sub-menu">
+        {% if perms.agendamientos.add_agendamiento %}
+          <li {% if menu_app == 'agendamientos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'agendamientos:listAgenda' %}">Agendar </a></li>
+        {% endif %}
+        {% if perms.agendamientos.add_agendamiento %}
+          <li {% if menu_app == 'agendamientos2' and menu_page == None %} class="active"{% endif %}><a href="{% url 'agendamientos:solicitudes' %}">Mis Solicitudes </a></li>
+        {% endif %}
+        </ul>
+      </li>
+      {% endif %}
       {% if perms.psicologos.view_psicologico %}
       <li class="has-sub {% if menu_app == 'psicologos' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
           <i class="fa fa-universal-access"></i>
-          <span>Psicologos </span>
+          <span>Psicólogos </span>
         </a>
         <ul class="sub-menu">
-        {% if perms.psicologos.add_agenda %}
-          <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Agendar </a></li>
-        {% endif %}
           <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
         {% if perms.psicologos.view_evaluacionpsicologico %}
           <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas </a></li>
         {% endif %}
           <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revision Solicitudes </a></li>
-        </ul>
-      </li>
-      {% endif %}
-
-
-
-      {% if perms.clientes.view_cliente %}
-      <li class="has-sub {% if menu_app == 'clientes' %}active{% endif %}">
-        <a href="javascript:;">
-          <b class="caret"></b>
-          <i class="far fa-lg fa-fw m-r-10 fa-building"></i>
-          <span>Clientes </span>
-        </a>
-        <ul class="sub-menu"> 
-          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'clientes:list_cliente' %}">Ver Clientes </a></li>
-        {% if perms.clientes.add_cliente %}
-          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'clientes:create_cliente' %}">Crear Cliente</a></li>
-        {% endif %}
         </ul>
       </li>
       {% endif %}
@@ -113,9 +108,42 @@
           <span>Exámenes </span>
         </a>
         <ul class="sub-menu">
+          {% if perms.contratos.view_plantilla %}
+            <li class="has-sub {% if menu_module == 'examengeneral' %}expand{% else %}closed{% endif %}">
+                  <a href="javascript:;">
+                    <b class="caret"></b>
+                    Examenes Generales
+                  </a>
+                  <ul class="sub-menu" style=>
+                    <li {% if menu_module == 'examengeneral' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'examenes:listEvaluaciones' %}">Evaluaciones</a></li>
+                    {% if perms.contratos.add_plantilla %}
+                    <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'contratos:create-plantilla' %}">Evaluaciones Realizadas</a></li>
+                    {% endif %}
+                    <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revision Solicitudes </a></li>
+                  </ul>
+                </li>
+          {% endif %}
           <li {% if menu_app == 'examenes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:examen' %}">Exámenes</a></li>
         {% if perms.examenes.add_examen %}
           <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:bateria' %}">Baterías</a></li>
+        {% endif %}
+        {% if perms.examenes.add_examen %}
+          <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:centroMedico' %}">Centro Medico</a></li>
+        {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+      {% if perms.clientes.view_cliente %}
+      <li class="has-sub {% if menu_app == 'clientes' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="far fa-lg fa-fw m-r-10 fa-building"></i>
+          <span>Clientes </span>
+        </a>
+        <ul class="sub-menu"> 
+          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'clientes:list_cliente' %}">Ver Clientes </a></li>
+        {% if perms.clientes.add_cliente %}
+          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'clientes:create_cliente' %}">Crear Cliente</a></li>
         {% endif %}
         </ul>
       </li>
@@ -157,18 +185,6 @@
         {% if perms.contratos.add_plantilla %}
           <li {% if menu_module == 'lista' %}class="active"{% endif %}><a href="ui_typography.html">Crear Plantilla</a></li>
         {% endif %}{% endcomment %}
-        </ul>
-      </li>
-      {% endif %}
-      {% if perms.consultas.view_consulta %}
-      <li class="has-sub {% if menu_app == 'consultas' %}active{% endif %}">
-        <a href="javascript:;">
-          <b class="caret"></b>
-          <i class="fas fa-search"></i>
-          <span>Consultas </span>
-        </a>
-        <ul class="sub-menu">
-          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta_requerimiento' %}">Consulta General Requerimientos </a></li>
         </ul>
       </li>
       {% endif %}
@@ -277,6 +293,18 @@
         {% if perms.utils.view_horario %}
         <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
         {% endif %}
+        </ul>
+      </li>
+      {% endif %}
+      {% if perms.consultas.view_consulta %}
+      <li class="has-sub {% if menu_app == 'consultas' %}active{% endif %}">
+        <a href="javascript:;">
+          <b class="caret"></b>
+          <i class="fas fa-search"></i>
+          <span>Consultas </span>
+        </a>
+        <ul class="sub-menu">
+          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta_requerimiento' %}">Consulta General Requerimientos </a></li>
         </ul>
       </li>
       {% endif %}

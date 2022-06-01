@@ -31,9 +31,29 @@ function checkRut(rut) {
   // Si no cumple con el mínimo ej. (n.nnn.nnn)
   if (cuerpo.length < 7) {
     
-    alerta.classList.remove('alert-success', 'alert-danger');
-    alerta.classList.add('alert-info');
-    mensaje.innerHTML = 'Ingresó un RUT muy corto, el RUT debe ser mayor a 7 Dígitos. Ej: x.xxx.xxx-x';
+    var boton5 = !!document.getElementById("boton5"); 
+    var boton2 = !!document.getElementById("boton2");
+    var boton6 = !!document.getElementById("boton6");
+    var boton = !!document.getElementById("btn-guardar");
+    
+    if(boton5 == true){
+      document.getElementById("boton5").disabled = true;
+    }
+    if(boton == true){
+      document.getElementById("btn-guardar").disabled = true;
+    }
+    if(boton2 == true){
+      document.getElementById("boton2").disabled = true;
+    } 
+    if(boton6 == true){
+      document.getElementById("boton6").disabled = true;
+    }
+    iziToast.error({
+                  message: 'El RUT ingresado: ' + rut.value + ' Es <strong>ES MUY CORTO</strong>.',
+                  position: 'topRight',
+    });
+
+  
     return false;
   }
 
@@ -67,27 +87,52 @@ function checkRut(rut) {
   // Validar que el Cuerpo coincide con su Dígito Verificador
   if (dvEsperado != dv) {
 
-    document.getElementById("boton5").disabled = true;
-    document.getElementById("boton6").disabled = true;
-    document.getElementById("btn-guardar").disabled = true;
-
+    var boton2 = !!document.getElementById("boton2");
+    var boton5 = !!document.getElementById("boton5");
+    var boton6 = !!document.getElementById("boton6");
+    var boton = !!document.getElementById("btn-guardar");
+      
+    if(boton5 == true){
+      document.getElementById("boton5").disabled = true;
+    } 
+    if(boton == true){
+        document.getElementById("btn-guardar").disabled = true;
+    } 
+    if(boton2 == true){
+      document.getElementById("boton2").disabled = true;
+    } 
+    if(boton6 == true){
+      document.getElementById("boton6").disabled = true;
+    }
+  
     iziToast.error({
       message: 'El RUT ingresado: ' + rut.value + ' Es <strong>INCORRECTO</strong>.',
       position: 'topRight',
-  });
+    });
 
     return false;
-  } else {
-
-  
-    document.getElementById("boton5").disabled = false;
-    document.getElementById("boton6").disabled = false;
-    document.getElementById("btn-guardar").disabled = false;
-
+  }else{
+    var boton5 = !!document.getElementById("boton5"); 
+    var boton2 = !!document.getElementById("boton2");
+    var boton6 = !!document.getElementById("boton6");
+    var boton = !!document.getElementById("btn-guardar");
+    
+    if(boton5 == true){
+      document.getElementById("boton5").disabled = false;
+    }
+    if(boton == true){
+      document.getElementById("btn-guardar").disabled = false;
+    }
+    if(boton2 == true){
+      document.getElementById("boton2").disabled = false;
+    } 
+    if(boton6 == true){
+      document.getElementById("boton6").disabled = false;
+    }
     iziToast.success({
                   message: 'El RUT ingresado: ' + rut.value + ' Es <strong>CORRECTO</strong>.',
                   position: 'topRight',
-              });
+    });
     return true;
   }
 }

@@ -75,7 +75,7 @@ class CrearUsuarioForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )
@@ -183,7 +183,7 @@ class EditarUsuarioForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )
@@ -287,7 +287,7 @@ class CrearTrabajadorForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )
@@ -492,7 +492,7 @@ class EditarTrabajadorForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )

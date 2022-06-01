@@ -15,6 +15,8 @@ from clientes.models import BaseModel, Planta
 from requerimientos.models import RequerimientoTrabajador
 #User
 from users.models import User, Trabajador
+#Utils
+from utils.models import Region, Provincia, Ciudad
 
 
 class Examen(models.Model):
@@ -180,3 +182,24 @@ class Requerimiento(BaseModel):
 
     def __str__(self):
         return self.resultado
+
+class CentroMedico(models.Model):
+    nombre = models.CharField(max_length=120)
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el bono, deshabilite esta casilla.'
+    )
+    direccion = models.CharField(max_length=120)
+    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['region_id'] = self.region.id
+        item['provincia_id'] = self.provincia.id
+        item['ciudad_id'] = self.ciudad.id
+        return item
