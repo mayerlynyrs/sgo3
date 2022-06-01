@@ -21,7 +21,7 @@ class CrearClienteForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',}))
     
@@ -128,7 +128,7 @@ class EditarClienteForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                                     'onkeypress': "return isNumber(event)",
-                                    'oninput': "checkRut(this)",
+                                    'onblur': "checkRut(this)",
                                     'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                                     'placeholder': '987654321',})
                         )    
@@ -280,7 +280,7 @@ class PlantaForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           ) 
@@ -291,7 +291,7 @@ class PlantaForm(forms.ModelForm):
     rut_gerente = forms.CharField(required=True, label="RUT Gerente",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )
@@ -474,7 +474,7 @@ class ContactoPlantaForm(forms.ModelForm):
     rut = forms.CharField(required=True, label="RUT",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
-                          'oninput': "checkRut(this)",
+                          'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
                           'placeholder': '987654321',})
                           )

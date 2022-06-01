@@ -18,4 +18,14 @@ urlpatterns = [
         view=views.BateriaView.as_view(),
         name='bateria'
     ),
+    path(
+        route='listEvaluaciones',
+        view=views.AgendaList.as_view(),
+        name='listEvaluaciones'
+    ),
+    path(
+        route='centroMedico',
+        view=views.CentroMedicoView.as_view(),
+        name='centroMedico'
+    ),
 ]
