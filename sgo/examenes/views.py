@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from django.shortcuts import render
 
 # Create your views here.
@@ -19,10 +20,10 @@ from django.views.generic import ListView, CreateView
 from django.views.generic import TemplateView
 # Model
 from clientes.models import Planta
-from examenes.models import Examen, Bateria, CentroMedico
+from examenes.models import Examen, Bateria, CentroMedico, Evaluacion
 from agendamientos.models import Agendamiento
 # Form
-from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm
+from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm, EvaluacionGeneralForm, ReportForm
 
 class ExamenView(TemplateView):
     template_name = 'examenes/examen_list.html'
@@ -161,11 +162,38 @@ class AgendaList(TemplateView):
                 agenda.planta_id = request.POST['planta']
                 agenda.cargo_id = request.POST['cargo']
                 agenda.centro_id = request.POST['centromedico']
+                agenda.bateria_id = request.POST['bateria']
                 agenda.obs = request.POST['obs']
                 agenda.save()
             elif action == 'delete':
                 agenda = Agendamiento.objects.get(pk=request.POST['id'])
                 agenda.status = False
+                agenda.save()
+            elif action == 'evaluacion_add':
+                if "referido" in request.POST:
+                    estado = True
+                else:
+                    estado = False
+                evaluacion = Evaluacion()
+                evaluacion.estado = request.POST['estado']
+                evaluacion.referido =  estado
+                evaluacion.fecha_inicio = request.POST['fecha_inicio']
+                evaluacion.tipo = request.POST['tipo']
+                evaluacion.resultado = request.POST['resultado']
+                evaluacion.valor = request.POST['valor']
+                evaluacion.fecha_termino = request.POST['fecha_termino']
+                evaluacion.tipo_evaluacion = "GEN"
+                evaluacion.trabajador_id = request.POST['user_id']
+                evaluacion.centro_id = request.POST['centromedico']
+                evaluacion.bateria_id = request.POST['bateria']
+                evaluacion.planta_id = request.POST['planta']
+                evaluacion.cargo_id = request.POST['cargo']
+                evaluacion.archivo = request.FILES['archivo']
+                if "archivo2" in request.FILES:
+                    evaluacion.archivo2 = request.FILES['archivo2']
+                evaluacion.save()
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                agenda.estado = 'A'
                 agenda.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -177,9 +205,9 @@ class AgendaList(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Evaluaciones'
         context['list_url'] = reverse_lazy('examenes:listAgenda')
-        context['entity'] = 'Salud'
+        context['entity'] = 'Examenes'
         context['form'] = AgendaGeneralForm()
-        # context['form1'] = EvaluacionPsicologica()
+        context['form1'] = EvaluacionGeneralForm()
         return context
 
 class CentroMedicoView(TemplateView):
@@ -228,8 +256,51 @@ class CentroMedicoView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Centro Medico'
+        context['title'] = 'Listado de Centro Médico'
         context['list_url'] = reverse_lazy('examenes:bateria')
-        context['entity'] = 'Centro Medico'
+        context['entity'] = 'Centro Médico'
         context['form'] = CentroForm()
+        return context
+
+
+class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Psicologo List
+    Vista para listar todos los psicologo según el usuario y sus las plantas
+    relacionadas.
+    """
+
+    model = Evaluacion
+    template_name = 'examenes/evaluacionesTerminadas.html'
+    permission_required = 'examenes.view_evaluacion'
+    raise_exception = True
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search_report':
+                data = []
+                start_date = request.POST.get('start_date', '')
+                end_date = request.POST.get('end_date', '')
+                search = Evaluacion.objects.all()
+                if len(start_date) and len(end_date):
+                   for i in search.filter(Q(fecha_inicio__range=[start_date, end_date]) & Q(tipo_evaluacion = 'GEN')):
+                        data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Reporte Evaluaciones'
+        context['list_url'] = reverse_lazy('psicologos:evaTerminadas')
+        context['entity'] = 'Salud'
+        context['form'] = ReportForm()
         return context

@@ -1,6 +1,6 @@
 var tblExamenes;
 var modal_title;
-var user = null;
+var trabajador = null;
 var MEDIA_URL;
 var enviando = false;
 var boton_numero4 = document.getElementById("boton3");
@@ -13,7 +13,7 @@ function getdata5() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+user+'/evaluacion_trabajadores/',
+            url: '/users/'+trabajador+'/evaluacion_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata5'
@@ -21,12 +21,12 @@ function getdata5() {
             dataSrc: ""
         },
         columns: [
-            {"data": "examen"},
+            {"data": "tipoexamen"},
             {"data": "resultado"},
-            {"data": "fecha_vigencia"},
+            {"data": "fecha_termino"},
             {"data": "archivo",
             "render": function(data, type, row, meta){
-                data = '<a href="../../../media/' + data + '">' + ' <i class="fa fa-download" title="Descargar" aria-hidden="true"></i></a> ';
+                data = '<a href="../../../media/' + data + '">' + ' <i  class="fa fa-download" title="Descargar" aria-hidden="true"></i></a> ';
                 return data;
             }},
             {"data": "id"},
@@ -37,8 +37,7 @@ function getdata5() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    var buttons = '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
                     return buttons;
                 }
             },
@@ -50,6 +49,9 @@ function getdata5() {
 }
 
 $(function () {
+
+    trabajador = document.getElementById("trabajador_id").value;
+    console.log(trabajador);
 
     
     var getDate = function (input) {

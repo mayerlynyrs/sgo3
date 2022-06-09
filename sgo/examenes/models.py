@@ -16,7 +16,8 @@ from requerimientos.models import RequerimientoTrabajador
 #User
 from users.models import User, Trabajador
 #Utils
-from utils.models import Region, Provincia, Ciudad
+from utils.models import Region, Provincia, Ciudad, Cargo
+#psicologo
 
 
 class Examen(models.Model):
@@ -74,73 +75,154 @@ class Bateria(models.Model):
         # item['examen'] = [model_to_dict(t) for t in self.examen.all()]
         return item
 
-
-class Evaluacion(BaseModel):
-    """Evaluacion Model
-
-
-    """
-    APROBADO = 'A'
-    RECHAZADO = 'R'
-    EVALUADO = 'E'
-
-    RESULTADOS_ESTADO = (
-        (APROBADO, 'Aprobado'),
-        (RECHAZADO, 'Rechazado'),
-        (EVALUADO, 'Evaluado'),
-    )
-
-    nombre = models.CharField(
-        max_length=120,
-    )
-
-    fecha_examen = models.DateField(null=True, blank=True)
-
-    fecha_vigencia = models.DateField(null=True, blank=True)
-
-    descripcion = models.TextField(
-        'Descripción',
-        blank=True,
-        null=True
-    )
-
-    valor_examen = models.IntegerField(
-        blank=True,
-        null=True
-    )
-
-    referido = models.BooleanField(
-        default=False,
-        help_text='Para marcar como referido, habilite esta casilla.'
-    )
-
-    resultado = models.CharField(max_length=1, choices=RESULTADOS_ESTADO, default=EVALUADO)
-
-    archivo = models.FileField(
-        upload_to='resultadosexamenes/',
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
-    )
-
+class CentroMedico(models.Model):
+    nombre = models.CharField(max_length=120)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el requerimiento, deshabilite esta casilla.'
+        help_text='Para desactivar el bono, deshabilite esta casilla.'
     )
-
-    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
-
-    examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
-
-    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
+    direccion = models.CharField(max_length=120)
+    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.nombre
     
     def toJSON(self):
         item = model_to_dict(self)
+        item['region_id'] = self.region.id
+        item['provincia_id'] = self.provincia.id
+        item['ciudad_id'] = self.ciudad.id
+        return item
+
+class Evaluacion(models.Model):
+    """Evaluacion Model
+
+    """
+    RECOMENDABLE = 'R'
+    NO_RECOMENDABLE = 'R'
+    SUPERVISOR = 'SUP'
+    TECNICO = 'TEC'
+    PSICOLOGICA = 'PSI'
+    GENERAL = 'GEN'
+
+    ESTADOS = (
+        (RECOMENDABLE, 'Recomendable'),
+        (NO_RECOMENDABLE, 'No Recomendable'),
+
+    )
+
+    TIPO_ESTADO = (
+        (SUPERVISOR, 'Supervisor'),
+        (TECNICO, 'Técnico'),
+    )
+
+    TIPO_EV=(
+        (PSICOLOGICA, 'Psicologia'),
+        (GENERAL,'General')
+    )
+
+    estado = models.CharField(max_length=1, choices=ESTADOS)
+    
+    valor = models.IntegerField()
+
+    tipo_evaluacion = models.CharField(max_length=3, choices=TIPO_EV)
+
+    tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
+
+    fecha_inicio = models.DateField(null=True, blank=True)
+
+    fecha_termino = models.DateField(null=True, blank=True)
+
+    resultado = models.CharField(
+        max_length=120,
+    )
+
+    archivo = models.FileField(
+        upload_to='evaluacionpsicologica/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
+    )
+
+    archivo2 = models.FileField(
+        upload_to='evaluacionpsicologica/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])],
+        null=True, blank=True
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la evaluacion del examen psicologico, deshabilite esta casilla.'
+    )
+
+    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
+
+    cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, null=True, blank=True)
+
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
+
+    referido = models.BooleanField(
+        default=False,
+        help_text='Para marcar como referido, habilite esta casilla.'
+    )    
+
+    hal2 = models.BooleanField(
+        default=False,
+        help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
+    )
+
+
+    psicologo = models.ForeignKey(User, related_name='psico_evaluador', on_delete=models.PROTECT, null=True, blank=True)
+    centro = models.ForeignKey(CentroMedico, on_delete=models.PROTECT, null=True, blank=True)
+    bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
+
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return str(self.fecha_inicio)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        if (self.referido == True):
+            estado2 = 'SI'
+        else:
+            estado2 = 'NO'
+        if (self.tipo == 'SUP'):
+            tipo = 'Supervisor'
+        else:
+            tipo = 'Tecnico'
+        if (self.estado == 'R'):
+            resultado = 'Recomendado'
+        else:
+            resultado = 'No Recomendado'
+        if (self.psicologo):
+            item['psicologo'] = self.psicologo.first_name +" "+self.psicologo.last_name
+        else:
+            item['psicologo'] = "No Asignado"
+        if (self.centro):
+            item['centromedico'] = self.centro.nombre
+        else:
+            item['centromedico'] = "No Asignado"
+        if (self.psicologo):
+            item['tipoexamen'] = "Psicologico"
+        else:
+            item['tipoexamen'] = "Examen General"
+        
+        item['resultado'] = resultado  
+        item['tipo'] = tipo   
+        item['referido2'] = estado2
         item['archivo'] = str(self.archivo).zfill(0)
-        item['examen'] = self.examen.nombre
-        item['examen_id'] = self.examen.id
-        item['resultado'] = self.resultado
+        item['user'] = self.trabajador.first_name +" "+self.trabajador.last_name
+        item['user_rut'] = self.trabajador.rut
+        item['fecha_inicio'] = self.fecha_inicio.strftime('%d-%m-%Y')
+        item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
+        item['planta_nombre'] = self.planta.nombre
+        item['cargo_nombre'] = self.cargo.nombre
+        item['archivo2'] = ''
         return item
 
 
@@ -182,24 +264,3 @@ class Requerimiento(BaseModel):
 
     def __str__(self):
         return self.resultado
-
-class CentroMedico(models.Model):
-    nombre = models.CharField(max_length=120)
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el bono, deshabilite esta casilla.'
-    )
-    direccion = models.CharField(max_length=120)
-    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return self.nombre
-    
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['region_id'] = self.region.id
-        item['provincia_id'] = self.provincia.id
-        item['ciudad_id'] = self.ciudad.id
-        return item

@@ -6,7 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 #Models
 
 # Agendamientos
-from agendamientos.models import CentroMedico, Agendamiento
+from agendamientos.models import  Agendamiento
 # Clientes
 from clientes.models import Planta
 #User
@@ -21,3 +21,13 @@ class AgendamientoSetResource(resources.ModelResource):
         model = Agendamiento
         fields = ('id', 'tipo', 'referido', 'hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado', 'status', )
 
+
+@admin.register(Agendamiento)
+class AgendamientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """AgendamientoAdmin model Admin"""
+
+    # resource_class = AgendamientoSetResource
+    fields = ('tipo', 'tipo_evaluacion', 'referido', 'hal2', 'fecha_ingreso_estimada', 'fecha_agenda_evaluacion', 'estado', 'requerimiento', 'planta', 'centro', 'psico', 'bateria', 'trabajador', 'obs', 'status', )
+    list_display = ('id', 'tipo_evaluacion', 'trabajador', 'referido', 'status')
+    list_filter = ['trabajador', 'psico', 'planta', 'centro', 'bateria', 'requerimiento', ]
+    search_fields = ('id', 'requerimiento', 'referido', 'tipo_evaluacion', 'trabajador',)

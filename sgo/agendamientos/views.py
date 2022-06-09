@@ -15,10 +15,15 @@ from datetime import datetime , timedelta
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
+#enviar correo electronico 
+from django.contrib import messages
+from django.core.mail import send_mail
+
 
 from agendamientos.forms import UserAgendar, UserAgendarSolicitud
 # Model
 from agendamientos.models import Agendamiento
+
 
 # Create your views here.
 
@@ -68,6 +73,14 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                         agendar.tipo_evaluacion = "PSI"
                         agendar.status = True
                         agendar.save()
+                        send_mail(
+                            'Nueva Solicitud de Agenda ',
+                            'Estimado(a) se a realizado un nueva solicitud de agendamiento psicologico para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
+                            + agendar.fecha_ingreso_estimada  ,
+                            'soporte@empresasintegra.cl',
+                            ['soporte@empresasintegra.cl'],
+                            fail_silently=False,
+                        )
                     if "general" in request.POST:
                         agendar = Agendamiento()
                         agendar.requerimiento_id = request.POST['requerimiento']
@@ -86,8 +99,15 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                         agendar.tipo_evaluacion = "GEN"
                         agendar.status = True
                         agendar.save()
-                        
-                    messages.success(request, 'Agenda Creado Exitosamente') 
+                        send_mail(
+                            'Nueva Solicitud de Agenda ',
+                            'Estimado(a) se a realizado un nueva solicitud de agendamiento Examen General para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
+                            + agendar.fecha_ingreso_estimada  ,
+                            'soporte@empresasintegra.cl',
+                            ['soporte@empresasintegra.cl'],
+                            fail_silently=False,
+                        )
+                    messages.success(request, 'Agenda Creado Exitosamente')
                     return redirect('agendamientos:listAgenda')
             else:
                 messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')

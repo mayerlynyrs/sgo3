@@ -14,7 +14,7 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Psicologos / Agendar</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Psicólogos / Agendar</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <!-- end breadcrumb -->
@@ -29,7 +29,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Agenda Hora a Examenes</h4>
+    <h4 class="panel-title">Agenda Hora a Exámenes</h4>
   </div>
 
   <div class="card-body">
@@ -39,7 +39,7 @@
           <a href="#step-1">
             <span class="number">1</span> 
             <span class="info">
-              Examenes psicologico
+              Exámenes Psicólogico
               <small>Agendar</small>
             </span>
           </a>
@@ -48,7 +48,7 @@
           <a href="#step-2">
             <span class="number">2</span> 
             <span class="info">
-              Examenes Generales
+              Exámenes Generales
               <small>Agendar </small>
             </span>
           </a>
@@ -156,6 +156,11 @@
 <script src="{% static 'admin/assets/js/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+<script>
+    $('#ModalPsico').on('shown.bs.modal', function () {
+        $('form')[0].reset();
+    });
+</script>
 <script>
 
 

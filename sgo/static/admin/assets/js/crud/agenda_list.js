@@ -88,7 +88,7 @@ $(function () {
         $('select[name="cargo"]').val(data.cargo).trigger("change");
         $('select[name="evaluacion"]').val(data.evaluacion).trigger("change");
         $('select[name="psico"]').val(data.psico).trigger("change");
-        $('input:checkbox[name=Hal2]').attr('checked',data.Hal2);  
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2);  
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="obs"]').val(data.obs);
         var btn = document.getElementById("btn-guardar");
@@ -112,7 +112,7 @@ $(function () {
         $('input[name="fecha_agenda_evaluacion"]').val(data.fecha_agenda_evaluacion);
         $('select[name="planta"]').val(data.planta).trigger("change");
         $('select[name="evaluacion"]').val(data.evaluacion).trigger("change");
-        $('input:checkbox[name=Hal2]').attr('checked',data.Hal2);  
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2);  
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         $('textarea[name="obs"]').val(data.obs);
         var btn = document.getElementById("btn-guardar");
@@ -134,6 +134,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="user_id"]').val(data.user_id);
         $('select[name="planta"]').val(data.planta).trigger("change");
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2);
         $('select[name="cargo"]').val(data.cargo).trigger("change");
         $('select[name="tipo"]').val(data.tipo).trigger("change");
         $('input[name="psicologo"]').val(data.psico);

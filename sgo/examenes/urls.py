@@ -28,4 +28,9 @@ urlpatterns = [
         view=views.CentroMedicoView.as_view(),
         name='centroMedico'
     ),
+    path(
+        route='evaTerminadas',
+        view=views.EvalTerminadasView.as_view(),
+        name='evaTerminadas'
+     ),
 ]

@@ -117,7 +117,7 @@
                   <ul class="sub-menu" style=>
                     <li {% if menu_module == 'examengeneral' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'examenes:listEvaluaciones' %}">Evaluaciones</a></li>
                     {% if perms.contratos.add_plantilla %}
-                    <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'contratos:create-plantilla' %}">Evaluaciones Realizadas</a></li>
+                    <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'examenes:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
                     {% endif %}
                     <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revisión de Solicitudes </a></li>
                   </ul>
@@ -155,7 +155,7 @@
           <i class="fas fa-lg fa-fw m-r-10 fa-box-open"></i>
           <span>Insumos/EPP </span>
         </a>
-        <ul class="sub-menu"> 
+        <ul class="sub-menu">
           <li {% if menu_app == 'epp' and menu_page == None %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Tipos Insumos</a></li>
         {% if perms.epps.add_epp %}
           <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:insumo' %}">Insumos</a></li>

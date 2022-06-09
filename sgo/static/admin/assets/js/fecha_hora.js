@@ -8,3 +8,8 @@ jQuery('#fecha_evaluacion').datetimepicker({
     timepicker : false,
     format:'Y-m-d',
   });
+
+  jQuery('#fecha_termino').datetimepicker({
+    timepicker : false,
+    format:'Y-m-d',
+  });

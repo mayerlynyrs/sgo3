@@ -1,6 +1,6 @@
 var tblProfesionTrab;
 var modal_title;
-var trabajador = null;
+var trabajador_id = null;
 var enviando = false;
 var boton_numero2 = document.getElementById("boton1");
 boton_numero2.addEventListener("click", guardar_profesion);  
@@ -13,7 +13,7 @@ function getData2() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/users/'+trabajador+'/profesion_trabajadores/',
+            url: '/users/'+trabajador_id+'/profesion_trabajadores/',
             type: 'POST',
             data: {
                 'action': 'searchdata3'
@@ -52,7 +52,7 @@ $(function () {
     });
     
     modal_title = $('.modal-title');
-    trabajador = document.getElementById("trabajador_id").value;
+    trabajador_id = document.getElementById("trabajador_id").value;
 
     getData2();
 
