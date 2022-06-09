@@ -1,4 +1,4 @@
-"""Requerimiento Forms"""
+"""Psicologos Forms"""
 
 # Django
 from django.contrib.auth.models import Group, User
@@ -9,11 +9,12 @@ from django.forms import inlineformset_factory, RadioSelect
 from django.contrib.auth import get_user_model
 from django.forms import TextInput
 # sgo Model
-from psicologos.models import Agenda , EvaluacionPsicologico 
+from psicologos.models import Agenda 
 from clientes.models import Planta
 from utils.models import Cargo
 from users.models import Trabajador
 from agendamientos.models import Agendamiento
+from examenes.models import Evaluacion
 
 User = get_user_model()
 
@@ -45,6 +46,10 @@ class UserAgendar(forms.ModelForm):
                                    )
     fecha_ingreso_estimada = forms.CharField(required=True, label="Fecha Estimada Ingreso",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_examen", }))
+                           
+    hal2 =forms.BooleanField(required=False,label='Hal2',
+                                 widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
+                                                              'disabled':'disabled',}))
     obs = forms.CharField (required=False, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
@@ -84,7 +89,6 @@ class AgendaPsicologos(forms.ModelForm):
         (APROBADO, 'Aprobado'),
         (RECHAZADO, 'Rechazado'),
         (ESPERA_EVALUACION, 'Espera evaluacion'),
-        (AGENDADO, 'Agendado'),
     )
 
                                
@@ -201,8 +205,8 @@ class EvaluacionPsicologica(forms.ModelForm):
                                    )                                
 
     class Meta:
-        model = EvaluacionPsicologico
-        fields = ("estado", "fecha_inicio", "fecha_termino", "resultado", "archivo", "archivo2", "psicologico_tipo","planta","cargo", "referido","tipo")
+        model = Evaluacion
+        fields = ("estado", "fecha_inicio", "fecha_termino", "resultado", "archivo", "archivo2", "planta","cargo", "referido","tipo", "hal2")
 
 
 class ReportForm(Form):

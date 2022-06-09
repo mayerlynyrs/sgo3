@@ -13,11 +13,12 @@ from datetime import datetime , timedelta
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
-from psicologos.forms import UserAgendar, AgendaPsicologos, EvaluacionPsicologica, ReportForm
+from psicologos.forms import UserAgendar, AgendaPsicologos, ReportForm, EvaluacionPsicologica
 # Model
-from psicologos.models import Psicologico, Agenda, EvaluacionPsicologico
+from psicologos.models import Psicologico, Agenda
 from agendamientos.models import Agendamiento
 from users.models import User, Trabajador
+from examenes.models import Evaluacion
 # Create your views here.
 
 
@@ -120,14 +121,16 @@ class AgendaList(TemplateView):
                     estado = True
                 else:
                     estado = False
-                evaluacion = EvaluacionPsicologico()
+                evaluacion = Evaluacion()
                 evaluacion.estado = request.POST['estado']
                 evaluacion.referido =  estado
                 evaluacion.fecha_inicio = request.POST['fecha_inicio']
                 evaluacion.tipo = request.POST['tipo']
                 evaluacion.resultado = request.POST['resultado']
+                evaluacion.valor = 0
                 evaluacion.fecha_termino = fechafinal2
-                evaluacion.user_id = request.POST['user_id']
+                evaluacion.tipo_evaluacion = "PSI"
+                evaluacion.trabajador_id = request.POST['user_id']
                 evaluacion.psicologo_id = request.POST['psicologo']
                 evaluacion.planta_id = request.POST['planta']
                 evaluacion.cargo_id = request.POST['cargo']
@@ -135,7 +138,7 @@ class AgendaList(TemplateView):
                 if "archivo2" in request.FILES:
                     evaluacion.archivo2 = request.FILES['archivo2']
                 evaluacion.save()
-                agenda = Agenda.objects.get(pk=request.POST['id'])
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
                 agenda.estado = 'A'
                 agenda.save()
             else:
@@ -162,7 +165,7 @@ class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     relacionadas.
     """
 
-    model = EvaluacionPsicologico
+    model = Evaluacion
     template_name = 'psicologos/evaluacionesTerminadas.html'
     permission_required = 'psicologos.view_evaluacionpsicologico'
     raise_exception = True
@@ -180,9 +183,9 @@ class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 data = []
                 start_date = request.POST.get('start_date', '')
                 end_date = request.POST.get('end_date', '')
-                search = EvaluacionPsicologico.objects.all()
+                search = Evaluacion.objects.all()
                 if len(start_date) and len(end_date):
-                   for i in search.filter(fecha_inicio__range=[start_date, end_date]):
+                   for i in search.filter(Q(fecha_inicio__range=[start_date, end_date]) & Q(tipo_evaluacion = 'PSI')):
                         data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

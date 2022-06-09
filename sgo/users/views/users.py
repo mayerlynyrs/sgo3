@@ -359,6 +359,7 @@ class UsersIdView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    user = get_object_or_404(User, pk=1)
 
     def post(self, request, user_id, *args, **kwargs):
         data = {}
@@ -559,6 +560,7 @@ class TrabajadoresIdView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    user = get_object_or_404(User, pk=1)
 
     def post(self, request, user_id, *args, **kwargs):
         
@@ -988,7 +990,7 @@ class EvaluacionUserView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata5':
                 data = []
-                for i in Evaluacion.objects.filter(user=user_id, status=True):
+                for i in Evaluacion.objects.filter(trabajador=user_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

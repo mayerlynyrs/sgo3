@@ -17,7 +17,7 @@ ALLOWED_HOSTS += [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
-    "192.168.0.30", #nico
+    "192.168.0.51", #nico
     "192.168.0.201", #maye
     "192.168.1.111", #server
 ]
@@ -34,16 +34,12 @@ CACHES = {
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # NOQA
 
 # Email
-# EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'xxx@xxx.x'
-EMAIL_HOST_PASSWORD = 'xxx'
-# EMAIL_USER = 'xxx@xxx.x'
-# EMAIL_PASSWORD = 'xxx'
 EMAIL_USE_TLS = True
-
+EMAIL_HOST = 'arrow.direcnode.com'
+EMAIL_HOST_USER = 'notificaciones@empresasintegra.cl'
+EMAIL_HOST_PASSWORD = 'integra*#notificaciones2022'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_PORT = 587
 # django-extensions
 INSTALLED_APPS += ['django_extensions']  # noqa F405
 

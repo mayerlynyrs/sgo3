@@ -4,7 +4,7 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from psicologos.models import  Psicologico, PsicologicoTipo, EvaluacionPsicologico , Agenda
+from psicologos.models import  Psicologico, PsicologicoTipo, Agenda
 from examenes.models import Examen, Evaluacion
 # Clientes
 from clientes.models import Planta
@@ -33,14 +33,7 @@ class PsicologicoTipoSetResource(resources.ModelResource):
         fields = ('id', 'nombre', 'status', )
 
 
-class EvaluacionPsicologicoSetResource(resources.ModelResource):
-    user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
-    psicologico_tipo = fields.Field(column_name='psicologico_tipo', attribute='psicologico_tipo', widget=ForeignKeyWidget(PsicologicoTipo, 'nombre'))
 
-    class Meta:
-        model = EvaluacionPsicologico
-        fields = ('id', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-                  'user', 'psicologico_tipo', 'status', )
 
 class AgendaSetResource(resources.ModelResource):
     trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
@@ -73,17 +66,7 @@ class PsicologicoTipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ['nombre', ]
 
 
-@admin.register(EvaluacionPsicologico)
-class EvaluacionPsicologicoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """EvaluacionPsicologicoAdmin model admin."""
 
-    resource_class = EvaluacionPsicologicoSetResource
-    fields = ('estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-              'trabajador', 'psicologico_tipo', 'status', )
-    list_display = ('id', 'estado', 'fecha_inicio', 'fecha_termino', 'resultado', 'archivo',
-                    'trabajador', 'psicologico_tipo', 'status', 'created_date',)
-    list_filter = ['estado', 'trabajador', 'psicologico_tipo', ]
-    search_fields = ['user__nombre', 'psicologico_tipo__nombre', ]
 
 @admin.register(Agenda)
 class AgendaAdmin(ImportExportModelAdmin, admin.ModelAdmin):

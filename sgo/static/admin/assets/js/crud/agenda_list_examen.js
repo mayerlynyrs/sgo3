@@ -86,6 +86,8 @@ $(function () {
         $('input[name="fecha_agenda_evaluacion"]').val(data.fecha_agenda_evaluacion);
         $('select[name="planta"]').val(data.planta).trigger("change");
         $('select[name="cargo"]').val(data.cargo).trigger("change");
+        $('select[name="bateria"]').val(data.bateria).trigger("change");
+        $('select[name="centromedico"]').val(data.centro).trigger("change");
         $('select[name="evaluacion"]').val(data.evaluacion).trigger("change");
         $('select[name="psico"]').val(data.psico).trigger("change");
         $('input:checkbox[name=Hal2]').attr('checked',data.Hal2);  
@@ -135,7 +137,9 @@ $(function () {
         $('select[name="planta"]').val(data.planta).trigger("change");
         $('select[name="cargo"]').val(data.cargo).trigger("change");
         $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('input[name="psicologo"]').val(data.psico);
+        $('select[name="bateria"]').val(data.bateria).trigger("change");
+        $('select[name="centromedico"]').val(data.centro).trigger("change");
+        
         $('input:checkbox[name=referido]').attr('checked',data.referido);
         
        

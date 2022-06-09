@@ -24,24 +24,25 @@ class Agendamiento(BaseModel):
     APROBADO = 'A'
     RECHAZADO = 'R'
     AGENDADO = 'AG'
-    SUPERVISOR = 'SUP'
     TECNICO = 'TEC'
+    SUPERVISOR = 'SUP'
     PSICOLOGICA = 'PSI'
     GENERAL = 'GEN'
 
     TIPO_ESTADO = (
-        (SUPERVISOR, 'Supervisor'),
         (TECNICO, 'Técnico'),
+        (SUPERVISOR, 'Supervisor'),
+        
     )
     ESTADOS = (
         (APROBADO, 'Aprobado'),
         (RECHAZADO, 'Rechazado'),
-        (ESPERA_EVALUACION, 'Espera evaluacion'),
+        (ESPERA_EVALUACION, 'Espera de Evaluación'),
         (AGENDADO, 'Agendado'),
     )
 
     TIPO_EV=(
-        (PSICOLOGICA, 'Psicologia'),
+        (PSICOLOGICA, 'Psicólogia'),
         (GENERAL,'General')
     )
     tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
@@ -55,14 +56,9 @@ class Agendamiento(BaseModel):
         help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
     )
     fecha_ingreso_estimada = models.DateField(blank=True, null=True)
-    fecha_agenda_evaluacion = models.DateTimeField(blank=True, null=True,)
+    fecha_agenda_evaluacion = models.DateTimeField('Fecha Evaluación', blank=True, null=True,)
     estado = models.CharField(max_length=2, choices=ESTADOS, default=ESPERA_EVALUACION)
     obs = models.TextField(blank=True, null=True)
-
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar la evaluacion del examen psicologico, deshabilite esta casilla.'
-    )
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
     psico = models.ForeignKey(User, related_name='pisco', on_delete=models.PROTECT, null=True, blank=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
@@ -70,6 +66,11 @@ class Agendamiento(BaseModel):
     centro = models.ForeignKey(CentroMedico, on_delete=models.PROTECT, null=True, blank=True)
     bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la evaluación del examen psicólogico, deshabilite esta casilla.'
+    )
 
     
     def __str__(self):

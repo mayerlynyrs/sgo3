@@ -400,11 +400,6 @@
                   <div class="row">
                     <div class="col-xl-8 offset-xl-2">
                       <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Examen(es) del Trabajador</legend><hr /><br>
-                    <div class="row col-md-12">
-                      <a class="btn btn-primary btn-flat btnAddExamen" style="color: white;">
-                        <i class="fas fa-plus"></i> Nuevo registro
-                      </a>
-                    </div>
                     <br>   
                       <table id="data-table-responsive" class="table table-striped table-bordered table-td-valign-middle ">
                         <thead>
@@ -439,56 +434,7 @@
                                       </div>
                                       <div class="modal-body">
                                         <div class="container-fluid">
-                                            <input name="action" type="hidden" value="planta_add">
-                                            <input name="id" id="id" type="hidden" value="0">
-                                            <input name="trabajador_id" id="trabajador_id" type="hidden" value="{{ trabajador.id }}">
-                                            <div class="row col-md-12">
-                                                <div class="form-group col-md-6">
-                                                    <label for="email"> Fecha Examen</label>
-                                                    {% csrf_token %}
-                                                    {{ form5.fecha_examen }}
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                  <label for="email">Fecha Vigencia</label>
-                                                  {{ form5.fecha_vigencia }}
-                                                </div>
-                                              </div>
-                                                <div class="row col-md-12">
-                                                  <div class="form-group col-md-6">
-                                                    <label for="email">Valor Examen</label>
-                                                    {{ form5.valor_examen }}
-                                                   </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="email">Tipo Examen</label>
-                                                        {{ form5.examen }}
-                                                    </div>
-                                                  </div>
-                                                  <div class="row col-md-12">
-                                                      <div class="form-group col-md-6">
-                                                          <label for="email">Resultado</label>
-                                                          {{ form5.resultado }}
-                                                      </div>
-                                                      <div class="form-group col-md-6">
-                                                        <label for="email">Planta</label>
-                                                        {{ form5.planta }}
-                                                      </div>
-                                                    </div>
-                                                      <div class="row col-md-12">
-                                                        <div class="form-group col-md-6">
-                                                            <label for="email">Referido</label>
-                                                            {{ form5.referido }}
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                          <label for="email">Archivo</label>
-                                                          {{ form5.archivo }}
-                                                        </div>
-                                                      </div>
-                                                        <div class="row col-md-12">
-                                                            <div class="form-group col-md-12">
-                                                                <label for="email">Observaciones</label>
-                                                                {{ form5.descripcion }}
-                                                            </div>
-                                                          </div>
+                                            
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                           <button type="submit" id="boton3" class="btn btn-info btn-flat btnAdd5"> Guardar</button>

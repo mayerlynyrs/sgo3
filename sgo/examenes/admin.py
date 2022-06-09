@@ -34,15 +34,6 @@ class BateriaSetResource(resources.ModelResource):
         fields = ('id', 'nombre', 'status', )
 
 
-class EvaluacionSetResource(resources.ModelResource):
-    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
-    examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
-    planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
-
-    class Meta:
-        model = Evaluacion
-        fields = ('id', 'nombre', 'fecha_examen', 'fecha_vigencia', 'descripcion', 'valor_examen', 'referido', 'resultado',
-                  'archivo', 'trabajador', 'examen', 'planta', 'status', )
 
 
 class RequerimientoSetResource(resources.ModelResource):
@@ -81,16 +72,6 @@ class BateriaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         return u", ".join(o.nombre for o in obj.examen.all())
 
 
-@admin.register(Evaluacion)
-class EvaluacionAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """EvaluacionAdmin model admin."""
-
-    resource_class = EvaluacionSetResource
-    fields = ('nombre', 'fecha_examen', 'fecha_vigencia', 'descripcion', 'valor_examen', 'referido', 'resultado',
-              'archivo', 'trabajador', 'examen', 'planta', 'status', )
-    list_display = ('id', 'nombre', 'fecha_examen', 'trabajador', 'status', 'modified',)
-    list_filter = ['trabajador', 'examen', 'planta', ]
-    search_fields = ['trabajador__first_name', 'examen__nombre', 'planta__nombre', ]
 
 
 @admin.register(Requerimiento)

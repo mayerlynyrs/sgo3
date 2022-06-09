@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load user_tags %}
-{% block page_title %}Psicologos{% endblock %}
+{% block page_title %}Exámenes{% endblock %}
 
 {% block content %}
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Examenes / Evaluaciones</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Exámenes / Evaluaciones</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <!-- end breadcrumb -->
@@ -22,7 +22,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Horas agendadas</h4>
+    <h4 class="panel-title">Horas Agendadas</h4>
   </div>
   <div class="panel-body">
     
@@ -30,10 +30,10 @@
       <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
         <thead>
           <tr>
-              <th >Nombre</th>
-              <th >fecha evaluacion</th>
-              <th >fecha Ingreso</th>
-              <th >Centro Medico</th>
+              <th>Nombre</th>
+              <th>Fecha Evaluación</th>
+              <th>Fecha Ingreso</th>
+              <th>Centro Médico</th>
               <th>Acciones</th>
           </tr>
         </thead>
@@ -65,13 +65,17 @@
           <div class="row">
                 {% csrf_token %}
                 <div class="row col-md-12">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label for="email">Estado</label>
                     {{ form1.estado }}
                   </div>
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label for="email">Fecha Inicio:</label>
                     {{ form1.fecha_inicio }}
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="email">Fecha Término:</label>
+                    {{ form1.fecha_termino }}
                   </div>
                 </div>
                 <div class="row col-md-12">
@@ -86,18 +90,28 @@
                 </div>
                 <div class="row col-md-12">
                   <div class="form-group col-md-6">
+                    <label for="email">Batería</label>
+                    {{ form1.bateria }}
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="email">Centro Médico:</label>
+                    {{ form1.centromedico }}
+                  </div>
+                </div>
+                <div class="row col-md-12">
+                  <div class="form-group col-md-6">
                     <label for="email">Cargo</label>
                     {{ form1.cargo }}
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="email">Archivo:</label>
-                    {{ form1.archivo }}
+                    <label for="email">Valor:</label>
+                    {{ form1.valor }}
                   </div>
                 </div>
                 <div class="row col-md-12">
                   <div class="form-group col-md-4">
-                    <label for="email">Archivo 2:</label>
-                    {{ form1.archivo2 }}
+                    <label for="email">Archivo:</label>
+                    {{ form1.archivo }}
                   </div>
                   <div class="form-group col-md-2">
                     <label for="email">Referido</label>
@@ -148,7 +162,7 @@
               <div class="container-fluid">
                   <div class="row col-md-12">
                     <div class="form-group col-md-6">
-                      <label > Estado</label>
+                      <label> Estado</label>
                         {{ form.estado }}
                     </div>
                     <div class="form-group col-md-6">
@@ -162,7 +176,7 @@
                         {{ form.fecha_ingreso_estimada }}
                     </div>
                     <div class="form-group col-md-6">
-                      <label for="email">Fecha Evaluacion</label>
+                      <label for="email">Fecha Evaluación</label>
                         {{ form.fecha_agenda_evaluacion }}
                     </div>
                   </div>
@@ -177,11 +191,15 @@
                     </div>
                   </div>
                   <div class="row col-md-12">
-                    <div class="form-group col-md-6">
-                      <label for="email"> Centro Medico</label>
+                    <div class="form-group col-md-5">
+                      <label for="email"> Centro Médico</label>
                         {{ form.centromedico }}
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-5">
+                      <label for="email">Batería</label>
+                        {{ form.bateria }}
+                    </div>
+                    <div class="form-group col-md-2">
                       <label for="email">Referido</label>
                         {{ form.referido }}
                     </div>

@@ -46,7 +46,7 @@ $(function () {
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('add');
-        modal_title.find('span').html('Centro Medico <small style="font-size: 80%;">Nuevo</small>');
+        modal_title.find('span').html('Centro Médico <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
@@ -59,7 +59,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Centro Medico <small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Centro Médico <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblBateria.cell($(this).closest('td, li')).index();
         var data = tblBateria.row(tr.row).data();
@@ -79,7 +79,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('Centro Medico <small style="font-size: 80%;">Eliminar</small>');
+        modal_title.find('span').html('Centro Médico <small style="font-size: 80%;">Eliminar</small>');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
         var tr = tblBateria.cell($(this).closest('td, li')).index();
         var data = tblBateria.row(tr.row).data();

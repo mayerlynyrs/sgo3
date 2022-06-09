@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load user_tags %}
-{% block page_title %}Agendar Examen{% endblock %}
+{% block page_title %}Agendamientos{% endblock %}
 {% block css %}
 
 <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
@@ -14,12 +14,12 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Psicologos / Agendar</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Agendamientos / Agendar</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Agendar Hora  <small>Calendario</small></h1>
+<h1 class="page-header">Agendar Hora <small>Calendario</small></h1>
 <!-- end page-header -->
 
 <!-- begin panel -->
@@ -29,7 +29,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Agenda Hora a Examenes</h4>
+    <h4 class="panel-title">Agenda Hora a Exámenes</h4>
   </div>
 
 
@@ -46,7 +46,7 @@
           <a href="#step-1">
             <span class="number">1</span> 
             <span class="info">
-              Exámenes psicologico
+              Exámenes Psicólogico
               <small>Agendar</small>
             </span>
           </a>
@@ -90,7 +90,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Agendar Exámen</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Agendar Examen</h5>
           <button type="button" align="right" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -134,7 +134,7 @@
               </div>
               <div class="row col-md-12">
                 <div class="form-group col-md-6">
-                  <label>Psicologico </label>
+                  <label>Psicólogico </label>
                     <input type="checkbox" name="psico" id="psico" onclick="javascript:validar(this);">
                 </div>
                 <div class="form-group col-md-6">
@@ -217,16 +217,34 @@
         {% for agenda in psicologo %}
         {
           title: "{{ agenda.trabajador }}",
+          planta: "{{  agenda.planta }} ",
+          cargo:"{{  agenda.cargo }} ",
+          requerimiento: "{{  agenda.requerimiento }} ",
+          fecha: "{{  agenda.fecha_agenda_evaluacion }} ",
+          psicologo: "{{  agenda.psico }} ",
           start: "{{ agenda.fecha_agenda_evaluacion | date:"Y-m-d" }}",
-          eventColor : '#378006',
+          
           
         },
         
         {% endfor %}
       ],
- 
+      eventClick: function(info) {
+      info.jsEvent.preventDefault(); // don't let the browser navigate
+      iziToast.success({
+                  message: 'Tabajador: ' + info.event.title + "<br/>" + 'Planta: ' +info.event.extendedProps.planta + "<br/>" + 'Cargo: ' +info.event.extendedProps.cargo
+                  + "<br/>" + 'Requerimiento: ' +info.event.extendedProps.requerimiento + "<br/>" + 'Fecha Evaluación: ' +info.event.extendedProps.fecha + "<br/>" +
+                  'Psicólogo: ' + info.event.extendedProps.psicologo,
+                  position: 'topRight',
+    });
+
+
+      }
+      
+      
       
     });
+    
     calendar.render(); 
   });
 
@@ -240,14 +258,28 @@
         {% for agenda2 in general %}
         {
           title: "{{ agenda2.trabajador }}",
+          planta: "{{  agenda2.planta }} ",
+          cargo:"{{  agenda2.cargo }} ",
+          requerimiento: "{{  agenda2.requerimiento }} ",
+          fecha: "{{  agenda2.fecha_agenda_evaluacion }} ",
           start: "{{ agenda2.fecha_agenda_evaluacion | date:"Y-m-d" }}",
-          eventColor : '#378006',
+          
           
         },
         
         {% endfor %}
       ],
- 
+      eventClick: function(info) {
+      info.jsEvent.preventDefault(); // don't let the browser navigate
+      iziToast.success({
+                  message: 'Tabajador ' + info.event.title + "<br/>" + 'Planta: ' +info.event.extendedProps.planta + "<br/>" + 'Cargo: ' +info.event.extendedProps.cargo
+                  + "<br/>" + 'Requerimiento: ' +info.event.extendedProps.requerimiento + "<br/>" + 'Fecha Evaluación: ' +info.event.extendedProps.fecha ,
+                  position: 'topRight',
+    });
+
+
+      }
+        
 
     });
     calendar2.render(); 
