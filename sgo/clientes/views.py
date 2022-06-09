@@ -334,6 +334,8 @@ class ClienteIdView(TemplateView):
     template_name = 'clientes/create_cliente.html'
     cliente_id=Cliente
     
+    cliente = get_object_or_404(Cliente, pk=1)
+    
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)

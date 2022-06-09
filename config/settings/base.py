@@ -64,16 +64,17 @@ THIRD_PARTY_APPS = [
     #'corsheaders',
 ]
 LOCAL_APPS = [
+    'sgo.requerimientos.apps.RequerimientosConfig',
+    'sgo.agendamientos.apps.AgendamientosConfig',
+    'sgo.psicologos.apps.PsicologosConfig',
+    'sgo.examenes.apps.ExamenesConfig',
     'sgo.clientes.apps.ClientesConfig',
-    'sgo.utils.apps.UtilsConfig',
-    'sgo.users.apps.UsersConfig',
+    'sgo.epps.apps.EppsConfig',
     'sgo.ficheros.apps.FicherosConfig',
     'sgo.contratos.apps.ContratosConfig',
     #'sgo.api.apps.ApiAppConfig'
-    'sgo.agendamientos.apps.AgendamientosConfig',
-    'sgo.examenes.apps.ExamenesConfig',
-    'sgo.psicologos.apps.PsicologosConfig',
-    'sgo.requerimientos.apps.RequerimientosConfig',
+    'sgo.users.apps.UsersConfig',
+    'sgo.utils.apps.UtilsConfig',
     'sgo.consultas.apps.ConsultasConfig',
 
     
