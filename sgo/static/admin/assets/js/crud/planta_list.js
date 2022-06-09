@@ -39,7 +39,8 @@ function getData3() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalContactoPlanta" rel="agg" title="Agregar Contactos" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-users"></i></a>';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalContactoPlanta" rel="agg" title="Agregar Contactos" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-users"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalConvenio" rel="agregar" title="Agregar Convenio" class="btn btn-dark btn-xs btn-flat btnAgg"><i class="fas fa-box-open"></i></a>';
                     return buttons;
                 }
             },
@@ -175,6 +176,20 @@ $(function () {
         console.log(data.id);
        
         $('#myModalContactoPlanta').modal('show');
+    });
+
+    $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="agregar"]', function (){
+        $('input[name="action"]').val('convenio_add');
+        modal_title.find('span').html('Convenio Planta(s) <small style="font-size: 80%;">Nuevo</small>' );
+        console.log(modal_title.find('i'));
+        modal_title.find('i').removeClass().addClass();
+        var tr = tblPlanta.cell($(this).closest('td, li')).index();
+        var data = tblPlanta.row(tr.row).data();
+        $('form')[4].reset();
+        $('input[name="planta_id"]').val(data.id);
+        console.log(data.id);
+       
+        $('#myModalConvenio').modal('show');
     });
 
 

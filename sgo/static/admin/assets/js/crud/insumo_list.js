@@ -1,8 +1,8 @@
-var tblBateria;
+var tblInsumo;
 var modal_title;
 
 function getData() {
-    tblBateria = $('#data-table-default').DataTable({
+    tblInsumo = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -16,8 +16,10 @@ function getData() {
             dataSrc: ""
         },
         columns: [
+            {"data": "codigo_externo"},
+            {"data": "tipo_insumo"},
             {"data": "nombre"},
-            {"data": "examen[ <br> ].nombre"},
+            {"data": "costo"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -46,7 +48,7 @@ $(function () {
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('add');
-        modal_title.find('span').html('Batería <small style="font-size: 80%;">Nuevo</small>');
+        modal_title.find('span').html('Insumo' );
         console.log(modal_title.find('i'));
         modal_title.find('i').removeClass().addClass();
         $('form')[0].reset();
@@ -54,58 +56,48 @@ $(function () {
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Guardar';
-        $('#myModalBateria').modal('show');
+        $('#myModalInsumo').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Batería <small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Edición de un Insumo');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
-        var tr = tblBateria.cell($(this).closest('td, li')).index();
-        var data = tblBateria.row(tr.row).data();
+        var tr = tblInsumo.cell($(this).closest('td, li')).index();
+        var data = tblInsumo.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
+        $('input[name="codigo_externo"]').val(data.codigo_externo);
+        $('select[name="tipo_insumo"]').val(data.tipo_insumo_id).trigger("change");
         $('input[name="nombre"]').val(data.nombre);
-
-        var examen2 = [];
-        data.examen.forEach(function(examenes, index) { 
-            var examen1 = examenes.id;
-            examen2 = examen2.concat(examen1);
-            });
-
-        $('select[name="examen"]').val(examen2).trigger("change");
+        $('input[name="costo"]').val(data.costo);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
         btn.innerHTML = 'Editar';
-        $('#myModalBateria').modal('show');
+        $('#myModalInsumo').modal('show');
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="delete"]', function (){
     
-        modal_title.find('span').html('Batería <small style="font-size: 80%;">Eliminar</small>');
+        modal_title.find('span').html('¿Desea Eliminar un Insumo?');
         modal_title.find('i').removeClass().addClass('fa fa-trash');
-        var tr = tblBateria.cell($(this).closest('td, li')).index();
-        var data = tblBateria.row(tr.row).data();
+        var tr = tblInsumo.cell($(this).closest('td, li')).index();
+        var data = tblInsumo.row(tr.row).data();
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
+        $('input[name="codigo_externo"]').val(data.codigo_externo);
+        $('select[name="tipo_insumo"]').val(data.tipo_insumo_id).trigger("change");
         $('input[name="nombre"]').val(data.nombre);
-
-        var examen2 = [];
-        data.examen.forEach(function(examenes, index) { 
-            var examen1 = examenes.id;
-            examen2 = examen2.concat(examen1);
-            });
-
-        $('select[name="examen"]').val(examen2).trigger("change");
+        $('input[name="costo"]').val(data.costo);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';
         btn.innerHTML = 'Eliminar';
-        $('#myModalBateria').modal('show');
+        $('#myModalInsumo').modal('show');
     });
 
-    $('#myModalBateria').on('shown.bs.modal', function () {
+    $('#myModalInsumo').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
 
@@ -114,8 +106,8 @@ $(function () {
         var parameters = new FormData(this);
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalBateria').modal('hide');
-            tblBateria.ajax.reload();
+            $('#myModalInsumo').modal('hide');
+            tblInsumo.ajax.reload();
         });   
     });
 });

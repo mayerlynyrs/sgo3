@@ -20,6 +20,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 # Forms
 from clientes.forms import CrearClienteForm, EditarClienteForm, NegocioForm, PlantaForm, ContactoPlantaForm
+from epps.forms import ConvenioForm
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,6 +29,7 @@ from django.db.models import Count
 # Modelo
 from clientes.models import Negocio, Planta, Cliente, ContactoPlanta
 from users.models import User
+from epps.models import Convenio
 
 
 class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -75,7 +77,7 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             context['negocios'] = negocios
             context['plantas'] = plantas
 
-            print(clientes)
+            # print(clientes)
             # Cliente.objects.all().order_by('cliente', 'negocio')
             # Planta.objects.filter(cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
             # Cliente.objects.all().select_related('planta').values_list('id', 'planta__negocio')
@@ -227,7 +229,7 @@ def create_cliente(request):
     if request.method == 'POST':
 
         cliente_form = CrearClienteForm(data=request.POST, user=request.user)
-        print(request.POST)
+        # print(request.POST)
 
         if cliente_form.is_valid():
             cliente = cliente_form.save(commit=False)
@@ -250,7 +252,7 @@ def create_cliente(request):
 @permission_required('clientes.change_cliente', raise_exception=True)
 def update_cliente(request, cliente_id):
     """Update a cliente's profile view."""
-    print('aqui update_cliente')
+    # print('aqui update_cliente')
 
     cliente = get_object_or_404(Cliente, pk=cliente_id)
 
@@ -280,7 +282,8 @@ def update_cliente(request, cliente_id):
 
             # Solo el Administrador puede cambiar el perfil del usuario
             if request.user.groups.filter(name__in=['Administrador', ]).exists():
-                print('cliente.groups.clear()')
+                print()
+                # print('cliente.groups.clear()')
                 # user.groups.clear()
                 # user.groups.add(cliente_form.cleaned_data['group'])
 
@@ -289,7 +292,7 @@ def update_cliente(request, cliente_id):
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
                 page = request.GET.get('page')
                 if page != '':
-                    print('cliente_idcliente_id', cliente_id)
+                    # print('cliente_idcliente_id', cliente_id)
                     response = redirect('clientes:create_cliente', cliente_id)
                     # response['Location'] += '?page=' + page
                     return response
@@ -331,7 +334,6 @@ class ClienteIdView(TemplateView):
     template_name = 'clientes/create_cliente.html'
     cliente_id=Cliente
     
-    cliente = get_object_or_404(Cliente, pk=1)
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -343,7 +345,7 @@ class ClienteIdView(TemplateView):
         try:
             action = request.POST['action']
             if action == 'searchdata':
-                print(cliente_id)
+                # print(cliente_id)
                 data = []
                 for i in Cliente.objects.filter(id=cliente_id, status=True):
                     data.append(i.toJSON())
@@ -472,6 +474,38 @@ class ClienteIdView(TemplateView):
                 cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
                 cp_contact.status = False
                 cp_contact.save()
+            elif action == 'convenio_add':
+                insumo = request.POST.getlist('insumo')
+                convenio = Convenio()
+                convenio.nombre = request.POST['nombre'].lower()
+                convenio.valor = request.POST['valor']
+                convenio.validez = request.POST['validez']
+                convenio.planta_id = request.POST['planta_id']
+                convenio.cliente_id = cliente_id
+                convenio.save()
+                for i in insumo:
+                    convenio.insumo.add(i)
+                # convenio.save()
+            elif action == 'convenio_edit':
+                # bono = request.POST.getlist('bono')
+                insumo = request.POST.getlist('insumo')
+                # pk=request.POST['id']
+                # insumos = request.POST.getlist('insumo', pk)
+                convenio = Convenio.objects.get(pk=request.POST['id'])
+                # print('insumos', insumos)
+                convenio.nombre = request.POST['nombre'].lower()
+                convenio.valor = request.POST['valor']
+                convenio.validez = request.POST['validez']
+                convenio.save()
+                for i in insumo:
+                    convenio.insumo.add(i)
+                # for i in bono:
+                #     planta.bono.add(i)
+                    
+            elif action == 'convenio_delete':
+                convenio = Convenio.objects.get(pk=request.POST['id'])
+                convenio.status = False
+                convenio.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -494,6 +528,7 @@ class ClienteIdView(TemplateView):
         context['form2'] = NegocioForm()
         context['form3'] = PlantaForm(instance=cliente, cliente_id=cliente_id)
         context['form4'] = ContactoPlantaForm()
+        context['form5'] = ConvenioForm()
         # context['form3'] = PlantaForm(instance=cliente, cliente=request.cliente)
         return context
 
@@ -572,6 +607,34 @@ class PlantaContactoView(TemplateView):
                 data = []
                 for i in ContactoPlanta.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class PlantaConvenioView(TemplateView):
+    """PlantaConvenio List
+    Vista para listar todos los convenios de la(s) planta(s) y sus las negocios
+    relacionadas.
+    """
+    template_name = 'clientes/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, cliente_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata5':
+                data = []
+                for i in Convenio.objects.filter(cliente=cliente_id, status=True):
+                    data.append(i.toJSON())
+                    # print(data)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

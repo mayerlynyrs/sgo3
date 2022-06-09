@@ -55,7 +55,7 @@ $(function () {
 
     $('#data-table-responsive tbody').on('click', 'a[rel="edit"]', function (){
     
-        modal_title.find('span').html('Trabajador(es) <small style="font-size: 80%;">Editar</small>');
+        modal_title.find('span').html('Contacto Planta <small style="font-size: 80%;">Editar</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblContactoPlanta.cell($(this).closest('td, li')).index();
         var data = tblContactoPlanta.row(tr.row).data();
