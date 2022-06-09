@@ -52,4 +52,9 @@ urlpatterns = [
         view=views.PlantaContactoView.as_view(),
         name='planta_contactos'
      ),
+    path(
+        route='<int:cliente_id>/planta_convenios/',
+        view=views.PlantaConvenioView.as_view(),
+        name='planta_convenios'
+     ),
 ]

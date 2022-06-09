@@ -449,7 +449,7 @@ class ContactoPlantaForm(forms.ModelForm):
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
-                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))                              
+                                widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=False, label="Planta",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -464,7 +464,7 @@ class ContactoPlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )                            
-    relacion = forms.ChoiceField(choices = RELACION_PLANTA, required=True, label="Cargo",
+    relacion = forms.ChoiceField(choices = RELACION_PLANTA, required=True, label="Vínculo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
