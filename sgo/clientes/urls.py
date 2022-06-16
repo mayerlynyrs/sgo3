@@ -57,4 +57,14 @@ urlpatterns = [
         view=views.PlantaConvenioView.as_view(),
         name='planta_convenios'
      ),
+    path(
+        route='<int:cliente_id><int:convenio_id>/planta_convenios/',
+        view=views.PlantaConvenioView.as_view(),
+        name='planta_convenios'
+     ),
+    path(
+        route='<int:convenio_id>/convenios/',
+        view=views.ConveniosView.as_view(),
+        name='convenios'
+     ),
 ]

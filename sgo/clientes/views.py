@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import json
 
 # Create your views here.
 """Clientes Views. """
@@ -237,7 +238,7 @@ def create_cliente(request):
             cliente.save()
             cliente = cliente_form.save()
             messages.success(request, 'Cliente Creado Exitosamente')
-            return redirect('Clientes:create_cliente', cliente_id=cliente.id)
+            return redirect('clientes:create_cliente', cliente_id=cliente.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
@@ -531,6 +532,8 @@ class ClienteIdView(TemplateView):
         context['form3'] = PlantaForm(instance=cliente, cliente_id=cliente_id)
         context['form4'] = ContactoPlantaForm()
         context['form5'] = ConvenioForm()
+        # context['convenio_insumos'] = Convenio.objects.values(
+        #     'insumo__codigo_externo', 'insumo__nombre', 'insumo__costo').filter(id=14, status=True)
         # context['form3'] = PlantaForm(instance=cliente, cliente=request.cliente)
         return context
 
@@ -630,13 +633,43 @@ class PlantaConvenioView(TemplateView):
 
     def post(self, request, cliente_id, *args, **kwargs):
         data = {}
+        maye = Convenio.objects.values('id', 'nombre', 'valor', 'validez', 'planta', 'insumo__codigo_externo', 'insumo__nombre', 'insumo__costo').filter(cliente=cliente_id, status=True)
+        print('mayeeee', maye)
         try:
             action = request.POST['action']
             if action == 'searchdata5':
                 data = []
                 for i in Convenio.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
-                    # print(data)
+                    print('searchdata5', data)
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class ConveniosView(TemplateView):
+    """PlantaConvenio List
+    Vista para listar todos los convenios de la(s) planta(s) y sus las negocios
+    relacionadas.
+    """
+    template_name = 'clientes/create_cliente.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, convenio_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata6':
+                data = []
+                for i in Convenio.objects.filter(id=convenio_id, status=True):
+                    data.append(i.toJSON())
+                    print('ConveniosView', data)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

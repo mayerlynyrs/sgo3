@@ -1,6 +1,8 @@
 var tblConvenioPta;
+var tblConveniosPta;
 var modal_title;
 var cliente = null;
+var convenio = null;
 var enviando = false;
 var boton_editar_elim = document.getElementById("botonconvjs");
 var boton_guardarconv = document.getElementById("botonConv");
@@ -14,7 +16,7 @@ function getData5() {
         destroy: true,
         deferRender: true,
         ajax: {
-            url: '/clientes/'+cliente+'/planta_convenios/',
+            url: '/clientes/'+cliente+convenio+'/planta_convenios/',
             type: 'POST',
             data: {
                 'action': 'searchdata5'
@@ -35,7 +37,8 @@ function getData5() {
                 orderable: false,
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
+                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalConvenioDetall" rel="agg" title="Detalle Convenio" class="btn btn-dark btn-xs btn-flat btnAgg"><i class="fas fa-cubes"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     return buttons;
                 }
             },
@@ -50,8 +53,49 @@ $(function () {
     
     modal_title = $('.modal-title');
     cliente = document.getElementById("cliente_id").value;
+    convenio = document.getElementById("convenio_id").value;
+    // convenio = document.getElementById('insumos').setAttribute('href', '/convenios/'+data.id);
 
     getData5();
+    
+
+    function getData6(idconve) {
+        tblConveniosPta = $('#data-table-fixed-cabo').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: '/clientes/'+idconve+'/convenios/',
+                type: 'POST',
+                data: {
+                    'action': 'searchdata6'
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "insumo[ <br> ].codigo_externo"},
+                {"data": "insumo[ <br> ].nombre"},
+                {"data": "insumo[ <br> ].costo"},
+                
+            ],
+            initComplete: function (settings, json) {
+    
+            }
+        });
+    }
+
+
+    $('#data-table-fixed-header tbody').on('click', 'a[rel="agg"]', function (){
+        var tr = tblConvenioPta.cell($(this).closest('td, li')).index();
+        var data = tblConvenioPta.row(tr.row).data();
+        idconve = data.id;
+        getData6(idconve);
+        $('input[name="id"]' ).val(data.id);
+        $('input[name="convenio_id"]').val(data.id);
+        console.log(data.id);
+        $('#myModalConvenioDetall').modal('show');
+    });
 
 
     $('#data-table-fixed-header tbody').on('click', 'a[rel="edit"]', function (){
