@@ -243,11 +243,13 @@ class Planta(models.Model):
 
     examen = models.ManyToManyField("examenes.Examen",
         blank=True,
+        null=True,
         help_text='Seleccione una o mas examenes para esta planta.')
 
     bono = models.ManyToManyField(
         Bono,
         blank=True,
+        null=True,
         help_text='Seleccione una o mas Bonos para esta planta.'
     )
 

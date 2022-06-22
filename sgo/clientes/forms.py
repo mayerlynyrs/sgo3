@@ -23,7 +23,7 @@ class CrearClienteForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',}))
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',}))
     
     razon_social = forms.CharField(required=True, label="Razón Social",
                              widget=forms.TextInput(attrs={'class': "form-control" }))
@@ -115,7 +115,7 @@ class CrearClienteForm(forms.ModelForm):
             'telefono': TextInput(attrs={
                 'class': "form-control",
                 'type': "number",
-                'placeholder': '56912345678',
+                'placeholder': 'Ingrese RUT sin puntos ni guión',
                 }),
             'abreviatura': TextInput(attrs={
                 'class': "form-control",
@@ -130,7 +130,7 @@ class EditarClienteForm(forms.ModelForm):
                                     'onkeypress': "return isNumber(event)",
                                     'onblur': "checkRut(this)",
                                     'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                                    'placeholder': '987654321',})
+                                    'placeholder': 'Ingrese RUT sin puntos ni guión',})
                         )    
     razon_social = forms.CharField(required=True, label="Razón Social",
                              widget=forms.TextInput(attrs={'class': "form-control" }))
@@ -282,7 +282,7 @@ class PlantaForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           ) 
     nombre = forms.CharField(required=True, label="Razón Social",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
@@ -293,7 +293,7 @@ class PlantaForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
     nombre_gerente = forms.CharField(required=True, label="Nombre Gerente",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -331,7 +331,7 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    bono = forms.ModelMultipleChoiceField(queryset=Bono.objects.all(), required=True, label="Bonos",
+    bono = forms.ModelMultipleChoiceField(queryset=Bono.objects.all(), label="Bonos",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -339,7 +339,7 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), required=True, label="Exámenes",
+    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), label="Exámenes",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -476,7 +476,7 @@ class ContactoPlantaForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
 
     def __init__(self, *args, **kwargs):
