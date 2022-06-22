@@ -23,7 +23,7 @@ DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'sgo4',
-            # 'NAME': 'sgo_actual',
+            # 'NAME': 'sgo',
             'USER': 'postgres',
             'PASSWORD': 'root',
             'HOST': 'localhost',
