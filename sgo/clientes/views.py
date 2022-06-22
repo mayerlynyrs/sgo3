@@ -633,15 +633,13 @@ class PlantaConvenioView(TemplateView):
 
     def post(self, request, cliente_id, *args, **kwargs):
         data = {}
-        maye = Convenio.objects.values('id', 'nombre', 'valor', 'validez', 'planta', 'insumo__codigo_externo', 'insumo__nombre', 'insumo__costo').filter(cliente=cliente_id, status=True)
-        print('mayeeee', maye)
         try:
             action = request.POST['action']
             if action == 'searchdata5':
                 data = []
                 for i in Convenio.objects.filter(cliente=cliente_id, status=True):
                     data.append(i.toJSON())
-                    print('searchdata5', data)
+                    # print('searchdata5', data)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -669,7 +667,7 @@ class ConveniosView(TemplateView):
                 data = []
                 for i in Convenio.objects.filter(id=convenio_id, status=True):
                     data.append(i.toJSON())
-                    print('ConveniosView', data)
+                    # print('ConveniosView', data)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

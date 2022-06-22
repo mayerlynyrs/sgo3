@@ -25,7 +25,18 @@ function getData5() {
         },
         columns: [
             {"data": "nombre"},
-            {"data": "valor"},
+            {"data": "valor",
+            createdCell: function(td, cellData, data, rowData, row, col){
+              var color = (cellData > maye) ? '' : 'red';
+              $(td).css('color', color);
+            }},
+            {"data": "insumo[].costo",
+            "render": function(data, type, row, meta){
+                const arr = data;
+                const reducer = (accumulator, curr) => accumulator + curr;
+                maye = arr.reduce(reducer);
+                return maye;
+            }},
             {"data": "validez"},
             {"data": "planta"},
             {"data": "id"},
@@ -36,8 +47,8 @@ function getData5() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp';
                     buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalConvenioDetall" rel="agg" title="Detalle Convenio" class="btn btn-dark btn-xs btn-flat btnAgg"><i class="fas fa-cubes"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     return buttons;
                 }
