@@ -66,7 +66,7 @@
           <div class="panel-body">      
             <div>
             </div>
-            <div id="calendar" class="demo-calendar fc fc-media-screen fc-direction-ltr fc-theme-standard">
+            <div id="calendar" >
           </div>
         </div>
         </div>
@@ -262,6 +262,7 @@
           cargo:"{{  agenda2.cargo }} ",
           requerimiento: "{{  agenda2.requerimiento }} ",
           fecha: "{{  agenda2.fecha_agenda_evaluacion }} ",
+          centro: "{{  agenda2.centro }} ",
           start: "{{ agenda2.fecha_agenda_evaluacion | date:"Y-m-d" }}",
           
           
@@ -273,7 +274,7 @@
       info.jsEvent.preventDefault(); // don't let the browser navigate
       iziToast.success({
                   message: 'Tabajador ' + info.event.title + "<br/>" + 'Planta: ' +info.event.extendedProps.planta + "<br/>" + 'Cargo: ' +info.event.extendedProps.cargo
-                  + "<br/>" + 'Requerimiento: ' +info.event.extendedProps.requerimiento + "<br/>" + 'Fecha Evaluación: ' +info.event.extendedProps.fecha ,
+                  + "<br/>" + 'Requerimiento: ' +info.event.extendedProps.requerimiento + "<br/>" + 'Fecha Evaluación: ' +info.event.extendedProps.fecha + "<br/>" + 'Centro Médico: ' +info.event.extendedProps.centro ,
                   position: 'topRight',
     });
 

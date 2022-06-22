@@ -77,7 +77,7 @@ class CrearUsuarioForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
     
     first_name = forms.CharField(required=True, label="Nombres",
@@ -185,7 +185,7 @@ class EditarUsuarioForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
     first_name = forms.CharField(required=True, label="Nombres",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -289,7 +289,7 @@ class CrearTrabajadorForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
@@ -494,7 +494,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
                           'title': "El RUT debe ser ingresado sin puntos ni guiones.",
-                          'placeholder': '987654321',})
+                          'placeholder': 'Ingrese RUT sin puntos ni guión',})
                           )
     first_name = forms.CharField(required=True, label="Nombres",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
