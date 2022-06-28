@@ -104,11 +104,12 @@ class BateriaView(TemplateView):
                 pk=request.POST['id']
                 examenes = request.POST.getlist('examen', pk)
                 exam = Bateria.objects.get(pk=request.POST['id'])
-                print(examenes)
-                print("----")
-                print(examen)
+                ex = []
+                for d in exam.examen.all():
+                    ex.append(d.id )
+                for i in ex:
+                    exam.examen.remove(i)
                 exam.nombre = request.POST['nombre'].lower()
-                # exam.examen = request.POST['examen']
                 for i in examen:
                     exam.examen.add(i)
                 exam.save()

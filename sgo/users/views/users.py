@@ -2,7 +2,7 @@
 
 
 import json
-# Django
+# Djangoo
 import os
 from subprocess import Popen
 from datetime import datetime
