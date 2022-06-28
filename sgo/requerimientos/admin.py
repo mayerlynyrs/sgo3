@@ -10,13 +10,14 @@ from import_export.widgets import ForeignKeyWidget
 from import_export.widgets import ManyToManyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from requerimientos.models import Causal, Requerimiento, AreaCargo, RequerimientoTrabajador, Adendum
+from requerimientos.models import Causal, Requerimiento, AreaCargo, RequerimientoConvenio, RequerimientoTrabajador, Adendum
 # Clientes
 from clientes.models import Planta
 # Utils Model
 from utils.models import Area, Cargo
 #User
 from users.models import User, Trabajador
+from epps.models import Convenio
 
 
 class CausalSetResource(resources.ModelResource):
@@ -45,6 +46,16 @@ class AreaCargoSetResource(resources.ModelResource):
     class Meta:
         model = AreaCargo
         fields = ('id', 'cantidad', 'valor_aprox', 'fecha_ingreso', 'requerimiento', 'area', 'cargo', 'status', )
+
+
+class RequerimientoConvenioSetResource(resources.ModelResource):
+    requerimiento = fields.Field(column_name='requerimiento', attribute='requerimiento', widget=ForeignKeyWidget(Requerimiento, 'nombre'))
+    convenio = fields.Field(column_name='convenio', attribute='convenio', widget=ForeignKeyWidget(Convenio, 'nombre'))
+    area_cargo = fields.Field(column_name='area_cargo', attribute='area_cargo', widget=ForeignKeyWidget(AreaCargo, 'nombre'))
+
+    class Meta:
+        mcausalodel = RequerimientoTrabajador
+        fields = ('id', 'requerimiento', 'convenio', 'area_cargo', 'status', )
 
 
 class RequerimientoTrabajadorSetResource(resources.ModelResource):
@@ -96,6 +107,17 @@ class AreaCargoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'cantidad', 'requerimiento', 'area', 'cargo', 'valor_aprox', 'status', 'modified',)
     list_filter = ['requerimiento', 'area', 'cargo', ]
     search_fields = ['area__nombre', 'cargo__nombre', 'requerimiento__nombre', ]
+
+
+@admin.register(RequerimientoConvenio)
+class RequerimientoConvenioAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """RequerimientoConvenioAdmin model admin."""
+
+    resource_class = RequerimientoConvenioSetResource
+    fields = ('requerimiento', 'convenio', 'area_cargo', 'valor_total', 'status', )
+    list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'status',)
+    list_filter = ['requerimiento', 'convenio', 'area_cargo' ]
+    search_fields = ['requerimiento__nombre', 'convenio__nombre', 'area_cargo' ]
 
 
 @admin.register(RequerimientoTrabajador)

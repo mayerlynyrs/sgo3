@@ -128,10 +128,6 @@ class Cliente(BaseModel):
         Horario,
         help_text='Seleccione uno o mas horario para este cliente.'
     )
-
-    # region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True) 
-    # provincia = GroupedForeignKey(Provincia, "region", on_delete=models.SET_NULL, null=True, blank=True)
-    # ciudad = GroupedForeignKey(Ciudad, "provincia", null=True, blank=True)
     region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
     provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
     ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
@@ -209,7 +205,7 @@ class Planta(models.Model):
     nombre_gerente = models.CharField(verbose_name="Nombre Gerente", max_length=100)
 
     direccion_gerente = models.CharField(
-        verbose_name="Dirección Gerente",
+        'Dirección Gerente',
         max_length=200,
     )
 
@@ -243,21 +239,19 @@ class Planta(models.Model):
 
     examen = models.ManyToManyField("examenes.Examen",
         blank=True,
-        null=True,
         help_text='Seleccione una o mas examenes para esta planta.')
 
     bono = models.ManyToManyField(
         Bono,
         blank=True,
-        null=True,
         help_text='Seleccione una o mas Bonos para esta planta.'
     )
 
-    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True, )
+    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
 
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, )
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
 
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, )
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
 
     direccion = models.CharField(
         max_length=200,
