@@ -31,6 +31,21 @@ from django.db.models import Count
 from clientes.models import Negocio, Planta, Cliente, ContactoPlanta
 from users.models import User
 from epps.models import Convenio
+from utils.models import Provincia, Ciudad
+
+
+# Región/Provincia/Ciudad
+def load_provincias(request):
+    region_id = request.GET.get('region')    
+    provincias = Provincia.objects.filter(region_id=region_id).order_by('nombre')
+    context = {'provincias': provincias}
+    return render(request, 'clientes/provincia.html', context)
+
+def load_ciudades(request):
+    provincia_id = request.GET.get('provincia')    
+    ciudades = Ciudad.objects.filter(provincia_id=provincia_id).order_by('nombre')
+    context = {'ciudades': ciudades}
+    return render(request, 'clientes/ciudad.html', context)
 
 
 class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -412,6 +427,18 @@ class ClienteIdView(TemplateView):
                 planta.gratificacion_id = request.POST['gratificacion']
                 planta.cliente_id = cliente_id
                 planta.save()
+                bonos = []
+                examenes = []
+                for d in planta.bono.all():
+                    bonos.append(d.id ) 
+                for a in bonos:
+                    planta.bono.remove(a)
+
+                for h in planta.examen.all():
+                    examenes.append(h.id ) 
+                for j in bonos:
+                    planta.examen.remove(j)
+                
                 for i in bono:
                     planta.bono.add(i)
                 for e in examen:
@@ -490,20 +517,19 @@ class ClienteIdView(TemplateView):
                     convenio.insumo.add(i)
                 # convenio.save()
             elif action == 'convenio_edit':
-                # bono = request.POST.getlist('bono')
                 insumo = request.POST.getlist('insumo')
-                # pk=request.POST['id']
-                # insumos = request.POST.getlist('insumo', pk)
                 convenio = Convenio.objects.get(pk=request.POST['id'])
-                # print('insumos', insumos)
                 convenio.nombre = request.POST['nombre'].lower()
                 convenio.valor = request.POST['valor']
                 convenio.validez = request.POST['validez']
                 convenio.save()
+                conve = []
+                for d in convenio.insumo.all():
+                    conve.append(d.id ) 
+                for i in conve:
+                    convenio.insumo.remove(i)
                 for i in insumo:
                     convenio.insumo.add(i)
-                # for i in bono:
-                #     planta.bono.add(i)
                     
             elif action == 'convenio_delete':
                 convenio = Convenio.objects.get(pk=request.POST['id'])

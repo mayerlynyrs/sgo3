@@ -6,7 +6,7 @@ var boton_numero2 = document.getElementById("boton2");
 boton_numero2.addEventListener("click", guardar_planta_contacto);
 
 
-function getData2() {
+function getData4() {
     tblRequeriTrab = $('#data-table-buttons_wrapper').DataTable({
         responsive: true,
         autoWidth: false,
@@ -16,7 +16,7 @@ function getData2() {
             url: '/requerimientos/'+requerimiento+'/requirement_trabajadores/',
             type: 'POST',
             data: {
-                'action': 'searchdata3'
+                'action': 'searchdata4'
             },
             dataSrc: ""
         },
@@ -39,6 +39,7 @@ function getData2() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="edit" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-clipboard-check"></i></a>';
                     // buttons += '<a href="#" rel="edit" title="Enviar a Revisión" class="btn btn-info btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
                     return buttons;
                 }
@@ -60,7 +61,7 @@ $(function () {
     modal_title = $('.modal-title');
     requerimiento = document.getElementById("requerimiento_id").value;
 
-    getData2();
+    getData4();
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
     

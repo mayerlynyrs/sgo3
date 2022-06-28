@@ -79,7 +79,16 @@
 					</li>
           <li class="nav-item done">
             <a href="#step-3">
-              <span class="number">3</span> 
+              <span class="number">3</span>
+							<span class="info">
+                Convenio
+                <small>Insumos/EPP</small>
+							</span>
+						</a>
+					</li>
+          <li class="nav-item done">
+            <a href="#step-4">
+              <span class="number">4</span>
 							<span class="info">
                 Trabajadores Área-Cargo
                 <small>Trabajadores en Requerimiento </small>
@@ -255,35 +264,35 @@
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-12">
                                           <label for="email">Tipo:</label>
-                                          {{ form3.tipo }}
+                                          {{ form4.tipo }}
                                         </div>
                                       </div>
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-12">
                                           <label for="email">Trabajador:</label>
-                                          {{ form3.trabajador }}
+                                          {{ form4.trabajador }}
                                         </div>
                                       </div>
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-6">
                                           <label for="email">Pensión:</label>
-                                          {{ form3.pension }}
+                                          {{ form4.pension }}
                                         </div>
                                         <div class="form-group col-md-6">
                                           <label for="email">Referido:</label>
-                                          {{ form3.referido }}
+                                          {{ form4.referido }}
                                         </div>
                                       </div>
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-12">
                                           <label for="email">Jefe del Área:</label>
-                                          {{ form3.jefe_area }}
+                                          {{ form4.jefe_area }}
                                         </div>
                                       </div>
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-12">
                                           <label for="email">Observaciones:</label>
-                                          {{ form3.descripcion }}
+                                          {{ form4.descripcion }}
                                         </div>
                                       </div>
                                       <input name="action" type="hidden" value="requeri_trab_add">
@@ -317,6 +326,85 @@
 								<div class="row">
 									<!-- begin col-10 -->
 									<div class="col-xl-10 offset-xl-1">
+										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Convenio(s) del Requerimiento</legend><hr /><br>
+										<!-- begin form-group row -->
+                    <div class="row col-md-12">
+                      <a class="btn btn-primary btn-flat btnAddConvenio" style="color: white;">
+                        <i class="fas fa-plus"></i> Nuevo registro
+                      </a>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                      <table id="data-table-responsive" class="table table-striped table-bordered table-td-valign-middle ">
+                        <thead>
+                          <tr>
+                              <th>Convenio</th>
+                              <th>(Cantidad) - Cargo</th>
+                              <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        {% block rows3 %}
+
+                        {% endblock %}
+                      
+                      </table>
+                    </div>
+
+                      {% block javascript3 %}
+                          <!-- Modal -->
+                          <div class="modal fade" id="myModalConvenioR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                              aria-hidden="true">
+                              <form method="post" action="." enctype="multipart/form-data">
+                                  <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title">
+                                                  <b><i class="fas fa-search"></i> <span></span></b>
+                                              </h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                              </button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div class="container-fluid">
+                                                  <input name="action" type="hidden" value="add">
+                                                  <input name="id" id="id" type="hidden" value="0">
+                                                  <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                                                  {% csrf_token %}
+                                                  {% for field in form3.visible_fields %}
+                                                      <div class="form-group">
+                                                          <label for="email">{{ field.label }}:</label>
+                                                          {{ field }}
+                                                      </div>
+                                                  {% endfor %}
+                                              </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                              <button type="submit" id="botonConvenio" class="btn btn-info btn-flat btnAdd33"> Guardar</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      {% endblock %}
+
+                  </div>
+									<!-- end col-8 -->
+								</div>
+								<!-- end row -->
+							</fieldset>
+							<!-- end fieldset -->
+					</div>
+					<!-- end step-3 -->
+					<!-- begin step-4 -->
+					<div id="step-4">
+						<!-- begin fieldset -->
+							<fieldset>
+								<!-- begin row -->
+								<div class="row">
+									<!-- begin col-10 -->
+									<div class="col-xl-10 offset-xl-1">
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Trabajador(es) del Requerimiento</legend><hr /><br>
                       <div class="row col-md-12">
                         <!-- <a class="btn btn-info btn-flat btnAddRequeUser" style="color: white;">
@@ -335,14 +423,14 @@
                                 <th>Acciones</th>
                             </tr>
                           </thead>
-                          {% block rows3 %}
+                          {% block rows4 %}
 
                           {% endblock %}
                         
                         </table>
                       </div>
 
-                        {% block javascript3 %}
+                        {% block javascript4 %}
                             <!-- Modal -->
                             <div class="modal fade" id="myModalRequerUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
@@ -363,7 +451,7 @@
                                                     <input name="id" id="id" type="hidden" value="0">
                                                     <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
                                                     {% csrf_token %}
-                                                    {% for field in form3.visible_fields %}
+                                                    {% for field in form4.visible_fields %}
                                                         <div class="form-group">
                                                             <label for="email">{{ field.label }}:</label>
                                                             {{ field }}
@@ -425,6 +513,7 @@
     <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
     
     <script src="{% static 'admin/assets/js/crud/areacargo_r_list.js' %}"></script>
+    <script src="{% static 'admin/assets/js/crud/convenio_requer_list.js' %}"></script>
     <script src="{% static 'admin/assets/js/crud/requeri_trab_list.js' %}"></script>
 {% endblock %}
 

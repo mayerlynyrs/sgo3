@@ -6,8 +6,6 @@ from django.forms import model_to_dict
 
 # Create your models here.
 from clientes.models import Cliente, Planta
-# Requerimientos
-from requerimientos.models import Requerimiento
 
 
 class TipoInsumo(models.Model):
@@ -90,28 +88,3 @@ class Convenio(models.Model):
         item['planta_id'] = self.planta.id
         item['planta'] = self.planta.nombre.title()
         return item
-
-
-# class AsignacionConvenio(models.Model):
-#     convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE)
-#     requerimiento = models.ForeignKey(Requerimiento, on_delete=models.CASCADE)
-
-#     status = models.BooleanField(
-#         default=True,
-#         help_text='Para desactivar la asignación del convenio, deshabilite esta casilla.'
-#     )
-#     created_date = models.DateTimeField(
-#         default= timezone.now,
-#         null=True,
-#         blank=True
-#     )
-#     def __str__(self):
-#         return str(self.id)
-    
-#     def toJSON(self):
-#         item = model_to_dict(self)
-#         item['convenio_id'] = self.convenio.id
-#         item['convenio'] = self.convenio.nombre
-#         item['requerimiento_id'] = self.requerimiento.id
-#         item['requerimiento'] = self.requerimiento.nombre
-#         return item

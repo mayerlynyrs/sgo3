@@ -67,4 +67,9 @@ urlpatterns = [
         view=views.ConveniosView.as_view(),
         name='convenios'
      ),
+    
+    
+    path('ajax/load-provincias/', views.load_provincias, name='ajax_load_provincias'), # AJAX
+    
+    path('ajax/load-ciudades/', views.load_ciudades, name='ajax_load_ciudades'), # AJAX
 ]

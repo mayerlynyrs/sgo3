@@ -310,27 +310,6 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=True, label="Región",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
-    provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(), required=True, label="Provincia",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
-    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.all(), required=True, label="Ciudad",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     bono = forms.ModelMultipleChoiceField(queryset=Bono.objects.all(), label="Bonos",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
@@ -354,6 +333,30 @@ class PlantaForm(forms.ModelForm):
         cliente_id = kwargs.pop('cliente_id', None)
         print('cliente_id', cliente_id)
         super(PlantaForm, self).__init__(*args, **kwargs)
+
+        self.fields['provincia'].queryset = Provincia.objects.none()
+
+        if 'region' in self.data:
+            try:
+                region_id = int(self.data.get('region'))
+                self.fields['provincia'].queryset = Provincia.objects.filter(region_id=region_id).order_by('nombre')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
+        elif self.instance.pk:
+            self.fields['provincia'].queryset = self.instance.region.provincia_set.order_by('nombre')
+
+        self.fields['ciudad'].queryset = Provincia.objects.none()
+
+        if 'provincia' in self.data:
+            try:
+                provincia_id = int(self.data.get('provincia'))
+                self.fields['ciudad'].queryset = Ciudad.objects.filter(provincia_id=provincia_id).order_by('nombre')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
+        elif self.instance.pk:
+            # self.fields['ciudad'].queryset = self.instance.region.provincia.ciudad_set.order_by('nombre')
+            self.fields['ciudad'].queryset = self.instance.provincia.ciudad_set.order_by('nombre')
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
@@ -408,18 +411,6 @@ class PlantaForm(forms.ModelForm):
     class Meta:
         model = Planta
         fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion')
-
-
-class SaludForm(forms.ModelForm):
-    nombre = forms.CharField(required=True, label="Nombre",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-
-    def __init__(self, *args, **kwargs):
-        super(SaludForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = Salud
-        fields = ("nombre",)
 
 
 class ContactoPlantaForm(forms.ModelForm):

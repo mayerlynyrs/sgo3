@@ -6,7 +6,7 @@ var boton_numero1 = document.getElementById("boton");
 boton_numero1.addEventListener("click", guardar_area_cargo);
 
 
-function getData() {
+function getData2() {
     tblAreaCargo = $('#data-table-default').DataTable({
         responsive: true,
         autoWidth: false,
@@ -54,7 +54,7 @@ $(function () {
     modal_title = $('.modal-title');
     requerimiento = document.getElementById("requerimiento_id").value;
 
-    getData();
+    getData2();
 
     $('.btnAdd').on('click', function () {
         $('input[name="action"]').val('acr_add');

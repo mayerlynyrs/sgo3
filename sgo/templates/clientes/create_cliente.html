@@ -136,7 +136,7 @@
 			  <div>
 					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" action="{% url 'clientes:update' cliente_id %}" autocomplete="off" novalidate id="CrearClienteForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+            <form method="post" action="{% url 'clientes:update' cliente_id %}" autocomplete="off" novalidate id="CrearClienteForm" data-provincias-url="{% url 'users:ajax_load_ciudades' %}">
 							<fieldset>
 								<div class="row">
 									<div class="col-xl-8 offset-xl-2">
@@ -264,7 +264,7 @@
                       {% block javascript3 %}
                         <!-- Modal -->
                         <div class="modal fade bd-example-modal-lg" id="myModalPlanta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                          <form method="post" action="." enctype="multipart/form-data">
+                          <form method="post" action="." autocomplete="off" novalidate>
                             <div class="modal-dialog modal-lg" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -280,12 +280,8 @@
                                     <input name="action" type="hidden" value="planta_add">
                                     <input name="id" id="id" type="hidden" value="0">
                                     <input name="cliente_id" id="cliente_id" type="hidden" value="{{ cliente_id }}">
-                                    <!-- {% for field in form3.visible_fields %}
-                                      <div class="form-group">
-                                        <label for="email">{{ field.label }}:</label>
-                                          {{ field }}
-                                      </div>
-                                    {% endfor %} -->
+                                    <!-- {% csrf_token %}
+                                    {% crispy form3 %} -->
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-6">
                                           <label for="email"> Negocio</label>
@@ -632,7 +628,7 @@
       var regionId = $(this).val();  // get the selected region ID from the HTML input
   
       $.ajax({                       // initialize an AJAX request
-        url: "{% url 'users:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
+        url: "{% url 'clientes:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
         data: {
           'region': regionId       // add the region id to the GET parameters
         },
@@ -648,7 +644,7 @@
       var provinciaId = $(this).val();  // get the selected region ID from the HTML input
   
       $.ajax({                       // initialize an AJAX request
-        url: "{% url 'users:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
+        url: "{% url 'clientes:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
         data: {
           'provincia': provinciaId       // add the region id to the GET parameters
         },
@@ -658,22 +654,6 @@
       });
   
     });
-      // plantas
-      $("#id_cliente").change(function () {
-        var url = $("#CrearUsuarioForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
-        var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
-  
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
-          data: {
-            'cliente': clienteId       // add the cliente id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_plantas` view function
-            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
-          }
-        });
-  
-      });
     </script>
   <script>
     function fixedEncodeURI (str) {

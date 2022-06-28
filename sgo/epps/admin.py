@@ -71,7 +71,7 @@ class Convenio(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = ConvenioSetResource
     fields = ('nombre', 'valor', 'validez', 'insumo', 'cliente', 'planta', 'status')
-    list_display = ('id', 'nombre', 'valor', 'validez', 'created_date')
+    list_display = ('id', 'nombre', 'valor', 'validez', 'planta', 'created_date')
     search_fields = ('nombre', )
 
 
