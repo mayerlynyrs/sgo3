@@ -41,6 +41,7 @@ class Examen(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['nombre'] = self.nombre.title()
+        item['id'] = self.id
         return item
 
 class Bateria(models.Model):
