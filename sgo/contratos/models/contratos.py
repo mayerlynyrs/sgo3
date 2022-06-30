@@ -4,6 +4,7 @@ import os
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.forms import model_to_dict
 from django.core.validators import FileExtensionValidator
 # Models
 from users.models import Trabajador
@@ -35,6 +36,25 @@ class Renuncia(BaseModel):
         return self.nombre
 
 
+class TipoContrato(BaseModel):
+    nombre = models.CharField(max_length=60)
+    status = models.BooleanField(
+        default=True,
+        help_text='para desactivar el tipo de contrato, deshabilite esta casilla.'
+    )
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        ordering = ['nombre']
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        return item
+
+
 class Contrato(BaseModel):
     POR_FIRMAR = 'PF'
     FIRMADO_TRABAJADOR = 'FT'
@@ -48,10 +68,6 @@ class Contrato(BaseModel):
     PENDIENTE_BAJA ='PB'
     BAJADO = 'BJ'
 
-    DIARIO = 'D'
-    MENSUAL = 'M'
-    MENSUAL30 = 'M3'
-
     FIRMA_ESTADO = (
         (POR_FIRMAR, 'Por Firmar'),
         (FIRMADO_TRABAJADOR, 'Firmado por Trabajador'),
@@ -62,16 +78,10 @@ class Contrato(BaseModel):
 
     CONTRATO_ESTADO = (
         (CREADO, 'Creado'),
-        (PROCESO_VALIDACION, 'en Proceso de  Validacion'),
+        (PROCESO_VALIDACION, 'En Proceso de  Validación'),
         (APROBADO, 'Aprobado'),
-        (PENDIENTE_BAJA,'en Proceso de baja'),
+        (PENDIENTE_BAJA,'En Proceso de baja'),
         (BAJADO,'Bajado'),
-    )
-
-    TIPO_CONTRATO = (
-        (DIARIO, 'Diario'),
-        (MENSUAL, 'Mensual'),
-        (MENSUAL30, 'Mensual 30 hrs'),
     )
 
     sueldo_base = models.IntegerField(default=0)
@@ -86,7 +96,7 @@ class Contrato(BaseModel):
     )
     motivo = models.TextField(blank=True, null=True)
     archivado = models.BooleanField(default=False)
-    tipo_contrato = models.CharField(max_length=2, choices=TIPO_CONTRATO, default=MENSUAL)
+    tipo_contrato = models.ForeignKey(TipoContrato, on_delete=models.PROTECT)
     seguro_vida = models.BooleanField(
         default=False,
         help_text='Para desactivar el seguro de vida, deshabilite esta casilla.'

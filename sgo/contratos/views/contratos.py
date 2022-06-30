@@ -29,12 +29,56 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
 # Models
 from ficheros.models import Fichero
-from contratos.models import Contrato, DocumentosContrato, ContratosBono
+from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono
 from requerimientos.models import RequerimientoTrabajador
 # Form
-from contratos.forms import CrearContratoForm
+from contratos.forms import TipoContratoForm, CrearContratoForm
 from requerimientos.forms import RequeriTrabajadorForm
 from users.forms import EditarUsuarioForm
+
+
+class TipoContratosView(TemplateView):
+    template_name = 'contratos/tipo_contratos_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in TipoContrato.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                tipo = TipoContrato()
+                tipo.nombre = request.POST['nombre'].lower()
+                tipo.status = True
+                tipo.save()
+            elif action == 'edit':
+                tipo = TipoContrato.objects.get(pk=request.POST['id'])
+                tipo.nombre = request.POST['nombre'].lower()
+                tipo.save()
+            elif action == 'delete':
+                tipo = TipoContrato.objects.get(pk=request.POST['id'])
+                tipo.status = False
+                tipo.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Tipo Contratos'
+        context['list_url'] = reverse_lazy('contratos:tipo_contrato')
+        context['entity'] = 'TipoContrato'
+        context['form'] = TipoContratoForm()
+        return context
 
 
 class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -163,15 +207,15 @@ class ContratoIdView(TemplateView):
 
     def get_context_data(self, requerimiento_trabajador_id, **kwargs):
 
-        requer_user = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
+        requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
         trabaj = RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id).values(
-                'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre', 'user__fecha_nacimiento',
-                'user__domicilio', 'user__ciudad', 'user__afp', 'user__salud', 'user__nivel_estudio',
-                'user__telefono', 'user__nacionalidad', 'requerimiento__nombre',  'referido',
+                'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
+                'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio',
+                'trabajador__telefono', 'trabajador__nacionalidad', 'requerimiento__nombre',  'referido',
                 'requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__planta__nombre', 'requerimiento__planta__region',
                 'requerimiento__planta__ciudad', 'requerimiento__planta__direccion',
-                'requerimiento__planta__gratificacion', 'user__planta__nombre').order_by('user__planta')
+                'requerimiento__planta__gratificacion', 'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
 
         context = super().get_context_data(**kwargs)
     #     context['title'] = 'Listado de Contratos'
@@ -180,18 +224,18 @@ class ContratoIdView(TemplateView):
     #     context['cliente'] = cliente
     #     context['entity'] = 'Contratos'
         context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
-                'user__first_name', 'user__last_name', 'user__rut','user__estado_civil__nombre',
-                'user__fecha_nacimiento', 'user__domicilio', 'user__ciudad__nombre', 'user__afp__nombre',
-                'user__salud__nombre',
-                'user__nivel_estudio__nombre', 'user__telefono', 'user__nacionalidad__nombre', 'requerimiento__nombre',
+                'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre',
+                'trabajador__fecha_nacimiento', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre',
+                'trabajador__salud__nombre',
+                'trabajador__nivel_estudio__nombre', 'trabajador__telefono', 'trabajador__nacionalidad__nombre', 'requerimiento__nombre',
                 'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre',
                 'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
                 'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
-                'requerimiento__planta__gratificacion__nombre').order_by('user__rut')
+                'requerimiento__planta__gratificacion__nombre').order_by('trabajador__rut')
     #     context['cliente_id'] = requerimiento_trabajador_id
-        context['form3'] = RequeriTrabajadorForm(instance=requer_user, user=trabaj)
-        context['form1'] = CrearContratoForm(instance=requer_user)
+        context['form3'] = RequeriTrabajadorForm(instance=requer_trabajador, user=trabaj)
+        context['form1'] = CrearContratoForm(instance=requer_trabajador)
         return context
 
 

@@ -14224,6 +14224,36 @@
     }
   },
   {
+    "model": "contratos.tipocontrato",
+    "pk": 1,
+    "fields": {
+      "nombre": "Mensual",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipocontrato",
+    "pk": 2,
+    "fields": {
+      "nombre": "Diario",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipocontrato",
+    "pk": 3,
+    "fields": {
+      "nombre": "Mensual 30 hrs",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
     "model": "contratos.tipodocumento",
     "pk": 1,
     "fields": {

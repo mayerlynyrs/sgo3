@@ -195,6 +195,7 @@
 								</a>
 								<ul class="sub-menu" style="{% if menu_module == None %}display: block;{% else %}display: none;{% endif %}">
 									<li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
+									<li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Tipo Contratos</a></li>
 								</ul>
 							</li>
         {% endif %}
