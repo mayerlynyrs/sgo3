@@ -27,6 +27,12 @@ urlpatterns = [
         view=views.delete_plantilla,
         name="delete-plantilla"
     ),
+    # tipo de contratos
+    path(
+        route='tipo_contratos',
+        view=views.TipoContratosView.as_view(),
+        name='tipo-contratos'
+     ),
     path(
         route='list/',
         view=views.ContratoListView.as_view(),

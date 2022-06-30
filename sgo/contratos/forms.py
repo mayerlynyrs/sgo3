@@ -5,8 +5,21 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 # Model
-from contratos.models import Plantilla, Contrato
+from contratos.models import Plantilla, TipoContrato, Contrato
 from clientes.models import Cliente, Planta
+
+
+class TipoContratoForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+  
+
+    def __init__(self, *args, **kwargs):
+        super(TipoContratoForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = TipoContrato
+        fields = ("nombre", )
 
 
 class CrearContratoForm(forms.ModelForm):

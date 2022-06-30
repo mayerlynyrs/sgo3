@@ -8,7 +8,7 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from contratos.models import Plantilla, Contrato, DocumentosContrato, TipoDocumento, Finiquito, ContratosBono, ContratosEquipo, Renuncia, Anexo, Revision
+from contratos.models import Plantilla, TipoContrato, Contrato, DocumentosContrato, TipoDocumento, Finiquito, ContratosBono, ContratosEquipo, Renuncia, Anexo, Revision
 from requerimientos.models import RequerimientoTrabajador, Causal
 # Clientes
 from clientes.models import Planta
@@ -21,9 +21,16 @@ class RenunciaSetResource(resources.ModelResource):
         model = Renuncia
         fields = ('id', 'archivo','fecha_termino','status', )
 
+class TipoContratoSetResource(resources.ModelResource):
+
+    class Meta:
+        model = TipoContrato
+        fields = ('id', 'nombre','status', )
+
 class ContratoInLine(admin.TabularInline):
 
     requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
+    tipo_contrato = fields.Field(column_name='tipo_contrato', attribute='tipo_contrato', widget=ForeignKeyWidget(TipoContrato, 'nombre'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
     horario = fields.Field(column_name='horario', attribute='horario', widget=ForeignKeyWidget(Horario, 'nombre'))
     renuncia = fields.Field(column_name='renuncia', attribute='renuncia', widget=ForeignKeyWidget(Renuncia, 'nombre'))
@@ -34,7 +41,7 @@ class ContratoInLine(admin.TabularInline):
     class Meta:
         model = Contrato
         fields = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'archivo' ,'motivo', 'archivado',
-        'tipo_contrato','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
+        'seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja','status', )
 
 class AnexoInLine(admin.TabularInline):
@@ -110,6 +117,16 @@ class PlantillaAdmin(admin.ModelAdmin):
 
     def plantas_list(self, obj):
         return u", ".join(o.nombre for o in obj.plantas.all())
+
+
+@admin.register(TipoContrato)
+class TipoContratoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """TipoContratoAdmin model admin."""
+
+    resource_class = TipoContratoSetResource
+    fields = ('nombre', 'status', )
+    list_display = ('id', 'nombre', 'created',)
+    search_fields = ['nombre', ]
 
 
 @admin.register(Contrato)
