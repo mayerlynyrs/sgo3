@@ -58,141 +58,90 @@
                 {% for ru in datos %}
                     <!-- {{ datos }} -->
                     <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Nombres:</label>
-                        <div class="form-control">{{ ru.user__first_name }} {{ ru.user__last_name }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Nombres &nbsp</label>{{ ru.trabajador__first_name }} {{ ru.trabajador__last_name }}
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Rut:</label>
-                        <div class="form-control">{{ ru.user__rut }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Rut &nbsp </label>{{ ru.trabajador__rut }}
                       </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Estado Civil:</label>
-                        <div class="form-control">{{ ru.user__estado_civil__nombre }}</div>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Fecha Nacimiento:</label>
-                        <div class="form-control">{{ ru.user__fecha_nacimiento }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Estado Civil &nbsp </label>{{ ru.trabajador__estado_civil__nombre }}
                       </div>
                     </div>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Previsión:</label>
-                        <div class="form-control">{{ ru.user__afp__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Fecha Nacimiento &nbsp </label>{{ ru.trabajador__fecha_nacimiento }}
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Salud:</label>
-                        <div class="form-control">{{ ru.user__salud__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Previsión &nbsp </label>{{ ru.trabajador__afp__nombre }}
                       </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Teléfono:</label>
-                        <div class="form-control">{{ ru.user__telefono }}</div>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Nivel Educacional:</label>
-                        <div class="form-control">{{ ru.user__nivel_estudio__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Salud &nbsp  </label>{{ ru.trabajador__salud__nombre }}
                       </div>
                     </div>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Nacionalidad:</label>
-                        <div class="form-control">{{ ru.user__nacionalidad__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Nivel Educacional &nbsp </label>{{ ru.trabajador__nivel_estudio__nombre }}
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Ciudad:</label>
-                        <div class="form-control">{{ ru.user__ciudad__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Teléfono &nbsp </label>{{ ru.trabajador__telefono }}
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Nacionalidad &nbsp </label>{{ ru.trabajador__nacionalidad__nombre }}
                       </div>
                     </div>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Domicilio:</label>
-                        <div class="form-control-lg form-control">{{ ru.user__domicilio }}</div>
+                      <div class="form-group col-md-8">
+                        <label for="email">Domicilio &nbsp </label>{{ ru.trabajador__domicilio }}
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Ciudad &nbsp </label>{{ ru.trabajador__ciudad__nombre }}
                       </div>
                     </div>
                     <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos del Requerimiento<hr /></legend>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Nombre:</label>
-                        <div class="form-control-lg form-control">{{ ru.requerimiento__nombre }}</div>
+                      <div class="form-group col-md-8">
+                        <label for="email">Nombre &nbsp</label>{{ ru.requerimiento__nombre }}
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Centro de Costo &nbsp</label>{{ ru.requerimiento__centro_costo }}
                       </div>
                     </div>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Referido:</label>
-                        {% if ru.referido == True %}
-                            <input type="checkbox" checked="checked">
-                        {% else %}
-                            <input type="checkbox">
-                        {% endif %}
+                      <div class="form-group col-md-4">
+                        <label for="email">Referido &nbsp</label>{% if ru.referido == True %} Si {% else %} No {% endif %}
                       </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Centro de Costo:</label>
-                        <div class="form-control">{{ ru.requerimiento__centro_costo }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Área &nbsp</label>{{ ru.area_cargo__area__nombre }}
                       </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Área:</label>
-                        <div class="form-control">{{ ru.area_cargo__area__nombre }}</div>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Cargo:</label>
-                        <div class="form-control">{{ ru.area_cargo__cargo__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Cargo &nbsp</label>{{ ru.area_cargo__cargo__nombre }}
                       </div>
                     </div>
                     <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos de la Empresa<hr /></legend>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Razón Social:</label>
-                        <div class="form-control-lg form-control">{{ ru.requerimiento__cliente__razon_social }}</div>
-                      </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-6">
-                        <label for="email">Rut:</label>
-                        <div class="form-control">{{ ru.requerimiento__cliente__rut }}</div>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="email">Planta:</label>
-                        <div class="form-control">{{ ru.requerimiento__planta__nombre }}</div>
-                      </div>
-                    </div>
-                    <div class="row col-md-12">
                       <div class="form-group col-md-4">
-                        <label for="email">Región:</label>
-                        <div class="form-control">{{ ru.requerimiento__planta__region__nombre }}</div>
+                        <label for="email">Razón Social &nbsp</label>{{ ru.requerimiento__cliente__razon_social }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Provincia:</label>
-                        <div class="form-control">{{ ru.requerimiento__planta__provincia__nombre }}</div>
+                        <label for="email">Rut &nbsp</label> {{ ru.requerimiento__cliente__rut }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Ciudad:</label>
-                        <div class="form-control">{{ ru.requerimiento__planta__ciudad__nombre }}</div>
+                        <label for="email">Gratificación &nbsp</label>{{ ru.requerimiento__planta__gratificacion__nombre }}
                       </div>
                     </div>
                     <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Dirección:</label>
-                        <div class="form-control-lg form-control">{{ ru.requerimiento__planta__direccion }}</div>
+                      <div class="form-group col-md-8">
+                        <label for="email">Dirección &nbsp</label>{{ ru.requerimiento__planta__direccion }}
                       </div>
-                    </div>
-                    <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Gratificación:</label>
-                        <div class="form-control">{{ ru.requerimiento__planta__gratificacion__nombre }}</div>
+                      <div class="form-group col-md-4">
+                        <label for="email">Planta &nbsp</label>{{ ru.requerimiento__planta__nombre }}
                       </div>
                     </div>
                     <input name="action" type="hidden" value="requeri_trab_add">
                     <input name="id" id="id" type="hidden" value="0">
                     <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
-                {% endfor %}
+                
               </div>
               <div class="form-group row m-b-0">
                 <div class="col-md-4 col-sm-4">
@@ -205,7 +154,53 @@
                     <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
                 </div> -->
               </div>
+                <div class="float-right">
+                  {% for con in contratos %}
+                  {% if con.contrato__tipo_contrato__nombre == Null %}
+                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
+                {% else %}
+                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                {% endif %}
+                {% endfor %}
+              </div>
           </form>
+          <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br><hr /></legend>
+          <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                  <th>Tipo Archivo</th>
+                  <th>Tipo Contrato</th>
+                  <th>Causal</th>
+                  <th>Motivo</th>
+                  <th>Fecha Inicio</th>
+                  <th>Fecha Término</th>
+                  <th>Jornada</th>
+                  <th>Renta Imponible</th>
+                  <th>Acciones</th>
+              </tr>
+              <tbody>
+                {% for con in contratos %}
+                <tr>
+                  {% if con.contrato__tipo_contrato__nombre != Null %}
+                  <td>{{ con.contrato__tipo_contrato__nombre }}</td>
+                  <td>Contrato</td>
+                  <td>{{ con.contrato__causal__nombre }}</td>
+                  <td>{{ con.contrato__motivo }}</td>
+                  <td>{{ con.contrato__fecha_inicio }}</td>
+                  <td>{{ con.contrato__fecha_termino }}</td>
+                  <td>{{ con.contrato__horario__nombre }}</td>
+                  <td>{{ con.contrato__sueldo_base }}</td>
+                  <td><button type="button" class="fa fa-paper-plane" data-toggle="modal" data-target="#exampleModal">
+                  </button></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </thead>
+
+        </table>
+      </div>
         </div>
         <!-- end col-10 -->
       </div>
@@ -213,12 +208,159 @@
     </div>
   </div>
 </div>
-<!-- end panel -->
-<div class="modal fade" id="modal-plantilla">
-    <div class="modal-dialog">
-      <div class="modal-content"></div>
+
+<div class="modal fade bd-example-modal-lg" id="modalcontrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Agregar/Editar Documento Contractual</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'contratos:create' %}"  enctype="multipart/form-data">
+        <h5>Información del contrato</h5>
+        {% csrf_token %}
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Tipo Contrato</label>
+            {{ form2.tipo_contrato }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Regimen</label>
+            {{ form2.regimen }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Causal</label>
+            {{ form2.causal }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Motivo</label>
+            {{ form2.motivo }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Inicia</label>
+            {{ form2.fecha_inicio }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Término</label>
+            {{ form2.fecha_termino }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Horario</label>
+            {{ form2.horario }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Sueldo Base</label>
+            {{ form2.sueldo }}
+          </div>
+        </div>
+
+        
+        <h5>Bonos </h5>
+        <div class="row col-md-12">
+
+          {% for bo in bonos %}
+          
+          <div class="form-group col-md-6">
+            
+            <label for="email">{{ bo.requerimiento__planta__bono__nombre }}</label>
+            <input type="text" name="{{forloop.counter}}" class="form-control" value="0" >
+            <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bo.requerimiento__planta__bono}}">
+          </div>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
+        <input type="hidden" name="gratificacion" class="form-control" value="{{ ru.requerimiento__planta__gratificacion }}">
+        <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
+        <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
+        <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
+        
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+      </div>
+    </form>
     </div>
+  </div>
 </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="modalanexo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Creando Anexo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% for con in contratos %}
+        
+        <div style="background-color: #ebebeb;" >
+          <h4 class="text-center"><u>Datos del contrato</u></h4>
+          <br>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Nombres &nbsp</label>{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Domicilio &nbsp </label>{{ con.trabajador__domicilio }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Inicio &nbsp</label>{{ con.contrato__fecha_inicio }} 
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Término &nbsp </label>{{ con.contrato__fecha_termino_ultimo_anexo }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-12">
+            <label for="email">Motivo &nbsp</label>{{ con.contrato__motivo }} 
+          </div>
+        </div>
+      </div>
+        
+       
+        <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br><hr /></legend>
+        <div class="row col-md-12">
+          <div class="form-group col-md-4">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="email">Fecha Término Anexo </label>
+            <input type="text" name="nueva_fecha" id="fechaInicioAnexo" class="form-control" value=""> 
+          </div>
+          <div class="form-group col-md-4">
+            <input type="text" name="UltimoAnexo" id="fechaInicioContrato" class="form-control" value="{{ ultimoanexo }}">
+            <input type="text" name="UltimoAnexo" id="UltimoAnexo" class="form-control" value="{{ ultimoanexo }}">
+            <input type="text" name="id_causalanexo" id="id_causalanexo" class="form-control" value="{{ con.contrato__causal }}">  
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end panel -->
+{% endfor %}
+{% endfor %}
+
 {% endblock %}
 {% block librerias %}
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
@@ -228,6 +370,7 @@
   <script src="{% static 'admin/assets/plugins/jquery-validation/dist/additional-methods.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
     <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+    <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
 {% endblock %}
 {% block scripts %}
   var enviando = false;
