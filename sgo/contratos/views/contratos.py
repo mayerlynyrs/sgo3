@@ -1,6 +1,10 @@
 """Contratos views."""
 
+from asyncio.windows_events import NULL
+from multiprocessing import context
 import os
+from tkinter import FLAT
+from datetime import datetime
 # Django
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -32,7 +36,7 @@ from ficheros.models import Fichero
 from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono
 from requerimientos.models import RequerimientoTrabajador
 # Form
-from contratos.forms import TipoContratoForm, CrearContratoForm
+from contratos.forms import TipoContratoForm, CrearContratoForm, ContratoForm
 from requerimientos.forms import RequeriTrabajadorForm
 from users.forms import EditarUsuarioForm
 
@@ -141,102 +145,85 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create(request):
-    if request.method == 'POST':
 
-        form = CrearContratoForm(data=request.POST, files=request.FILES, user=request.user)
+            requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+            contrato = Contrato()
+            contrato.causal_id = request.POST['causal']
+            contrato.motivo = request.POST['motivo']
+            contrato.fecha_inicio = request.POST['fecha_inicio']
+            contrato.fecha_termino = request.POST['fecha_termino']
+            contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
+            contrato.horario_id = request.POST['horario']
+            contrato.sueldo_base = request.POST['sueldo']
+            contrato.tipo_contrato_id = request.POST['tipo_contrato']
+            contrato.gratificacion_id = request.POST['gratificacion']
+            contrato.planta_id = request.POST['planta']
+            contrato.trabajador_id = request.POST['trabajador_id']
+            contrato.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id'] 
+            contrato.status = True
+            contrato.save()
+            largobonos = int(request.POST['largobonos']) + 1
+            i = []
+            for a in range(1,largobonos):
+                i = request.POST.getlist(str(a))
+                if (i[0] != '0'):
+                    bonos = ContratosBono()
+                    bonos.valor = i[0]
+                    bonos.bono_id = i[1]
+                    bonos.contrato_id = contrato.id
+                    bonos.save()
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Contrato Creado Exitosamente')
-
-            return redirect('contratos:list-plantilla')
-        else:
-            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
-    else:
-        form = CrearContratoForm(user=request.user)
-
-    return render(request, 'contratos/contrato_create.html', {
-        'form': form,
-    })
+            return redirect('contratos:create_contrato',requrimientotrabajador)
+ 
 
 
 class ContratoIdView(TemplateView):
     template_name = 'contratos/create_contrato.html'
-    # requerimiento_trabajador_id=Contrato
-    
-    # # cliente = get_object_or_404(Contrato, pk=1)
 
-    # @method_decorator(csrf_exempt)
-    # @method_decorator(login_required)
-    # def dispatch(self, request, *args, **kwargs):
-    #     return super().dispatch(request, *args, **kwargs)
-
-    # def post(self, request, requerimiento_trabajador_id, *args, **kwargs):
-    #     data = {}
-    #     try:
-    #         action = request.POST['action']
-    #         if action == 'searchdata':
-    #             print(requerimiento_trabajador_id)
-    #             data = []
-    #             for i in RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id, status=True):
-    #                 data.append(i.toJSON())
-    #         elif action == 'negocio_add':
-    #             negocio = ContratosBono()
-    #             negocio.nombre = request.POST['nombre']
-    #             negocio.descripcion = request.POST['descripcion']
-    #             negocio.archivo = request.FILES['archivo']
-    #             negocio.requerimiento_trabajador_id = requerimiento_trabajador_id
-    #             negocio.save()
-    #         elif action == 'negocio_edit':
-    #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
-    #             negocio.nombre = request.POST['nombre']
-    #             negocio.descripcion = request.POST['descripcion']
-    #             negocio.archivo = request.FILES['archivo']
-    #             negocio.requerimiento_trabajador_id = requerimiento_trabajador_id
-    #             negocio.save()
-    #         elif action == 'negocio_delete':
-    #             negocio = ContratosBono.objects.get(pk=request.POST['id'])
-    #             negocio.status = False
-    #             negocio.save()
-    #         else:
-    #             data['error'] = 'Ha ocurrido un error'
-    #     except Exception as e:
-    #         data['error'] = str(e)
-    #     return JsonResponse(data, safe=False)
 
 
     def get_context_data(self, requerimiento_trabajador_id, **kwargs):
 
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
         trabaj = RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id).values(
-                'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
+                'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
                 'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio',
                 'trabajador__telefono', 'trabajador__nacionalidad', 'requerimiento__nombre',  'referido',
                 'requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__planta__nombre', 'requerimiento__planta__region',
                 'requerimiento__planta__ciudad', 'requerimiento__planta__direccion',
                 'requerimiento__planta__gratificacion', 'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
-
         context = super().get_context_data(**kwargs)
-    #     context['title'] = 'Listado de Contratos'
-    #     context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
-    #     context['update_url'] = reverse_lazy('utils:update_cliente')
-    #     context['cliente'] = cliente
-    #     context['entity'] = 'Contratos'
         context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
-                'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre',
+                'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre',
                 'trabajador__fecha_nacimiento', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre',
                 'trabajador__salud__nombre',
                 'trabajador__nivel_estudio__nombre', 'trabajador__telefono', 'trabajador__nacionalidad__nombre', 'requerimiento__nombre',
                 'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
-                'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre',
+                'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre', 'requerimiento__planta',
                 'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
                 'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
-                'requerimiento__planta__gratificacion__nombre').order_by('trabajador__rut')
-    #     context['cliente_id'] = requerimiento_trabajador_id
+                'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
+        context['contratos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
+                'contrato__requerimiento_trabajador', 'contrato__sueldo_base', 'contrato__tipo_contrato__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
+                 'contrato__fecha_termino', 'contrato__horario__nombre' , 'contrato__fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
+        fechaultimoanexo = RequerimientoTrabajador.objects.values_list('contrato__fecha_termino_ultimo_anexo', flat=True).get(pk=requerimiento_trabajador_id)
+        print(fechaultimoanexo)
+        if(fechaultimoanexo != None):
+            feeecha = datetime.strftime(fechaultimoanexo, '%Y-%m-%d')
+            context['ultimoanexo'] = feeecha
+
+        horario = RequerimientoTrabajador.objects.values_list('requerimiento__cliente__horario', flat=True).filter(pk=requerimiento_trabajador_id)
+        bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
+        largobonos = len(bonos)
+        context['largobonos'] = largobonos
+        context['requerimiento_trabajador_id'] = requerimiento_trabajador_id
+        context['bonos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values('requerimiento__planta__bono','requerimiento__planta__bono__nombre')
         context['form3'] = RequeriTrabajadorForm(instance=requer_trabajador, user=trabaj)
         context['form1'] = CrearContratoForm(instance=requer_trabajador)
+        context['form2'] = ContratoForm()
         return context
+
 
 
 class ContratosBonoView(TemplateView):
@@ -348,7 +335,6 @@ class ContratoFirmarView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         # Obtengo todos los documentos del contrato
         documentos = DocumentosContrato.objects.filter(contrato=self.object.id)
         context['documentos'] = documentos
-
         return context
 
 

@@ -198,8 +198,8 @@ class ContratosBonoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """ContratosBonoAdmin model admin."""
 
     resource_class = ContratosBonoSetResource
-    fields = ('valor','descripcion', 'contrato', 'bono', 'status', )
-    list_display = ('id', 'descripcion' ,'valor', )
+    fields = ('valor', 'contrato', 'bono', 'status', )
+    list_display = ('id' ,'valor', )
     search_fields = ['valor', ]
 
 @admin.register(ContratosEquipo)

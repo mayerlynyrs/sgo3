@@ -7,7 +7,8 @@ from crispy_forms.layout import Layout, Row, Column
 # Model
 from contratos.models import Plantilla, TipoContrato, Contrato
 from clientes.models import Cliente, Planta
-
+from requerimientos.models import Causal
+from utils.models import Horario
 
 class TipoContratoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
@@ -161,3 +162,59 @@ class ActualizarPlantillaForm(forms.ModelForm):
     class Meta:
         model = Plantilla
         fields = ("nombre", "tipo", "archivo", "clientes", "plantas", 'activo')
+
+
+class ContratoForm(forms.ModelForm):
+
+    NORMAL = 'NOR'
+    REGIMEN_PGP = 'PGP'
+    URGENCIA = 'URG'
+    CONTINGENCIA = "CON"
+
+    REGIMEN_ESTADO = (
+        (NORMAL, 'Normal'),
+        (REGIMEN_PGP, 'Régimen PGP'),
+        (URGENCIA, 'Urgencia'),
+        (CONTINGENCIA, 'Contingencia'),
+    )
+    causal = forms.ModelChoiceField(queryset=Causal.objects.all(), required=True, label="Causal",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control','onchange': 'getval(this);' ,
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    motivo = forms.CharField (required=True, label="Observaciones",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_inicio", 'readonly' :'true'}))
+    fecha_termino = forms.CharField(required=True, label="Fecha Término",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino",'readonly' :'true' }))
+    horario = forms.ModelChoiceField(queryset=Horario.objects.all(), required=True, label="Horario",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true' 
+                                                              })
+                                   )
+    sueldo = forms.CharField(required=True, label="sueldo",
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
+    tipo_contrato = forms.ModelChoiceField(queryset=TipoContrato.objects.filter(status=True), required=True, label="Tipo Contrato",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )                              
+    regimen = forms.ChoiceField(choices = REGIMEN_ESTADO, required=True, label="Regimen",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    
+
+    class Meta:
+        model = Contrato
+        fields = ("causal", "motivo", "fecha_inicio", "fecha_termino", "horario", 'sueldo_base', 'tipo_contrato', 'regimen')

@@ -67,6 +67,16 @@ class Contrato(BaseModel):
     APROBADO = 'AP'
     PENDIENTE_BAJA ='PB'
     BAJADO = 'BJ'
+    NORMAL = 'NOR'
+    PARADA_GENERAL_PLANTA = 'PGP'
+    URGENCIA = 'URG'
+
+    REGIMEN_ESTADO = (
+        (NORMAL, 'Normal'),
+        (PARADA_GENERAL_PLANTA, 'Parada Planta'),
+        (URGENCIA, 'Urgencia'),
+    )
+
 
     FIRMA_ESTADO = (
         (POR_FIRMAR, 'Por Firmar'),
@@ -116,6 +126,7 @@ class Contrato(BaseModel):
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
+    regimen = models.CharField(max_length=3, choices=REGIMEN_ESTADO, default=NORMAL)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el contrato , deshabilite esta casilla.'
@@ -217,7 +228,6 @@ class DocumentosContrato(BaseModel):
 
 class ContratosBono(models.Model):
     valor = models.IntegerField(default=0)
-    descripcion = models.TextField('Descripción')
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
 
