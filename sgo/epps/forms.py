@@ -6,8 +6,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 
 # sgo Model
-from epps.models import TipoInsumo, Insumo, Convenio
 from clientes.models import Cliente, Planta
+from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento
+#Requerimientos
+from requerimientos.models import AreaCargo
 
 
 class TipoInsumoForm(forms.ModelForm):
@@ -103,4 +105,34 @@ class ConvenioForm(forms.ModelForm):
 
     class Meta:
         model = Convenio
-        fields = ("nombre", "valor", "validez", "insumo") 
+        fields = ("nombre", "valor", "validez", "insumo")
+
+
+class ConvenioRequerForm(forms.ModelForm):
+    convenio = forms.ModelChoiceField(queryset=Convenio.objects.none(), required=True,
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    area_cargo = forms.ModelChoiceField(queryset=AreaCargo.objects.none(), required=True, label="Área Cargo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+
+    def __init__(self, *args, **kwargs):
+        convenio = kwargs.pop('convenio', None)
+        area_cargo = kwargs.pop('area_cargo', None)
+        super(ConvenioRequerForm, self).__init__(*args, **kwargs)
+        
+        self.fields['convenio'].queryset = convenio
+        self.fields['area_cargo'].queryset = area_cargo
+
+    class Meta:
+        model = ConvenioRequerimiento
+        fields = ("convenio", "area_cargo")

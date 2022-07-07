@@ -17,7 +17,8 @@ def estado_contrato(value):
         Contrato.OBJETADO: '<span class="label label-danger">OBJETADO</span>',
     }
 
-    return estado[value]
+    return estado
+    # return estado[value]
 
 @register.filter('nombre_doc')
 def nombre_doc(value):

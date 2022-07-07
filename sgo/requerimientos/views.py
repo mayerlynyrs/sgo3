@@ -32,15 +32,15 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 from django.conf import settings
 # Model
-from requerimientos.models import Requerimiento, AreaCargo, RequerimientoConvenio, RequerimientoTrabajador, PuestaDisposicion as AnexoPuestaDisposicion, Adendum
+from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabajador, PuestaDisposicion as AnexoPuestaDisposicion, Adendum
 from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
 from users.models import User
-from epps.models import Convenio
+from epps.models import Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador
 # Form
-from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequerConvenioForm, RequeriTrabajadorForm, AdendumForm
-from ficheros.models import Fichero
+from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriTrabajadorForm, ConvenioTrabajadorForm, AdendumForm
+from epps.forms import ConvenioRequerForm
 from requerimientos.numero_letras import numero_a_letras, numero_a_moneda
 
 # Planta
@@ -433,7 +433,7 @@ class RequerimientoIdView(TemplateView):
                 ac_r.status = False
                 ac_r.save()
             elif action == 'convenio_add':
-                conv_req = RequerimientoConvenio()
+                conv_req = ConvenioRequerimiento()
                 convenio = Convenio.objects.get(pk=request.POST['convenio'])
                 area_cargo = AreaCargo.objects.get(pk=request.POST['area_cargo'])
                 conv_req.convenio_id = request.POST['convenio']
@@ -442,7 +442,7 @@ class RequerimientoIdView(TemplateView):
                 conv_req.requerimiento_id = requerimiento_id
                 conv_req.save()
             elif action == 'convenio_edit':
-                conv_req = RequerimientoConvenio.objects.get(pk=request.POST['id'])
+                conv_req = ConvenioRequerimiento.objects.get(pk=request.POST['id'])
                 convenio = Convenio.objects.get(pk=request.POST['convenio'])
                 area_cargo = AreaCargo.objects.get(pk=request.POST['area_cargo'])
                 conv_req.convenio_id = request.POST['convenio']
@@ -451,9 +451,57 @@ class RequerimientoIdView(TemplateView):
                 conv_req.requerimiento_id = requerimiento_id
                 conv_req.save()
             elif action == 'convenio_delete':
-                conv_req = RequerimientoConvenio.objects.get(pk=request.POST['id'])
+                conv_req = ConvenioRequerimiento.objects.get(pk=request.POST['id'])
                 conv_req.status = False
                 conv_req.save()
+            # Confirmar = 1
+            elif action == '1':
+                try:
+                    consulta = ConvenioRequerTrabajador.objects.values_list('id', flat=True).get(requerimiento_id=request.POST['requerimiento_id'],area_cargo_id=request.POST['area_cargo_id'],trabajador_id=request.POST['trabajador_id'])
+                except ConvenioRequerTrabajador.DoesNotExist:
+                    consulta = None
+                # Si, consulta es igual a none, crea el registro
+                if consulta == None:
+                    crt = ConvenioRequerTrabajador()
+                    crt.requerimiento_id = requerimiento_id
+                    crt.convenio_id = request.POST['convenio_id']
+                    crt.area_cargo_id = request.POST['area_cargo_id']
+                    crt.trabajador_id = request.POST['trabajador_id']
+                    crt.estado = True
+                    crt.save()
+                # Si no, modifica el registro
+                else:
+                    crt = ConvenioRequerTrabajador.objects.get(pk=consulta)
+                    crt.requerimiento_id = requerimiento_id
+                    crt.convenio_id = request.POST['convenio_id']
+                    crt.area_cargo_id = request.POST['area_cargo_id']
+                    crt.trabajador_id = request.POST['trabajador_id']
+                    crt.estado = True
+                    crt.save()
+            # Anualar = 2
+            elif action == '2':
+                try:
+                    consulta = ConvenioRequerTrabajador.objects.values_list('id', flat=True).get(requerimiento_id=request.POST['requerimiento_id'],area_cargo_id=request.POST['area_cargo_id'],trabajador_id=request.POST['trabajador_id'])
+                except ConvenioRequerTrabajador.DoesNotExist:
+                    consulta = None
+                # Si, consulta es igual a none, crea el registro
+                if consulta == None:
+                    crt = ConvenioRequerTrabajador()
+                    crt.requerimiento_id = requerimiento_id
+                    crt.convenio_id = request.POST['convenio_id']
+                    crt.area_cargo_id = request.POST['area_cargo_id']
+                    crt.trabajador_id = request.POST['trabajador_id']
+                    crt.estado = False
+                    crt.save()
+                # Si no, modifica el registro
+                else:
+                    crt = ConvenioRequerTrabajador.objects.get(pk=consulta)
+                    crt.requerimiento_id = requerimiento_id
+                    crt.convenio_id = request.POST['convenio_id']
+                    crt.area_cargo_id = request.POST['area_cargo_id']
+                    crt.trabajador_id = request.POST['trabajador_id']
+                    crt.estado = False
+                    crt.save()
             elif action == 'requeri_trab_add':
                 trabaj = RequerimientoTrabajador()
                 if "referido" in request.POST:
@@ -506,6 +554,8 @@ class RequerimientoIdView(TemplateView):
         convenio_plant = Convenio.objects.filter(planta_id=requerimiento.planta)
         # Áreas - Cargos del Requerimiento
         ac = AreaCargo.objects.filter(requerimiento_id=requerimiento_id)
+        # Trabajadores del Áreas - Cargos de dicho Requerimiento
+        req_conv_trab = RequerimientoTrabajador.objects.all()
         # (cantidad) Trabajadores en el Área(s) y Cargo(s) del Requerimiento
         pk = requerimiento_id
         quantity = RequerimientoTrabajador.objects.filter(requerimiento_id=pk).count()
@@ -521,8 +571,16 @@ class RequerimientoIdView(TemplateView):
                                    cargos=requerimiento.cliente.cargo.all(),
                                    cantidad=quantity
                                    )
-        context['form3'] = RequerConvenioForm(instance=requerimiento, convenio=convenio_plant, area_cargo=ac)
+        context['form3'] = ConvenioRequerForm(instance=requerimiento, convenio=convenio_plant, area_cargo=ac)
         context['form4'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac)
+        context['trabajadores'] = RequerimientoTrabajador.objects.filter(requerimiento_id=requerimiento_id, status=True)
+        # context['a_c_trab'] = RequerimientoTrabajador.objects.values_list('area_cargo', flat=True).get(requerimiento_id=requerimiento_id, status=True)
+        areas_cargos = RequerimientoTrabajador.objects.values('area_cargo', ).filter(requerimiento_id=requerimiento_id, status=True)
+        ac_req = []
+        for i in areas_cargos:
+            ac_req.append(i)
+            context['a_c_trab'] = ac_req
+        # context['form5'] = ConvenioTrabajadorForm(instance=requerimiento, trabaj_conve=req_conv_trab)
         return context
 
 
@@ -571,7 +629,7 @@ class RequirementConvenioView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata3':
                 data = []
-                for i in RequerimientoConvenio.objects.filter(requerimiento=requerimiento_id, status=True):
+                for i in ConvenioRequerimiento.objects.filter(requerimiento=requerimiento_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -600,6 +658,33 @@ class RequirementTrabajadorView(TemplateView):
                 data = []
                 # for i in RequerimientoTrabajador.objects.filter(area_cargo=area_cargo_id, status=True):
                 for i in RequerimientoTrabajador.objects.filter(requerimiento=requerimiento_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class ConveniotrabajadorView(TemplateView):
+    """Conveniotrabajador List
+    Vista para listar todos los convenios del reqierimiento y sus trabajadores
+    relacionados.
+    """
+    template_name = 'requerimientos/create_requerimiento.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, area_cargo_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata6':
+                data = []
+                for i in RequerimientoTrabajador.objects.filter(area_cargo_id=area_cargo_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

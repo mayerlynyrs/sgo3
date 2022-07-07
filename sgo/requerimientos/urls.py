@@ -59,6 +59,11 @@ urlpatterns = [
         name='requirement_trabajadores'
      ),
     path(
+        route='<int:area_cargo_id>/convenios_trabajadores/',
+        view=views.ConveniotrabajadorView.as_view(),
+        name='convenios_trabajadores'
+     ),
+    path(
         route='<int:requerimiento_id>/adendum/',
         view=views.adendum_requerimiento,
         name="adendum"
