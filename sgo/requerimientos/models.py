@@ -13,7 +13,6 @@ from clientes.models import Cliente, Planta
 from utils.models import BaseModel, Area, Cargo, PuestaDisposicion
 #User
 from users.models import User, Trabajador
-from epps.models import Convenio
 
 
 class Causal(models.Model):
@@ -159,47 +158,6 @@ class AreaCargo(BaseModel):
         return item
 
 
-class RequerimientoConvenio(BaseModel):
-    """RequerimientoConvenio Model
-
-
-    """
-
-    convenio = models.ForeignKey(Convenio, on_delete=models.PROTECT, null=True, blank=True)
-
-    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
-
-    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
-
-    # cantidad = models.IntegerField(
-    #     blank=True,
-    #     null=True
-    # )
-
-    valor_total = models.BigIntegerField(
-        blank=True,
-        null=True
-    )
-
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el convenio de este requerimiento, deshabilite esta casilla.'
-    )
-
-    def __str__(self):
-        return str(self.valor_total)
-    
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['convenio_id'] = self.convenio.id
-        item['convenio'] = self.convenio.nombre
-        item['area_cargo_id'] = self.area_cargo.id
-        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.cargo.nombre
-        item['requerimiento_id'] = self.requerimiento.id
-        item['requerimiento'] = self.requerimiento.nombre
-        return item
-
-
 class RequerimientoTrabajador(BaseModel):
     """RequerimientoTrabajador Model
 
@@ -260,6 +218,7 @@ class RequerimientoTrabajador(BaseModel):
         item['trabajador_id'] = self.trabajador.id
         item['trabajador_rut'] = self.trabajador.rut
         item['trabajador'] = self.trabajador.first_name +' '+ self.trabajador.last_name
+        item['datos'] = self.tipo +' '+ self.trabajador.first_name +' '+ self.trabajador.last_name +' '+ self.trabajador.rut
         item['jefe_area_id'] = self.jefe_area.id
         item['jefe_area'] = self.jefe_area.first_name
         item['area_cargo_id'] = self.area_cargo.id

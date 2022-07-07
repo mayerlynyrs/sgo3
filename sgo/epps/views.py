@@ -20,7 +20,7 @@ from django.views.generic import ListView
 from epps.models import TipoInsumo, Insumo, Convenio
 from clientes.models import Planta
 # From
-from epps.forms import TipoInsumoForm, InsumoForm, ConvenioForm
+from epps.forms import TipoInsumoForm, InsumoForm
 
 
 class TipoListView(TemplateView):

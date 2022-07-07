@@ -6,6 +6,9 @@ from django.forms import model_to_dict
 
 # Create your models here.
 from clientes.models import Cliente, Planta
+#Requerimientos
+from requerimientos.models import BaseModel, Requerimiento, AreaCargo
+from users.models import Trabajador
 
 
 class TipoInsumo(models.Model):
@@ -87,4 +90,86 @@ class Convenio(models.Model):
         item['cliente'] = self.cliente.razon_social.title()
         item['planta_id'] = self.planta.id
         item['planta'] = self.planta.nombre.title()
+        return item
+
+
+class ConvenioRequerimiento(BaseModel):
+    """ConvenioRequerimiento Model
+
+
+    """
+
+    convenio = models.ForeignKey(Convenio, on_delete=models.PROTECT, null=True, blank=True)
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
+
+    # cantidad = models.IntegerField(
+    #     blank=True,
+    #     null=True
+    # )
+
+    valor_total = models.BigIntegerField(
+        blank=True,
+        null=True
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el convenio de este requerimiento, deshabilite esta casilla.'
+    )
+
+    def __str__(self):
+        return str(self.valor_total)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['convenio_id'] = self.convenio.id
+        item['convenio'] = self.convenio.nombre
+        item['convenio_insumo'] =  [t.toJSON() for t in self.convenio.insumo.all()]
+        item['area_cargo_id'] = self.area_cargo.id
+        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' / '+ self.area_cargo.area.nombre + ' - '+ self.area_cargo.cargo.nombre
+        item['a_c'] = self.area_cargo.area.nombre + ' - '+ self.area_cargo.cargo.nombre
+        item['requerimiento_id'] = self.requerimiento.id
+        item['requerimiento'] = self.requerimiento.nombre
+        return item
+
+
+class ConvenioRequerTrabajador(BaseModel):
+    """ConvenioRequerTrabajador Model
+
+
+    """
+
+    convenio = models.ForeignKey(Convenio, on_delete=models.PROTECT, null=True, blank=True)
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
+
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
+
+    estado = models.BooleanField(
+        help_text='Para confirmar True, para anular False.'
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el convenio requerimiento de este trabajador, deshabilite esta casilla.'
+    )
+
+    def __str__(self):
+        return str(self.id)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['convenio_id'] = self.convenio.id
+        item['convenio'] = self.convenio.nombre
+        item['area_cargo_id'] = self.area_cargo.id
+        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.cargo.nombre
+        item['requerimiento_id'] = self.requerimiento.id
+        item['requerimiento'] = self.requerimiento.nombre
+        item['trabajador_id'] = self.trabajador.id
+        item['trabajador'] = self.trabajador.first_name +" "+self.trabajador.last_name
         return item

@@ -6,9 +6,8 @@ from tokenize import group
 from django import forms
 # sgo Model
 from users.models import User, Trabajador
-from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoConvenio, RequerimientoTrabajador, Adendum
+from requerimientos.models import Requerimiento, Causal, AreaCargo, RequerimientoTrabajador, Adendum
 from clientes.models import Planta, Cliente
-from epps.models import Convenio
 
 
 class RequerimientoCreateForm(forms.ModelForm):
@@ -116,36 +115,6 @@ class ACRForm(forms.ModelForm):
         fields = ("cantidad", "valor_aprox", "fecha_ingreso", "area", "cargo", )
 
 
-class RequerConvenioForm(forms.ModelForm):
-    convenio = forms.ModelChoiceField(queryset=Convenio.objects.none(), required=True,
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
-    area_cargo = forms.ModelChoiceField(queryset=AreaCargo.objects.none(), required=True, label="Área Cargo",
-                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
-
-
-    def __init__(self, *args, **kwargs):
-        convenio = kwargs.pop('convenio', None)
-        area_cargo = kwargs.pop('area_cargo', None)
-        super(RequerConvenioForm, self).__init__(*args, **kwargs)
-        
-        self.fields['convenio'].queryset = convenio
-        self.fields['area_cargo'].queryset = area_cargo
-
-    class Meta:
-        model = RequerimientoConvenio
-        fields = ("convenio", "area_cargo")
-
-
 class RequeriTrabajadorForm(forms.ModelForm):
 
     
@@ -202,6 +171,27 @@ class RequeriTrabajadorForm(forms.ModelForm):
     class Meta:
         model = RequerimientoTrabajador
         fields = ("area_cargo", "tipo", "trabajador", "pension", "jefe_area", "referido", "descripcion", "status")
+
+
+class ConvenioTrabajadorForm(forms.ModelForm):
+    trabajador = forms.ModelChoiceField(queryset=Trabajador.objects.none(), required=True,
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+
+    def __init__(self, *args, **kwargs):
+        trabaj_conve = kwargs.pop('trabaj_conve', None)
+        super(ConvenioTrabajadorForm, self).__init__(*args, **kwargs)
+        
+        self.fields['trabajador'].queryset = trabaj_conve
+
+    class Meta:
+        model = RequerimientoTrabajador
+        fields = ("trabajador",)
 
 
 class AdendumForm(forms.ModelForm):

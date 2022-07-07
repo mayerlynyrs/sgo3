@@ -8,10 +8,11 @@ from import_export.widgets import ManyToManyWidget
 
 # Register your models here.
 # EPP
-from epps.models import TipoInsumo, Insumo, Convenio
+from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador
 from clientes.models import Cliente, Planta
 # Requerimientos
-from requerimientos.models import Requerimiento
+from requerimientos.models import Requerimiento, AreaCargo
+from users.models import Trabajador
 
 class TipoInsumoSetResource(resources.ModelResource):
 
@@ -35,6 +36,27 @@ class ConvenioSetResource(resources.ModelResource):
 
     model = Convenio
     fields = ('id', 'nomnre', 'valor', 'validez', 'status')
+
+
+class ConvenioRequerimientoSetResource(resources.ModelResource):
+    requerimiento = fields.Field(column_name='requerimiento', attribute='requerimiento', widget=ForeignKeyWidget(Requerimiento, 'nombre'))
+    convenio = fields.Field(column_name='convenio', attribute='convenio', widget=ForeignKeyWidget(Convenio, 'nombre'))
+    area_cargo = fields.Field(column_name='area_cargo', attribute='area_cargo', widget=ForeignKeyWidget(AreaCargo, 'nombre'))
+
+    class Meta:
+        model = ConvenioRequerimiento
+        fields = ('id', 'requerimiento', 'convenio', 'area_cargo', 'status', )
+
+
+class ConvenioRequerTrabajadorSetResource(resources.ModelResource):
+    requerimiento = fields.Field(column_name='requerimiento', attribute='requerimiento', widget=ForeignKeyWidget(Requerimiento, 'nombre'))
+    convenio = fields.Field(column_name='convenio', attribute='convenio', widget=ForeignKeyWidget(Convenio, 'nombre'))
+    area_cargo = fields.Field(column_name='area_cargo', attribute='area_cargo', widget=ForeignKeyWidget(AreaCargo, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'first_name'))
+
+    class Meta:
+        model = ConvenioRequerTrabajador
+        fields = ('id', 'requerimiento', 'convenio', 'area_cargo', 'trabajador', 'estado', 'status', )
 
 
 # class AsignacionConvenioSetResource(resources.ModelResource):
@@ -73,6 +95,28 @@ class Convenio(ImportExportModelAdmin, admin.ModelAdmin):
     fields = ('nombre', 'valor', 'validez', 'insumo', 'cliente', 'planta', 'status')
     list_display = ('id', 'nombre', 'valor', 'validez', 'planta', 'created_date')
     search_fields = ('nombre', )
+
+
+@admin.register(ConvenioRequerimiento)
+class ConvenioRequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """ConvenioRequerimientoAdmin model admin."""
+
+    resource_class = ConvenioRequerimientoSetResource
+    fields = ('requerimiento', 'convenio', 'area_cargo', 'valor_total', 'status', )
+    list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'status',)
+    list_filter = ['requerimiento', 'convenio', 'area_cargo' ]
+    search_fields = ['requerimiento__nombre', 'convenio__nombre', 'area_cargo' ]
+
+
+@admin.register(ConvenioRequerTrabajador)
+class ConvenioRequerTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """ConvenioRequerTrabajadorAdmin model admin."""
+
+    resource_class = ConvenioRequerTrabajadorSetResource
+    fields = ('requerimiento', 'convenio', 'area_cargo', 'trabajador', 'estado', 'status', )
+    list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'trabajador', 'estado', 'status',)
+    list_filter = ['requerimiento', 'convenio', 'area_cargo', 'trabajador' ]
+    search_fields = ['requerimiento__nombre', 'convenio__nombre', 'area_cargo', 'trabajador__first_name' ]
 
 
 # @admin.register(AsignacionConvenio)
