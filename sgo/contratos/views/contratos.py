@@ -1,8 +1,12 @@
 """Contratos views."""
 
+from itertools import chain
 from asyncio.windows_events import NULL
+from cgi import print_form
 from multiprocessing import context
+from optparse import Values
 import os
+from queue import Empty
 from tkinter import FLAT
 from datetime import datetime
 # Django
@@ -10,6 +14,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.db.models import Q
+from django.forms import NullBooleanField
 from django.views.generic import TemplateView
 from django.db.models import Count
 from django.http import Http404, JsonResponse
@@ -33,10 +38,11 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
 # Models
 from ficheros.models import Fichero
-from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono
+from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo
 from requerimientos.models import RequerimientoTrabajador
+from clientes.models import Planta
 # Form
-from contratos.forms import TipoContratoForm, CrearContratoForm, ContratoForm
+from contratos.forms import TipoContratoForm, CrearContratoForm, ContratoForm, ContratoEditarForm
 from requerimientos.forms import RequeriTrabajadorForm
 from users.forms import EditarUsuarioForm
 
@@ -154,7 +160,7 @@ def create(request):
             contrato.fecha_termino = request.POST['fecha_termino']
             contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
             contrato.horario_id = request.POST['horario']
-            contrato.sueldo_base = request.POST['sueldo']
+            contrato.sueldo_base = request.POST['sueldo_base']
             contrato.tipo_contrato_id = request.POST['tipo_contrato']
             contrato.gratificacion_id = request.POST['gratificacion']
             contrato.planta_id = request.POST['planta']
@@ -172,10 +178,95 @@ def create(request):
                     bonos.bono_id = i[1]
                     bonos.contrato_id = contrato.id
                     bonos.save()
+                    
 
             return redirect('contratos:create_contrato',requrimientotrabajador)
- 
 
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def update_contrato(request, contrato_id, template_name='contratos/contrato_update.html'):
+            data = dict()
+            contrato = get_object_or_404(Contrato, pk=contrato_id)
+
+            if request.method == 'POST':
+                contrato.sueldo_base = request.POST['sueldo_base']
+                contrato.causal_id = request.POST['causal']
+                contrato.motivo = request.POST['motivo']
+                contrato.fecha_inicio = request.POST['fecha_inicio']
+                contrato.fecha_termino = request.POST['fecha_termino']
+                contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
+                contrato.horario_id = request.POST['horario']
+                contrato.tipo_contrato_id = request.POST['tipo_contrato']
+                contrato.status = True
+                contrato.save()
+                bonos = []
+                bonosguardados = ContratosBono.objects.values_list('id', flat=True).filter(contrato_id=contrato_id) 
+                for i in bonosguardados:
+                    bonos.append(i) 
+                for a in bonos:
+                    bonoseliminar = ContratosBono.objects.get(id = a)
+                    bonoseliminar.delete()
+                largobonos = int(request.POST['largobonos']) + 1
+                i = []
+                for a in range(1,largobonos):
+                    i = request.POST.getlist(str(a))
+                    if (i[0] != '0' ):
+                        bonos = ContratosBono()
+                        bonos.valor = i[0]
+                        bonos.bono_id = i[1]
+                        bonos.contrato_id = contrato.id
+                        bonos.save()
+
+                return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
+            else:
+                
+                form = ContratoEditarForm(instance=contrato,)
+                req = contrato.requerimiento_trabajador_id 
+
+                bonos = RequerimientoTrabajador.objects.raw(" SELECT b.id, b.nombre, cb.valor FROM public.requerimientos_requerimientotrabajador as rt LEFT JOIN public.requerimientos_requerimiento as r on r.id = rt.requerimiento_id LEFT JOIN public.clientes_planta as p on p.id = r.planta_id LEFT JOIN public.clientes_planta_bono as pb on pb.planta_id = p.id LEFT JOIN public.utils_bono as b on b.id = pb.bono_id LEFT JOIN public.contratos_contrato as c on c.requerimiento_trabajador_id = rt.id LEFT JOIN public.contratos_contratosbono as cb on cb.bono_id = pb.bono_id WHERE rt.id = %s ORDER BY cb.valor" , [req])
+                largobonos = len(bonos)
+                context={
+                    'form4': form,
+                    'contrato':contrato,
+                    'contrato_id': contrato.id,
+                    'largobonos' : largobonos,
+                    'bonos' : bonos
+
+                }
+                data['html_form'] = render_to_string(
+                    template_name,
+                    context,
+                    request=request,
+                )
+                return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def create_anexo(request):
+            requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+            anexo = Anexo()
+            anexo.trabajador_id = request.POST['trabajador_id']
+            anexo.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id']
+            anexo.fecha_inicio = request.POST['UltimoAnexo']
+            anexo.fecha_termino = request.POST['fechaTerminoAnexo']
+            if "motivo" in request.POST:
+                anexo.motivo = request.POST['motivo']
+            else:
+                anexo.motivo = ''
+            anexo.fecha_termino_anexo_anterior = request.POST['fechaTerminoAnexo']
+            anexo.contrato_id = request.POST['id_contrato']
+            if "renta" in request.POST:
+                 anexo.nueva_renta = request.POST['NuevaRenta']
+            anexo.causal_id = request.POST['id_causalanexo']
+            anexo.planta_id = request.POST['planta']
+            anexo.save()
+            contrato = Contrato.objects.get(pk=request.POST['id_contrato'])
+            contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
+            contrato.save()
+            return redirect('contratos:create_contrato',requrimientotrabajador)
+ 
 
 class ContratoIdView(TemplateView):
     template_name = 'contratos/create_contrato.html'
@@ -204,14 +295,14 @@ class ContratoIdView(TemplateView):
                 'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
                 'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
                 'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
-        context['contratos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
-                'contrato__requerimiento_trabajador', 'contrato__sueldo_base', 'contrato__tipo_contrato__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
+        context['contratos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'contrato',
+                'contrato__requerimiento_trabajador', 'contrato__estado_contrato','contrato__sueldo_base', 'contrato__tipo_contrato__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
                  'contrato__fecha_termino', 'contrato__horario__nombre' , 'contrato__fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
-        fechaultimoanexo = RequerimientoTrabajador.objects.values_list('contrato__fecha_termino_ultimo_anexo', flat=True).get(pk=requerimiento_trabajador_id)
-        print(fechaultimoanexo)
-        if(fechaultimoanexo != None):
-            feeecha = datetime.strftime(fechaultimoanexo, '%Y-%m-%d')
-            context['ultimoanexo'] = feeecha
+        context['anexos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'anexo',
+                'anexo__requerimiento_trabajador', 'anexo__nueva_renta', 'contrato__tipo_contrato__nombre','anexo__causal__nombre' ,'anexo__causal', 'anexo__motivo', 'anexo__fecha_inicio',
+                 'anexo__fecha_termino' ).order_by('anexo__fecha_inicio')
+
+        
 
         horario = RequerimientoTrabajador.objects.values_list('requerimiento__cliente__horario', flat=True).filter(pk=requerimiento_trabajador_id)
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)

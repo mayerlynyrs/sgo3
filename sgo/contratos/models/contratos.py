@@ -187,10 +187,11 @@ class Anexo(BaseModel):
         default=True,
         help_text='Para desactivar el anexo, deshabilite esta casilla.'
     )
-    
+
+    nueva_renta = models.IntegerField( blank=True, null=True)
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
     contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
-    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT)
+    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT, blank=True, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
