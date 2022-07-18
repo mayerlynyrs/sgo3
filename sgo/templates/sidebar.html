@@ -322,7 +322,21 @@
           <span>Consultas </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta_requerimiento' %}">Consulta General Requerimientos </a></li>
+          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta-requerimiento' %}">Consulta General Requerimientos </a></li>
+          {% if perms.contratos.view_plantilla %}
+            <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
+                  <a href="javascript:;">
+                    <b class="caret"></b>
+                    EPPs
+                  </a>
+                  <ul class="sub-menu" style="{% if menu_module == 'plantilla' %}display: block;{% else %}display: none;{% endif %}">
+                    <li {% if menu_module == 'consultas' and menu_page == 'None' %}class="active"{% endif %}><a href="{% url 'consultas:consulta-epps' %}">Consulta General EPPs</a></li>
+                    {% if perms.contratos.add_plantilla %}
+                    <li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'consultas:requerimiento-epps' %}">Epps/Trabajador(es)</a></li>
+                    {% endif %}
+                  </ul>
+                </li>
+          {% endif %}
         </ul>
       </li>
       {% endif %}

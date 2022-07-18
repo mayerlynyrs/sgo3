@@ -71,7 +71,7 @@ $(function () {
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
     
-        
+        console.log('entre');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblAgenda.cell($(this).closest('td, li')).index();
         var data = tblAgenda.row(tr.row).data();

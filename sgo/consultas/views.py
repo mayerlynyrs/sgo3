@@ -1,22 +1,21 @@
 from asyncio.windows_events import NULL
+from itertools import chain
 from django.shortcuts import render
 from django.views.generic import ListView
-from requerimientos.models import *
-from consultas.forms import ConsultaClienteForm
-from sgo import requerimientos
-from consultas.forms import ConsultaClienteForm
-from clientes.models import Negocio, Planta
+from requerimientos.models import Requerimiento, AreaCargo
+from epps.models import Insumo, ConvenioRequerimiento, ConvenioRequerTrabajador
+from consultas.forms import ConsultaClienteForm, ConsultaEppRequForm, EppRequerimientoForm
+from clientes.models import Cliente, Negocio, Planta
 from django.db import connection
 
 
-
-# Create your views here.
-# Planta
+# Cliente / Planta
 def load_plantas(request):
     cliente_id = request.GET.get('cliente')    
     plantas = Planta.objects.filter(cliente_id=cliente_id).order_by('nombre')
     context = {'plantas': plantas}
     return render(request, 'consultas/planta.html', context)
+
 
 class ConsultaRequerimientoView(ListView):
     #model = Requerimiento
@@ -54,3 +53,88 @@ def buscar_requerimiento(request):
             context ['form'] = ConsultaClienteForm(instance=Cliente)
             return render(request, 'consultas/consulta_requerimiento.html', context)
 
+
+# Requerimiento / Área-Cargo
+def load_areas_cargos(request):
+    requerimiento_id = request.GET.get('requerimiento')    
+    areas_cargos = AreaCargo.objects.filter(requerimiento_id=requerimiento_id).order_by('area','cargo')
+    context = {'areas_cargos': areas_cargos}
+    return render(request, 'consultas/area_cargo.html', context)
+
+
+class ConsultaEppView(ListView):
+    #model = Convenio
+    form_class = ConsultaEppRequForm
+    template_name = 'consultas/consulta_epps.html'
+    
+    
+    def get_queryset(self):
+        return ConvenioRequerimiento.objects.all()
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
+        return context
+
+def buscar_requerimiento_ac(request):
+    if request.method == 'POST':
+        # x = 1
+        # y = 1
+        todo =  request.POST.get('todos')
+        requerimiento = request.POST.get('requerimiento')
+        area_cargo = request.POST.get('area_cargo')
+        if todo:
+            # data = Requerimiento.objects.raw('SELECT * FROM consulta_epps_req01(%s, %s)', [x, y])
+            # data = ConvenioRequerimiento.objects.raw("SELECT * FROM consulta_epps_req01(1, 1)")
+            data = ConvenioRequerimiento.objects.all()
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerTrabajador)
+            return render(request, 'consultas/consulta_epps.html', context)
+        if area_cargo:
+            data = ConvenioRequerimiento.objects.filter(requerimiento_id=requerimiento, area_cargo_id=area_cargo)
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
+            return render(request, 'consultas/consulta_epps.html', context)
+        else:
+            data = ConvenioRequerimiento.objects.filter(requerimiento_id=requerimiento)
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
+            return render(request, 'consultas/consulta_epps.html', context)
+
+
+class RequerimientoEppView(ListView):
+    form_class = EppRequerimientoForm
+    template_name = 'consultas/consulta_epps_requerimiento.html'
+    
+    
+    def get_queryset(self):
+        return ConvenioRequerimiento.objects.all()
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context ['form'] = EppRequerimientoForm(instance=ConvenioRequerimiento)
+        return context
+
+def buscar_epps_requerimiento(request):
+    if request.method == 'POST':
+        todo =  request.POST.get('todos')
+        requerimiento = request.POST.get('requerimiento')
+        area_cargo = request.POST.get('area_cargo')
+        if todo:
+            data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
+            # data = ConvenioRequerTrabajador.objects.raw("SELECT * FROM public.consulta_epps_req02(1)")
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerTrabajador)
+            return render(request, 'consultas/consulta_epps_requerimiento.html', context)
+        if area_cargo:
+            data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
+            return render(request, 'consultas/consulta_epps_requerimiento.html', context)
+        else:
+            data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
+            context = {'data': data}
+            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
+            return render(request, 'consultas/consulta_epps_requerimiento.html', context)

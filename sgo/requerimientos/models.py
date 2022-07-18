@@ -200,6 +200,7 @@ class RequerimientoTrabajador(BaseModel):
 
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
 
+    # Validación (No repetir)
     id_requerimiento_trabajador = models.BigIntegerField(
         null=True,
         unique=True

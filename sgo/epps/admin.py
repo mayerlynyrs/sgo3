@@ -103,7 +103,7 @@ class ConvenioRequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     resource_class = ConvenioRequerimientoSetResource
     fields = ('requerimiento', 'convenio', 'area_cargo', 'valor_total', 'status', )
-    list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'status',)
+    list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'valor_total', 'status',)
     list_filter = ['requerimiento', 'convenio', 'area_cargo' ]
     search_fields = ['requerimiento__nombre', 'convenio__nombre', 'area_cargo' ]
 

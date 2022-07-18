@@ -21,11 +21,11 @@ function getData4() {
             dataSrc: ""
         },
         columns: [
-            {"data": "id",
-            "render": function(data, type, row, meta){
-                data = '<a href="../../../contratos/'+data+'/create_contrato/ ">' + data + ' </a> ';
-                return data;
-            }},
+            // {"data": "id",
+            // "render": function(data, type, row, meta){
+            //     data = '<a href="../../../contratos/'+data+'/create_contrato/ " class="btn btn-primary btn-xs"><i class="fas fa-file" title="Solicitud de Contrato" aria-hidden="true"></i></a> ';
+            //     return data;
+            // }},
             {"data": "area_cargo"},
             {"data": "trabajador"},
             {"data": "jefe_area"},
@@ -39,11 +39,13 @@ function getData4() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp';
                     buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" rel="edit" title="Asignar EPP" class="btn btn-dark btn-xs btn-flat btnEdit"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" rel="validation" title="Validación" class="btn btn-green btn-xs btn-flat btnAgg"><i class="fas fa-check-double"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" rel="request" data-target="#myModalRequerTrab" title="Solicitud de Contrato" class="btn btn-success btn-xs btn-flat btnAgg4"><i class="fas fa-file"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" rel="status" title="Estado de solicitud" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-square"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" rel="record" title="Historial" class="btn btn-secondary btn-xs btn-flat btnAgg"><i class="fas fa-list"></i></a>';
+                    buttons += '<a href="#" data-toggle="modal" data-target="#myModalAddEpp" rel="edit" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
+                    // buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalAddEpp" rel="agg" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a>';
+                    // buttons += '<a href="#" rel="edit" title="Asignar EPP" class="btn btn-dark btn-xs btn-flat btnEdit"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
+                    // buttons += '<a href="#" rel="validation" title="Validación" class="btn btn-green btn-xs btn-flat btnAgg"><i class="fas fa-check-double"></i></a> &nbsp &nbsp';
+                    buttons += '<a href="../../../contratos/'+data+'/create_contrato/" rel="request" data-target="#myModalRequerTrab" title="Solicitud de Contrato" class="btn btn-success btn-xs btn-flat btnAgg4"><i class="fas fa-file"></i></a> &nbsp &nbsp';
+                    // buttons += '<a href="#" rel="status" title="Estado de solicitud" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-square"></i></a> &nbsp &nbsp';
+                    // buttons += '<a href="#" rel="record" title="Historial" class="btn btn-secondary btn-xs btn-flat btnAgg"><i class="fas fa-list"></i></a>';
                     // data-toggle="modal" data-target="#myModalRequerTrab" 
                     // buttons += '<a href="#" rel="edit" title="Enviar a Revisión" class="btn btn-primary btn-xs btn-flat btnEdit"><i class="fas fa-hospital"></i></a>';
                     return buttons;

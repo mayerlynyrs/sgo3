@@ -235,18 +235,6 @@ class Planta(models.Model):
 
     cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
 
-    gratificacion = models.ForeignKey(Gratificacion, verbose_name="Gratificación", on_delete=models.SET_NULL, null=True,)
-
-    examen = models.ManyToManyField("examenes.Examen",
-        blank=True,
-        help_text='Seleccione una o mas examenes para esta planta.')
-
-    bono = models.ManyToManyField(
-        Bono,
-        blank=True,
-        help_text='Seleccione una o mas Bonos para esta planta.'
-    )
-
     region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
 
     provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
@@ -255,6 +243,30 @@ class Planta(models.Model):
 
     direccion = models.CharField(
         max_length=200,
+    )
+
+    bono = models.ManyToManyField(
+        Bono,
+        blank=True,
+        help_text='Seleccione una o mas Bonos para esta planta.'
+    )
+
+    gratificacion = models.ForeignKey(Gratificacion, verbose_name="Gratificación", on_delete=models.SET_NULL, null=True)
+
+    bateria = models.ManyToManyField("examenes.Bateria",
+        verbose_name="Batería",
+        blank=True,
+        help_text='Seleccione una o mas baterias para esta planta.')
+
+    psicologico = models.BooleanField(
+        verbose_name="Psicológico",
+        default=False,
+        help_text='Para desactivar el tipo de examen psicológico, deshabilite esta casilla.'
+    )
+
+    hal2 = models.BooleanField(
+        default=False,
+        help_text='Si examen hal2 es requerido, habilite esta casilla.'
     )
 
     status = models.BooleanField(
@@ -279,7 +291,7 @@ class Planta(models.Model):
         item['provincia_id'] = self.provincia.id
         item['ciudad_id'] = self.ciudad.id
         item['bono'] =  [t.toJSON() for t in self.bono.all()]
-        item['examen'] = [t.toJSON() for t in self.examen.all()]
+        item['bateria'] = [t.toJSON() for t in self.bateria.all()]
         return item
 
 

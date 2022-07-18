@@ -53,7 +53,7 @@ class Agendamiento(BaseModel):
     )
     hal2 = models.BooleanField(
         default=False,
-        help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
+        help_text='Si examen hal2 es requerido, habilite esta casilla.'                          
     )
     fecha_ingreso_estimada = models.DateField(blank=True, null=True)
     fecha_agenda_evaluacion = models.DateTimeField('Fecha Evaluación', blank=True, null=True,)

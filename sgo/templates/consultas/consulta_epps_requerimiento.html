@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Consultas{% endblock %}
+{% block styles %}
+.text-name {
+  margin-bottom: 0em;
+  font-weight: bold;
+  font-size: small;
+}
+.text-desc {
+  font-style: italic;
+  margin-top:-0.1em;
+  padding-left: 0.1em;
+  font-size: small;
+}
+.estado-consulta{
+  text-align: center;
+  vertical-align: middle;
+}
+.centrar{
+    align-items: center;
+    justify-content: center;
+}
+{% endblock %}
+{% block content %}
+<!-- begin breadcrumb -->
+  <ol class="breadcrumb pull-right">
+    <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="javascript:;">Consultas</a></li>
+    <li class="breadcrumb-item active">Listado</li>
+  </ol>
+<!-- end breadcrumb -->
+<!-- begin page-header -->
+  <h1 class="page-header">Consultas</h1>
+<!-- end page-header -->
+
+<!-- begin panel -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      {% if usuario.last_login %}
+      <span class="panel-title" style="font-style: italic;">
+        Ultimo acceso el:
+        <strong>{{ usuario.last_login|date:'d/M/Y' }}</strong>
+      </span>
+      {% endif %}
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+      <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+    </div>
+    <h4 class="panel-title">Consulta EPPs Requerimiento</h4>
+  </div>
+
+  <div class="panel-body">
+    {% if form.non_field_errors%}
+      <div class="alert alert-danger fade show">
+        <span class="close" data-dismiss="alert">×</span>
+        <h4><i class="icon fa fa-exclamation-triangle"></i> Revisa el formulario!</h4>
+        {% for err in form.non_field_errors %}{{ err }}<br>{% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-danger fade show" id="msgbox" style="display: none;">
+        <span class="close" data-dismiss="alert">×</span>
+        <span>
+          <strong><i class="icon fa fa-exclamation-triangle text-danger pr-1"></i>
+            <span id="num-errors"></span></strong>
+          Revisa el formulario, sigue las instrucciones y completa los datos.</span>
+      </div>
+    {% endif %}
+    <div class="card-body">
+          <!-- begin step-1 -->
+          <div id="step-1">
+            <div class="panel-body">
+              <form action="buscarRequerimientoEpp" method="POST" autocomplete="off" novalidate id="consultaEppForm">
+                <fieldset>
+                  {% csrf_token %}
+                    <div class="row col-md-12 row align-items-center">
+                        <!-- <div class="form-check col-md-1">
+                          <input class="form-check-input" type="checkbox" id="todos" name="todos">
+                          <label>Todos</label>
+                        </div> -->
+                        <div class="form-group col-md-9">
+                          <label for="email" name="requerimiento">Requerimiento</label>
+                          {{ form.requerimiento }}
+                      </div>
+                      <!-- <div class="form-group col-md-4">
+                          <label for="email" name="area_cargo">Área-Cargo</label>
+                            {{ form.area_cargo }}
+                        </div> -->
+                        <div class="form-group col-md-3">
+                          <div>
+                            <input type="submit" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" disabled>
+                          <a href="requerimiento_epps" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
+                          </div>
+                        </div>
+                    </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="panel-body">
+              <table id="example" class="table table-striped table-bordered table-td-valign-middle" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Requerimiento</th>
+                    <th>Área</th>
+                    <th>Trabajador</th>
+                    <th>Convenio</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for obj in data  %}
+                  <tr>
+                    <td>{{obj.requerimiento}}</td>
+                    <td>{{obj.area}}</td>
+                    <td>{{obj.trabajador}}</td>
+                    <td>{{obj.convenio}}</td>
+                    <td>{{obj.valor}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+			    </div>
+					<!-- end step-1 -->
+    </div>
+	</div>
+</div>
+  <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
+  <script>
+    // Select Requerimiento / Botón de Buscar
+    buscar.disabled = true;
+      $("#id_requerimiento").change(function () {
+        var requerimientoId = $(this).val();
+        buscar.disabled = false;
+      });
+  </script>
+
+{% endblock %}
+
+{% block librerias %}
+  <script src="{% static 'admin/assets/plugins/moment-2.25.3/moment.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/spanish.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/daterangepicker.js' %}"></script>
+  <script src="{% static 'admin/assets/js/report.js' %}"></script>
+  <script src="{% static 'admin/assets/js/ExportarExcel.js' %}"></script>
+{% endblock %}

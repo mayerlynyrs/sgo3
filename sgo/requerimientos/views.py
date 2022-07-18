@@ -573,6 +573,7 @@ class RequerimientoIdView(TemplateView):
                                    )
         context['form3'] = ConvenioRequerForm(instance=requerimiento, convenio=convenio_plant, area_cargo=ac)
         context['form4'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac)
+        # context['req_trab'] = RequerimientoTrabajador(instance=requerimiento, pk=requerimiento_id)
         context['trabajadores'] = RequerimientoTrabajador.objects.filter(requerimiento_id=requerimiento_id, status=True)
         # context['a_c_trab'] = RequerimientoTrabajador.objects.values_list('area_cargo', flat=True).get(requerimiento_id=requerimiento_id, status=True)
         areas_cargos = RequerimientoTrabajador.objects.values('area_cargo', ).filter(requerimiento_id=requerimiento_id, status=True)

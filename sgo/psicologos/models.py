@@ -44,7 +44,7 @@ class Psicologico(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
-    planta = models.ForeignKey(Planta, on_delete=models.PROTECT, null=True, blank=True)
+    planta = models.ForeignKey(Planta, related_name="psicologico_planta", on_delete=models.PROTECT, null=True, blank=True)
 
     created_date = models.DateTimeField(
             default=timezone.now,
