@@ -43,6 +43,16 @@ urlpatterns = [
         view=views.create,
         name="create"
     ),
+    path(
+        route='createanexo/',
+        view=views.create_anexo,
+        name="createanexo"
+    ),
+    path(
+        route='<int:contrato_id>/update_contrato/',
+        view=views.update_contrato,
+        name="update_contrato"
+    ),
     # path(
     #     route='<int:requerimiento_id>/create_requerimiento',
     #     view=views.RequerimientoIdView.as_view(),
