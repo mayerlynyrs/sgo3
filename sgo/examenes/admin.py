@@ -38,14 +38,14 @@ class BateriaSetResource(resources.ModelResource):
 
 class RequerimientoSetResource(resources.ModelResource):
     requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
-    examen = fields.Field(column_name='examen', attribute='examen', widget=ForeignKeyWidget(Examen, 'nombre'))
+    bateria = fields.Field(column_name='bateria', attribute='bateria', widget=ForeignKeyWidget(Bateria, 'nombre'))
     trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
 
     class Meta:
         model = Requerimiento
-        fields = ('id', 'fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen',
-                  'trabajador', 'planta', 'status', )
+        fields = ('id', 'fecha_inicio', 'fecha_termino', 'fecha_evaluacion', 'estado', 'resultado', 'requerimiento_trabajador', 'bateria',
+                  'hal2', 'trabajador', 'planta', 'obs', 'status', )
 
 
 
@@ -79,8 +79,8 @@ class RequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RequerimientoAdmin model admin."""
 
     resource_class = RequerimientoSetResource
-    fields = ('fecha_inicio', 'fecha_termino', 'estado', 'resultado', 'requerimiento_trabajador', 'examen', 'trabajador',
-              'planta', 'status' )
+    fields = ('fecha_inicio', 'fecha_termino', 'fecha_evaluacion', 'estado', 'resultado', 'requerimiento_trabajador',
+             'bateria', 'hal2', 'trabajador', 'planta', 'obs', 'status' )
     list_display = ('id', 'estado', 'requerimiento_trabajador', 'planta', 'status', 'modified',)
-    list_filter = ['requerimiento_trabajador', 'examen', 'trabajador', 'planta', ]
-    search_fields = ['requerimiento_trabajador__nombre', 'examen__nombre', 'trabajador', 'planta__nombre', ]
+    list_filter = ['requerimiento_trabajador', 'bateria', 'trabajador', 'planta', ]
+    search_fields = ['requerimiento_trabajador__nombre', 'bateria__nombre', 'trabajador', 'planta__nombre', ]

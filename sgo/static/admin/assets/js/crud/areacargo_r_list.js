@@ -137,6 +137,9 @@ $(function () {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
+                $('#myModalConvenioR').modal('hide');
+                tblConvenioReq.ajax.reload();
+                $('#myModalRequerTrab').modal('hide');
                 $('#myModalRequerUser').modal('hide');
                 tblRequeriTrab.ajax.reload();
             }); 
@@ -155,6 +158,11 @@ function guardar_area_cargo() {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalACR').modal('hide');
                 tblAreaCargo.ajax.reload();
+                $('#myModalConvenioR').modal('hide');
+                tblConvenioReq.ajax.reload();
+                $('#myModalRequerTrab').modal('hide');
+                $('#myModalRequerUser').modal('hide');
+                tblRequeriTrab.ajax.reload();
             });
             enviando = True;   
         });  

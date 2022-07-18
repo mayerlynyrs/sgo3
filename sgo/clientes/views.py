@@ -386,9 +386,19 @@ class ClienteIdView(TemplateView):
                 negocio.status = False
                 negocio.save()
             elif action == 'planta_add':
+                if "psicologico" in request.POST:
+                    estadopsico = True
+                else:
+                    estadopsico = False
+                if "hal2" in request.POST:
+                    estadohal2 = True
+                else:
+                    estadohal2 = False
                 bono = request.POST.getlist('bono')
-                examen = request.POST.getlist('examen')
+                bateria = request.POST.getlist('bateria')
                 planta = Planta()
+                planta.psicologico = estadopsico
+                planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
                 planta.nombre = request.POST['nombre'].lower()
@@ -406,12 +416,22 @@ class ClienteIdView(TemplateView):
                 planta.save()
                 for i in bono:
                     planta.bono.add(i)
-                for e in examen:
-                    planta.examen.add(e)
+                for e in bateria:
+                    planta.bateria.add(e)
             elif action == 'planta_edit':
+                if "psicologico" in request.POST:
+                    estadopsico = True
+                else:
+                    estadopsico = False
+                if "hal2" in request.POST:
+                    estadohal2 = True
+                else:
+                    estadohal2 = False
                 bono = request.POST.getlist('bono')
-                examen = request.POST.getlist('examen')
+                bateria = request.POST.getlist('bateria')
                 planta = Planta.objects.get(pk=request.POST['id'])
+                planta.psicologico = estadopsico
+                planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
                 planta.nombre = request.POST['nombre'].lower()
@@ -428,21 +448,21 @@ class ClienteIdView(TemplateView):
                 planta.cliente_id = cliente_id
                 planta.save()
                 bonos = []
-                examenes = []
+                baterias = []
                 for d in planta.bono.all():
                     bonos.append(d.id ) 
                 for a in bonos:
                     planta.bono.remove(a)
 
-                for h in planta.examen.all():
-                    examenes.append(h.id ) 
+                for h in planta.bateria.all():
+                    baterias.append(h.id ) 
                 for j in bonos:
-                    planta.examen.remove(j)
+                    planta.bateria.remove(j)
                 
                 for i in bono:
                     planta.bono.add(i)
-                for e in examen:
-                    planta.examen.add(e)
+                for e in bateria:
+                    planta.bateria.add(e)
                     
             elif action == 'planta_delete':
                 archiv = Planta.objects.get(pk=request.POST['id'])

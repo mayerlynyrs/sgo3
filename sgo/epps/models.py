@@ -168,6 +168,7 @@ class ConvenioRequerTrabajador(BaseModel):
         item['convenio'] = self.convenio.nombre
         item['area_cargo_id'] = self.area_cargo.id
         item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.cargo.nombre
+        item['a_c'] = self.area_cargo.area.nombre + ' - ' + self.area_cargo.cargo.nombre
         item['requerimiento_id'] = self.requerimiento.id
         item['requerimiento'] = self.requerimiento.nombre
         item['trabajador_id'] = self.trabajador.id

@@ -95,22 +95,24 @@ $(function () {
         $('select[name="region"]').val(data.region_id).trigger("change");
         $('select[name="provincia"]').val(data.provincia_id).trigger("change");
         $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
-        $('input[name="direccion"]').val(data.direccion);  
+        $('input[name="direccion"]').val(data.direccion);
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2);
+        $('input:checkbox[name=psicologico]').attr('checked',data.psicologico);     
         var bono2 = [];
         data.bono.forEach(function(bonos, index) { 
             var bonos1 = bonos.id;
             bono2 = bono2.concat(bonos1);
             });
 
-        var examen2 = [];
-        data.examen.forEach(function(examenes, index) { 
-            var examen1 = examenes.id;
-            examen2 = examen2.concat(examen1);
+        var bateria2 = [];
+        data.bateria.forEach(function(baterias, index) { 
+            var bateria1 = baterias.id;
+            bateria2 = bateria2.concat(bateria1);
             });
             
         $('select[name="bono"]').val(bono2).trigger("change");
         $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
-        $('select[name="examen"]').val(examen2).trigger("change");
+        $('select[name="bateria"]').val(bateria2).trigger("change");
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direccion_gerente"]').val(data.direccion_gerente);
@@ -138,22 +140,24 @@ $(function () {
         $('select[name="region"]').val(data.region_id).trigger("change");
         $('select[name="provincia"]').val(data.provincia_id).trigger("change");
         $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
-        $('input[name="direccion"]').val(data.direccion);  
+        $('input[name="direccion"]').val(data.direccion);
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2);
+        $('input:checkbox[name=psicologico]').attr('checked',data.psicologico);   
         var bono2 = [];
         data.bono.forEach(function(bonos, index) { 
             var bonos1 = bonos.id;
             bono2 = bono2.concat(bonos1);
             });
 
-        var examen2 = [];
-        data.examen.forEach(function(examenes, index) { 
-            var examen1 = examenes.id;
-            examen2 = examen2.concat(examen1);
+        var bateria2 = [];
+        data.bateria.forEach(function(baterias, index) { 
+            var bateria1 = baterias.id;
+            bateria2 = bateria2.concat(bateria1);
             });
             
         $('select[name="bono"]').val(bono2).trigger("change");
         $('select[name="gratificacion"]').val(data.gratificacion).trigger("change");
-        $('select[name="examen"]').val(examen2).trigger("change");
+        $('select[name="bateria"]').val(bateria2).trigger("change");
         $('input[name="rut_gerente"]').val(data.rut_gerente);
         $('input[name="nombre_gerente"]').val(data.nombre_gerente);
         $('input[name="direcccion_gerente"]').val(data.direcccion_gerente);

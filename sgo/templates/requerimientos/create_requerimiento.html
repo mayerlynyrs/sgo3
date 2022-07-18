@@ -73,7 +73,7 @@
               <span class="number">2</span> 
 							<span class="info">
                 Áreas-Cargos
-                <small>Áreas y Cargos del Requerimiento. </small>
+                <small>Cantidad de trabajadores.</small>
 							</span>
 						</a>
 					</li>
@@ -91,7 +91,7 @@
               <span class="number">4</span>
 							<span class="info">
                 Trabajadores Área-Cargo
-                <small>Trabajadores en Requerimiento </small>
+                <small>Asignar trabajadores</small>
 							</span>
 						</a>
 					</li>
@@ -452,17 +452,21 @@
 									<div class="col-xl-10 offset-xl-1">
 										<legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Trabajador(es) del Requerimiento</legend><hr /><br>
                       <div class="row col-md-12">
-                        <!-- <a class="btn btn-info btn-flat btnAddRequeUser" style="color: white;">
-                          <i class="fas fa-rocket"></i> Enviar Revisión de Exámenes
-                        </a> -->
+                        <form method="post" action="." enctype="multipart/form-data">
+                          <input name="requerimiento_id" id="requerimiento_id" type="" value="{{ requerimiento_id }}">
+                          <input name="requerimiento_id" id="requerimiento_id" type="" value="{{ trabajadores }}">
+                          
+                        <a class="btn btn-info btn-flat btnAddRequeUser" style="color: white;">
+                          <i class="fas fa-rocket"></i> Revisión de Exámenes
+                        </a><button type="submit" id="botonConvenio" class="btn btn-info btn-flat btnAdd33"> Guardar</button>
+                      </form>
                       </div>
                       <br>
                       <div class="table-responsive">
                         <table id="data-table-buttons_wrapper" class="table table-striped table-bordered table-td-valign-middle">
                           <thead>
                             <tr>
-                                <!-- <th>ID</th> -->
-                                <th>Áreas-Cargos</th>
+                                <th>(Cantidad) Área-Cargo</th>
                                 <th>Trabajadores</th>
                                 <th>Jefes</th>
                                 <th>Acciones</th>

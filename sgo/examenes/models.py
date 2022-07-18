@@ -44,6 +44,7 @@ class Examen(models.Model):
         item['id'] = self.id
         return item
 
+
 class Bateria(models.Model):
     """Modelo Bateria.
     """
@@ -53,11 +54,11 @@ class Bateria(models.Model):
     examen = models.ManyToManyField(
         Examen,
         related_name="examenes",
-        help_text='Seleccione uno o mas exámenes para esta bateria.'
+        help_text='Seleccione uno o mas exámenes para esta batería.'
     )
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar la bateria de examenes, deshabilite esta casilla.'
+        help_text='Para desactivar la batería de exámenes, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -75,6 +76,7 @@ class Bateria(models.Model):
         item['examen'] = [t.toJSON() for t in self.examen.all()]
         # item['examen'] = [model_to_dict(t) for t in self.examen.all()]
         return item
+
 
 class CentroMedico(models.Model):
     nombre = models.CharField(max_length=120)
@@ -96,6 +98,7 @@ class CentroMedico(models.Model):
         item['provincia_id'] = self.provincia.id
         item['ciudad_id'] = self.ciudad.id
         return item
+
 
 class Evaluacion(models.Model):
     """Evaluacion Model
@@ -169,13 +172,13 @@ class Evaluacion(models.Model):
 
     hal2 = models.BooleanField(
         default=False,
-        help_text='Si examen hal2 es requerido , habilite esta casilla.'                          
+        help_text='Si examen hal2 es requerido, habilite esta casilla.'                          
     )
 
 
     psicologo = models.ForeignKey(User, related_name='psico_evaluador', on_delete=models.PROTECT, null=True, blank=True)
     centro = models.ForeignKey(CentroMedico, on_delete=models.PROTECT, null=True, blank=True)
-    bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
+    bateria = models.ForeignKey(Bateria, verbose_name="Batería", on_delete=models.PROTECT, null=True, blank=True)
 
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -234,34 +237,46 @@ class Requerimiento(BaseModel):
     """
     APROBADO = 'A'
     RECHAZADO = 'R'
+    ENVIADO = 'E'
 
     ESTADOS = (
         (APROBADO, 'Aprobado'),
         (RECHAZADO, 'Rechazado'),
+        (ENVIADO, 'Enviado'),
     )
 
-    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_inicio = models.DateField(verbose_name="Fecha Inicio", null=True, blank=True)
 
-    fecha_termino = models.DateField(null=True, blank=True)
+    fecha_termino = models.DateField(verbose_name="Fecha Término", null=True, blank=True)
+
+    fecha_evaluacion = models.DateField(verbose_name="Fecha Evaluación", null=True, blank=True)
 
     estado = models.CharField(max_length=1, choices=ESTADOS, default=RECHAZADO)
 
     resultado = models.CharField(
         max_length=120,
+        blank=True,
+        null=True
     )
+    obs = models.TextField(verbose_name="Observaciones", blank=True, null=True)
+
+    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, related_name="exam_requer_trabajador", on_delete=models.PROTECT)
+
+    bateria = models.ForeignKey(Bateria, verbose_name="Batería", on_delete=models.PROTECT, null=True, blank=True)
+    
+    hal2 = models.BooleanField(
+        default=False,
+        help_text='Si examen hal2 es requerido, habilite esta casilla.'                          
+    )
+
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
+
+    planta = models.ForeignKey(Planta, related_name="exam_requerimiento_planta", on_delete=models.PROTECT)
 
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el requerimiento del usuario, deshabilite esta casilla.'
+        help_text='Para desactivar el requerimiento del trabajador, deshabilite esta casilla.'
     )
-
-    requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, related_name="exam_requer_trabajador", on_delete=models.PROTECT, null=True, blank=True)
-
-    examen = models.ForeignKey(Examen, on_delete=models.PROTECT, null=True, blank=True)
-
-    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
-
-    planta = models.ForeignKey(Planta, related_name="exam_requerimiento_planta", on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.resultado

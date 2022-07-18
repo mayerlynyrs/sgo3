@@ -10,7 +10,7 @@ from crispy_forms.layout import Layout, Row, Column
 # sgo Model
 from clientes.models import Cliente, Negocio, Planta, ContactoPlanta
 from utils.models import Area, Cargo, Horario, Bono, Gratificacion, Region, Ciudad, Provincia
-from examenes.models import Examen
+from examenes.models import Bateria
 from users.models import Salud
 
 User = get_user_model()
@@ -269,6 +269,7 @@ class NegocioForm(forms.ModelForm):
         model = Negocio
         fields = ("nombre", "descripcion", "archivo")
 
+
 class PlantaForm(forms.ModelForm):
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.none(), required=True, label="Negocio",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control ',
@@ -318,7 +319,7 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    examen = forms.ModelMultipleChoiceField(queryset=Examen.objects.all(), label="Exámenes",
+    bateria = forms.ModelMultipleChoiceField(queryset=Bateria.objects.all(), label="Exámenes",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -326,6 +327,13 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
+    hal2 =forms.BooleanField(required=False,label='Hal2',
+                                 widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
+                                                                   'disabled':'disabled',}))
+    psicologico =forms.BooleanField(required=False,label='Psicológico',
+                                 widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
+                                                                    'onclick' :"javascript:validar(this)",
+                                                                   }))
 
     def __init__(self, *args, **kwargs):
         planta = kwargs.pop('planta', None)
@@ -410,7 +418,7 @@ class PlantaForm(forms.ModelForm):
 
     class Meta:
         model = Planta
-        fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion')
+        fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion', 'psicologico', 'hal2')
 
 
 class ContactoPlantaForm(forms.ModelForm):
