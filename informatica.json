@@ -3182,7 +3182,7 @@
     "ciudad": 47,
     "direccion": "Arlegui No 1102",
     "status": true,
-    "examen": [
+    "bateria": [
       1,
       2
     ],
@@ -3211,7 +3211,7 @@
     "ciudad": 76,
     "direccion": "Avenida Republica No 1267",
     "status": true,
-    "examen": [
+    "bateria": [
       1,
       2
     ],
@@ -3240,7 +3240,7 @@
     "ciudad": 58,
     "direccion": "Calle Quillota No 028",
     "status": true,
-    "examen": [
+    "bateria": [
       1,
       2
     ],
@@ -3269,7 +3269,7 @@
     "ciudad": 142,
     "direccion": "Variante Nahueltoro #251",
     "status": true,
-    "examen": [
+    "bateria": [
       2
     ],
     "bono": [
@@ -3296,7 +3296,7 @@
     "ciudad": 322,
     "direccion": "Luis Pasteur 5280, oficina 301, Vitacura, comuna de Santiago",
     "status": true,
-    "examen": [
+    "bateria": [
       1,
       2
     ],
@@ -3324,7 +3324,7 @@
     "ciudad": 47,
     "direccion": "Calle Limache 4865",
     "status": true,
-    "examen": [
+    "bateria": [
       1,
       2
     ],
@@ -14337,6 +14337,74 @@
     "fields": {
       "nombre": "Espacios Confinados",
       "valor": 10,
+      "status": true,
+      "created_date": "2022-01-24T15:52:23.431Z"
+    }
+  },
+  {
+    "model": "examenes.examen",
+    "pk": 3,
+    "fields": {
+      "nombre": "Ruido",
+      "valor": 35,
+      "status": true,
+      "created_date": "2022-01-24T15:51:57.769Z"
+    }
+  },
+  {
+    "model": "examenes.examen",
+    "pk": 4,
+    "fields": {
+      "nombre": "Agentes de Asma",
+      "valor": 20,
+      "status": true,
+      "created_date": "2022-01-24T15:52:23.431Z"
+    }
+  },
+  {
+    "model": "examenes.examen",
+    "pk": 5,
+    "fields": {
+      "nombre": "Capacidad física",
+      "valor": 55,
+      "status": true,
+      "created_date": "2022-01-24T15:51:57.769Z"
+    }
+  },
+  {
+    "model": "examenes.examen",
+    "pk": 6,
+    "fields": {
+      "nombre": "Tóxicos",
+      "valor": 40,
+      "status": true,
+      "created_date": "2022-01-24T15:52:23.431Z"
+    }
+  },
+  {
+    "model": "examenes.bateria",
+    "pk": 1,
+    "fields": {
+      "nombre": "Batería Masisa",
+      "examen": [
+      1,
+      2,
+      3
+    ],
+      "status": true,
+      "created_date": "2022-01-24T15:52:23.431Z"
+    }
+  },
+  {
+    "model": "examenes.bateria",
+    "pk": 2,
+    "fields": {
+      "nombre": "Batería Prueba",
+      "examen": [
+      1,
+      3,
+      4
+    ],
       "status": true,
       "created_date": "2022-01-24T15:52:23.431Z"
     }
