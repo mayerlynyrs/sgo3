@@ -319,21 +319,23 @@ class PlantaForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    bateria = forms.ModelMultipleChoiceField(queryset=Bateria.objects.all(), label="Exámenes",
-                                            widget=forms.SelectMultiple(
-                                                attrs={'class': 'selectpicker show-tick form-control',
-                                                       'data-size': '5',
-                                                       'data-live-search': 'true',
-                                                       'data-live-search-normalize': 'true'
-                                                       })
-                                            )
-    hal2 =forms.BooleanField(required=False,label='Hal2',
+    bateria = forms.ModelChoiceField(queryset=Bateria.objects.all(), required=False, label="Batería",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    masso =forms.BooleanField(required=False,label='Masso',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
-                                                                   'disabled':'disabled',}))
+                                                                   }))
     psicologico =forms.BooleanField(required=False,label='Psicológico',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
                                                                     'onclick' :"javascript:validar(this)",
                                                                    }))
+    hal2 =forms.BooleanField(required=False,label='Hal2',
+                                 widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
+                                                                   'disabled':'disabled',}))
 
     def __init__(self, *args, **kwargs):
         planta = kwargs.pop('planta', None)

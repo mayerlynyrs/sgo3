@@ -4,6 +4,8 @@ var requerimiento = null;
 var enviando = false;
 var boton_numero2 = document.getElementById("boton2");
 boton_numero2.addEventListener("click", guardar_planta_contacto);
+var boton_rev_exam = document.getElementById("botonRevExam");
+boton_rev_exam.addEventListener("click", guardar_rev_exam);
 
 
 function getData4() {
@@ -114,6 +116,21 @@ $(function () {
         $('#myModalRequerUser').modal('show');
     });
 
+
+    $('.btnSendExam').on('click', function () {
+        $('input[name="action"]').val('exam_rev_add');
+        modal_title.find('span').html('<b style="font-size: 1.25rem;">Revisión de Exámenes </b><small style="font-size: 80%;">Enviar</small>');
+        console.log(modal_title.find('i'));
+        modal_title.find('i').removeClass().addClass();
+        $('form')[2].reset();
+        var btn = document.getElementById("botonRevExam");
+        btn.style.borderColor= '#153264';
+        btn.style.backgroundColor= '#153264';
+        btn.innerHTML = 'Si';
+        $('#myModalSendExam').modal('show');
+    });
+
+
     $('#myModalRequerUser').on('shown.bs.modal', function () {
         //$('form')[0].reset();
     });
@@ -146,6 +163,24 @@ function guardar_planta_contacto() {
                 $('#myModalRequerTrab').modal('hide');
                 $('#myModalRequerUser').modal('hide');
                 tblRequeriTrab.ajax.reload();
+            });
+            enviando = True;   
+        });  
+    }
+  }
+
+function guardar_rev_exam() { 
+    if (enviando == false){
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalSendExam').modal('hide');
+                iziToast.success({
+                    position: 'topRight',
+                    message: 'Enviado(s) a Revisión'
+                })
             });
             enviando = True;   
         });  

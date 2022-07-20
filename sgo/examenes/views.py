@@ -20,10 +20,10 @@ from django.views.generic import ListView, CreateView
 from django.views.generic import TemplateView
 # Model
 from clientes.models import Planta
-from examenes.models import Examen, Bateria, CentroMedico, Evaluacion
+from examenes.models import Examen, Bateria, CentroMedico, Evaluacion, Requerimiento as RequerimientoExam
 from agendamientos.models import Agendamiento
 # Form
-from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm, EvaluacionGeneralForm, ReportForm
+from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm, EvaluacionGeneralForm, ReportForm, RevExamenForm
 
 class ExamenView(TemplateView):
     template_name = 'examenes/examen_list.html'
@@ -211,6 +211,7 @@ class AgendaList(TemplateView):
         context['form1'] = EvaluacionGeneralForm()
         return context
 
+
 class CentroMedicoView(TemplateView):
     template_name = 'examenes/centromedico_list.html'
 
@@ -305,3 +306,98 @@ class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['entity'] = 'Salud'
         context['form'] = ReportForm()
         return context
+
+
+class ExaSolicitudesList(TemplateView):
+    template_name = 'examenes/solicitudes_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in RequerimientoExam.objects.filter(Q(estado='E') & Q(bateria_id__isnull=False) & Q(status=True)):
+                    data.append(i.toJSON())
+            elif action == 'edit':
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                if "referido" in request.POST:
+                    estado = True
+                    agenda.referido =  estado
+                else:
+                    estado = False
+                    agenda.referido =  estado
+                agenda.estado = request.POST['estado']
+                agenda.tipo = request.POST['tipo']
+                agenda.fecha_ingreso_estimada = request.POST['fecha_ingreso_estimada']
+                agenda.fecha_agenda_evaluacion = request.POST['fecha_agenda_evaluacion']
+                agenda.planta_id = request.POST['planta']
+                agenda.cargo_id = request.POST['cargo']
+                agenda.centro_id = request.POST['centromedico']
+                agenda.bateria_id = request.POST['bateria']
+                agenda.obs = request.POST['obs']
+                agenda.save()
+            elif action == 'delete':
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                agenda.status = False
+                agenda.save()
+            elif action == 'evaluacion_add':
+                if "referido" in request.POST:
+                    estado = True
+                else:
+                    estado = False
+                evaluacion = Evaluacion()
+                evaluacion.estado = request.POST['estado']
+                evaluacion.referido =  estado
+                evaluacion.fecha_inicio = request.POST['fecha_inicio']
+                evaluacion.tipo = request.POST['tipo']
+                evaluacion.resultado = request.POST['resultado']
+                evaluacion.valor = request.POST['valor']
+                evaluacion.fecha_termino = request.POST['fecha_termino']
+                evaluacion.tipo_evaluacion = "GEN"
+                evaluacion.trabajador_id = request.POST['user_id']
+                evaluacion.centro_id = request.POST['centromedico']
+                evaluacion.bateria_id = request.POST['bateria']
+                evaluacion.planta_id = request.POST['planta']
+                evaluacion.cargo_id = request.POST['cargo']
+                evaluacion.archivo = request.FILES['archivo']
+                if "archivo2" in request.FILES:
+                    evaluacion.archivo2 = request.FILES['archivo2']
+                evaluacion.save()
+                agenda = Agendamiento.objects.get(pk=request.POST['id'])
+                agenda.estado = 'A'
+                agenda.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Evaluaciones'
+        context['list_url'] = reverse_lazy('examenes:listAgenda')
+        context['entity'] = 'Examenes'
+        context['form'] = RevExamenForm()
+        context['exa_eval'] = Evaluacion.objects.all()
+        return context
+
+
+@login_required
+@permission_required('examenes.view_examen', raise_exception=True)
+def detail_solicitud(request, evaluacion_id, template_name='examenes/solicitudes_detail.html'):
+    data = dict()
+    evalua = get_object_or_404(Evaluacion, pk=evaluacion_id)
+
+    context = {'evalua': evalua, }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)

@@ -94,9 +94,9 @@
         <ul class="sub-menu">
           <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
         {% if perms.psicologos.view_evaluacionpsicologico %}
-          <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas </a></li>
+          <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
         {% endif %}
-          <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revisión de Solicitudes </a></li>
+          <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
         </ul>
       </li>
       {% endif %}
@@ -119,7 +119,7 @@
                     {% if perms.contratos.add_plantilla %}
                     <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'examenes:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
                     {% endif %}
-                    <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:listAgenda' %}">Revisión de Solicitudes </a></li>
+                    <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:list-solicitudes' %}">Revisión de Solicitudes </a></li>
                   </ul>
                 </li>
           {% endif %}

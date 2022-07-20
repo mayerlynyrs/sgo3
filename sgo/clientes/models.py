@@ -253,21 +253,23 @@ class Planta(models.Model):
 
     gratificacion = models.ForeignKey(Gratificacion, verbose_name="Gratificación", on_delete=models.SET_NULL, null=True)
 
-    bateria = models.ManyToManyField("examenes.Bateria",
-        verbose_name="Batería",
-        blank=True,
-        help_text='Seleccione una o mas baterias para esta planta.')
+    masso = models.BooleanField(
+        default=False,
+        help_text='Si charla Masso es requerido, habilite esta casilla.'
+    )
 
     psicologico = models.BooleanField(
         verbose_name="Psicológico",
         default=False,
-        help_text='Para desactivar el tipo de examen psicológico, deshabilite esta casilla.'
+        help_text='Si el tipo de examen psicológico es requerido, habilite esta casilla.'
     )
 
     hal2 = models.BooleanField(
         default=False,
         help_text='Si examen hal2 es requerido, habilite esta casilla.'
     )
+
+    bateria = models.ForeignKey("examenes.Bateria", verbose_name="Batería", on_delete=models.PROTECT, null=True, blank=True)
 
     status = models.BooleanField(
         default=True,
@@ -291,7 +293,6 @@ class Planta(models.Model):
         item['provincia_id'] = self.provincia.id
         item['ciudad_id'] = self.ciudad.id
         item['bono'] =  [t.toJSON() for t in self.bono.all()]
-        item['bateria'] = [t.toJSON() for t in self.bateria.all()]
         return item
 
 

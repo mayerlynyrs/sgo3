@@ -245,24 +245,19 @@ class Requerimiento(BaseModel):
         (ENVIADO, 'Enviado'),
     )
 
-    fecha_inicio = models.DateField(verbose_name="Fecha Inicio", null=True, blank=True)
-
-    fecha_termino = models.DateField(verbose_name="Fecha Término", null=True, blank=True)
-
-    fecha_evaluacion = models.DateField(verbose_name="Fecha Evaluación", null=True, blank=True)
-
     estado = models.CharField(max_length=1, choices=ESTADOS, default=RECHAZADO)
 
-    resultado = models.CharField(
-        max_length=120,
-        blank=True,
-        null=True
-    )
     obs = models.TextField(verbose_name="Observaciones", blank=True, null=True)
 
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, related_name="exam_requer_trabajador", on_delete=models.PROTECT)
 
     bateria = models.ForeignKey(Bateria, verbose_name="Batería", on_delete=models.PROTECT, null=True, blank=True)
+
+    psicologico = models.BooleanField(
+        verbose_name="Psicológico",
+        default=False,
+        help_text='Si el tipo de examen psicológico es requerido, habilite esta casilla.'
+    )
     
     hal2 = models.BooleanField(
         default=False,
@@ -279,4 +274,26 @@ class Requerimiento(BaseModel):
     )
 
     def __str__(self):
-        return self.resultado
+        return str(self.id)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        if (self.psicologico):
+            item['psicologico'] = "Si"
+        else:
+            item['psicologico'] = "No"
+        if (self.hal2):
+            item['hal2'] = "Si"
+        else:
+            item['hal2'] = "No"
+        # Valida en caso de que no tengo información
+        if (self.bateria):
+            item['bateria'] = self.bateria.nombre.title()
+            item['examen'] = [t.toJSON() for t in self.bateria.examen.all()]
+        item['requerimiento_trabajador_id'] = self.requerimiento_trabajador.id
+        item['trabajador_id'] = self.trabajador.id
+        item['trabajador'] = self.trabajador.first_name.title() +" "+self.trabajador.last_name.title()
+        item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title()
+        item['planta_id'] = self.planta.id
+        item['planta'] = self.planta.nombre.title()
+        return item
