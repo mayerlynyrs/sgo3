@@ -3,10 +3,10 @@
 # Django
 from django.forms import *
 from django import forms
-# sgo Model
-from examenes.models import Examen, Bateria, CentroMedico, Evaluacion
-from agendamientos.models import Agendamiento
 from django.forms import TextInput
+# sgo Model
+from examenes.models import Examen, Bateria, CentroMedico, Evaluacion, Requerimiento as RequerimientoExam
+from agendamientos.models import Agendamiento
 from clientes.models import Planta
 from utils.models import Cargo, Region, Ciudad, Provincia
 
@@ -238,5 +238,29 @@ class ReportForm(Form):
         'class': 'form-control',
         'autocomplete': 'off'
     }))
-    
 
+
+class RevExamenForm(forms.ModelForm):
+
+    APROBADO = 'A'
+    RECHAZADO = 'R'
+
+    ESTADOS = (
+        (APROBADO, 'Aprobado'),
+        (RECHAZADO, 'Rechazado'),
+    )
+                               
+    estado = forms.ChoiceField(choices = ESTADOS, required=True, label="Tipo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )               
+    obs = forms.CharField (label="Observaciones",
+                                 widget=forms.Textarea(attrs={'class': "form-control"})) 
+                                     
+
+    class Meta:
+        model = RequerimientoExam
+        fields = ("estado", "obs")

@@ -18,7 +18,7 @@ from psicologos.forms import UserAgendar, AgendaPsicologos, ReportForm, Evaluaci
 from psicologos.models import Psicologico, Agenda
 from agendamientos.models import Agendamiento
 from users.models import User, Trabajador
-from examenes.models import Evaluacion
+from examenes.models import Evaluacion, Requerimiento as RequerimientoExam
 # Create your views here.
 
 
@@ -199,4 +199,89 @@ class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['list_url'] = reverse_lazy('psicologos:evaTerminadas')
         context['entity'] = 'Salud'
         context['form'] = ReportForm()
+        return context
+
+
+class PsiSolicitudesList(TemplateView):
+    template_name = 'psicologos/solicitudes_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in RequerimientoExam.objects.filter(Q(estado='E') & Q(psicologico=True) & Q(status=True)):
+                    data.append(i.toJSON())
+            # elif action == 'edit':
+            #     agenda = RequerimientoExam.objects.get(pk=request.POST['id'])
+            #     if "Hal2" in request.POST:
+            #         estado = True
+            #         agenda.Hal2 =  estado
+            #     else:
+            #         estado = False
+            #         agenda.Hal2 =  estado  
+            #     agenda.estado = request.POST['estado']
+            #     agenda.tipo = request.POST['tipo']
+            #     agenda.fecha_ingreso_estimada = request.POST['fecha_ingreso_estimada']
+            #     agenda.fecha_agenda_evaluacion = request.POST['fecha_agenda_evaluacion']
+            #     agenda.planta_id = request.POST['planta']
+            #     agenda.cargo_id = request.POST['cargo']
+            #     agenda.psico_id = request.POST['psico']
+            #     agenda.obs = request.POST['obs']
+            #     agenda.save()
+            # elif action == 'delete':
+            #     agenda = Agendamiento.objects.get(pk=request.POST['id'])
+            #     agenda.status = False
+            #     agenda.save()
+            # elif action == 'evaluacion_add':
+            #     fechainicio = request.POST['fecha_inicio']
+            #     f = fechainicio.split("-")
+            #     anio = int(f[0]) + 2 
+            #     fechafinal = str(anio) + "-" + str(f[1]) + "-" + str(f[2])
+            #     fechafinal2 = datetime.strptime(fechafinal, '%Y-%m-%d')
+            #     if "referido" in request.POST:
+            #         estado = True
+            #     else:
+            #         estado = False
+            #     evaluacion = Evaluacion()
+            #     evaluacion.estado = request.POST['estado']
+            #     evaluacion.referido =  estado
+            #     evaluacion.fecha_inicio = request.POST['fecha_inicio']
+            #     evaluacion.tipo = request.POST['tipo']
+            #     evaluacion.resultado = request.POST['resultado']
+            #     evaluacion.valor = 0
+            #     evaluacion.fecha_termino = fechafinal2
+            #     evaluacion.tipo_evaluacion = "PSI"
+            #     evaluacion.trabajador_id = request.POST['user_id']
+            #     evaluacion.psicologo_id = request.POST['psicologo']
+            #     evaluacion.planta_id = request.POST['planta']
+            #     evaluacion.cargo_id = request.POST['cargo']
+            #     evaluacion.archivo = request.FILES['archivo']
+            #     if "archivo2" in request.FILES:
+            #         evaluacion.archivo2 = request.FILES['archivo2']
+            #     evaluacion.save()
+            #     agenda = Agendamiento.objects.get(pk=request.POST['id'])
+            #     agenda.estado = 'A'
+            #     agenda.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # psicologos  = User.objects.filter(groups__name='Psicologo')
+        # # print ('psicologos', psicologos)
+        # context['title'] = 'Listado de Evaluaciones'
+        # context['list_url'] = reverse_lazy('psicologos:listAgenda')
+        # context['entity'] = 'Salud'
+        # context['form'] = AgendaPsicologos(users_evaluador=psicologos)
+        # context['form1'] = EvaluacionPsicologica()
         return context

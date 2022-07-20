@@ -3182,10 +3182,7 @@
     "ciudad": 47,
     "direccion": "Arlegui No 1102",
     "status": true,
-    "bateria": [
-      1,
-      2
-    ],
+    "bateria": 1,
     "bono": [
       1,
       2
@@ -3211,10 +3208,7 @@
     "ciudad": 76,
     "direccion": "Avenida Republica No 1267",
     "status": true,
-    "bateria": [
-      1,
-      2
-    ],
+    "bateria": 2,
     "bono": [
       1,
       2
@@ -3240,10 +3234,7 @@
     "ciudad": 58,
     "direccion": "Calle Quillota No 028",
     "status": true,
-    "bateria": [
-      1,
-      2
-    ],
+    "bateria": 1,
     "bono": [
       1,
       2
@@ -3269,9 +3260,7 @@
     "ciudad": 142,
     "direccion": "Variante Nahueltoro #251",
     "status": true,
-    "bateria": [
-      2
-    ],
+    "bateria": 2,
     "bono": [
       1
     ]
@@ -3296,10 +3285,7 @@
     "ciudad": 322,
     "direccion": "Luis Pasteur 5280, oficina 301, Vitacura, comuna de Santiago",
     "status": true,
-    "bateria": [
-      1,
-      2
-    ],
+    "bateria": 1,
     "bono": [
       1
     ]
@@ -3324,10 +3310,7 @@
     "ciudad": 47,
     "direccion": "Calle Limache 4865",
     "status": true,
-    "bateria": [
-      1,
-      2
-    ],
+    "bateria": 2,
     "bono": [
       1
     ]

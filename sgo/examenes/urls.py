@@ -33,4 +33,14 @@ urlpatterns = [
         view=views.EvalTerminadasView.as_view(),
         name='evaTerminadas'
      ),
+    path(
+        route='list_solicitudes',
+        view=views.ExaSolicitudesList.as_view(),
+        name='list-solicitudes'
+    ),
+    path(
+        route='<int:evaluacion_id>/detail/',
+        view=views.detail_solicitud,
+        name="detail"
+    ),
 ]

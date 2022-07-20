@@ -79,12 +79,6 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             #         'razon_social').distinct('razon_social')
             context['business'] = Negocio.objects.filter(
                 cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
-            # context['business'] = Negocio.objects.filter(
-            #     status=True).order_by('id', 'nombre').distinct('id', 'nombre')
-
-            ######## MAYE ########
-       
-            
 
             clientes= Cliente.objects.filter(status=True)
             plantas = Planta.objects.filter(status=True)
@@ -352,6 +346,7 @@ class ClienteIdView(TemplateView):
     
     cliente = get_object_or_404(Cliente, pk=1)
     
+    
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -386,6 +381,10 @@ class ClienteIdView(TemplateView):
                 negocio.status = False
                 negocio.save()
             elif action == 'planta_add':
+                if "masso" in request.POST:
+                    estadomasso =  True
+                else:
+                    estadomasso =  False
                 if "psicologico" in request.POST:
                     estadopsico = True
                 else:
@@ -395,8 +394,8 @@ class ClienteIdView(TemplateView):
                 else:
                     estadohal2 = False
                 bono = request.POST.getlist('bono')
-                bateria = request.POST.getlist('bateria')
                 planta = Planta()
+                planta.masso = estadomasso
                 planta.psicologico = estadopsico
                 planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
@@ -412,13 +411,16 @@ class ClienteIdView(TemplateView):
                 planta.rut_gerente = request.POST['rut_gerente']
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
+                planta.bateria_id = request.POST['bateria']
                 planta.cliente_id = cliente_id
                 planta.save()
                 for i in bono:
                     planta.bono.add(i)
-                for e in bateria:
-                    planta.bateria.add(e)
             elif action == 'planta_edit':
+                if "masso" in request.POST:
+                    estadomasso =  True
+                else:
+                    estadomasso =  False
                 if "psicologico" in request.POST:
                     estadopsico = True
                 else:
@@ -428,8 +430,8 @@ class ClienteIdView(TemplateView):
                 else:
                     estadohal2 = False
                 bono = request.POST.getlist('bono')
-                bateria = request.POST.getlist('bateria')
                 planta = Planta.objects.get(pk=request.POST['id'])
+                planta.masso = estadomasso
                 planta.psicologico = estadopsico
                 planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
@@ -445,24 +447,17 @@ class ClienteIdView(TemplateView):
                 planta.rut_gerente = request.POST['rut_gerente']
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
+                planta.bateria_id = request.POST['bateria']
                 planta.cliente_id = cliente_id
                 planta.save()
                 bonos = []
-                baterias = []
                 for d in planta.bono.all():
                     bonos.append(d.id ) 
                 for a in bonos:
                     planta.bono.remove(a)
-
-                for h in planta.bateria.all():
-                    baterias.append(h.id ) 
-                for j in bonos:
-                    planta.bateria.remove(j)
                 
                 for i in bono:
                     planta.bono.add(i)
-                for e in bateria:
-                    planta.bateria.add(e)
                     
             elif action == 'planta_delete':
                 archiv = Planta.objects.get(pk=request.POST['id'])

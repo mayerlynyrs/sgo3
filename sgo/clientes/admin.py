@@ -42,12 +42,12 @@ class PlantaSetResource(resources.ModelResource):
     ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
     negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'nombre'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
-    bateria = fields.Field(column_name='bateria', attribute='bateria', widget=ManyToManyWidget(Bateria, 'nombre'))
+    bateria = fields.Field(column_name='bateria', attribute='bateria', widget=ForeignKeyWidget(Bateria, 'nombre'))
     bono = fields.Field(column_name='bono', attribute='bono',widget=ManyToManyWidget(Bono, ',', 'pk'))
 
     class Meta:
         model = Planta
-        fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region', 'provincia', 'ciudad', 'direccion_comercial', 'bateria', 'psicologico', 'hal2')
+        fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region', 'provincia', 'ciudad', 'direccion_comercial', 'masso', 'psicologico', 'hal2', 'bateria')
 
 
 class ContactoPlantaSetResource(resources.ModelResource):
@@ -104,7 +104,7 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
     resource_class = PlantaSetResource
-    fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'bateria', 'psicologico', 'hal2', 'status',)
+    fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'masso', 'psicologico', 'hal2', 'bateria', 'status',)
     list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad',)
     search_fields = ['nombre', ]
 

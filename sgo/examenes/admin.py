@@ -44,8 +44,7 @@ class RequerimientoSetResource(resources.ModelResource):
 
     class Meta:
         model = Requerimiento
-        fields = ('id', 'fecha_inicio', 'fecha_termino', 'fecha_evaluacion', 'estado', 'resultado', 'requerimiento_trabajador', 'bateria',
-                  'hal2', 'trabajador', 'planta', 'obs', 'status', )
+        fields = ('id', 'estado', 'requerimiento_trabajador', 'bateria', 'psicologico', 'hal2', 'trabajador', 'planta', 'obs', 'status', )
 
 
 
@@ -79,8 +78,7 @@ class RequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """RequerimientoAdmin model admin."""
 
     resource_class = RequerimientoSetResource
-    fields = ('fecha_inicio', 'fecha_termino', 'fecha_evaluacion', 'estado', 'resultado', 'requerimiento_trabajador',
-             'bateria', 'hal2', 'trabajador', 'planta', 'obs', 'status' )
+    fields = ('estado', 'requerimiento_trabajador', 'bateria', 'psicologico', 'hal2', 'trabajador', 'planta', 'obs', 'status' )
     list_display = ('id', 'estado', 'requerimiento_trabajador', 'planta', 'status', 'modified',)
     list_filter = ['requerimiento_trabajador', 'bateria', 'trabajador', 'planta', ]
     search_fields = ['requerimiento_trabajador__nombre', 'bateria__nombre', 'trabajador', 'planta__nombre', ]

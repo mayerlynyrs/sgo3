@@ -28,7 +28,10 @@ urlpatterns = [
         view=views.EvalTerminadasView.as_view(),
         name='evaTerminadas'
      ),
-     
-     
+    path(
+        route='list_solicitudes',
+        view=views.PsiSolicitudesList.as_view(),
+        name='list-solicitudes'
+     ),    
     
 ]
