@@ -7,7 +7,7 @@ from crispy_forms.layout import Layout, Row, Column
 
 # sgo Model
 from clientes.models import Cliente, Planta
-from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento
+from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento, AsignacionTrabajador
 #Requerimientos
 from requerimientos.models import AreaCargo
 
@@ -136,3 +136,25 @@ class ConvenioRequerForm(forms.ModelForm):
     class Meta:
         model = ConvenioRequerimiento
         fields = ("convenio", "area_cargo")
+
+
+class AsignacionTrabajadorForm(forms.ModelForm):
+    
+    insumo = forms.ModelChoiceField(queryset=Insumo.objects.all(), required=True, label="Insumos",
+                                            widget=forms.Select(
+                                                attrs={'class': 'selectpicker show-tick form-control',
+                                                       'data-size': '5',
+                                                       'data-live-search': 'true',
+                                                       'data-live-search-normalize': 'true'
+                                                        })
+                                   )
+    cantidad = forms.IntegerField(required=True,
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
+
+
+    def __init__(self, *args, **kwargs):
+        super(AsignacionTrabajadorForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = AsignacionTrabajador
+        fields = ("tipo_asignacion", "insumo", "cantidad")

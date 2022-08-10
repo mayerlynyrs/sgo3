@@ -64,6 +64,11 @@ urlpatterns = [
         name='convenios_trabajadores'
      ),
     path(
+        route='<int:trabajador_id>/asignar_trabajador/',
+        view=views.AsignartrabajadorView.as_view(),
+        name='asignar_trabajador'
+     ),
+    path(
         route='<int:requerimiento_id>/adendum/',
         view=views.adendum_requerimiento,
         name="adendum"

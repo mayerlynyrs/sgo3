@@ -25,26 +25,53 @@
     <h4 class="panel-title">Revisión de Solicitudes</h4>
   </div>
   <div class="panel-body">
-    
-      
+    <div class="table-responsive">
       <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle ">
         <thead>
           <tr>
               <th>Trabajador</th>
               <th>Requerimiento</th>
               <th>Planta</th>
-              <th>Psicológico</th>
               <th>Hal2</th>
               <th>Acciones</th>
           </tr>
         </thead>
-        {% block rows %}
-
-        {% endblock %}
-      
-      
-    </table>
-
+          {% for obj in object_list  %}
+            <tr>
+              <td style="width:10%">
+                {{ obj.trabajador|title }}
+              </td>
+              <td style="width:10%">
+                {{ obj.requerimiento_trabajador.requerimiento|title }}
+              </td>
+              <td class="list-plantas" style="width:10%">
+                {{ obj.planta|title }}
+              </td>
+              <td style="width:10%">
+                {{ obj.hal2 }}
+              </td>
+              <td class="estado-requerimiento" style="width:10%">
+                <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-rev-psicologicas" title="Evaluar">
+                  <i class="fas fa-fw fa-newspaper"></i>
+                </button> &nbsp &nbsp
+                <button data-id="{{ obj.trabajador.id }}" type="button" class="btn btn-xs btn-lime btn-examenes" title="Ver Examénes">
+                  <i class="fas fa-book-medical"></i>
+                </button>
+                <!-- <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
+                  <i class="fas fa-audio-description"></i>
+                </button> &nbsp &nbsp
+                <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
+                  <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
+                </button> -->
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">
+              <div class="text-center">No hay solicitudes psicólogicas pendiente.</div>
+            </td></tr>
+          {% endfor %}
+      </table>
+    </div>
   </div>
 </div>
 
@@ -178,11 +205,85 @@
         </div>
       </form> -->
     </div>
-{% endblock %}
 
+    <div class="modal fade bd-example-modal-lg" id="modal-revision">
+      <div class="modal-dialog  modal-lg">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modal-examenes">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+{% endblock %}
 <!-- end panel -->
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/rev_solicitudes_list.js' %}"></script>
+<!-- <script src="{% static 'admin/assets/js/crud/rev_solicitudes_list.js' %}"></script> -->
 <script src="{% static 'admin/assets/js/fecha_hora.js' %}"></script>
 
 {% endblock %}
+
+{% block scripts %}
+    $('.btn-rev-psicologicas').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        <!-- console.log('requerimiento_id', id); -->
+        var URL = '/psicologos/'+id+'/revision/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+            url: URL,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#modal-revision").modal("show");
+            },
+            success: function (data) {
+                $("#modal-revision .modal-content").html(data.html_form);
+            }
+        });
+    });
+    $('.btn-examenes').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('ID', id);
+        var URL = '/psicologos/'+id+'/examenes/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+            url: URL,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#modal-examenes").modal("show");
+            },
+            success: function (data) {
+                $("#modal-examenes .modal-content").html(data.html_form);
+            }
+        });
+    });
+
+    {% if messages %}
+        console.log('mensajes');
+        {% for mensaje in messages %}
+            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+            {% if mensaje.tags == 'success' %}
+              iziToast.success({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% elif mensaje.tags == 'error' %}
+              iziToast.error({
+                  message: '{{ mensaje }}',
+                  position: 'topRight',
+              });
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}
+

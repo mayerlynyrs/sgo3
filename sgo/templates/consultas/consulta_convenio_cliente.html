@@ -42,29 +42,21 @@
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
       </div>
-      <h4 class="panel-title">Consulta General Requerimientos </h4>
+      <h4 class="panel-title">Consulta Convenio Clientes </h4>
     </div>
     <div class="panel-body">
-      <form action="buscarRequerimiento" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+      <form action="buscarConvenioCliente" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
         <fieldset>
           {% csrf_token %}
             <div class="row col-md-12 row align-items-center">
-                <div class="form-check col-md-1">
-                  <input class="form-check-input" type="checkbox" id="todos" name="todos">
-                  <label>Todos</label>
-                </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-9">
                     <label for="email" name="cliente">Cliente</label>
                     {{ form.cliente }}
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="email" name="planta">Planta</label>
-                    {{ form.planta }}
                 </div>
                 <div class="form-group col-md-3">
                   <div>
                     <input type="submit" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" disabled>
-                  <a href="consulta_requerimiento" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
+                  <a href="convenio_clientes" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
                   </div>
                 </div>
                 </div>
@@ -76,21 +68,21 @@
         <table id="example" class="table table-striped table-bordered table-td-valign-middle" style="width: 100%;">
             <thead>
                 <tr>
-                    <th>Rut Cliente</th>
-                    <th>Raz&oacute;n Social</th>
+                    <th>Rut --Cliente</th>
                     <th>Planta</th>
-                    <th>Centro Costo</th>
                     <th>Requerimiento</th>
+                    <th>Convenio</th>
+                    <th>Valor</th>
                 </tr>
             </thead>
             <tbody>
                 {% for obj in data  %}
                 <tr>
-                    <td>{{obj.rut}}</td>
-                    <td>{{obj.razon_social|title}}</td>
+                    <td>{{obj.cliente|title}}</td>
                     <td>{{obj.planta|title}}</td>
-                    <td>{{obj.centro_costo|title}}</td>
-                    <td>{{obj.nombre|title}}</td>
+                    <td>{{obj.requerimiento|title}}</td>
+                    <td>{{obj.convenio|title}}</td>
+                    <td>{{obj.valor}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -100,40 +92,12 @@
 </div>
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
-
-    </script>
-    <script>
-      var todos = document.getElementById('todos');
-      todos.addEventListener("change",function(event){
-        if(event.target.checked){
-          id_cliente.disabled = true;
+      // Select Cliente / Botón de Buscar
+      buscar.disabled = true;
+        $("#id_cliente").change(function () {
+          var clienteId = $(this).val();
           buscar.disabled = false;
-        }else{
-          id_cliente.disabled = false;
-        }
-
-      }, true); 
-    </script>
-    <script>
-      // plantas
-      id_planta.disabled = true;
-      $("#id_cliente").change(function () {
-        var url = $("#consultaRequeriForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
-        var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
-        todos.disabled = true;
-        buscar.disabled = false;
-        id_planta.disabled = false;
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
-          data: {
-            'cliente': clienteId       // add the cliente id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_plantas` view function
-            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
-          }
         });
-  
-      });
     </script>
 
 {% endblock %}
