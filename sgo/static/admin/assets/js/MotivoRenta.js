@@ -18,3 +18,19 @@
         document.getElementById("NuevaRenta").value = "";
     }
   }
+
+
+  function mensualdiario() {
+    if (document.getElementById('mensual').checked) {
+        document.getElementById('tipocontrato').style.display = 'block';
+        document.getElementById('fechatermino').style.display = 'block';
+        document.getElementById('sueldo').style.display = 'block';
+        document.getElementById('valores_diario').style.display = 'none';
+    }
+    else{
+      document.getElementById('tipocontrato').style.display = 'none';
+      document.getElementById('fechatermino').style.display = 'none';
+      document.getElementById('sueldo').style.display = 'none';
+      document.getElementById('valores_diario').style.display = 'block';
+    } 
+}

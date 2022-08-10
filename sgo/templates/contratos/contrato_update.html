@@ -1,0 +1,105 @@
+
+{% load static %}
+{% block content %}
+<form method="post" action="{% url 'contratos:update_contrato' contrato_id %}" enctype="multipart/form-data">
+    <div class="modal-header">
+        <h4 class="modal-title">Editar Documento Contractual</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
+    <div class="modal-body">
+        <h5>Información del contrato</h5>
+        {% csrf_token %}
+        <div class="row col-md-12">
+          <div class="form-group col-md-3">
+            <input type="radio" onclick="javascript:mensualdiario2();" id="mensual2" value="mensual" checked name="tipo2" >
+            <label for="mensual">Mensual</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="radio" onclick="javascript:mensualdiario2();" id="diario" value="diario" name="tipo2" >
+            <label for="diario">Diario</label>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6" id="tipocontrato2" style="display:show">
+            <label for="email">Tipo Contrato</label>
+            {{ form4.tipo_documento }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Regimen</label>
+            {{ form4.regimen }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-12">
+            <label for="email">Motivo</label>
+            {{ form4.motivo }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Inicia</label>
+            {{ form4.fecha_inicio }}
+          </div>
+          <div class="form-group col-md-6" id="fechatermino2" style="display:show">
+            <label for="email">Fecha Término</label>
+            {{ form4.fecha_termino }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Horario</label>
+            {{ form4.horario }}
+          </div>
+          <div class="form-group col-md-6" id="sueldo2" style="display:show">
+            <label for="email">Sueldo Base</label>
+            {{ form4.sueldo_base }}
+          </div>
+          <div class="form-group col-md-6" id="valores_diario2" style="display:none">
+            <label for="email">Valores Diario</label>
+            {{ form4.valores_diario }}
+          </div>
+        </div>
+        <h5>Bonos </h5>
+            <div class="row col-md-12">
+                {% for bon in bonos %}
+            <div class="form-group col-md-6">
+            <label for="email">{{ bon.nombre }}</label>
+            <input type="text" name="{{forloop.counter}}" class="form-control" value="{% if bon.valor != None %}{{bon.valor}}{% else %}0{% endif %}" >
+            <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bon.id}}">
+          </div>
+          {% endfor %}
+        </div>
+        {% if revision.estado == 'RC' %}
+        <label class="alert alert-danger fade show" for="revision">Rechazado por: {{revision.obs}}</label>
+        {% endif %}
+        <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
+        <button type="submit" class="btn btn-info btn-flat"> Guardar</button>
+    </div>
+</form>
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+    <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
+    <script type="text/javascript">
+
+      function mensualdiario2() {
+          if (document.getElementById('mensual2').checked) {
+              document.getElementById('tipocontrato2').style.display = 'block';
+              document.getElementById('fechatermino2').style.display = 'block';
+              document.getElementById('sueldo2').style.display = 'block';
+              document.getElementById('valores_diario2').style.display = 'none';
+          }
+          else{
+            document.getElementById('tipocontrato2').style.display = 'none';
+            document.getElementById('fechatermino2').style.display = 'none';
+            document.getElementById('sueldo2').style.display = 'none';
+            document.getElementById('valores_diario2').style.display = 'block';
+          } 
+      }
+      </script>
+{% endblock %}
+{% endblock %}

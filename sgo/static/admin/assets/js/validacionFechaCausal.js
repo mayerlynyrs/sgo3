@@ -48,6 +48,7 @@ $(function () {
                 console.log(fecha);
                 var fechaformat = fecha.split('-');
                 var fechaformateada = fechaformat[0] +","+fechaformat[1]+","+fechaformat[2];
+                console.log(fechaformateada)
                 $('#fecha_termino').datepicker('clearDates');
                 $('#fecha_termino').datepicker('setStartDate', getDate(selected));
                 $('#fecha_termino').datepicker('clearDates');

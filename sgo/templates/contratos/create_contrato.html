@@ -149,34 +149,28 @@
                     <button type="button" id="btn-delete" class="btn btn-danger">Eliminar</button>
                 {% endif %}
                 </div>
-                <!-- <div class="col-md-8 col-sm-8 text-right">
-                    <a href="{% url 'contratos:list-plantilla' %}?page={{ request.GET.page }}" class="btn btn-default">Cancelar</a>
-                    <button type="submit" class="btn btn-success" id="btn-guardar">Guardar</button>
-                </div> -->
               </div>
                 <div class="float-right">
                   {% for con in contratos %}
-                  {% if con.contrato__tipo_contrato__nombre == Null %}
-                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
-                {% elif con.contrato__estado_contrato == 'AP' %}
+                 
+                {% if con.estado_contrato == 'AP' %}
                 <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Anexos</button>
                 {% endif %}
+                {% empty %}
+                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
                 {% endfor %}
               </div>
           </form>
           <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br><hr /></legend>
-          <div class="table-responsive">
 
-            <table  id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
-          <table class="table">
+          <div class="table-responsive">
+          <table class="table table-hover">
             <thead>
               <tr>
                   <th>Tipo Archivo</th>
-   
                   <th>Causal</th>
                   <th>Motivo</th>
-                  <th>Fecha Inicio</th>
-                  <th>Fecha Término</th>
+                  <th>Plazos</th>
                   <th>Jornada</th>
                   <th>Renta Imponible</th>
                   <th>Acciones</th>
@@ -184,20 +178,24 @@
               <tbody>
                 {% for con in contratos %}
                 <tr>
-                  {% if con.contrato__tipo_contrato__nombre != Null %}
-
-                  
-                  <td>Contrato</td>
-                  <td>{{ con.contrato__causal__nombre }}</td>
-                  <td>{{ con.contrato__motivo }}</td>
-                  <td>{{ con.contrato__fecha_inicio }}</td>
-                  <td>{{ con.contrato__fecha_termino }}</td>
-                  <td>{{ con.contrato__horario__nombre }}</td>
-                  <td>${{ con.contrato__sueldo_base }}</td>
-                  <td>
-                    {% if con.contrato__estado_contrato == 'CR' %}
-                    <button data-id="{{ con.contrato}}" type="button" class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
+                  {% if con.tipo_documento__nombre != Null %}
+                  <td>{{ con.tipo_documento__nombre }}</td>
+                  <td>{{ con.causal__nombre }}</td>
+                  <td >{{ con.motivo }}</td>
+                  <td>Inicio: {{ con.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ con.fecha_termino|date:'d-m-Y' }} </td>
+                  <td style="width:20%">{{ con.horario__nombre }}</td>
+                  <td>$ {% if con.sueldo_base != 0 %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
+                  <td style="width:10%">
+                    {% if con.estado_contrato == 'CR' or con.estado_contrato == 'RC'   %}
+                    <button data-id="{{ con.id}}" type="button" class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
                       <i class="fas fa-edit"></i>
+                    </button> &nbsp
+                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
+                      <i class="fa fa-paper-plane"></i>
+                    </a>
+                    {% elif con.estado_contrato == 'AP' %}
+                    <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
+                      <i class="fas fa-trash-alt"></i>
                     </button>
                     {% endif %}
                 </td>
@@ -207,26 +205,31 @@
                 {% for ane in anexos %}
                 <tr>
                   {% if ane.anexo__causal__nombre  != Null %}
-
                   <td>Anexo</td>
                   <td>{{ ane.anexo__causal__nombre }}</td>
                   <td>{{ ane.anexo__motivo }}</td>
                   <td>{{ ane.anexo__fecha_inicio }}</td>
                   <td>{{ ane.anexo__fecha_termino }}</td>
                   <td>{{ ane.anexo__horario__nombre }}</td>
-                  <td>{% if ane.anexo__nueva_renta != None %}{{ ane.anexo__nueva_renta }} {% endif %}</td>
+                  <td>{% if ane.anexo__nueva_renta != None %}$ {{ ane.anexo__nueva_renta }} {% endif %}</td>
                   <td>
+                    {% if ane.anexo__estado_anexo == 'CR' %}
                     <button data-id="{{ ane.anexo}}" type="button" class="btn btn-warning btn-xs btn-flat btn-view-editar-anexo" title="Editar anexo">
                       <i class="fas fa-edit"></i>
                     </button>
+                    &nbsp
+                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.anexo}}/enviar_revision_anexo/" title="Enviar a revisión">
+                      <i class="fa fa-paper-plane"></i>
+                    </a>
+                    {% endif %}
                 </td>
                 </tr>
                 {% endif %}
                 {% endfor %}
               </tbody>
             </thead>
-
         </table>
+      </div>
       </div>
         </div>
         <!-- end col-10 -->
@@ -234,6 +237,7 @@
       <!-- end step-1 -->
     </div>
   </div>
+</div>
 </div>
 
 <div class="modal fade bd-example-modal-lg" id="modalcontrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -250,23 +254,29 @@
         <h5>Información del contrato</h5>
         {% csrf_token %}
         <div class="row col-md-12">
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-3">
+            <input type="radio" onclick="javascript:mensualdiario();" id="mensual" value="mensual" checked name="tipo" >
+            <label for="mensual">Mensual</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="radio" onclick="javascript:mensualdiario();" id="diario" value="diario" name="tipo" >
+            <label for="diario">Diario</label>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6" id="tipocontrato" style="display:show" >
             <label for="email">Tipo Contrato</label>
-            {{ form2.tipo_contrato }}
+            {{ form2.tipo_documento }}
           </div>
           <div class="form-group col-md-6">
-            <label for="email">Regimen</label>
+            <label for="email">Régimen</label>
             {{ form2.regimen }}
           </div>
         </div>
         <div class="row col-md-12">
-          <div class="form-group col-md-6">
-            <label for="email">Causal</label>
-            {{ form2.causal }}
-          </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-12">
             <label for="email">Motivo</label>
-            {{ form2.motivo }}
+            <input type="text" name="motivo" class="form-control" value="{{ru.requerimiento__descripcion}}">
           </div>
         </div>
         <div class="row col-md-12">
@@ -274,7 +284,7 @@
             <label for="email">Fecha Inicia</label>
             {{ form2.fecha_inicio }}
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-6" id="fechatermino" style="display:show">
             <label for="email">Fecha Término</label>
             {{ form2.fecha_termino }}
           </div>
@@ -284,33 +294,33 @@
             <label for="email">Horario</label>
             {{ form2.horario }}
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-6" id="sueldo" style="display:show">
             <label for="email">Sueldo Base</label>
             {{ form2.sueldo_base }}
           </div>
-        </div>
-
-        
+          <div class="form-group col-md-6" id="valores_diario" style="display:none">
+            <label for="email">Valores Diario</label>
+            {{ form2.valores_diario }}
+          </div>
+        </div>   
         <h5>Bonos </h5>
         <div class="row col-md-12">
-
           {% for bo in bonos %}
-          
           <div class="form-group col-md-6">
-            
             <label for="email">{{ bo.requerimiento__planta__bono__nombre }}</label>
             <input type="text" name="{{forloop.counter}}" class="form-control" value="0" >
             <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bo.requerimiento__planta__bono}}">
           </div>
           {% endfor %}
         </div>
+        <input type="hidden" name="causal" class="form-control" value="{{ru.requerimiento__causal}}">
+        <input type="hidden"  id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
+        <input type="hidden"  id="f_inicio" class="form-control" value="{{ru.requerimiento__fecha_inicio|date:'Y-m-d'}}">
         <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
         <input type="hidden" name="gratificacion" class="form-control" value="{{ ru.requerimiento__planta__gratificacion }}">
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
         <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
-        
-      
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         <button type="submit" class="btn btn-primary">Agregar</button>
@@ -331,7 +341,6 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      
       <form method="post" action="{% url 'contratos:createanexo' %}"  enctype="multipart/form-data">
       <div class="modal-body">
         {% for con in contratos %}
@@ -349,18 +358,18 @@
         </div>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
-            <label for="email">Fecha Inicio &nbsp</label>{{ con.contrato__fecha_inicio }} 
+            <label for="email">Fecha Inicio &nbsp</label>{{ con.fecha_inicio }} 
           </div>
           <div class="form-group col-md-6">
-            <label for="email">Fecha Término &nbsp </label>{{ con.contrato__fecha_termino_ultimo_anexo }}
+            <label for="email">Fecha Término &nbsp </label>{{ con.fecha_termino_ultimo_anexo }}
           </div>
         </div>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
-            <label for="email">Motivo &nbsp</label>{{ con.contrato__motivo }} 
+            <label for="email">Motivo &nbsp</label>{{ con.motivo }} 
           </div>
           <div class="form-group col-md-6">
-            <label for="email">Renta Imponible &nbsp</label>{{ con.contrato__sueldo_base }} 
+            <label for="email">Renta Imponible &nbsp</label>{{ con.sueldo_base }} 
           </div>
         </div>
       </div>
@@ -393,10 +402,10 @@
         </div>
         <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
-        <input type="hidden" name="fechaInicioContrato" id="fechaInicioContrato" class="form-control" value="{{ con.contrato__fecha_inicio|date:'Y-m-d' }}">
-        <input type="hidden" name="UltimoAnexo" id="UltimoAnexo" class="form-control" value="{{ con.contrato__fecha_termino_ultimo_anexo|date:'Y-m-d' }}">
-        <input type="hidden" name="id_causalanexo" id="id_causalanexo" class="form-control" value="{{ con.contrato__causal }}">
-        <input type="hidden" name="id_contrato" id="id_contrato" class="form-control" value="{{ con.contrato }}">
+        <input type="hidden" name="fechaInicioContrato" id="fechaInicioContrato" class="form-control" value="{{ con.fecha_inicio|date:'Y-m-d' }}">
+        <input type="hidden" name="UltimoAnexo" id="UltimoAnexo" class="form-control" value="{{ con.fecha_termino_ultimo_anexo|date:'Y-m-d' }}">
+        <input type="hidden" name="id_causalanexo" id="id_causalanexo" class="form-control" value="{{ con.causal }}">
+        <input type="hidden" name="id_contrato" id="id_contrato" class="form-control" value="{{ con.id }}">
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
       </div>
       <div class="modal-footer">
@@ -407,6 +416,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal fade  bd-example-modal-lg" id="modal-editar_contrato">
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
@@ -414,6 +424,11 @@
 </div>
 <div class="modal fade  bd-example-modal-lg" id="modal-editar_anexo">
   <div class="modal-dialog modal-lg">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade  " id="modal-enviar_baja">
+  <div class="modal-dialog ">
     <div class="modal-content"></div>
   </div>
 </div>
@@ -425,25 +440,21 @@
 {% block librerias %}
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
-    <!-- jquery validation -->
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/additional-methods.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
-    <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+    <!-- <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script> -->
     <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
     <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
+    <script src="{% static 'admin/assets/js/f_termino_contrato.js' %}"></script>
 
-    
 {% endblock %}
 {% block scripts %}
 $('.btn-view-editar-contrato').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
-  <!-- console.log('requerimiento_id', id); -->
   var URL = '/contratos/'+id+'/update_contrato/';
-
   console.log('URL', URL);
-
   $.ajax({
       url: URL,
       type: 'get',
@@ -453,6 +464,24 @@ $('.btn-view-editar-contrato').on('click', function(e){
       },
       success: function (data) {
           $("#modal-editar_contrato .modal-content").html(data.html_form);
+      }
+  });
+});
+
+$('.btn-view-enviar-baja').on('click', function(e){
+  e.preventDefault();
+  var id = $(this).data('id');
+  var URL = '/contratos/'+id+'/baja_contrato/';
+  console.log('URL', URL);
+  $.ajax({
+      url: URL,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+          $("#modal-enviar_baja").modal("show");
+      },
+      success: function (data) {
+          $("#modal-enviar_baja .modal-content").html(data.html_form);
       }
   });
 });
@@ -477,14 +506,11 @@ $('.btn-view-editar-contrato').on('click', function(e){
 {% endif %}
 
 
-
 $('.btn-view-editar-anexo').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
   var URL = '/contratos/'+id+'/update_anexo/';
-
   console.log('URL', URL);
-
   $.ajax({
       url: URL,
       type: 'get',
@@ -549,13 +575,11 @@ $('.btn-view-editar-anexo').on('click', function(e){
           },
           wrapper: "",
           rules: {
-                  tipo_contrato: "required",
                   sueldo_base: "required",
                   horario: "required",
                   planta: "required",
                 },
                 messages: {
-                  tipo_contrato: "Selecciona un Tipo de Contrato.",
                   sueldo_base: "Ingresa el sueldo base del Contrato.",
                   horario: "Selecciona un Horario.",
                   planta: "Selecciona una planta."
