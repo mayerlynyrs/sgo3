@@ -5,11 +5,15 @@ from asyncio.windows_events import NULL
 from cgi import print_form
 from multiprocessing import context
 from optparse import Values
-import os
 from queue import Empty
 from tkinter import FLAT
-from datetime import datetime
+from datetime import date, datetime
+import datetime
+from docx2pdf import convert
 # Django
+import os
+import pythoncom
+import win32com.client
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
@@ -21,6 +25,7 @@ from django.http import Http404, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect, get_object_or_404
+from docxtpl import DocxTemplate
 from django.contrib.auth.forms import (
     AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
 )
@@ -36,15 +41,20 @@ from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
+from numpy import empty
 # Models
 from ficheros.models import Fichero
-from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo
+from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo, Revision, Baja
 from requerimientos.models import RequerimientoTrabajador
+from contratos.models import Plantilla
+from users.models import User
 from clientes.models import Planta
 # Form
-from contratos.forms import TipoContratoForm, CrearContratoForm, ContratoForm, ContratoEditarForm
+from contratos.forms import TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm
 from requerimientos.forms import RequeriTrabajadorForm
-from users.forms import EditarUsuarioForm
+from requerimientos.numero_letras import numero_a_letras
+from requerimientos.fecha_a_palabras import fecha_a_letras
+
 
 
 class TipoContratosView(TemplateView):
@@ -152,35 +162,46 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create(request):
 
-            requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
-            contrato = Contrato()
-            contrato.causal_id = request.POST['causal']
-            contrato.motivo = request.POST['motivo']
-            contrato.fecha_inicio = request.POST['fecha_inicio']
-            contrato.fecha_termino = request.POST['fecha_termino']
-            contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
-            contrato.horario_id = request.POST['horario']
-            contrato.sueldo_base = request.POST['sueldo_base']
-            contrato.tipo_contrato_id = request.POST['tipo_contrato']
-            contrato.gratificacion_id = request.POST['gratificacion']
-            contrato.planta_id = request.POST['planta']
-            contrato.trabajador_id = request.POST['trabajador_id']
-            contrato.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id'] 
-            contrato.status = True
-            contrato.save()
-            largobonos = int(request.POST['largobonos']) + 1
-            i = []
-            for a in range(1,largobonos):
-                i = request.POST.getlist(str(a))
-                if (i[0] != '0'):
-                    bonos = ContratosBono()
-                    bonos.valor = i[0]
-                    bonos.bono_id = i[1]
-                    bonos.contrato_id = contrato.id
-                    bonos.save()
-                    
-
-            return redirect('contratos:create_contrato',requrimientotrabajador)
+    requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+    contrato = Contrato()
+    contrato.causal_id = request.POST['causal']
+    contrato.motivo = request.POST['motivo']
+    contrato.fecha_inicio = request.POST['fecha_inicio']
+    if request.POST['tipo'] == 'mensual':
+        contrato.fecha_termino = request.POST['fecha_termino']
+        contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
+        contrato.tipo_documento_id = request.POST['tipo_documento']
+        contrato.sueldo_base = request.POST['sueldo_base']
+    else:
+        contrato.fecha_termino = request.POST['fecha_inicio']
+        contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
+        contrato.tipo_documento_id = 8
+        contrato.valores_diario_id = request.POST['valores_diario']
+        test_date = date.fromisoformat(request.POST['fecha_inicio'])
+        weekday_idx = 3
+        days_delta = weekday_idx - test_date.weekday()
+        if days_delta <= 7:
+            days_delta += 7
+        res = test_date + datetime.timedelta(days_delta)
+        contrato.fecha_pago = res
+    contrato.horario_id = request.POST['horario']
+    contrato.gratificacion_id = request.POST['gratificacion']
+    contrato.planta_id = request.POST['planta']
+    contrato.trabajador_id = request.POST['trabajador_id']
+    contrato.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id'] 
+    contrato.status = True
+    contrato.save()
+    largobonos = int(request.POST['largobonos']) + 1
+    i = []
+    for a in range(1,largobonos):
+        i = request.POST.getlist(str(a))
+        if (i[0] != '0'):
+            bonos = ContratosBono()
+            bonos.valor = i[0]
+            bonos.bono_id = i[1]
+            bonos.contrato_id = contrato.id
+            bonos.save()
+    return redirect('contratos:create_contrato',requrimientotrabajador)
 
 
 @login_required
@@ -188,17 +209,34 @@ def create(request):
 def update_contrato(request, contrato_id, template_name='contratos/contrato_update.html'):
             data = dict()
             contrato = get_object_or_404(Contrato, pk=contrato_id)
-
+            revision1 = Revision.objects.filter(contrato_id=contrato_id)
+            if(revision1):
+                revision = Revision.objects.get(contrato_id=contrato_id)
+   
+            requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=contrato.requerimiento_trabajador_id)
             if request.method == 'POST':
-                contrato.sueldo_base = request.POST['sueldo_base']
-                contrato.causal_id = request.POST['causal']
                 contrato.motivo = request.POST['motivo']
                 contrato.fecha_inicio = request.POST['fecha_inicio']
-                contrato.fecha_termino = request.POST['fecha_termino']
-                contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
                 contrato.horario_id = request.POST['horario']
-                contrato.tipo_contrato_id = request.POST['tipo_contrato']
                 contrato.status = True
+                if request.POST['tipo2'] == 'mensual':
+                    contrato.fecha_termino = request.POST['fecha_termino']
+                    contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
+                    contrato.tipo_documento_id = request.POST['tipo_documento']
+                    contrato.sueldo_base = request.POST['sueldo_base']
+                else:
+                    contrato.sueldo_base = 0
+                    contrato.fecha_termino = request.POST['fecha_inicio']
+                    contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
+                    contrato.tipo_documento_id = 8
+                    contrato.valores_diario_id = request.POST['valores_diario']                    
+                    test_date = date.fromisoformat(request.POST['fecha_inicio'])
+                    weekday_idx = 3
+                    days_delta = weekday_idx - test_date.weekday()
+                    if days_delta <= 7:
+                        days_delta += 7
+                        res = test_date + datetime.timedelta(days_delta)
+                        contrato.fecha_pago = res
                 contrato.save()
                 bonos = []
                 bonosguardados = ContratosBono.objects.values_list('id', flat=True).filter(contrato_id=contrato_id) 
@@ -217,22 +255,19 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                         bonos.bono_id = i[1]
                         bonos.contrato_id = contrato.id
                         bonos.save()
-
                 return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
             else:
-                
-                form = ContratoEditarForm(instance=contrato,)
+                form = ContratoEditarForm(instance=contrato,horario=requer_trabajador.requerimiento.cliente.horario.all())
                 req = contrato.requerimiento_trabajador_id 
-
-                bonos = RequerimientoTrabajador.objects.raw(" SELECT b.id, b.nombre, cb.valor FROM public.requerimientos_requerimientotrabajador as rt LEFT JOIN public.requerimientos_requerimiento as r on r.id = rt.requerimiento_id LEFT JOIN public.clientes_planta as p on p.id = r.planta_id LEFT JOIN public.clientes_planta_bono as pb on pb.planta_id = p.id LEFT JOIN public.utils_bono as b on b.id = pb.bono_id LEFT JOIN public.contratos_contrato as c on c.requerimiento_trabajador_id = rt.id LEFT JOIN public.contratos_contratosbono as cb on cb.bono_id = pb.bono_id WHERE rt.id = %s ORDER BY cb.valor" , [req])
+                bonos = RequerimientoTrabajador.objects.raw("SELECT b.id, b.nombre, cb.valor FROM public.requerimientos_requerimientotrabajador as rt LEFT JOIN public.requerimientos_requerimiento as r on r.id = rt.requerimiento_id LEFT JOIN public.clientes_planta as p on p.id = r.planta_id LEFT JOIN public.clientes_planta_bono as pb on pb.planta_id = p.id LEFT JOIN public.utils_bono as b on b.id = pb.bono_id LEFT JOIN public.contratos_contrato as c on c.requerimiento_trabajador_id = rt.id LEFT JOIN public.contratos_contratosbono as cb on cb.bono_id = pb.bono_id WHERE rt.id = %s ORDER BY cb.valor" , [req])
                 largobonos = len(bonos)
                 context={
                     'form4': form,
                     'contrato':contrato,
-                    'contrato_id': contrato.id,
+                    'contrato_id': contrato_id,
                     'largobonos' : largobonos,
+                    'revision' : revision,
                     'bonos' : bonos
-
                 }
                 data['html_form'] = render_to_string(
                     template_name,
@@ -240,6 +275,211 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                     request=request,
                 )
                 return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def solicitudes_pendientes(request, contrato_id, template_name='contratos/contrato_pdf.html'):
+    data = dict()
+    contrato = get_object_or_404(Contrato, pk=contrato_id)
+
+    context = {'contrato': contrato, }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def solicitudes_pendientes_baja(request, contrato_id, template_name='contratos/modal_baja.html'):
+    data = dict()
+    contrato = get_object_or_404(Contrato, pk=contrato_id)
+    baja = get_object_or_404(Baja, contrato_id=contrato_id)
+
+
+    context = {
+        'contrato': contrato,
+        'baja': baja
+         }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def baja_contrato(request, contrato_id, template_name='contratos/baja_contrato.html'): 
+    data = dict()
+    contrato = get_object_or_404(Contrato, pk=contrato_id)
+    if request.method == 'POST':
+        contrato.estado_contrato = 'PB'
+        contrato.fecha_solicitud_baja = datetime.datetime.now()
+        contrato.save()
+        baja = Baja()
+        baja.contrato_id = contrato_id
+        baja.motivo_id = request.POST['motivo']
+        baja.save()
+        messages.error(request, 'Contrato en proceso de baja')
+        return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
+
+    else:
+    
+        context = {
+            'form10': MotivoBajaForm,
+            'contrato': contrato,
+            'contrato_id': contrato_id, 
+            }
+        data['html_form'] = render_to_string(
+            template_name,
+            context,
+            request=request,
+        )
+        return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def enviar_revision_contrato(request, contrato_id):
+
+            contrato = get_object_or_404(Contrato, pk=contrato_id)
+            contrato.estado_contrato = 'PV'
+            contrato.fecha_solicitud = datetime.datetime.now()
+            revision1 = Revision.objects.filter(contrato_id=contrato_id)
+            print(revision1)
+            if(revision1):
+                revision1.estado = 'PD'
+                revision1.save()
+            else:
+                revision = Revision()
+                revision.contrato_id = contrato.id
+                revision.save()
+
+            # Trae el id de la planta del Requerimiento
+            plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato_id, status=True)
+            # Trae la plantilla que tiene la planta
+            formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=1)
+            now = datetime.datetime.now()
+            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
+         
+            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                        'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
+                        'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
+                        'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
+                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil', flat=True).get(pk=contrato_id, status=True),
+                        'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
+                        'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                        'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
+                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                        'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
+                        'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
+                        'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'region_planta': Contrato.objects.values_list('planta__region__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
+                        'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
+                        'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
+                        'detalle_bonos': 'okokok',
+                        'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
+                        'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
+                        'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
+                        'adicional_cumplimiento_horario_undecimo': 'okokok',
+                        'parrafo_decimo_tercero': 'okokok',
+                        'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                        }
+
+            doc.render(context)
+            # exit()
+            # Obtengo el usuario
+            usuario = get_object_or_404(User, pk=1)
+            # Obtengo todas las negocios a las que pertenece el usuario.
+            plantas = usuario.planta.all()
+            # Obtengo el set de contrato de la primera negocio relacionada.
+            plantillas_attr = list()
+            plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+            # Obtengo los atributos de cada plantilla
+            for p in plantillas:
+                plantillas_attr.extend(list(p.atributos))
+
+            path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+            doc.save(path + '/Contrato#' + str(contrato_id) + '.docx')
+            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+            # convert("Contrato#1.docx")
+            convert(path + "Contrato#" + str(contrato_id) + ".docx", path + "Contrato#" + str(contrato_id) + ".pdf")
+            
+            url = path + "Contrato#" + str(contrato_id) + ".pdf"
+            contrato.archivo = url
+            contrato.save()
+            # Elimino el documento word.
+            os.remove(path + 'Contrato#' + str(contrato_id) + '.docx')
+            messages.success(request, 'Contrato enviado a revisión')
+            return redirect('contratos:create_contrato' ,contrato.requerimiento_trabajador_id)
+
+
+class AnexoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Contrato List
+    Vista para listar todos las contratos según el usuario y plantas.
+    """
+    model = Contrato
+    template_name = "contratos/contrato_list.html"
+    paginate_by = 25
+    #ordering = ['plantas', 'nombre', ]
+    permission_required = 'contratos.view_contrato'
+    raise_exception = True
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        planta = self.kwargs.get('planta_id', None)
+        if planta == '':
+            planta = None
+        if search:
+            # Si el usuario no administrador se despliegan todos los contratos
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = super(ContratoListView, self).get_queryset().filter(
+                    Q(usuario__planta__in=self.request.user.planta.all()),
+                    Q(usuario__first_name__icontains=search),
+                    Q(usuario__last_name__icontains=search)
+                ).distinct()
+            else:
+                # Si el usuario es administrador se despliegan todos las plantillas
+                # segun el critero de busqueda.
+                queryset = super(ContratoListView, self).get_queryset().filter(
+                    Q(usuario__first_name__icontains=search),
+                    Q(usuario__last_name__icontains=search),
+                    Q(id__icontains=search),
+                    Q(estado__icontains=search)
+                ).distinct()
+        else:
+            # Si el usuario no es administrador, se despliegan los contrtatos
+            # de las plantas a las que pertenece el usuario.
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                queryset = super(ContratoListView, self).get_queryset().filter(
+                    Q(user__planta__in=self.request.user.planta.all()),
+                ).distinct()
+            else:
+                # Si el usuario es administrador, se despliegan todos los contratos.
+                if planta is None:
+                    queryset = super(ContratoListView, self).get_queryset()
+                else:
+                    # Si recibe la planta, solo muestra las plantillas que pertenecen a esa planta.
+                    queryset = super(ContratoListView, self).get_queryset().filter(
+                        Q(user__planta__in=self.request.user.planta.all())
+                    ).distinct()
+        return queryset
 
 
 @login_required
@@ -253,8 +493,6 @@ def create_anexo(request):
             anexo.fecha_termino = request.POST['fechaTerminoAnexo']
             if "motivo" in request.POST:
                 anexo.motivo = request.POST['motivo']
-            else:
-                anexo.motivo = ''
             anexo.fecha_termino_anexo_anterior = request.POST['fechaTerminoAnexo']
             anexo.contrato_id = request.POST['id_contrato']
             if "renta" in request.POST:
@@ -266,7 +504,61 @@ def create_anexo(request):
             contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
             contrato.save()
             return redirect('contratos:create_contrato',requrimientotrabajador)
- 
+
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
+            data = dict()
+            anexo = get_object_or_404(Anexo, pk=anexo_id)
+            contrato = get_object_or_404(Contrato, pk=anexo.contrato_id)
+            if request.method == 'POST':
+                anexo.fecha_termino = request.POST['fechaTerminoAnexo']
+                if "NuevoMotivo1" in request.POST:
+                    anexo.motivo = request.POST['NuevoMotivo1']
+                elif "NuevoMotivo2" in request.POST :
+                    anexo.motivo = request.POST['NuevoMotivo2']
+                if 'NuevaRenta1' in request.POST and request.POST['NuevaRenta1'] != '' :
+                    anexo.nueva_renta = request.POST['NuevaRenta1']
+                elif 'NuevaRenta2' in request.POST and request.POST['NuevaRenta2'] != '' :
+                    anexo.nueva_renta =  request.POST['NuevaRenta2']
+                else:
+                    anexo.nueva_renta =  None
+                anexo.save()
+                contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
+                contrato.save()
+                return redirect('contratos:create_contrato',anexo.requerimiento_trabajador_id)
+            else:
+                contratos = RequerimientoTrabajador.objects.filter(pk=anexo.requerimiento_trabajador_id).values( 'contrato',
+                'contrato__requerimiento_trabajador', 'contrato__estado_contrato','contrato__sueldo_base', 'contrato__tipo_documento__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
+                'contrato__fecha_termino', 'contrato__horario__nombre' , 'contrato__fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
+                context={
+                    'contratos' : contratos,
+                    'anexo_id' : anexo.id,
+                    'fecha_termino' : anexo.fecha_termino,
+                    'motivo': anexo.motivo,
+                    'nuevarenta': anexo.nueva_renta
+                }
+                data['html_form'] = render_to_string(
+                    template_name,
+                    context,
+                    request=request,
+                )
+                return JsonResponse(data)
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def enviar_revision_anexo(request, anexo_id):
+            revision = Revision()
+            anexo = get_object_or_404(Anexo, pk=anexo_id)
+            anexo.estado_anexo = 'PV'
+            anexo.fecha_solicitud = datetime.now()
+            anexo.save()
+            revision.anexo_id = anexo.id
+            revision.save()          
+            messages.success(request, 'Contrato enviado a revisión')
+            return redirect('contratos:create_contrato' ,anexo.requerimiento_trabajador_id)
 
 class ContratoIdView(TemplateView):
     template_name = 'contratos/create_contrato.html'
@@ -278,41 +570,33 @@ class ContratoIdView(TemplateView):
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
         trabaj = RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id).values(
                 'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
-                'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio',
-                'trabajador__telefono', 'trabajador__nacionalidad', 'requerimiento__nombre',  'referido',
-                'requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
-                'requerimiento__cliente__rut', 'requerimiento__planta__nombre', 'requerimiento__planta__region',
-                'requerimiento__planta__ciudad', 'requerimiento__planta__direccion',
-                'requerimiento__planta__gratificacion', 'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
+                'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio', 'trabajador__telefono', 'trabajador__nacionalidad',
+                'requerimiento__nombre',  'referido','requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social', 'requerimiento__cliente__rut',
+                 'requerimiento__planta__nombre', 'requerimiento__planta__region', 'requerimiento__planta__ciudad', 'requerimiento__planta__direccion', 'requerimiento__planta__gratificacion',
+                 'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
         context = super().get_context_data(**kwargs)
         context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
                 'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre',
-                'trabajador__fecha_nacimiento', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre',
-                'trabajador__salud__nombre',
+                'trabajador__fecha_nacimiento', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre',
                 'trabajador__nivel_estudio__nombre', 'trabajador__telefono', 'trabajador__nacionalidad__nombre', 'requerimiento__nombre',
                 'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre', 'requerimiento__planta',
-                'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre',
-                'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion',
+                'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre','requerimiento__fecha_adendum','requerimiento__causal',
+                'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion','requerimiento__descripcion','requerimiento__fecha_inicio',
                 'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
-        context['contratos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'contrato',
-                'contrato__requerimiento_trabajador', 'contrato__estado_contrato','contrato__sueldo_base', 'contrato__tipo_contrato__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
-                 'contrato__fecha_termino', 'contrato__horario__nombre' , 'contrato__fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
-        context['anexos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'anexo',
-                'anexo__requerimiento_trabajador', 'anexo__nueva_renta', 'contrato__tipo_contrato__nombre','anexo__causal__nombre' ,'anexo__causal', 'anexo__motivo', 'anexo__fecha_inicio',
+        context['contratos'] = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True ).values( 'id', 'valores_diario__valor_diario',
+                'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
+                 'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
+        context['anexos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'anexo', 'anexo__estado_anexo',
+                'anexo__requerimiento_trabajador', 'anexo__nueva_renta', 'contrato__tipo_documento__nombre','anexo__causal__nombre' ,'anexo__causal', 'anexo__motivo', 'anexo__fecha_inicio',
                  'anexo__fecha_termino' ).order_by('anexo__fecha_inicio')
-
-        
-
-        horario = RequerimientoTrabajador.objects.values_list('requerimiento__cliente__horario', flat=True).filter(pk=requerimiento_trabajador_id)
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
-        largobonos = len(bonos)
+        largobonos = len(bonos) 
         context['largobonos'] = largobonos
         context['requerimiento_trabajador_id'] = requerimiento_trabajador_id
         context['bonos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values('requerimiento__planta__bono','requerimiento__planta__bono__nombre')
         context['form3'] = RequeriTrabajadorForm(instance=requer_trabajador, user=trabaj)
-        context['form1'] = CrearContratoForm(instance=requer_trabajador)
-        context['form2'] = ContratoForm()
+        context['form2'] = ContratoForm(horario=requer_trabajador.requerimiento.cliente.horario.all())
         return context
 
 
@@ -535,3 +819,96 @@ INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 class PasswordResetDoneView(PasswordContextMixin, TemplateView):
     template_name = 'registration/password_reset_done.html'
     title = _('Password reset sent')
+
+
+
+class SolicitudContrado(TemplateView):
+
+    template_name = 'contratos/solicitudes_pendientes_contrato.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Contrato.objects.filter(estado_contrato='PV', status=True):
+                    data.append(i.toJSON())
+            elif action == 'aprobar':
+                revision = Revision.objects.get(contrato_id=request.POST['id'])
+                revision.estado = 'AP'
+                revision.save()
+                contrato = Contrato.objects.get(pk=request.POST['id'])
+                contrato.fecha_aprobacion  = datetime.datetime.now()
+                contrato.estado_contrato = 'AP'
+                contrato.save()
+            elif action == 'rechazar':
+                revision = Revision.objects.get(contrato_id=request.POST['id'])
+                revision.estado = 'RC'
+                revision.obs = request.POST['obs']
+                revision.save()
+                contrato = Contrato.objects.get(pk=request.POST['id'])
+                url = contrato.archivo
+                os.remove(str(url))
+                contrato.archivo = None
+                contrato.estado_contrato = 'RC'
+                contrato.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+
+class BajaContrado(TemplateView):
+
+    template_name = 'contratos/list_contrato_baja.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Contrato.objects.filter(estado_contrato='PB', status=True):
+                    data.append(i.toJSON())
+            elif action == 'aprobar':
+                baja = Baja.objects.get(contrato_id=request.POST['id'])
+                baja.estado = 'AP'
+                baja.save()
+                contrato = Contrato.objects.get(pk=request.POST['id'])
+                contrato.fecha_aprobacion_baja  = datetime.datetime.now()
+                contrato.estado_contrato = 'BJ'
+                contrato.status = False
+                contrato.save()
+            elif action == 'rechazar':
+                revision = Revision.objects.get(contrato_id=request.POST['id'])
+                revision.estado = 'RC'
+                revision.obs = request.POST['obs']
+                revision.save()
+                contrato = Contrato.objects.get(pk=request.POST['id'])
+                url = contrato.archivo
+                os.remove(str(url))
+                contrato.archivo = None
+                contrato.estado_contrato = 'RC'
+                contrato.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+
+

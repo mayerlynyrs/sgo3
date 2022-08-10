@@ -1,0 +1,117 @@
+
+{% load static %}
+{% block content %}
+<form method="post" action="{% url 'contratos:update_anexo' anexo_id %}" enctype="multipart/form-data">
+    <div class="modal-header">
+        <h4 class="modal-title">Editar Documento Contractual</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
+    <div class="modal-body">
+        <h5>Información del anexo</h5>
+        {% for con in contratos %}
+        {% csrf_token %} 
+        <div style="background-color: #ebebeb;" >
+          <h4 class="text-center"><u>Datos del Contrato</u></h4>
+          <br>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Nombres &nbsp</label>{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Domicilio &nbsp </label>{{ con.trabajador__domicilio }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Inicio &nbsp</label>{{ con.contrato__fecha_inicio }} 
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Término &nbsp </label>{{ con.contrato__fecha_termino_ultimo_anexo }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Motivo &nbsp</label>{{ con.contrato__motivo }} 
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Renta Imponible &nbsp</label>{{ con.contrato__sueldo_base }} 
+          </div>
+        </div>
+      </div>
+        <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br><hr /></legend>
+        <div class="row col-md-12">
+          <div class="form-group col-md-2">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="email">Fecha Término Anexo </label>
+            <input type="text" name="fechaTerminoAnexo" readonly id="fechaInicioAnexo" value="{{fecha_termino|date:'Y-m-d'}}" class="form-control" > 
+          </div>
+          <div class="form-group col-md-3">
+            <label>Cambio Motivo </label>
+            <input type="checkbox" name="motivo" id="motivo"  onclick="javascript:validar3(this);">
+          </div>
+          <div class="form-group col-md-3">
+            <label>Cambio Renta </label>
+            <input type="checkbox" name="renta" id="renta"  onclick="javascript:validar4(this);">
+          </div>
+        </div>
+        <div class="row col-md-12" >
+            {% if motivo != None %}
+          <div class="form-group col-md-6"  id="divmotivo2">
+            <label for="email">Nuevo Motivo1 </label>
+            <input type="text" name="NuevoMotivo1" id="NuevoMotivo" class="form-control" value="{{motivo}}"> 
+          </div>
+          {% endif %}
+          {% if nuevarenta != None %}
+          <div class="form-group col-md-6"  id="divrenta2">
+            <label for="email">Nueva Renta </label>
+            <input type="text" name="NuevaRenta1" id="NuevaRenta" class="form-control" value="{{nuevarenta}}" > 
+          </div>
+          {% endif %}
+        </div>
+        <div class="row col-md-12" >
+          <div class="form-group col-md-6" style="display: none ;"  id="divmotivo2">
+            <label for="email">Nuevo Motivo </label>
+            <input type="text" name="NuevoMotivo2" id="NuevoMotivo" class="form-control" value="" > 
+          </div>
+          <div class="form-group col-md-6" style="display: none ;"  id="divrenta2">
+            <label for="email">Nueva Renta </label>
+            <input type="text" name="NuevaRenta2" id="NuevaRenta" class="form-control" > 
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
+        <button type="submit" class="btn btn-info btn-flat"> Guardar</button>
+    </div>
+</form>
+{% endfor %}
+{% block librerias %}
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+    <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
+    <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
+    <script>
+          function validar3(obj){
+    divC2 = document.getElementById("divmotivo2");
+    if(obj.checked==true){
+        divC2.style.display = "";
+    }else{
+        divC2.style.display = "none";
+        document.getElementById("NuevoMotivo").value = "";
+
+    }
+  }
+  function validar4(obj){
+    divRenta2 = document.getElementById("divrenta2");
+    if(obj.checked==true){
+        divRenta2.style.display = "";
+    }else{
+        divRenta2.style.display = "none"; 
+        document.getElementById("NuevaRenta").value = "";
+    }
+  }
+    </script>
+    
+{% endblock %}
+{% endblock %}

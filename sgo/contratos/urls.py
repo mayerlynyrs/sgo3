@@ -53,13 +53,37 @@ urlpatterns = [
         view=views.update_contrato,
         name="update_contrato"
     ),
-    # path(
-    #     route='<int:requerimiento_id>/create_requerimiento',
-    #     view=views.RequerimientoIdView.as_view(),
-    #     name='create_requerimiento'
-    # ),
     path(
-        # route='<int:requerimiento_user_id>/create_contrato/',
+        route='solicitud-contrato/',
+        view=views.SolicitudContrado.as_view(),
+        name="solicitud-contrato"
+    ),
+    path(
+        route='list-baja-contrato/',
+        view=views.BajaContrado.as_view(),
+        name="list-baja-contrato"
+    ),
+    path(
+        route='<int:contrato_id>/solicitudes-pendientes/',
+        view=views.solicitudes_pendientes,
+        name="solicitudes-pendientes"
+    ),
+    path(
+        route='<int:contrato_id>/solicitudes-pendientes-baja/',
+        view=views.solicitudes_pendientes_baja,
+        name="solicitudes-pendientes-baja"
+    ),
+    path(
+        route='<int:contrato_id>/baja_contrato/',
+        view=views.baja_contrato,
+        name="baja_contrato"
+    ),
+    path(
+        route='<int:anexo_id>/update_anexo/',
+        view=views.update_anexo,
+        name="update_anexo"
+    ),
+    path(
         route='<int:requerimiento_trabajador_id>/create_contrato/',
         view=views.ContratoIdView.as_view(),
         name="create_contrato"
@@ -89,6 +113,16 @@ urlpatterns = [
         route='<slug:id>/generar_firma/firmarr/',
         view=auth_views.PasswordResetDoneView.as_view(),
         name='generar_firma_done'
+    ),
+    path(
+        route='<int:contrato_id>/enviar_revision_contrato/',
+        view=views.enviar_revision_contrato,
+        name="enviar_revision_contrato"
+    ),
+    path(
+        route='<int:anexo_id>/enviar_revision_anexo/',
+        view=views.enviar_revision_anexo,
+        name="enviar_revision_anexo"
     ),
     
 ]
