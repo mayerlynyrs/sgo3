@@ -9,6 +9,7 @@ from clientes.models import Planta, Cliente
 from requerimientos.models import Requerimiento, AreaCargo
 from epps.models import ConvenioRequerTrabajador, ConvenioRequerimiento
 
+
 class ConsultaClienteForm(forms.ModelForm):
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
                                    widget=forms.Select(attrs={'class': 'show-tick form-control',
@@ -66,3 +67,18 @@ class EppRequerimientoForm(forms.ModelForm):
     class Meta:
         model = ConvenioRequerTrabajador
         fields = ("requerimiento", )
+
+
+class ConvenioClienteForm(forms.ModelForm):
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=True, label="Cliente",
+                                   widget=forms.Select(attrs={'class': 'show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+
+    class Meta:
+        model = Requerimiento
+        fields = ("cliente", )

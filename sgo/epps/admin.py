@@ -8,7 +8,7 @@ from import_export.widgets import ManyToManyWidget
 
 # Register your models here.
 # EPP
-from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador
+from epps.models import TipoInsumo, Insumo, Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador, AsignacionTrabajador
 from clientes.models import Cliente, Planta
 # Requerimientos
 from requerimientos.models import Requerimiento, AreaCargo
@@ -57,6 +57,17 @@ class ConvenioRequerTrabajadorSetResource(resources.ModelResource):
     class Meta:
         model = ConvenioRequerTrabajador
         fields = ('id', 'requerimiento', 'convenio', 'area_cargo', 'trabajador', 'estado', 'status', )
+
+
+class AsignacionTrabajadorSetResource(resources.ModelResource):
+    insumo = fields.Field(column_name='insumo', attribute='insumo', widget=ForeignKeyWidget(Insumo, 'nombre'))
+    requerimiento = fields.Field(column_name='requerimiento', attribute='requerimiento', widget=ForeignKeyWidget(Requerimiento, 'nombre'))
+    area_cargo = fields.Field(column_name='area_cargo', attribute='area_cargo', widget=ForeignKeyWidget(AreaCargo, 'nombre'))
+    trabajador = fields.Field(column_name='trabajador', attribute='trabajador', widget=ForeignKeyWidget(Trabajador, 'first_name'))
+
+    class Meta:
+        model = AsignacionTrabajador
+        fields = ('id', 'tipo_asignacion', 'cantidad', 'insumo', 'requerimiento', 'area_cargo', 'trabajador', 'bloqueado', 'status', )
 
 
 # class AsignacionConvenioSetResource(resources.ModelResource):
@@ -117,6 +128,17 @@ class ConvenioRequerTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'requerimiento', 'convenio', 'area_cargo', 'trabajador', 'estado', 'status',)
     list_filter = ['requerimiento', 'convenio', 'area_cargo', 'trabajador' ]
     search_fields = ['requerimiento__nombre', 'convenio__nombre', 'area_cargo', 'trabajador__first_name' ]
+
+
+@admin.register(AsignacionTrabajador)
+class AsignacionTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """AsignacionTrabajadorAdmin model admin."""
+
+    resource_class = AsignacionTrabajadorSetResource
+    fields = ('tipo_asignacion', 'insumo', 'cantidad', 'requerimiento', 'area_cargo', 'trabajador', 'bloqueado', 'status', )
+    list_display = ('id', 'insumo', 'requerimiento', 'area_cargo', 'trabajador', 'bloqueado', 'status',)
+    list_filter = ['tipo_asignacion', 'insumo', 'requerimiento', 'area_cargo', 'trabajador' ]
+    search_fields = ['insumo__nombre', 'requerimiento__nombre', 'area_cargo', 'trabajador__first_name' ]
 
 
 # @admin.register(AsignacionConvenio)

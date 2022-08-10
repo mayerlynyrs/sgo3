@@ -30,6 +30,12 @@ urlpatterns = [
         name='requerimiento-epps'
      ),
     path('buscarRequerimientoEpp', views.buscar_epps_requerimiento),
+    path(
+        route='convenio_clientes',
+        view=views.ConvenioClienteView.as_view(),
+        name='convenio-clientes'
+     ),
+    path('buscarConvenioCliente', views.buscar_convenio_cliente),
       
     
 ]

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from requerimientos.models import Requerimiento, AreaCargo
 from epps.models import Insumo, ConvenioRequerimiento, ConvenioRequerTrabajador
-from consultas.forms import ConsultaClienteForm, ConsultaEppRequForm, EppRequerimientoForm
+from consultas.forms import ConsultaClienteForm, ConsultaEppRequForm, EppRequerimientoForm, ConvenioClienteForm
 from clientes.models import Cliente, Negocio, Planta
 from django.db import connection
 
@@ -119,22 +119,35 @@ class RequerimientoEppView(ListView):
 
 def buscar_epps_requerimiento(request):
     if request.method == 'POST':
-        todo =  request.POST.get('todos')
         requerimiento = request.POST.get('requerimiento')
-        area_cargo = request.POST.get('area_cargo')
-        if todo:
+        if requerimiento:
             data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
             # data = ConvenioRequerTrabajador.objects.raw("SELECT * FROM public.consulta_epps_req02(1)")
             context = {'data': data}
             context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerTrabajador)
             return render(request, 'consultas/consulta_epps_requerimiento.html', context)
-        if area_cargo:
-            data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
+
+
+# EPPs / Convenio Cliente
+class ConvenioClienteView(ListView):
+    form_class = ConvenioClienteForm
+    template_name = 'consultas/consulta_convenio_cliente.html'
+    
+    
+    def get_queryset(self):
+        return Cliente.objects.all()
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context ['form'] = ConvenioClienteForm(instance=Cliente)
+        return context
+
+def buscar_convenio_cliente(request):
+    if request.method == 'POST':
+        cliente = request.POST.get('cliente')
+        if cliente:
+            data = Cliente.objects.raw('SELECT * FROM public.consulta_epps_req03(%s)', [cliente])
             context = {'data': data}
-            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
-            return render(request, 'consultas/consulta_epps_requerimiento.html', context)
-        else:
-            data = Requerimiento.objects.raw('SELECT * FROM public.consulta_epps_req02(%s)', [requerimiento])
-            context = {'data': data}
-            context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
-            return render(request, 'consultas/consulta_epps_requerimiento.html', context)
+            context ['form'] = ConvenioClienteForm(instance=Cliente)
+            return render(request, 'consultas/consulta_convenio_cliente.html', context)

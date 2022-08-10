@@ -1,0 +1,16 @@
+<form method="post" action="{% url 'psicologos:revision' requerimiento_id=requerimiento %}" enctype="multipart/form-data">
+    <div class="modal-header">
+        <h5 class="modal-title">Aprobar/Rechazar <small>Solicitud</small></h5>
+        <!-- <h4 class="modal-title">{{ requerimiento|title }}</h4> -->
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
+    <div class="modal-body">
+        {% csrf_token %}
+        <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento }}">
+            {{ form }}
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
+        <button type="submit" class="btn btn-info btn-flat"> Guardar</button>
+    </div>
+</form>

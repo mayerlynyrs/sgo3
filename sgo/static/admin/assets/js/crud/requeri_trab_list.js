@@ -1,11 +1,17 @@
 var tblRequeriTrab;
+var tblAsignarTrab;
 var modal_title;
 var requerimiento = null;
 var enviando = false;
+var accion = 0;
+var id = 0;
+var trabajador= 0;
 var boton_numero2 = document.getElementById("boton2");
 boton_numero2.addEventListener("click", guardar_planta_contacto);
 var boton_rev_exam = document.getElementById("botonRevExam");
 boton_rev_exam.addEventListener("click", guardar_rev_exam);
+var boton_asignar = document.getElementById("btnAsignar");
+boton_asignar.addEventListener("click", guardar_asignacion);
 
 
 function getData4() {
@@ -41,11 +47,12 @@ function getData4() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a> &nbsp &nbsp';
                     buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="#" data-toggle="modal" data-target="#myModalAddEpp" rel="edit" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalAsignar" rel="allow" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
+                    // buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalAsignar" rel="agg" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a>';
                     // buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalAddEpp" rel="agg" title="Asignar EPP" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-clipboard-check"></i></a>';
                     // buttons += '<a href="#" rel="edit" title="Asignar EPP" class="btn btn-dark btn-xs btn-flat btnEdit"><i class="fas fa-clipboard-check"></i></a> &nbsp &nbsp';
                     // buttons += '<a href="#" rel="validation" title="Validación" class="btn btn-green btn-xs btn-flat btnAgg"><i class="fas fa-check-double"></i></a> &nbsp &nbsp';
-                    buttons += '<a href="../../../contratos/'+data+'/create_contrato/" rel="request" data-target="#myModalRequerTrab" title="Solicitud de Contrato" class="btn btn-success btn-xs btn-flat btnAgg4"><i class="fas fa-file"></i></a> &nbsp &nbsp';
+                    buttons += '<a href="../../../contratos/'+data+'/create_contrato/" rel="request" title="Solicitud de Contrato" class="btn btn-success btn-xs btn-flat btnAgg4"><i class="fas fa-file"></i></a> &nbsp &nbsp';
                     // buttons += '<a href="#" rel="status" title="Estado de solicitud" class="btn btn-info btn-xs btn-flat btnAgg"><i class="fas fa-square"></i></a> &nbsp &nbsp';
                     // buttons += '<a href="#" rel="record" title="Historial" class="btn btn-secondary btn-xs btn-flat btnAgg"><i class="fas fa-list"></i></a>';
                     // data-toggle="modal" data-target="#myModalRequerTrab" 
@@ -71,6 +78,45 @@ $(function () {
     requerimiento = document.getElementById("requerimiento_id").value;
 
     getData4();
+    
+
+    function getData8(trabajador_id) {
+        tblAsignarTrab = $('#data-table-fixed-spa').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: '/requerimientos/'+trabajador_id+'/asignar_trabajador/',
+                type: 'POST',
+                data: {
+                    'action': 'searchdata8'
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "insumo"},
+                {"data": "cantidad"},
+                {"data": "id"},
+                
+            ],
+            columnDefs: [
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        // var buttons = '<button onclick="miFuncDelete(accion=3, '+data+')" rel="not" title="Anular'+data+'" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-times"></i></button> &nbsp &nbsp &nbsp &nbsp';
+                        var buttons = '<button onclick="miFuncDelete(accion=3, '+data+')" rel="not" title="Anular'+data+'" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-times"></i></button> &nbsp &nbsp &nbsp &nbsp';
+                        return buttons;
+                    }
+                },
+            ],
+            initComplete: function (settings, json) {
+    
+            }
+        });
+    }
 
     $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="edit"]', function (){
     
@@ -131,8 +177,30 @@ $(function () {
     });
 
 
+    $('#data-table-buttons_wrapper tbody').on('click', 'a[rel="allow"]', function (){
+        // console.log(modal_title.find('i'));
+        modal_title.find('i').removeClass().addClass();
+        var tr = tblRequeriTrab.cell($(this).closest('td, li')).index();
+        var data = tblRequeriTrab.row(tr.row).data();
+        trabajador_id = data.trabajador_id;
+        a_c = data.area_cargo_id;
+        getData8(trabajador_id);
+        modal_title.find('span').html('<b style="font-size: 1.25rem;">Asignar Epps </b><small style="font-size: 80%;">' + data.trabajador + '</small>' );
+        $('form')[3].reset();
+        $('input[name="area_cargo_id"]').val(data.area_cargo_id);
+        $('input[name="requerimiento_id"]').val(data.requerimiento_id);
+        $('input[name="trabajador_id"]').val(data.trabajador_id);
+        $('input[name="trabajador"]').val(data.trabajador);
+        $('input[name="action"]').val('epp_trab_add');
+        $('input[name="id"]').val(0);
+        // console.log(data.id);
+        $('#myModalAsignar').modal('show');
+    });
+
+
+
     $('#myModalRequerUser').on('shown.bs.modal', function () {
-        //$('form')[0].reset();
+        $('form')[0].reset();
     });
 
     $('.btnAdd3').on('click', function () {
@@ -163,6 +231,7 @@ function guardar_planta_contacto() {
                 $('#myModalRequerTrab').modal('hide');
                 $('#myModalRequerUser').modal('hide');
                 tblRequeriTrab.ajax.reload();
+                tblAsignarTrab.ajax.reload();
             });
             enviando = True;   
         });  
@@ -186,3 +255,49 @@ function guardar_rev_exam() {
         });  
     }
   }
+
+  function guardar_asignacion() { 
+      if (enviando == false){
+          $('#EppAsignar').on('submit', function (e) {
+              e.preventDefault();
+              var parameters = new FormData(this);
+              console.log(FormData);
+              submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                  $("#myModalAsignar").find("input,textarea").val("");
+                  $("#myModalAsignar").find("select").val("").trigger("change");
+                  $("#myModalAsignar input[type='checkbox']").prop('checked', false).change()
+                  $('#myModalAsignar').modal('hide');
+                  tblRequeriTrab.ajax.reload();
+                  tblAsignarTrab.ajax.reload();
+                  iziToast.success({
+                      position: 'topRight',
+                      message: 'Asignado Exitosamente'
+                  })
+              });
+              enviando = True;   
+          });  
+      }
+    }
+
+
+function miFuncDelete(accion, data) {
+    $('input[name="action"]').val(accion);
+    $('input[name="id"]').val(data);
+    if (enviando == false){
+        $('#EppAnular').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            console.log(FormData);
+            submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                $('#myModalAsignar').modal('hide');
+                tblRequeriTrab.ajax.reload();
+                tblAsignarTrab.ajax.reload();
+                iziToast.error({
+                    position: 'topRight',
+                    message: 'Epp Anulado'
+                });
+            });
+            enviando = True;   
+        });  
+    }
+}

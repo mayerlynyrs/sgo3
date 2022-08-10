@@ -112,10 +112,10 @@
                 <tbody>
                   {% for obj in data  %}
                   <tr>
-                    <td>{{obj.requerimiento}}</td>
-                    <td>{{obj.area}}</td>
-                    <td>{{obj.trabajador}}</td>
-                    <td>{{obj.convenio}}</td>
+                    <td>{{obj.requerimiento|title}}</td>
+                    <td>{{obj.area|title}}</td>
+                    <td>{{obj.trabajador|title}}</td>
+                    <td>{{obj.convenio|title}}</td>
                     <td>{{obj.valor}}</td>
                   </tr>
                   {% endfor %}

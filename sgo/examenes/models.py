@@ -80,14 +80,14 @@ class Bateria(models.Model):
 
 class CentroMedico(models.Model):
     nombre = models.CharField(max_length=120)
+    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
+    direccion = models.CharField(max_length=120)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
     )
-    direccion = models.CharField(max_length=120)
-    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.nombre
@@ -105,7 +105,7 @@ class Evaluacion(models.Model):
 
     """
     RECOMENDABLE = 'R'
-    NO_RECOMENDABLE = 'R'
+    NO_RECOMENDABLE = 'N'
     SUPERVISOR = 'SUP'
     TECNICO = 'TEC'
     PSICOLOGICA = 'PSI'
@@ -220,8 +220,8 @@ class Evaluacion(models.Model):
         item['tipo'] = tipo   
         item['referido2'] = estado2
         item['archivo'] = str(self.archivo).zfill(0)
-        item['user'] = self.trabajador.first_name +" "+self.trabajador.last_name
-        item['user_rut'] = self.trabajador.rut
+        item['trabajador'] = self.trabajador.first_name +" "+self.trabajador.last_name
+        item['trabajador_rut'] = self.trabajador.rut
         item['fecha_inicio'] = self.fecha_inicio.strftime('%d-%m-%Y')
         item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
         item['planta_nombre'] = self.planta.nombre

@@ -32,6 +32,21 @@ urlpatterns = [
         route='list_solicitudes',
         view=views.PsiSolicitudesList.as_view(),
         name='list-solicitudes'
-     ),    
+     ),
+    path(
+        route='<int:requerimiento_id>/revision/',
+        view=views.revision_solicitudes,
+        name="revision"
+    ),
+    path(
+        route='<int:trabajador_id>/examenes/',
+        view=views.examenes_trabajador,
+        name="examenes"
+    ),
+    path(
+        route='<int:evaluacion_id>/documento/',
+        view=views.documento_trabajador,
+        name="documento"
+    ),
     
 ]

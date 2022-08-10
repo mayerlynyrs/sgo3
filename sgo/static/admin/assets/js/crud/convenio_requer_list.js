@@ -188,12 +188,12 @@ $(function () {
     if (accion == 1){
         iziToast.success({
             position: 'topRight',
-            message: 'Tabajador Confirmado'
+            message: 'Trabajador Confirmado'
         });
     } else {
         iziToast.error({
             position: 'topRight',
-            message: 'Tabajador Anulado'
+            message: 'Trabajador Anulado'
         });
     }
     if (enviando == false){

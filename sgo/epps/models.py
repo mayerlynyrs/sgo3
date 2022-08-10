@@ -126,13 +126,13 @@ class ConvenioRequerimiento(BaseModel):
     def toJSON(self):
         item = model_to_dict(self)
         item['convenio_id'] = self.convenio.id
-        item['convenio'] = self.convenio.nombre
+        item['convenio'] = self.convenio.nombre.title()
         item['convenio_insumo'] =  [t.toJSON() for t in self.convenio.insumo.all()]
         item['area_cargo_id'] = self.area_cargo.id
-        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' / '+ self.area_cargo.area.nombre + ' - '+ self.area_cargo.cargo.nombre
-        item['a_c'] = self.area_cargo.area.nombre + ' - '+ self.area_cargo.cargo.nombre
+        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' / '+ self.area_cargo.area.nombre.title() + ' - '+ self.area_cargo.cargo.nombre.title()
+        item['a_c'] = self.area_cargo.area.nombre.title() + ' - '+ self.area_cargo.cargo.nombre.title()
         item['requerimiento_id'] = self.requerimiento.id
-        item['requerimiento'] = self.requerimiento.nombre
+        item['requerimiento'] = self.requerimiento.nombre.title()
         return item
 
 
@@ -165,12 +165,63 @@ class ConvenioRequerTrabajador(BaseModel):
     def toJSON(self):
         item = model_to_dict(self)
         item['convenio_id'] = self.convenio.id
-        item['convenio'] = self.convenio.nombre
+        item['convenio'] = self.convenio.nombre.title()
         item['area_cargo_id'] = self.area_cargo.id
-        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.cargo.nombre
-        item['a_c'] = self.area_cargo.area.nombre + ' - ' + self.area_cargo.cargo.nombre
+        item['area_cargo'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.cargo.nombre.title()
+        item['a_c'] = self.area_cargo.area.nombre.title() + ' - ' + self.area_cargo.cargo.nombre.title()
         item['requerimiento_id'] = self.requerimiento.id
-        item['requerimiento'] = self.requerimiento.nombre
+        item['requerimiento'] = self.requerimiento.nombre.title()
         item['trabajador_id'] = self.trabajador.id
-        item['trabajador'] = self.trabajador.first_name +" "+self.trabajador.last_name
+        item['trabajador'] = self.trabajador.first_name.title() +" "+self.trabajador.last_name.title()
+        return item
+
+
+class AsignacionTrabajador(BaseModel):
+    """AsignacionTrabajador Model
+
+
+    """
+
+    tipo_asignacion = models.BooleanField(
+        'Tipo Asignación',
+        help_text='Para Asignación Directa True, para Reposición False.'
+    )
+
+    insumo = models.ForeignKey(Insumo, on_delete=models.PROTECT, null=True, blank=True)
+
+    cantidad = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+
+    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
+
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
+
+    bloqueado = models.BooleanField(
+        default=False,
+        help_text='Para bloquear True, para desbloquear False.'
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar la asignación directa a este trabajador, deshabilite esta casilla.'
+    )
+
+    def __str__(self):
+        return str(self.id)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['insumo_id'] = self.insumo.id
+        item['insumo'] = self.insumo.nombre.title()
+        # item['area_cargo_id'] = self.area_cargo.id
+        # item['a_c'] = '('+ str(self.area_cargo.cantidad) +') ' + ' - '+ self.area_cargo.area.nombre + self.area_cargo.cargo.nombre
+        # item['area_cargo'] = self.area_cargo.area.nombre + ' - ' + self.area_cargo.cargo.nombre
+        item['requerimiento_id'] = self.requerimiento.id
+        item['requerimiento'] = self.requerimiento.nombre.title()
+        item['trabajador_id'] = self.trabajador.id
+        item['trabajador'] = self.trabajador.first_name.title() +" "+self.trabajador.last_name.title()
         return item

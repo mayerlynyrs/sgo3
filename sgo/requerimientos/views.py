@@ -37,11 +37,11 @@ from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
 from users.models import User
-from epps.models import Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador
+from epps.models import Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador, AsignacionTrabajador
 from examenes.models import Requerimiento as RequerimientoExam
 # Form
 from requerimientos.forms import RequerimientoCreateForm, ACRForm, RequeriTrabajadorForm, ConvenioTrabajadorForm, AdendumForm
-from epps.forms import ConvenioRequerForm
+from epps.forms import ConvenioRequerForm, AsignacionTrabajadorForm
 from requerimientos.numero_letras import numero_a_letras, numero_a_moneda
 
 # Planta
@@ -480,7 +480,7 @@ class RequerimientoIdView(TemplateView):
                     crt.trabajador_id = request.POST['trabajador_id']
                     crt.estado = True
                     crt.save()
-            # Anualar = 2
+            # Anular = 2
             elif action == '2':
                 try:
                     consulta = ConvenioRequerTrabajador.objects.values_list('id', flat=True).get(requerimiento_id=request.POST['requerimiento_id'],area_cargo_id=request.POST['area_cargo_id'],trabajador_id=request.POST['trabajador_id'])
@@ -561,6 +561,24 @@ class RequerimientoIdView(TemplateView):
                     exa_req.trabajador_id = a[1]                   # a.trabajador
                     exa_req.planta_id = a[2]                       # a.requerimiento__planta
                     exa_req.save()
+            elif action == 'epp_trab_add':
+                asignar = AsignacionTrabajador()
+                if "tipo_asignacion" in request.POST:
+                    estado = True
+                    asignar.tipo_asignacion =  estado
+                else:
+                    estado = False
+                    asignar.tipo_asignacion =  estado
+                asignar.insumo_id = request.POST['insumo']
+                asignar.cantidad = request.POST['cantidad']
+                asignar.area_cargo_id = request.POST['area_cargo_id']
+                asignar.trabajador_id = request.POST['trabajador_id']
+                asignar.requerimiento_id = requerimiento_id
+                asignar.save()
+            # Anular = 3
+            elif action == '3':
+                borrar = AsignacionTrabajador.objects.get(pk=request.POST['id'])
+                borrar.delete()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -593,6 +611,7 @@ class RequerimientoIdView(TemplateView):
                                    )
         context['form3'] = ConvenioRequerForm(instance=requerimiento, convenio=convenio_plant, area_cargo=ac)
         context['form4'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac)
+        context['form5'] = AsignacionTrabajadorForm(instance=requerimiento)
         # context['req_trab'] = RequerimientoTrabajador(instance=requerimiento, pk=requerimiento_id)
         context['trabajadores'] = RequerimientoTrabajador.objects.filter(requerimiento_id=requerimiento_id, status=True)
         # context['a_c_trab'] = RequerimientoTrabajador.objects.values_list('area_cargo', flat=True).get(requerimiento_id=requerimiento_id, status=True)
@@ -689,7 +708,7 @@ class RequirementTrabajadorView(TemplateView):
 
 class ConveniotrabajadorView(TemplateView):
     """Conveniotrabajador List
-    Vista para listar todos los convenios del reqierimiento y sus trabajadores
+    Vista para listar todos los convenios del requerimiento y sus trabajadores
     relacionados.
     """
     template_name = 'requerimientos/create_requerimiento.html'
@@ -706,6 +725,33 @@ class ConveniotrabajadorView(TemplateView):
             if action == 'searchdata6':
                 data = []
                 for i in RequerimientoTrabajador.objects.filter(area_cargo_id=area_cargo_id, status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class AsignartrabajadorView(TemplateView):
+    """Asignartrabajador List
+    Vista para listar todas las asignaciones del requerimiento y sus trabajadores
+    relacionados.
+    """
+    template_name = 'requerimientos/create_requerimiento.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, trabajador_id, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata8':
+                data = []
+                for i in AsignacionTrabajador.objects.filter(trabajador=trabajador_id, status=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
