@@ -142,6 +142,7 @@ def create_requerimiento(request):
             requerimiento = requer_form.save(commit=False)
             requerimiento.status = True
             requerimiento.codigo = requerimiento.id
+            requerimiento.fecha_adendum = request.POST['fecha_termino']
             requerimiento.save()
             folio = Requerimiento.objects.filter(cliente__pk=requerimiento.cliente.id).count()
             code = requerimiento.cliente.abreviatura + str (folio)

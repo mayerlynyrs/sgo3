@@ -53,14 +53,14 @@
   </div>
   <div class="panel-body">
     <div class="table-responsive">
-    <table id="data-table-default" class="table table-bordered table-hover">
+    <table id="data-table-default" width="100%" class="table table-bordered table-hover">
       <thead>
           <tr>
               <th class="text-center" width="5%">#</th>
-              <th class="text-center" width="25%">Contratos</th>
+              <th class="text-center" width="20%">Contratos</th>
               <th class="text-center" width="20%">Planta</th>
               <th class="text-center" width="20%">Estado</th>
-              <th class="text-center" width="10%">Fecha<br><small>F. Inicio - f. Término</small></th>
+              <th class="text-center" width="20%">Fecha<br><small>Inicio - Término</small></th>
           </tr>
       </thead>
       <tbody>
@@ -70,19 +70,20 @@
             <td>
                 <a href="{% url 'contratos:detail' obj.id %}?page={{ request.GET.page }}">
                     <span class="text-name text-success">
-                        {{ obj.usuario.first_name|title }} {{ obj.usuario.last_name|title }}
+                        {{ obj.trabajador.first_name|title }} {{ obj.trabajador.last_name|title }}
                     </span>
                 </a>
             </td>
             <td class="text-center">
-              {{ obj.usuario.planta.first }}
+              {{ obj.planta.nombre|title }}
             </td>
             <td class="text-center">
-              {{ obj.estado|estado_contrato|safe }}
+              Firma: {{ obj.estado_firma|estado_firma|safe }} <br>
+              Contrato: {{ obj.estado_contrato|estado_contrato|safe }}
             </td>
             <td>
                <p class="text-center">
-                  {{ obj.modified|date:'d/M/Y' }} <br>
+                  {{ obj.fecha_inicio|date:'d/M/Y' }} - {{ obj.fecha_termino|date:'d/M/Y' }}<br>
                </p>
             </td>
           </tr>
