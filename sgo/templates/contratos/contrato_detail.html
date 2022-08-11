@@ -87,13 +87,13 @@
        <div class="row">
           <div class="col-lg-8">
             <h3 class="m-t-10">
-              {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
-              <small>{{ contrato.usuario.rut }}</small>
+              {{ contrato.trabajador.first_name|title }} {{ contrato.trabajador.last_name|title }}
+              <small>{{ contrato.trabajador.rut }}</small>
             </h3>
           </div>
           <div class="col-lg-4">
-            <p class="text-right">{{ contrato.usuario.planta.first }} <br>
-            {{ contrato.estado|estado_contrato|safe }}
+            <p class="text-right">{{ contrato.planta.nombre }} <br>
+            {{ contrato.estado_contrato|estado_contrato|safe }}
             </p>
           </div>
         </div>
@@ -182,13 +182,13 @@
         <div class="row">
           <div class="col-lg-8">
             <h3 class="m-t-10">
-              {{ contrato.usuario.first_name|title }} {{ contrato.usuario.last_name|title }}
-              <small>{{ contrato.usuario.rut }}</small>
+              {{ contrato.trabajador.first_name|title }} {{ contrato.trabajador.last_name|title }}
+              <small>{{ contrato.trabajador.rut }}</small>
             </h3>
           </div>
           <div class="col-lg-4">
-            <p class="text-right">{{ contrato.usuario.planta.first }} <br>
-            {{ contrato.estado|estado_contrato|safe }}
+            <p class="text-right">{{ contrato.planta.nombre }} <br>
+            {{ contrato.estado_contrato|estado_contrato|safe }}
             </p>
           </div>
         </div>
