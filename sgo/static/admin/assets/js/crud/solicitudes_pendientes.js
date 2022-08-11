@@ -103,7 +103,7 @@ $(function () {
         var parameters = new FormData(this);
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#myModalAfp').modal('hide');
+            $('#solicitudes_contrato').modal('hide');
             tblSolicitud.ajax.reload();
         });   
     });

@@ -161,47 +161,47 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create(request):
-
-    requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
-    contrato = Contrato()
-    contrato.causal_id = request.POST['causal']
-    contrato.motivo = request.POST['motivo']
-    contrato.fecha_inicio = request.POST['fecha_inicio']
-    if request.POST['tipo'] == 'mensual':
-        contrato.fecha_termino = request.POST['fecha_termino']
-        contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
-        contrato.tipo_documento_id = request.POST['tipo_documento']
-        contrato.sueldo_base = request.POST['sueldo_base']
-    else:
-        contrato.fecha_termino = request.POST['fecha_inicio']
-        contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
-        contrato.tipo_documento_id = 8
-        contrato.valores_diario_id = request.POST['valores_diario']
-        test_date = date.fromisoformat(request.POST['fecha_inicio'])
-        weekday_idx = 3
-        days_delta = weekday_idx - test_date.weekday()
-        if days_delta <= 7:
-            days_delta += 7
-        res = test_date + datetime.timedelta(days_delta)
-        contrato.fecha_pago = res
-    contrato.horario_id = request.POST['horario']
-    contrato.gratificacion_id = request.POST['gratificacion']
-    contrato.planta_id = request.POST['planta']
-    contrato.trabajador_id = request.POST['trabajador_id']
-    contrato.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id'] 
-    contrato.status = True
-    contrato.save()
-    largobonos = int(request.POST['largobonos']) + 1
-    i = []
-    for a in range(1,largobonos):
-        i = request.POST.getlist(str(a))
-        if (i[0] != '0'):
-            bonos = ContratosBono()
-            bonos.valor = i[0]
-            bonos.bono_id = i[1]
-            bonos.contrato_id = contrato.id
-            bonos.save()
-    return redirect('contratos:create_contrato',requrimientotrabajador)
+    if ContratoForm.is_valid():
+        requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+        contrato = Contrato()
+        contrato.causal_id = request.POST['causal']
+        contrato.motivo = request.POST['motivo']
+        contrato.fecha_inicio = request.POST['fecha_inicio']
+        if request.POST['tipo'] == 'mensual':
+            contrato.fecha_termino = request.POST['fecha_termino']
+            contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
+            contrato.tipo_documento_id = request.POST['tipo_documento']
+            contrato.sueldo_base = request.POST['sueldo_base']
+        else:
+            contrato.fecha_termino = request.POST['fecha_inicio']
+            contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
+            contrato.tipo_documento_id = 8
+            contrato.valores_diario_id = request.POST['valores_diario']
+            test_date = date.fromisoformat(request.POST['fecha_inicio'])
+            weekday_idx = 3
+            days_delta = weekday_idx - test_date.weekday()
+            if days_delta <= 7:
+                days_delta += 7
+            res = test_date + datetime.timedelta(days_delta)
+            contrato.fecha_pago = res
+        contrato.horario_id = request.POST['horario']
+        contrato.gratificacion_id = request.POST['gratificacion']
+        contrato.planta_id = request.POST['planta']
+        contrato.trabajador_id = request.POST['trabajador_id']
+        contrato.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id'] 
+        contrato.status = True
+        contrato.save()
+        largobonos = int(request.POST['largobonos']) + 1
+        i = []
+        for a in range(1,largobonos):
+            i = request.POST.getlist(str(a))
+            if (i[0] != '0'):
+                bonos = ContratosBono()
+                bonos.valor = i[0]
+                bonos.bono_id = i[1]
+                bonos.contrato_id = contrato.id
+                bonos.save()
+        return redirect('contratos:create_contrato',requrimientotrabajador)
 
 
 @login_required
@@ -212,6 +212,8 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
             revision1 = Revision.objects.filter(contrato_id=contrato_id)
             if(revision1):
                 revision = Revision.objects.get(contrato_id=contrato_id)
+            else:
+                revision = ''
    
             requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=contrato.requerimiento_trabajador_id)
             if request.method == 'POST':
@@ -351,10 +353,10 @@ def enviar_revision_contrato(request, contrato_id):
             contrato.estado_contrato = 'PV'
             contrato.fecha_solicitud = datetime.datetime.now()
             revision1 = Revision.objects.filter(contrato_id=contrato_id)
-            print(revision1)
             if(revision1):
-                revision1.estado = 'PD'
-                revision1.save()
+                revision = Revision.objects.get(contrato_id=contrato_id)
+                revision.estado = 'PD'
+                revision.save()
             else:
                 revision = Revision()
                 revision.contrato_id = contrato.id
