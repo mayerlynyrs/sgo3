@@ -323,7 +323,7 @@
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="submit" class="btn btn-primary">Agregar</button>
+        <button type="submit" onclick="validar()" class="btn btn-primary">Agregar</button>
       </div>
     </form>
     </div>
@@ -553,7 +553,7 @@ $('.btn-view-editar-anexo').on('click', function(e){
 
       e.preventDefault();
 
-      var $form = $('#CrearContratoForm');
+      var $form = $('#ContratoForm');
       var validator = $form.validate({
           ignore: "",
           errorClass: "is-invalid",
@@ -578,11 +578,13 @@ $('.btn-view-editar-anexo').on('click', function(e){
                   sueldo_base: "required",
                   horario: "required",
                   planta: "required",
+                  tipo_documento: "required",
                 },
                 messages: {
                   sueldo_base: "Ingresa el sueldo base del Contrato.",
                   horario: "Selecciona un Horario.",
-                  planta: "Selecciona una planta."
+                  planta: "Selecciona una planta.",
+                  tipo_documento: "Selecciona un tipo de documento"
           },
           showErrors: function(errorMap, errorList) {
               console.log('show messages', errorList.length);
