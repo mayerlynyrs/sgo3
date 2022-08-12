@@ -29,6 +29,7 @@ urlpatterns = [
     path('epps/', include(('epps.urls', 'epps'), namespace='epps')),
     path('utils/', include(('utils.urls', 'utils'), namespace='profesiones')),
     path('consultas/', include(('consultas.urls', 'consultas'), namespace='consultas')),
+    path('notificaciones/', include(('notificaciones.urls', 'notificaciones'), namespace='notificaciones')),
     path('password_reset/', auth_views.PasswordResetView.as_view(
         html_email_template_name='registration/password_reset_email.html'), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),

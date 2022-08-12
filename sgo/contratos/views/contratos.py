@@ -642,16 +642,20 @@ class ContratoMis(LoginRequiredMixin, TemplateView):
             plantas__in=plantas, status=True, created_by_id=self.request.user
         ).distinct()
         # Obtengo los contratos del usuario si no es administrador.
-        if self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos']).exists():
+        if self.request.user.groups.filter(name__in=['Administrador']).exists():
+            context['contratos'] = Contrato.objects.all().order_by('modified')
+                # created_by_id=self.request.user).order_by('modified')
+        elif self.request.user.groups.filter(name__in=['Administrador Contratos', 'Psicologo']).exists():
             context['contratos'] = Contrato.objects.filter(
-                created_by_id=self.request.user).order_by('modified')
+                created_by_id=self.request.user, planta__in=plantas, status=True).order_by('modified')
         else:
             # Obtengo todos los contratos por firmar de todas las plantas a las
             # que pertenece el usuario.
             context['contratos'] = Contrato.objects.filter(
-                usuario__planta__in=plantas, estado=Contrato.POR_FIRMAR, created_by_id=self.request.user)
+                planta__in=plantas, estado_firma=Contrato.POR_FIRMAR, trabajador__user=self.request.user)
             context['result'] = Contrato.objects.values(
-                'usuario__planta__nombre').order_by('usuario__planta').annotate(count=Count(estado=Contrato.FIRMADO_TRABAJADOR))
+                'planta__nombre').order_by('planta')
+                # 'planta__nombre').order_by('planta').annotate(count=Count(estado=Contrato.FIRMADO_TRABAJADOR))
 
         return context
 

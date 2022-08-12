@@ -54,7 +54,7 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 25
     ordering = ['negocio', 'cliente']
 
-    permission_required = 'clientes.view_client'
+    permission_required = 'clientes.view_cliente'
     raise_exception = True
 
     def get_context_data(self, **kwargs):
@@ -71,14 +71,14 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
             context['negocios'] = institutions
             context['negocio'] = self.kwargs.get('negocio_id', None)
-            negocios = Negocio.objects.filter(cliente=1)
+            # negocios = Negocio.objects.filter(cliente=1)
             clientes = Cliente.objects.all()
             context['clients'] = Cliente.objects.all()
             # context['clients'] = Cliente.objects.filter(
             #     status=True).order_by(
             #         'razon_social').distinct('razon_social')
-            context['business'] = Negocio.objects.filter(
-                cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
+            # context['business'] = Negocio.objects.filter(
+            #     cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
 
             clientes= Cliente.objects.filter(status=True)
             plantas = Planta.objects.filter(status=True)
@@ -91,22 +91,28 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             # Cliente.objects.all().order_by('cliente', 'negocio')
             # Planta.objects.filter(cliente__negocio__in=negocios).order_by('id', 'nombre').distinct('id', 'nombre')
             # Cliente.objects.all().select_related('planta').values_list('id', 'planta__negocio')
+        else:
+            clientes= self.request.user.cliente.all()
+            plantas = self.request.user.planta.all()
+            negocios = Negocio.objects.filter(status=True)
+            context['clientes'] = clientes
+            context['negocios'] = negocios
+            context['plantas'] = plantas
 
         return context
 
     def get_queryset(self):
         search = self.request.GET.get('q')
-        negocio = self.kwargs.get('negocio_id', None)
+        planta = self.kwargs.get('planta_id', None)
 
-        if negocio == '':
-            negocio = None
+        if planta == '':
+            planta = None
 
         if search:
             # No es administrador y recibe parametro de busqueda
             if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
                 queryset = Planta.objects.select_related('negocio').filter(
                     Q(cliente__in=self.request.user.cliente.all()),
-                    Q(negocio__in=self.request.user.negocio.all()),
                     Q(planta__in=self.request.user.planta.all()),
                     Q(nombre__icontains=search) |
                     Q(telefono__icontains=search) |
@@ -125,27 +131,27 @@ class ClientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         else:
             # Perfil no es Administrador
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                if negocio is None:
-                    queryset = Planta.objects.filter(
-                        negocio__in=self.request.user.negocio.all()).exclude(
-                        groups__name__in=['Administrador']).order_by(
-                        'nombre', 'telefono').distinct('nombre', 'telefono')
+                if planta is None:
+                    queryset = User.objects.filter(
+                        planta__in=self.request.user.planta.all()).order_by(
+                        'first_name', 'last_name').distinct('first_name', 'last_name')
                 else:
-                    # No es administrador y hay negocios seleccionadas
+                    # No es administrador y hay plantas seleccionadas
+                    print('queryset2')
                     queryset = Planta.objects.filter(
-                        negocio__in=negocio).exclude(
+                        planta__in=planta).exclude(
                         groups__name__in=['Administrador']).order_by(
                         'nombre', 'telefono').distinct('nombre', 'telefono')
 
             else:
-                # Es administrador y no hay negocio seleccionada.
-                if negocio is None:
+                # Es administrador y no hay planta seleccionada.
+                if planta is None:
                     queryset = super(ClientListView, self).get_queryset().order_by(
                         'nombre', 'telefono').distinct('nombre', 'telefono')
                 else:
-                    # Es administrador y hay negocios seleccionadas.
+                    # Es administrador y hay plantas seleccionadas.
                     queryset = super(ClientListView, self).get_queryset().filter(
-                        negocio__in=negocio).order_by(
+                        planta__in=planta).order_by(
                         'nombre', 'telefono').distinct('nombre', 'telefono')
 
         return queryset
@@ -624,8 +630,13 @@ class PlantaView(TemplateView):
             action = request.POST['action']
             if action == 'searchdata3':
                 data = []
-                for i in Planta.objects.filter(cliente=cliente_id, status=True):
-                    data.append(i.toJSON())
+                if self.request.user.groups.filter(name__in=['Administrador']).exists():
+                    for i in Planta.objects.filter(cliente=cliente_id, status=True):
+                        data.append(i.toJSON())
+                else:
+                    plantas = self.request.user.planta.all()
+                    for i in plantas.filter(cliente=cliente_id, status=True):
+                        data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

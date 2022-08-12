@@ -45,16 +45,24 @@ class Home(LoginRequiredMixin, TemplateView):
         #     plantas__in=plantas, status=True
         # ).distinct()
         # Obtengo los contratos del usuario si no es administrador.
-        if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT']).exists():
+        # if not self.request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT']).exists():
+        #     context['contratos'] = Contrato.objects.filter(
+        #         trabajador=self.request.user.id).order_by('modified')
+        if self.request.user.groups.filter(name__in=['Administrador']).exists():
+            context['contratos'] = Contrato.objects.all().order_by('modified')
+        elif self.request.user.groups.filter(name__in=['Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', 'Psicologo']).exists():
             context['contratos'] = Contrato.objects.filter(
-                user=self.request.user).order_by('modified')
+                planta__in=plantas).order_by('modified')
+        elif self.request.user.groups.filter(name__in=['Trabajador']).exists():
+            context['contratos'] = Contrato.objects.filter(
+                trabajador__user=self.request.user.id).order_by('modified')
         else:
             # Obtengo todos los contratos por firmar de todas las plantas a las
             # que pertenece el usuario.
-            # context['contratos'] = Contrato.objects.filter(
-            #     user__planta__in=plantas, estado_firma=Contrato.POR_FIRMAR)
             context['contratos'] = Contrato.objects.filter(
-                estado_firma=Contrato.POR_FIRMAR)
+                planta__in=plantas, estado_firma=Contrato.POR_FIRMAR)
+            # context['contratos'] = Contrato.objects.filter(
+            #     estado_firma=Contrato.POR_FIRMAR)
 
         return context
 
@@ -89,7 +97,7 @@ class Inicio(LoginRequiredMixin, TemplateView):
             context['contratos'] = Contrato.objects.filter(
                 estado_firma=Contrato.POR_FIRMAR)
             context['result'] = Contrato.objects.values(
-                'created_by_id','created_by__first_name','created_by__last_name').order_by('created_by_id').annotate(count=Count('created_by_id'))
+                'created_by_id','created_by__first_name','created_by__last_name', 'planta__nombre').order_by('created_by_id').annotate(count=Count('created_by_id'))
             estado_firma="FIRMADO_TRABAJADOR"
             context['ft'] = Contrato.objects.filter(estado_firma=Contrato.FIRMADO_TRABAJADOR).annotate(count=Count('estado_firma'))
 
