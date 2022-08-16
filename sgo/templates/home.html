@@ -38,9 +38,7 @@
               <th class="text-center" width="25%">Contratos</th>
               <th class="text-center" width="20%">Planta</th>
               <th class="text-center" width="20%">Estado</th>
-              <th class="text-center" width="10%">Inicio</th>
-              <th class="text-center" width="10%">Término</th>
-              <th class="text-center" width="10%">Fecha Creación</th> <!-- <strike>Actualizado</strike> -->
+              <th class="text-center" width="20%">Fechas<br></th> <!-- <strike>Actualizado</strike> -->
             </tr>
             </thead>
             <tbody>
@@ -50,29 +48,23 @@
                 <td class="text-left">
                     <a href="{% url 'contratos:detail' obj.id %}">
                         <span class="text-name text-success">
-                            {{ obj.usuario.first_name|title }} {{ obj.usuario.last_name|title }}
+                            {{ obj.trabajador.first_name|title }} {{ obj.trabajador.last_name|title }}
                         </span>
                     </a>
                 </td>
                 <td class="text-left">
-                  {{ obj.usuario.planta.first }}
+                  {{ obj.planta.nombre|title }}
                 </td>
                 <td class="text-center">
-                  {{ obj.estado_contrato|estado_contrato|safe }}
+                  Firma: {{ obj.estado_firma|estado_firma|safe }} <br>
+                  Contrato: {{ obj.estado_contrato|estado_contrato|safe }}
                 </td>
                 <td>
-                   <p class="text-center">
-                      {{ obj.modified|date:'d/M/Y' }} <br>
-                   </p>
-                </td>
-                <td>
-                   <p class="text-center">
-                      {{ obj.modified|date:'d/M/Y' }} <br>
-                   </p>
-                </td>
-                <td>
-                   <p class="text-center">
-                      {{ obj.modified|date:'d/M/Y' }} <br>
+                   <p class="text-left">
+                    Inicio: {{ obj.fecha_inicio|date:'d/M/Y' }} <br>
+                    Término: {{ obj.fecha_termino|date:'d/M/Y' }} <br>
+                    Creación: {{ obj.created|date:'d/M/Y' }} <br>
+                    Actualizado: {{ obj.modified|date:'d/M/Y' }}
                    </p>
                 </td>
               </tr>

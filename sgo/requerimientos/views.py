@@ -93,7 +93,7 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(status=True),
-                    Q(plantas__in=self.request.user.planta.all())
+                    Q(planta__in=self.request.user.planta.all())
                 ).distinct()
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.

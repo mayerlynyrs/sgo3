@@ -148,7 +148,7 @@
         </ul>
       </li>
       {% endif %}
-      {% if perms.epps.view_epp %}
+      {% if perms.epps.view_insumo %}
       <li class="has-sub {% if menu_app == 'epps' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -157,7 +157,7 @@
         </a>
         <ul class="sub-menu">
           <li {% if menu_app == 'epp' and menu_page == None %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Tipos Insumos</a></li>
-        {% if perms.epps.add_epp %}
+        {% if perms.epps.add_insumo %}
           <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:insumo' %}">Insumos</a></li>
           <!-- <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Convenio</a></li>
           <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Convenio Detalle</a></li> -->

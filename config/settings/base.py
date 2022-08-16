@@ -76,6 +76,7 @@ LOCAL_APPS = [
     'sgo.users.apps.UsersConfig',
     'sgo.utils.apps.UtilsConfig',
     'sgo.consultas.apps.ConsultasConfig',
+    'sgo.notificaciones.apps.NotificacionesConfig',
 
     
 ]

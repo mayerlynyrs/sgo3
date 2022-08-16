@@ -26,6 +26,9 @@ from epps.forms import TipoInsumoForm, InsumoForm
 class TipoListView(TemplateView):
     template_name = 'epps/tipo_insumo_list.html'
 
+    permission_required = 'epps.view_tipo_insumo'
+    raise_exception = True
+
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -70,6 +73,9 @@ class TipoListView(TemplateView):
 
 class InsumoView(TemplateView):
     template_name = 'epps/insumo_list.html'
+
+    permission_required = 'epps.view_insumo'
+    raise_exception = True
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)

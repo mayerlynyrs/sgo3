@@ -69,6 +69,7 @@ class Contrato(BaseModel):
     APROBADO = 'AP'
     PENDIENTE_BAJA ='PB'
     BAJADO = 'BJ'
+
     NORMAL = 'NOR'
     PARADA_GENERAL_PLANTA = 'PGP'
     URGENCIA = 'URG'
