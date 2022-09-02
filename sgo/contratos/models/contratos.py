@@ -1,4 +1,5 @@
 """Contratos model."""
+from asyncio.windows_events import NULL
 import os
 import re
 
@@ -10,11 +11,11 @@ from django.core.validators import FileExtensionValidator
 # Models
 from users.models import Trabajador, ValoresDiario
 # Clientes
-from clientes.models import Planta
+from clientes.models import Planta, Cliente
 # Utilities
 from utils.models import BaseModel, Bono, Equipo, Gratificacion, Horario
 from contratos.models import TipoDocumento
-from requerimientos.models import RequerimientoTrabajador, Causal
+from requerimientos.models import RequerimientoTrabajador, Causal, Requerimiento
 
 User = get_user_model()
 
@@ -151,7 +152,6 @@ class Contrato(BaseModel):
         item['nombre'] = self.trabajador.first_name + " " + self.trabajador.last_name
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
         item['solicitante'] = self.created_by.first_name + " " + self.created_by.last_name
-
         return item
 
 
@@ -218,6 +218,16 @@ class Anexo(BaseModel):
 
     def __str__(self):
         return str(self.trabajador.rut) + '-' + str(self.id).zfill(4)
+    
+    def toJSON(self):
+        item = model_to_dict(self) 
+        item['archivo'] = str(self.archivo).zfill(0) 
+        item['requerimiento'] = "Planta : " + self.planta.nombre
+        item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
+        item['nombre'] = self.trabajador.first_name + " " + self.trabajador.last_name
+        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
+        item['solicitante'] = self.created_by.first_name + " " + self.created_by.last_name
+        return item
 
 
 def contrato_directory_path(instance, filename):
@@ -353,5 +363,121 @@ class Baja(BaseModel):
     )
     def __str__(self):
         return str(self.motivo)
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        if(self.contrato): 
+            item['archivo'] = str(self.contrato.archivo).zfill(0)
+        else:
+            item['archivo'] = str(self.anexo.archivo).zfill(0)
+
+        if(self.contrato):
+            if(self.contrato.valores_diario):
+                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre) + " <br> Causal : " + str(self.contrato.causal.nombre) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre) + "<br> Renta:  " + str(self.contrato.valores_diario.valor_diario)
+            elif(self.contrato.sueldo_base):
+                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre )+  "<br> Causal : " + str(self.contrato.causal.nombre) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre) + "<br> Renta:  " + str(self.contrato.sueldo_base)
+        else:
+            item['contrato'] = ''
+        
+        if(self.contrato):     
+            item['requerimiento'] = "Planta : " + str(self.contrato.planta.nombre)
+        else:     
+            item['requerimiento'] = "Planta : " + str(self.anexo.planta.nombre)
+
+        if(self.contrato):
+            item['trabajador'] = self.contrato.trabajador.first_name + " " + self.contrato.trabajador.last_name + "<br>" + self.contrato.trabajador.rut + "<br>" + self.contrato.trabajador.email
+        else:
+            item['trabajador'] = self.anexo.trabajador.first_name + " " + self.anexo.trabajador.last_name + "<br>" + self.anexo.trabajador.rut + "<br>" + self.anexo.trabajador.email
+
+        if(self.contrato):
+            item['nombre'] = self.contrato.trabajador.first_name + " " + self.contrato.trabajador.last_name
+        else:
+            item['nombre'] = self.anexo.trabajador.first_name + " " + self.anexo.trabajador.last_name
+
+        if(self.contrato):
+            item['plazos'] = "Fecha Inicio: "+ str(self.contrato.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.contrato.fecha_termino.strftime('%d-%m-%Y'))
+        else:
+            item['plazos'] = "Fecha Inicio: "+ str(self.anexo.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.anexo.fecha_termino.strftime('%d-%m-%Y'))
+
+        if(self.contrato):    
+            item['solicitante'] = self.contrato.created_by.first_name + " " + self.contrato.created_by.last_name
+        else:    
+            item['solicitante'] = self.anexo.created_by.first_name + " " + self.anexo.created_by.last_name
+        item['motivo'] = self.motivo.nombre
+        if(self.contrato):
+            item['id_contrato'] =  self.contrato.id
+        else:
+            item['id_contrato'] =  self.anexo.id
+
+        return item
+
+        
+
+class TemporalContratoDia(BaseModel):
+    """Modelo temporal contrato dia .
+    """
+
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
+    numero_contrato = models.IntegerField(default=0)
+    numero_proceso = models.IntegerField(default=0)
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el Motivo, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return self.numero_contrato
 
 
+class ContratosParametrosGen(BaseModel):
+    """Modelo Contratos Parametros Gen .
+    """
+
+    codigo_empresa   = models.IntegerField(default=1)
+    contrato_tipo  = models.IntegerField(default=1)
+    umbral_fechainicio  = models.IntegerField(default=1)
+    rut_firmante = models.CharField(
+        max_length=12,
+        unique=True,
+        error_messages={
+            'unique': 'Ya existe un rut firmante con este RUT registrado.'
+        }
+    )
+    rut_empresa = models.CharField(
+        max_length=12,
+        unique=True,
+        error_messages={
+            'unique': 'Ya existe un rut empresa con este RUT registrado.'
+        }
+    )
+    hora_dia  = models.IntegerField(default=1)
+    imponible_legal = models.FloatField()
+    factor_gratificacion = models.FloatField()
+    dias_causal_a  = models.IntegerField(default=1)
+    dias_causal_b  = models.IntegerField(default=1)
+    dias_causal_c  = models.IntegerField(default=1)
+    dias_causal_d  = models.IntegerField(default=1)
+    dias_causal_e  = models.IntegerField(default=1)
+    dias_causal_f  = models.IntegerField(default=1)
+    dias_contrato_dia  = models.IntegerField(default=1)
+    ruta_documentos =  models.CharField(max_length=60,
+    )
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el Motivo, deshabilite esta casilla.'
+    )
+    created_date = models.DateTimeField(
+            default=timezone.now,
+            null=True,
+            blank=True
+    )
+
+    def __str__(self):
+        return self.codigo_empresa

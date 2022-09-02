@@ -11,19 +11,23 @@
         {% csrf_token %}
         <div class="row col-md-12">
           <div class="form-group col-md-3">
-            <input type="radio" onclick="javascript:mensualdiario2();" id="mensual2" value="mensual" checked name="tipo2" >
+            <input type="radio" 
+             onclick="javascript:mensualdiario2();" disabled id="mensual2"  value="mensual" {% if tipo_contrato != 8 %} checked {% endif %} name="tipo2" >
             <label for="mensual">Mensual</label>
           </div>
           <div class="form-group col-md-3">
-            <input type="radio" onclick="javascript:mensualdiario2();" id="diario" value="diario" name="tipo2" >
+            <input type="radio" 
+              onclick="javascript:mensualdiario2();" disabled  id="diario" value="diario" {% if tipo_contrato == 8 %} checked {% endif %}  name="tipo2" >
             <label for="diario">Diario</label>
           </div>
         </div>
         <div class="row col-md-12">
-          <div class="form-group col-md-6" id="tipocontrato2" style="display:show">
+          {% if tipo_contrato != 8 %}
+          <div class="form-group col-md-6" id="tipocontrato2">
             <label for="email">Tipo Contrato</label>
             {{ form4.tipo_documento }}
           </div>
+          {% endif %}
           <div class="form-group col-md-6">
             <label for="email">Regimen</label>
             {{ form4.regimen }}
@@ -40,24 +44,32 @@
             <label for="email">Fecha Inicia</label>
             {{ form4.fecha_inicio }}
           </div>
-          <div class="form-group col-md-6" id="fechatermino2" style="display:show">
+          {% if tipo_contrato != 8 %}
+          <input type="hidden" name="tipo2" class="form-control" value="mensual">
+          <div class="form-group col-md-6" id="fechatermino2" >
             <label for="email">Fecha Término</label>
             {{ form4.fecha_termino }}
           </div>
+          {% endif %}
         </div>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
             <label for="email">Horario</label>
             {{ form4.horario }}
           </div>
-          <div class="form-group col-md-6" id="sueldo2" style="display:show">
+          {% if tipo_contrato != 8 %}
+          <div class="form-group col-md-6" id="sueldo2">
             <label for="email">Sueldo Base</label>
             {{ form4.sueldo_base }}
           </div>
-          <div class="form-group col-md-6" id="valores_diario2" style="display:none">
+          {% endif %}
+          {% if tipo_contrato == 8 %}
+          <input type="hidden" name="tipo2" class="form-control" value="diario">
+          <div class="form-group col-md-6" id="valores_diario2">
             <label for="email">Valores Diario</label>
             {{ form4.valores_diario }}
           </div>
+          {% endif %}
         </div>
         <h5>Bonos </h5>
             <div class="row col-md-12">
@@ -85,7 +97,6 @@
     <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script>
     <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
     <script type="text/javascript">
-
       function mensualdiario2() {
           if (document.getElementById('mensual2').checked) {
               document.getElementById('tipocontrato2').style.display = 'block';

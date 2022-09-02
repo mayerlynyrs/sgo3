@@ -15,26 +15,26 @@
           <br>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
-            <label for="email">Nombres &nbsp</label>{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}
+            <label for="email">Nombres &nbsp</label>{{ con.requerimiento_trabajador__trabajador__first_name }} {{ con.requerimiento_trabajador__trabajador__last_name }}
           </div>
           <div class="form-group col-md-6">
-            <label for="email">Domicilio &nbsp </label>{{ con.trabajador__domicilio }}
-          </div>
-        </div>
-        <div class="row col-md-12">
-          <div class="form-group col-md-6">
-            <label for="email">Fecha Inicio &nbsp</label>{{ con.contrato__fecha_inicio }} 
-          </div>
-          <div class="form-group col-md-6">
-            <label for="email">Fecha Término &nbsp </label>{{ con.contrato__fecha_termino_ultimo_anexo }}
+            <label for="email">Domicilio &nbsp </label>{{ con.requerimiento_trabajador__trabajador__domicilio }}
           </div>
         </div>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
-            <label for="email">Motivo &nbsp</label>{{ con.contrato__motivo }} 
+            <label for="email">Fecha Inicio &nbsp</label>{{ con.fecha_inicio }} 
           </div>
           <div class="form-group col-md-6">
-            <label for="email">Renta Imponible &nbsp</label>{{ con.contrato__sueldo_base }} 
+            <label for="email">Fecha Término &nbsp </label>{{ con.fecha_termino_ultimo_anexo }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Motivo &nbsp</label>{{ con.motivo }} 
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Renta Imponible &nbsp</label>{{ con.sueldo_base }} 
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@
             <input type="text" name="fechaTerminoAnexo" readonly id="fechaInicioAnexo" value="{{fecha_termino|date:'Y-m-d'}}" class="form-control" > 
           </div>
           <div class="form-group col-md-3">
-            <label>Cambio Motivo </label>
+            <label>Modificar datos</label>
             <input type="checkbox" name="motivo" id="motivo"  onclick="javascript:validar3(this);">
           </div>
           <div class="form-group col-md-3">
@@ -58,7 +58,7 @@
         <div class="row col-md-12" >
             {% if motivo != None %}
           <div class="form-group col-md-6"  id="divmotivo2">
-            <label for="email">Nuevo Motivo1 </label>
+            <label for="email">Datos a modificar </label>
             <input type="text" name="NuevoMotivo1" id="NuevoMotivo" class="form-control" value="{{motivo}}"> 
           </div>
           {% endif %}
@@ -79,7 +79,12 @@
             <input type="text" name="NuevaRenta2" id="NuevaRenta" class="form-control" > 
           </div>
         </div>
+        {% if revision.estado == 'RC' %}
+        <label class="alert alert-danger fade show" for="revision">Rechazado por: {{revision.obs}}</label>
+        {% endif %}
     </div>
+  </div>
+
     <div class="modal-footer">
         <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
         <button type="submit" class="btn btn-info btn-flat"> Guardar</button>

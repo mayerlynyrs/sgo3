@@ -19,9 +19,7 @@ function getData() {
             {"data": "solicitante"},
             {"data": "trabajador"},
             {"data": "plazos"},
-            {"data": "contrato"},
-            {"data": "motivo"},
-            {"data": "id_contrato"},
+            {"data": "id"},
    
         ],
         columnDefs: [
@@ -29,10 +27,9 @@ function getData() {
                 targets: [-1],
                 class: 'text-center',
                 orderable: false,
-                render: function (data, type, row) { 
-
-                    var buttons = buttons = '<a href="#" rel="aprobar" title="Aprobar" class="btn btn-green btn-xs btn-flat btnEdit"><i class="fa fa-check-square"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    // buttons += '<a href="#" rel="rechazar" title="Rechazar" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                render: function (data, type, row) {
+                    var buttons = '<a href="#" rel="aprobar" title="Aprobar" class="btn btn-green btn-xs btn-flat btnEdit"><i class="fa fa-check-square"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    buttons += '<a href="#" rel="rechazar" title="Rechazar" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     buttons += '<button   data-id="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
@@ -46,7 +43,7 @@ function getData() {
 
 function myFunction(data) {
       var id = data;
-      var URL = '/contratos/'+id+'/solicitudes-pendientes/';
+      var URL = '/contratos/'+id+'/solicitudes-pendientes-anexo/';
       $.ajax({
             url: URL,
             type: 'get',
@@ -59,22 +56,6 @@ function myFunction(data) {
             }
           });
   }
-
-  function myFunction2(data) {
-        var id = data;
-        var URL = '/contratos/'+id+'/solicitudes-pendientes-baja/';
-        $.ajax({
-              url: URL,
-              type: 'get',
-              dataType: 'json',
-              beforeSend: function () {
-                $("#modal-contrato").modal("show");
-              },
-              success: function (data) {
-                  $("#modal-contrato .modal-content").html(data.html_form);
-              }
-            });
-    }
 
 $(function () {
 
@@ -90,7 +71,6 @@ $(function () {
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         $('input[name="action"]').val('aprobar');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="contrato_id"]' ).val(data.id_contrato);
         document.getElementById('observacion').style.display = 'none';
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#32a932';

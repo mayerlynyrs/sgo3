@@ -6,10 +6,12 @@ from cgi import print_form
 from multiprocessing import context
 from optparse import Values
 from queue import Empty
+from telnetlib import STATUS
 from tkinter import FLAT
 from datetime import date, datetime
 import datetime
 from docx2pdf import convert
+from django.core.serializers import serialize
 # Django
 import os
 import pythoncom
@@ -41,7 +43,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
-from numpy import empty
+
 # Models
 from ficheros.models import Fichero
 from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo, Revision, Baja
@@ -167,6 +169,7 @@ def create(request):
     contrato.causal_id = request.POST['causal']
     contrato.motivo = request.POST['motivo']
     contrato.fecha_inicio = request.POST['fecha_inicio']
+    contrato.regimen = request.POST['regimen']
     if request.POST['tipo'] == 'mensual':
         contrato.fecha_termino = request.POST['fecha_termino']
         contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
@@ -209,11 +212,11 @@ def create(request):
 def update_contrato(request, contrato_id, template_name='contratos/contrato_update.html'):
             data = dict()
             contrato = get_object_or_404(Contrato, pk=contrato_id)
-            revision1 = Revision.objects.filter(contrato_id=contrato_id)
-            if(revision1):
+            try:
                 revision = Revision.objects.get(contrato_id=contrato_id)
-            else:
-                revision = ''
+            except:
+                 revision = ''
+  
    
             requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=contrato.requerimiento_trabajador_id)
             if request.method == 'POST':
@@ -221,6 +224,7 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                 contrato.fecha_inicio = request.POST['fecha_inicio']
                 contrato.horario_id = request.POST['horario']
                 contrato.status = True
+                contrato.regimen = request.POST['regimen']
                 if request.POST['tipo2'] == 'mensual':
                     contrato.fecha_termino = request.POST['fecha_termino']
                     contrato.fecha_termino_ultimo_anexo = request.POST['fecha_termino']
@@ -260,12 +264,14 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                 return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
             else:
                 form = ContratoEditarForm(instance=contrato,horario=requer_trabajador.requerimiento.cliente.horario.all())
+                tipo_contrato = Contrato.objects.values_list('tipo_documento', flat=True).get(pk=contrato_id, status=True)
                 req = contrato.requerimiento_trabajador_id 
                 bonos = RequerimientoTrabajador.objects.raw("SELECT b.id, b.nombre, cb.valor FROM public.requerimientos_requerimientotrabajador as rt LEFT JOIN public.requerimientos_requerimiento as r on r.id = rt.requerimiento_id LEFT JOIN public.clientes_planta as p on p.id = r.planta_id LEFT JOIN public.clientes_planta_bono as pb on pb.planta_id = p.id LEFT JOIN public.utils_bono as b on b.id = pb.bono_id LEFT JOIN public.contratos_contrato as c on c.requerimiento_trabajador_id = rt.id LEFT JOIN public.contratos_contratosbono as cb on cb.bono_id = pb.bono_id WHERE rt.id = %s ORDER BY cb.valor" , [req])
                 largobonos = len(bonos)
                 context={
                     'form4': form,
                     'contrato':contrato,
+                    'tipo_contrato':tipo_contrato,
                     'contrato_id': contrato_id,
                     'largobonos' : largobonos,
                     'revision' : revision,
@@ -352,12 +358,11 @@ def enviar_revision_contrato(request, contrato_id):
             contrato = get_object_or_404(Contrato, pk=contrato_id)
             contrato.estado_contrato = 'PV'
             contrato.fecha_solicitud = datetime.datetime.now()
-            revision1 = Revision.objects.filter(contrato_id=contrato_id)
-            if(revision1):
+            try:
                 revision = Revision.objects.get(contrato_id=contrato_id)
                 revision.estado = 'PD'
                 revision.save()
-            else:
+            except:  
                 revision = Revision()
                 revision.contrato_id = contrato.id
                 revision.save()
@@ -375,7 +380,7 @@ def enviar_revision_contrato(request, contrato_id):
                         'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
                         'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
                         'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
-                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil', flat=True).get(pk=contrato_id, status=True),
+                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
                         'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
                         'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
                         'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
@@ -402,8 +407,9 @@ def enviar_revision_contrato(request, contrato_id):
                         'adicional_cumplimiento_horario_undecimo': 'okokok',
                         'parrafo_decimo_tercero': 'okokok',
                         'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                         'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
                         }
-
+            rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
             doc.render(context)
             # exit()
             # Obtengo el usuario
@@ -418,16 +424,16 @@ def enviar_revision_contrato(request, contrato_id):
                 plantillas_attr.extend(list(p.atributos))
 
             path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-            doc.save(path + '/Contrato#' + str(contrato_id) + '.docx')
+            doc.save(path + str(rut_trabajador) + "_C_" +str(contrato_id)  + '.docx')
             win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
             # convert("Contrato#1.docx")
-            convert(path + "Contrato#" + str(contrato_id) + ".docx", path + "Contrato#" + str(contrato_id) + ".pdf")
-            
-            url = path + "Contrato#" + str(contrato_id) + ".pdf"
+
+            convert(path + str(rut_trabajador) + "_C_" +str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_C_" + str(contrato_id) + ".pdf")
+            url = path + str(rut_trabajador) + "_C_" +str(contrato_id) + ".pdf"
             contrato.archivo = url
             contrato.save()
             # Elimino el documento word.
-            os.remove(path + 'Contrato#' + str(contrato_id) + '.docx')
+            os.remove(path + str(rut_trabajador) + "_C_" +str(contrato_id) + '.docx')
             messages.success(request, 'Contrato enviado a revisión')
             return redirect('contratos:create_contrato' ,contrato.requerimiento_trabajador_id)
 
@@ -494,7 +500,7 @@ def create_anexo(request):
             anexo.fecha_inicio = request.POST['UltimoAnexo']
             anexo.fecha_termino = request.POST['fechaTerminoAnexo']
             if "motivo" in request.POST:
-                anexo.motivo = request.POST['motivo']
+                anexo.motivo = request.POST['NuevoMotivo']
             anexo.fecha_termino_anexo_anterior = request.POST['fechaTerminoAnexo']
             anexo.contrato_id = request.POST['id_contrato']
             if "renta" in request.POST:
@@ -515,6 +521,13 @@ def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
             data = dict()
             anexo = get_object_or_404(Anexo, pk=anexo_id)
             contrato = get_object_or_404(Contrato, pk=anexo.contrato_id)
+
+            
+            try:
+                revision = Revision.objects.get(anexo_id=anexo_id)
+            except:
+                 revision = ''
+
             if request.method == 'POST':
                 anexo.fecha_termino = request.POST['fechaTerminoAnexo']
                 if "NuevoMotivo1" in request.POST:
@@ -532,15 +545,16 @@ def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
                 contrato.save()
                 return redirect('contratos:create_contrato',anexo.requerimiento_trabajador_id)
             else:
-                contratos = RequerimientoTrabajador.objects.filter(pk=anexo.requerimiento_trabajador_id).values( 'contrato',
-                'contrato__requerimiento_trabajador', 'contrato__estado_contrato','contrato__sueldo_base', 'contrato__tipo_documento__nombre','contrato__causal__nombre' ,'contrato__causal', 'contrato__motivo', 'contrato__fecha_inicio',
-                'contrato__fecha_termino', 'contrato__horario__nombre' , 'contrato__fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
+                contratos = Contrato.objects.all().filter(requerimiento_trabajador_id =anexo.requerimiento_trabajador_id, status=True ).values( 'id',
+                'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
+                'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'requerimiento_trabajador__trabajador__first_name', 'requerimiento_trabajador__trabajador__last_name', 'requerimiento_trabajador__trabajador__domicilio' ).distinct()
                 context={
                     'contratos' : contratos,
                     'anexo_id' : anexo.id,
                     'fecha_termino' : anexo.fecha_termino,
                     'motivo': anexo.motivo,
-                    'nuevarenta': anexo.nueva_renta
+                    'nuevarenta': anexo.nueva_renta,
+                    'revision' : revision
                 }
                 data['html_form'] = render_to_string(
                     template_name,
@@ -552,24 +566,151 @@ def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def enviar_revision_anexo(request, anexo_id):
-            revision = Revision()
+
             anexo = get_object_or_404(Anexo, pk=anexo_id)
             anexo.estado_anexo = 'PV'
-            anexo.fecha_solicitud = datetime.now()
+            anexo.fecha_solicitud = datetime.datetime.now()
+            try:
+                revision = Revision.objects.get(anexo_id=anexo_id)
+                revision.estado = 'PD'
+                revision.save()
+            except:  
+                revision = Revision()
+                revision.anexo_id = anexo.id
+                revision.save()
+
+            # Trae el id de la planta del Requerimiento
+            plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=anexo.contrato_id, status=True)
+            # Trae la plantilla que tiene la planta
+            formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=5)
+            now = datetime.datetime.now()
+            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
+         
+            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=anexo.contrato_id, status=True)),
+                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=anexo.contrato_id, status=True),    
+                        'region_planta': Contrato.objects.values_list('planta__region__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True))+' pesos',
+                        'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=anexo.contrato_id, status=True) ,
+                        'detalle_bonos': 'okokok',
+                        'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'adicional_cumplimiento_horario_undecimo': 'okokok',
+                        'parrafo_decimo_tercero': 'okokok',
+                        'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=anexo.contrato_id, status=True)),
+                        'fecha_contrato_anterior':fecha_a_letras(Contrato.objects.values_list('fecha_termino_ultimo_anexo', flat=True).get(pk=anexo.contrato_id, status=True)),
+                        }
+            rut_trabajador = Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True)
+            doc.render(context)
+            # exit()
+            # Obtengo el usuario
+            usuario = get_object_or_404(User, pk=1)
+            # Obtengo todas las negocios a las que pertenece el usuario.
+            plantas = usuario.planta.all()
+            # Obtengo el set de contrato de la primera negocio relacionada.
+            plantillas_attr = list()
+            plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+            # Obtengo los atributos de cada plantilla
+            for p in plantillas:
+                plantillas_attr.extend(list(p.atributos))
+
+            path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+            doc.save(path + str(rut_trabajador) + "_A_" +str(anexo_id) +'.docx')
+            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+ 
+      
+
+            convert(path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".docx", path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf")
+            
+            url = path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf"
+            anexo.archivo = url
             anexo.save()
-            revision.anexo_id = anexo.id
-            revision.save()          
-            messages.success(request, 'Contrato enviado a revisión')
+            # Elimino el documento word.
+            os.remove(path + str(rut_trabajador) + "_A_" +str(anexo_id) + '.docx')
+            messages.success(request, 'Anexo enviado a revisión')
             return redirect('contratos:create_contrato' ,anexo.requerimiento_trabajador_id)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def baja_contrato_anexo(request,anexo_id, template_name='contratos/baja_anexo.html'): 
+    data = dict()
+
+    anexo = get_object_or_404(Anexo, pk=anexo_id)
+    if request.method == 'POST':
+        anexo.estado_anexo = 'PB'
+        anexo.fecha_solicitud_baja = datetime.datetime.now()
+        anexo.save()
+        baja = Baja()
+        baja.anexo_id = anexo_id
+        baja.motivo_id = request.POST['motivo']
+        baja.save()
+        messages.error(request, 'Contrato en proceso de baja')
+        return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
+
+    else:
+    
+        context = {
+            'form10': MotivoBajaForm,
+            'anexo_id': anexo_id, 
+            }
+        data['html_form'] = render_to_string(
+            template_name,
+            context,
+            request=request,
+        )
+        return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def solicitudes_pendientes_anexo(request, anexo_id, template_name='contratos/anexo_pdf.html'):
+    data = dict()
+    anexo = get_object_or_404(Anexo, pk=anexo_id)
+
+    context = {'contrato': anexo, }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
 
 class ContratoIdView(TemplateView):
     template_name = 'contratos/create_contrato.html'
 
-
-
     def get_context_data(self, requerimiento_trabajador_id, **kwargs):
-
+        anex = 'NO'
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
+        try:
+            contrato = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
+            print(contrato.fecha_termino_ultimo_anexo)
+            ahora = datetime.datetime.now().strftime("%Y-%m-%d")
+            print('ahora',ahora)
+            dias = contrato.fecha_termino_ultimo_anexo - ahora
+            print('los dias son', dias)
+        except:
+            contrato = ''
+
         trabaj = RequerimientoTrabajador.objects.filter(id=requerimiento_trabajador_id).values(
                 'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
                 'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio', 'trabajador__telefono', 'trabajador__nacionalidad',
@@ -589,11 +730,17 @@ class ContratoIdView(TemplateView):
         context['contratos'] = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True ).values( 'id', 'valores_diario__valor_diario',
                 'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
                  'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
-        context['anexos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values( 'anexo', 'anexo__estado_anexo',
-                'anexo__requerimiento_trabajador', 'anexo__nueva_renta', 'contrato__tipo_documento__nombre','anexo__causal__nombre' ,'anexo__causal', 'anexo__motivo', 'anexo__fecha_inicio',
-                 'anexo__fecha_termino' ).order_by('anexo__fecha_inicio')
+        context['anexos'] = Anexo.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).values( 'id', 'estado_anexo',
+                'requerimiento_trabajador', 'nueva_renta', 'contrato__tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
+                 'fecha_termino' ).order_by('fecha_inicio')
+        ane = Anexo.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exists()
+        if(ane == True):
+            anex = 'SI'
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
-        largobonos = len(bonos) 
+        largobonos = len(bonos)
+
+
+        context['anex'] = anex 
         context['largobonos'] = largobonos
         context['requerimiento_trabajador_id'] = requerimiento_trabajador_id
         context['bonos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values('requerimiento__planta__bono','requerimiento__planta__bono__nombre')
@@ -887,33 +1034,122 @@ class BajaContrado(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Contrato.objects.filter(estado_contrato='PB', status=True):
+                for i in Baja.objects.filter(estado='PD', status=True, contrato__isnull=False):
                     data.append(i.toJSON())
             elif action == 'aprobar':
-                baja = Baja.objects.get(contrato_id=request.POST['id'])
+                baja = Baja.objects.get(pk=request.POST['id'])
                 baja.estado = 'AP'
                 baja.save()
-                contrato = Contrato.objects.get(pk=request.POST['id'])
+                contrato = Contrato.objects.get(pk=request.POST['contrato_id'])
                 contrato.fecha_aprobacion_baja  = datetime.datetime.now()
                 contrato.estado_contrato = 'BJ'
-                contrato.status = False
-                contrato.save()
-            elif action == 'rechazar':
-                revision = Revision.objects.get(contrato_id=request.POST['id'])
-                revision.estado = 'RC'
-                revision.obs = request.POST['obs']
-                revision.save()
-                contrato = Contrato.objects.get(pk=request.POST['id'])
                 url = contrato.archivo
                 os.remove(str(url))
                 contrato.archivo = None
-                contrato.estado_contrato = 'RC'
+                contrato.status = False
                 contrato.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+
+
+class SolicitudAnexo(TemplateView):
+
+    template_name = 'contratos/solicitudes_pendientes_anexo.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Anexo.objects.filter(estado_anexo='PV', status=True):
+                    data.append(i.toJSON())
+            elif action == 'aprobar':
+                revision = Revision.objects.get(anexo_id=request.POST['id'])
+                revision.estado = 'AP'
+                revision.save()
+                anexo = Anexo.objects.get(pk=request.POST['id'])
+                anexo.fecha_aprobacion  = datetime.datetime.now()
+                anexo.estado_anexo = 'AP'
+                anexo.save()
+            elif action == 'rechazar':
+                revision = Revision.objects.get(anexo_id=request.POST['id'])
+                revision.estado = 'RC'
+                revision.obs = request.POST['obs']
+                revision.save()
+                anexo = Anexo.objects.get(pk=request.POST['id'])
+                url = anexo.archivo
+                os.remove(str(url))
+                anexo.archivo = None
+                anexo.estado_anexo = 'RC'
+                anexo.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+
+class BajaAnexo(TemplateView):
+
+    template_name = 'contratos/list_anexo_baja.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Baja.objects.filter(estado='PD', status=True, anexo__isnull=False):
+                    data.append(i.toJSON())
+            elif action == 'aprobar':
+                baja = Baja.objects.get(pk=request.POST['id'])
+                baja.estado = 'AP'
+                baja.save()
+                anexo = Anexo.objects.get(pk=request.POST['contrato_id'])
+                anexo.fecha_aprobacion_baja  = datetime.datetime.now()
+                anexo.estado_anexo = 'BJ'
+                url = anexo.archivo
+                os.remove(str(url))
+                anexo.archivo = None
+                anexo.status = False
+                anexo.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class listcontratocompleto(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Contrato
+    template_name = "contrato/contrato_list.html"
+
+    permission_required = 'contratos.view_contrato'
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super(listcontratocompleto, self).get_context_data(**kwargs)
+
+        fecha = datetime.datetime.now()
+        
+
+        return context
 
 
 
