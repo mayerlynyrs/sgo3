@@ -350,7 +350,11 @@ class ClienteIdView(TemplateView):
     template_name = 'clientes/create_cliente.html'
     cliente_id=Cliente
     
-    cliente = get_object_or_404(Cliente, pk=1)
+    try:
+        cliente = get_object_or_404(Cliente, pk=1)
+        print("Hay registros!")
+    except:
+        print("No existen registros")
     
     
 

@@ -359,7 +359,11 @@ class UsersIdView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    user = get_object_or_404(User, pk=1)
+    try:
+        user = get_object_or_404(User, pk=1)
+        print("Hay registros!")
+    except:
+        print("No existen registros")
 
     def post(self, request, user_id, *args, **kwargs):
         data = {}
@@ -472,7 +476,11 @@ class UsersIdView(TemplateView):
 
     def get_context_data(request, user_id, **kwargs):
 
-        user = get_object_or_404(User, pk=user_id)
+        try:
+            user = get_object_or_404(User, pk=1)
+            print("Hay registros!")
+        except:
+            print("No existen registros")
 
         # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
         # Se valida que solo los administradores puedan editar el perfil de otro usuario.

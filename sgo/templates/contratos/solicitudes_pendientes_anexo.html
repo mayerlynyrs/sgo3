@@ -5,17 +5,17 @@
 {% block content %}
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Contratos / Solicitudes</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Anexos / Solicitudes</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
-<h1 class="page-header">Contratos pendientes de Baja <small>Listado</small></h1>
+<h1 class="page-header">Anexos pendientes <small>Listado</small></h1>
 <div class="panel panel-inverse">
   <div class="panel-heading">
     <div class="panel-heading-btn">
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Solicitudes Pendientes De Baja</h4>
+    <h4 class="panel-title">Solicitudes Pendientes</h4>
   </div>
   <div class="panel-body">
       <table id="data-table-default" class="table table-striped table-bordered align-middle">
@@ -24,8 +24,6 @@
               <th>Solicitante</th>
               <th>Trabajador</th>
               <th>Plazos</th>
-              <th>Contrato</th>
-              <th>Motivo</th>
               <th>Acciones</th>
           </tr>
         </thead>
@@ -36,7 +34,15 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
   </div>
-</div>{% block javascript %}
+</div>
+
+<div class="modal fade " id="modal-baja">
+  <div class="modal-dialog ">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+{% block javascript %}
 <!-- Modal -->
 <div class="modal fade" id="solicitudes_contrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -55,7 +61,6 @@
                     <div class="container-fluid">
                         <input name="action" type="hidden" value="">
                         <input name="id" id="id" type="hidden" value="">
-                        <input name="contrato_id" contrato_id="id" type="hidden" value="">
                         ¿Está seguro que desea realizar esta acción?
                         <div class="form-group col-md-12" style="display:none;" id="observacion">
                           <label for="email">Observaciones</label>
@@ -74,6 +79,6 @@
 {% endblock %}
 {% endblock %}
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/solicitudes_baja.js' %}"></script>
+<script src="{% static 'admin/assets/js/crud/solicitudes_pendientes_anexo.js' %}"></script>
 {% endblock %}
 

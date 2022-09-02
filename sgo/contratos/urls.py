@@ -58,16 +58,42 @@ urlpatterns = [
         view=views.SolicitudContrado.as_view(),
         name="solicitud-contrato"
     ),
+
+
+
+    path(
+        route='solicitud-anexo/',
+        view=views.SolicitudAnexo.as_view(),
+        name="solicitud-anexo"
+    ),
+
+
+
     path(
         route='list-baja-contrato/',
         view=views.BajaContrado.as_view(),
         name="list-baja-contrato"
+    ),    
+    path(
+        route='list-baja-anexo/',
+        view=views.BajaAnexo.as_view(),
+        name="list-baja-anexo"
     ),
     path(
         route='<int:contrato_id>/solicitudes-pendientes/',
         view=views.solicitudes_pendientes,
         name="solicitudes-pendientes"
     ),
+
+    
+    path(
+        route='<int:anexo_id>/solicitudes-pendientes-anexo/',
+        view=views.solicitudes_pendientes_anexo,
+        name="solicitudes-pendientes-anexo"
+    ),
+
+
+
     path(
         route='<int:contrato_id>/solicitudes-pendientes-baja/',
         view=views.solicitudes_pendientes_baja,
@@ -77,6 +103,11 @@ urlpatterns = [
         route='<int:contrato_id>/baja_contrato/',
         view=views.baja_contrato,
         name="baja_contrato"
+    ),
+    path(
+        route='<int:anexo_id>/baja_contrato_anexo/',
+        view=views.baja_contrato_anexo,
+        name="baja_contrato_anexo"
     ),
     path(
         route='<int:anexo_id>/update_anexo/',

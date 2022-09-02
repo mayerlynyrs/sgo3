@@ -172,8 +172,8 @@
                   <th>Motivo</th>
                   <th>Plazos</th>
                   <th>Jornada</th>
-                  <th>Renta Imponible</th>
-                  <th>Acciones</th>
+                  <th style="width:20%">Renta Imponible</th>
+                  <th  style="width:10%">Acciones</th>
               </tr>
               <tbody>
                 {% for con in contratos %}
@@ -183,17 +183,17 @@
                   <td>{{ con.causal__nombre }}</td>
                   <td >{{ con.motivo }}</td>
                   <td>Inicio: {{ con.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ con.fecha_termino|date:'d-m-Y' }} </td>
-                  <td style="width:20%">{{ con.horario__nombre }}</td>
+                  <td >{{ con.horario__nombre }}</td>
                   <td>$ {% if con.sueldo_base != 0 %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
-                  <td style="width:10%">
+                  <td >
                     {% if con.estado_contrato == 'CR' or con.estado_contrato == 'RC'   %}
-                    <button data-id="{{ con.id}}" type="button" class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
+                    <button data-id="{{ con.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
                       <i class="fas fa-edit"></i>
                     </button> &nbsp
                     <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
-                    {% elif con.estado_contrato == 'AP' %}
+                    {% elif con.estado_contrato == 'AP' and anex == 'NO' %}
                     <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
                     </button>
@@ -204,23 +204,26 @@
                 {% endfor %}
                 {% for ane in anexos %}
                 <tr>
-                  {% if ane.anexo__causal__nombre  != Null %}
+                  {% if ane.causal__nombre  != Null %}
                   <td>Anexo</td>
-                  <td>{{ ane.anexo__causal__nombre }}</td>
-                  <td>{{ ane.anexo__motivo }}</td>
-                  <td>{{ ane.anexo__fecha_inicio }}</td>
-                  <td>{{ ane.anexo__fecha_termino }}</td>
-                  <td>{{ ane.anexo__horario__nombre }}</td>
-                  <td>{% if ane.anexo__nueva_renta != None %}$ {{ ane.anexo__nueva_renta }} {% endif %}</td>
+                  <td>{{ ane.causal__nombre }}</td>
+                  <td>{{ ane.motivo }}</td>
+                  <td>Inicio: {{ ane.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ ane.fecha_termino|date:'d-m-Y' }} </td>
+                  <td>{{ ane.horario__nombre }}</td>
+                  <td >{% if ane.nueva_renta != None %}$ {{ ane.nueva_renta }} {% else %}       {% endif %}</td>
                   <td>
-                    {% if ane.anexo__estado_anexo == 'CR' %}
-                    <button data-id="{{ ane.anexo}}" type="button" class="btn btn-warning btn-xs btn-flat btn-view-editar-anexo" title="Editar anexo">
+                    {% if ane.estado_anexo == 'CR' or ane.estado_anexo == 'RC'  %}
+                    <button data-id="{{ ane.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-anexo" title="Editar anexo">
                       <i class="fas fa-edit"></i>
                     </button>
                     &nbsp
-                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.anexo}}/enviar_revision_anexo/" title="Enviar a revisión">
+                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
+                    {% elif ane.estado_anexo == 'AP' %}
+                    <button data-id="{{ ane.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja-anexo" title="Dar de Baja">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
                     {% endif %}
                 </td>
                 </tr>
@@ -323,7 +326,7 @@
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="submit" onclick="validar()" class="btn btn-primary">Agregar</button>
+        <button type="submit" onclick="javascript:ver_documento();" class="btn btn-primary">Agregar</button>
       </div>
     </form>
     </div>
@@ -382,7 +385,7 @@
             <input type="text" name="fechaTerminoAnexo" readonly id="fechaInicioAnexo" class="form-control" > 
           </div>
           <div class="form-group col-md-3">
-            <label>Cambio Motivo </label>
+            <label>Modificar datos </label>
             <input type="checkbox" name="motivo" id="motivo" onclick="javascript:validar(this);">
           </div>
           <div class="form-group col-md-3">
@@ -392,7 +395,7 @@
         </div>
         <div class="row col-md-12" >
           <div class="form-group col-md-6" style="display: none" id="divmotivo">
-            <label for="email">Nuevo Motivo </label>
+            <label for="email">Modificar datos </label>
             <input type="text" name="NuevoMotivo" id="NuevoMotivo" class="form-control" > 
           </div>
           <div class="form-group col-md-6" style="display: none" id="divrenta">
@@ -432,6 +435,7 @@
     <div class="modal-content"></div>
   </div>
 </div>
+
 <!-- end panel -->
 {% endfor %}
 {% endfor %}
@@ -454,7 +458,6 @@ $('.btn-view-editar-contrato').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
   var URL = '/contratos/'+id+'/update_contrato/';
-  console.log('URL', URL);
   $.ajax({
       url: URL,
       type: 'get',
@@ -472,7 +475,6 @@ $('.btn-view-enviar-baja').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
   var URL = '/contratos/'+id+'/baja_contrato/';
-  console.log('URL', URL);
   $.ajax({
       url: URL,
       type: 'get',
@@ -485,6 +487,26 @@ $('.btn-view-enviar-baja').on('click', function(e){
       }
   });
 });
+
+
+
+$('.btn-view-enviar-baja-anexo').on('click', function(e){
+  e.preventDefault();
+  var id = $(this).data('id');
+  var URL = '/contratos/'+id+'/baja_contrato_anexo/';
+  $.ajax({
+      url: URL,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+          $("#modal-enviar_baja").modal("show");
+      },
+      success: function (data) {
+          $("#modal-enviar_baja .modal-content").html(data.html_form);
+      }
+  });
+});
+
 
 {% if messages %}
   console.log('mensajes');
@@ -510,7 +532,6 @@ $('.btn-view-editar-anexo').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
   var URL = '/contratos/'+id+'/update_anexo/';
-  console.log('URL', URL);
   $.ajax({
       url: URL,
       type: 'get',

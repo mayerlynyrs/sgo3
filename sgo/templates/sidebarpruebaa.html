@@ -189,17 +189,17 @@
         {% endif %}
         {% if perms.contratos.view_contrato %}
           <li class="has-sub {% if menu_module == 'contrato' %}expand{% else %}closed{% endif %}">
-						<a href="javascript:;">
-							<b class="caret"></b>
-							Contratos
-						</a>
-						<ul class="sub-menu" style="{% if menu_module == 'contrato' %}display: block;{% else %}display: none;{% endif %}">
-						  <li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
-						  <li {% if menu_module == contrato and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Tipo Contratos</a></li>
-						</ul>
-					</li>
+								<a href="javascript:;">
+									<b class="caret"></b>
+									Contratos
+								</a>
+								<ul class="sub-menu" style="{% if menu_module == 'contrato' %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
+									<li {% if menu_module == contrato and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Tipo Contratos</a></li>
+								</ul>
+							</li>
         {% endif %}
-        {% if perms.contratos.view_contrato %}
+        {% if perms.contratos.view_contrato_solicitud %}
           <li class="has-sub {% if menu_module == 'revision' %}expand{% else %}closed{% endif %}">
 								<a href="javascript:;">
 									<b class="caret"></b>
@@ -213,22 +213,6 @@
 								</ul>
 							</li>
         {% endif %}
-
-        {% if perms.contratos.view_contrato %}
-          <li class="has-sub {% if menu_module == 'revision' %}expand{% else %}closed{% endif %}">
-								<a href="javascript:;">
-									<b class="caret"></b>
-									Solicitudes de Anexo
-								</a>
-								<ul class="sub-menu" style="{% if menu_module == 'revision' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:solicitud-anexo' %}">Pendientes</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Completas</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:list-baja-anexo' %}">En proceso de baja</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Bajadas</a></li>
-								</ul>
-							</li>
-        {% endif %}
-
           {% comment %}<li {% if menu_module == 'lista' %}class="active"{% endif %}><a href="ui_general.html">Ver Plantillas </a></li>
         {% if perms.contratos.add_plantilla %}
           <li {% if menu_module == 'lista' %}class="active"{% endif %}><a href="ui_typography.html">Crear Plantilla</a></li>
