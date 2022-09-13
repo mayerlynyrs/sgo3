@@ -198,6 +198,12 @@
                       <i class="fas fa-trash-alt"></i>
                     </button>
                     {% endif %}
+                    <!-- Solo los Contratos Diarios tiene Finiquito -->
+                    {% if finiquito == 'SI' %}
+                    <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-green btn-view-finiquito" title="Finiquito">
+                      <i class="fas fa-file-invoice-dollar"></i>
+                    </button>
+                    {% endif %}
                 </td>
                 </tr>
                 {% endif %}
@@ -344,7 +350,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="post" action="{% url 'contratos:createanexo' %}"  enctype="multipart/form-data">
+      <form method="post" action="{% url 'contratos:create-anexo' %}"  enctype="multipart/form-data">
       <div class="modal-body">
         {% for con in contratos %}
         {% csrf_token %}   

@@ -213,7 +213,7 @@ class ContratoForm(forms.ModelForm):
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
                                                               })
-                                   )                             
+                                   )
     regimen = forms.ChoiceField(choices = REGIMEN_ESTADO, required=True, label="Regimen",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -303,3 +303,54 @@ class ContratoEditarForm(forms.ModelForm):
     class Meta:
         model = Contrato
         fields = ("causal", "motivo", "fecha_inicio", "fecha_termino", "horario", 'sueldo_base', 'tipo_documento', 'regimen', 'valores_diario')
+
+
+class CompletasForm(forms.ModelForm):
+
+    ENERO = '01'
+    FEBRERO = '02'
+    MARZO = '03'
+    ABRIL = "04"
+    MAYO = "05"
+    JUNIO = "06"
+    JULIO = "07"
+    AGOSTO = "08"
+    SEPTIEMBRE = "09"
+    OCTUBRE = "10"
+    NOVIEMBRE = "11"
+    DICIEMBRE = "12"
+
+    MESES_ESTADO = (
+        (ENERO, 'Enero'),
+        (FEBRERO, 'Febrero'),
+        (MARZO, 'Marzo'),
+        (ABRIL, 'Abril'),
+        (MAYO, 'Mayo'),
+        (JUNIO, 'Junio'),
+        (JULIO, 'Julio'),
+        (AGOSTO, 'Agosto'),
+        (SEPTIEMBRE, 'Septiembre'),
+        (OCTUBRE, 'Octubre'),
+        (NOVIEMBRE, 'Noviembre'),
+        (DICIEMBRE, 'Diciembre'),
+    )
+    planta = forms.ModelChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    mes = forms.ChoiceField(choices = MESES_ESTADO, required=True, label="Mes",
+                                   widget=forms.Select(attrs={'class': 'show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true',
+                                                              'disabled':'disabled'
+                                                              })
+                                   )
+
+
+    class Meta:
+        model = Contrato
+        fields = ("planta","mes", )

@@ -78,7 +78,7 @@ $(function () {
         var tr = tblRevSolicitudes.cell($(this).closest('td, li')).index();
         var data = tblRevSolicitudes.row(tr.row).data();
         modal_title.find('span').html('Agendar a ' +data.user+ '<small style="font-size: 90%;"> <br> Nombre: '+data.user+
-        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Telefono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
+        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Teléfono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
         $('input[name="rut"]' ).val(data.rut);
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
