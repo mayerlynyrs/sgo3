@@ -76,7 +76,7 @@ $(function () {
         var tr = tblAgenda.cell($(this).closest('td, li')).index();
         var data = tblAgenda.row(tr.row).data();
         modal_title.find('span').html('Agendar a ' +data.user+ '<small style="font-size: 90%;"> <br> Nombre: '+data.user+
-        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Telefono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
+        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Teléfono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
         $('input[name="rut"]' ).val(data.rut);
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
@@ -129,7 +129,7 @@ $(function () {
         var tr = tblAgenda.cell($(this).closest('td, li')).index();
         var data = tblAgenda.row(tr.row).data();   
         modal_title.find('span').html('Evaluar <small style="font-size: 90%;"> <br> Nombre: '+data.user+
-        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Telefono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
+        ' &nbsp &nbsp RUT '+data.user_rut +'&nbsp &nbsp Comuna: '+data.user_ciudad +'<br> Teléfono: '+data.user_telefono+' &nbsp &nbsp Correo: '+data.user_email +' </small>');
         $('form')[0].reset();
         $('input[name="id"]' ).val(data.id);
         $('input[name="user_id"]').val(data.user_id);

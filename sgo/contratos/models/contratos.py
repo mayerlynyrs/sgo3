@@ -144,13 +144,13 @@ class Contrato(BaseModel):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0)
         if(self.valores_diario):
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre + " <br> Causal : " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.valores_diario.valor_diario)
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre + " <br> Causal: " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.valores_diario.valor_diario)
         else:
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre +  "<br> Causal : " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.sueldo_base)  
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre +  "<br> Causal: " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.sueldo_base)  
         item['requerimiento'] = "Planta : " + self.planta.nombre
         item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
         item['nombre'] = self.trabajador.first_name + " " + self.trabajador.last_name
-        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
+        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
         item['solicitante'] = self.created_by.first_name + " " + self.created_by.last_name
         return item
 

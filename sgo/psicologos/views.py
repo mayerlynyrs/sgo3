@@ -338,4 +338,3 @@ def documento_trabajador(request, evaluacion_id, template_name='psicologos/exame
         request=request,
     )
     return JsonResponse(data)
-

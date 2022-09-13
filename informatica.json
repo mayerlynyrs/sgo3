@@ -14287,6 +14287,36 @@
     }
   },
   {
+    "model": "contratos.tipodocumento",
+    "pk": 6,
+    "fields": {
+      "nombre": "Contrato 30 Hhhrs",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 7,
+    "fields": {
+      "nombre": "Contrato 20 Hrs",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 8,
+    "fields": {
+      "nombre": "Contrato Diario",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
     "model": "psicologos.psicologicotipo",
     "pk": 1,
     "fields": {

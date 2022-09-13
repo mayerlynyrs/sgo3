@@ -37,11 +37,12 @@ function getData() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
+                    var trabajador = 'trabajador';
                     var buttons = '<a href="#" data-toggle="modal" data-target="#myModalRevExam" rel="agg" title="Evaluar" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-fw fa-newspaper"></i></a>  &nbsp &nbsp';
                     // var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a>  &nbsp &nbsp';
                     // buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp';
                     // buttons += '<a href="#" data-toggle="modal" data-target="#myModalEvaluacion" rel="agg" title="Evaluar" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-fw fa-newspaper"></i></a>';
-                    buttons += '<a href="#" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes '+trabajador+'" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
                     return buttons;
                 }
             },
@@ -91,6 +92,7 @@ $(function () {
         $('input[name="rut"]' ).val(data.rut);
         $('input[name="action"]').val('ver');
         $('input[name="id"]' ).val(data.id);
+        $('input[name="trabajador"]' ).val(data.trabajador_id);
         $('select[name="estado"]').val(data.estado).trigger("change");
         $('select[name="tipo"]').val(data.tipo).trigger("change");
         $('input[name="fecha_ingreso_estimada"]').val(data.fecha_ingreso_estimada);
