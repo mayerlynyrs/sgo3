@@ -11,8 +11,11 @@ from tkinter import FLAT
 from datetime import date, datetime
 from docx2pdf import convert
 from django.core.serializers import serialize
+import base64
 # Django
 import os
+import xlwt
+from django.http import HttpResponse
 import pythoncom
 import win32com.client
 from django.contrib.auth.decorators import login_required, permission_required
@@ -158,6 +161,66 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
         return queryset
 
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def exportar_excel_contrato(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('reporte')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['RUT','APELLIDO PATERNO','APELLIDO MATERNO','PRIMER NOMBRE','SEGUNDO NOMBRE','Fecha Solicitud', 'Regimen', 'Nombres Trabajador','Apellidos',  'Nacionalidad', 'F. Nacimiento', 'E. Civil', 'Correo'
+    , 'Domicilio', 'Comuna', 'Cargo', 'Sueldo Base', 'Sueldo Base Palabras']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    
+    font_style = xlwt.XFStyle()
+
+
+    rows = Contrato.objects.filter(estado_contrato='PV', status=True).values_list('trabajador__rut', 'trabajador__last_name', 'trabajador__first_name',  'regimen', 'trabajador__first_name', 'trabajador__last_name',   'trabajador__nacionalidad__nombre', 'trabajador__fecha_nacimiento'
+    , 'trabajador__estado_civil__nombre', 'trabajador__email', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'sueldo_base')
+
+    # print('variable row',rows)
+
+    for row in rows:
+        row_num += 1
+        
+        for col_num in range(len(row)):
+            print('que trae esto',  col_num)
+            if(col_num == 1):
+               ap= row[col_num].split(' ')
+               ws.write(row_num, col_num, ap[0], font_style)
+               col_num = col_num + 1
+               ws.write(row_num, col_num, ap[1], font_style)
+               print('que numero sale de aca', col_num)
+            elif(col_num == 2):
+                col_num = col_num + 2
+            elif(col_num == 4):
+                nom = row[col_num].split(' ')
+                largo = len(nom)
+                ws.write(row_num, col_num, nom[0], font_style)
+                col_num = col_num + 1
+                if (largo == 1):
+                    ws.write(row_num, col_num,'', font_style)
+                else:
+                    ws.write(row_num, col_num, nom[1], font_style)
+            elif(col_num == 5):
+                col_num = 6
+
+            else:
+                print('que valor da',col_num)
+                ws.write(row_num, col_num, row[col_num], font_style)
+            # if(col_num == 7):
+            #     ws.write(row_num, col_num, row[col_num].strftime("%d/%B/%Y"), font_style)
+            # else:
+            
+    wb.save(response)
+    return response
+
 
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
@@ -204,6 +267,23 @@ def create(request):
             bonos.contrato_id = contrato.id
             bonos.save()
     return redirect('contratos:create_contrato',requrimientotrabajador)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def aprobacion_masiva(request, aprobacion):
+  
+    lista_aprobacion = aprobacion.split(',')
+    for i in lista_aprobacion:
+        revision = Revision.objects.get(contrato_id=i)
+        revision.estado = 'AP'
+        revision.save()
+        contrato = Contrato.objects.get(pk=i)
+        contrato.fecha_aprobacion  = datetime.now()
+        contrato.estado_contrato = 'AP'
+        contrato.save()
+    messages.success(request, 'Contratos aprobados')
+    return redirect('contratos:solicitud-contrato',)
 
 
 @login_required
@@ -668,9 +748,35 @@ class SolicitudContrato(TemplateView):
                 revision.estado = 'AP'
                 revision.save()
                 contrato = Contrato.objects.get(pk=request.POST['id'])
-                contrato.fecha_aprobacion  = datetime.datetime.now()
+                contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
+                nombre_archivo = Contrato.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
+                with open(nombre_archivo, "rb") as pdf_file:
+                    documento = base64.b64encode(pdf_file.read())
+                { 
+                    "subject": "ASUNTO DOCUMENTO HOSPITAL ALEMAN",
+                    "options": { 
+                        "timeToLive": 1440, 
+                        "notaryRetentionPeriod": 0, 
+                        "onlineRetentionPeriod": 1, 
+                        "language": "es-ES", 
+                        "PushNotificationUrl": "https://putsreq.com/QatBxyrqPOlHoMOZhi3S", 
+                        "PushNotificationFilter": ["Processed", "Sent", "Delivered", "Signed", "Rejected", "FullySigned", "Closed"] ,
+                        "interestedParties": ["sbarcenas666@gmail.com"] },
+
+                        "document": documento,
+                        "signingParties": [ 
+                            { 
+                                "name": "INTEGRA FIRMANTE", 
+                                "address": "nrojas@empresasintegra.cl", 
+                                "phonenumber": "+56993308819", 
+                                "signingMethod": "EmailPin", 
+                                "disablesignrequests": False, 
+                                "FinalNotificationAddress":"n.rojas.valdes@gmail.com" 
+                                } 
+                                ] 
+                                }
             elif action == 'rechazar':
                 revision = Revision.objects.get(contrato_id=request.POST['id'])
                 revision.estado = 'RC'
@@ -682,6 +788,9 @@ class SolicitudContrato(TemplateView):
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
+            elif action == 'aprobacion_masiva':
+                aprobacion =request.POST.getlist('check_aprobacion')
+                print("aprobacion id",aprobacion)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -798,6 +907,23 @@ def create_anexo(request):
             contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
             contrato.save()
             return redirect('contratos:create_contrato',requrimientotrabajador)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def aprobacion_masiva_anexo(request, aprobacion):
+  
+    lista_aprobacion = aprobacion.split(',')
+    for i in lista_aprobacion:
+        revision = Revision.objects.get(anexo_id=i)
+        revision.estado = 'AP'
+        revision.save()
+        anexo = Anexo.objects.get(pk=i)
+        anexo.fecha_aprobacion  = datetime.now()
+        anexo.estado_anexo = 'AP'
+        anexo.save()
+    messages.success(request, 'Anexos aprobados')
+    return redirect('contratos:solicitud-contrato',)
 
 
 
@@ -1267,3 +1393,5 @@ INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 class PasswordResetDoneView(PasswordContextMixin, TemplateView):
     template_name = 'registration/password_reset_done.html'
     title = _('Password reset sent')
+
+

@@ -52,6 +52,21 @@ urlpatterns = [
         name="create"
     ),
     path(
+        route='exportar_excel/',
+        view=views.exportar_excel_contrato,
+        name="exportar_excel"
+    ),
+    path(
+        route='<str:aprobacion>/aprobacion_masiva/',
+        view=views.aprobacion_masiva,
+        name="aprobacion_masiva"
+    ),
+    path(
+        route='<str:aprobacion>/aprobacion_masiva_anexo/',
+        view=views.aprobacion_masiva_anexo,
+        name="aprobacion_masiva_anexo"
+    ),
+    path(
         route='<int:contrato_id>/update_contrato/',
         view=views.update_contrato,
         name="update_contrato"

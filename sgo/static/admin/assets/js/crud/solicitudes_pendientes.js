@@ -16,6 +16,12 @@ function getData() {
             dataSrc: ""
         },
         columns: [
+            {"data": "id",
+            "class": 'text-center',
+            "render": function(data, type, row, meta){
+                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Ver Contrato" ></input>';
+                return data;
+            }},
             {"data": "solicitante"},
             {"data": "trabajador"},
             {"data": "plazos"},
@@ -98,7 +104,7 @@ $(function () {
     $('#solicitudes_contrato').on('shown.bs.modal', function () {
     });
 
-    $('form').on('submit', function (e) {
+    $("#myform").on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
         console.log(FormData);
