@@ -16,6 +16,12 @@ function getData() {
             dataSrc: ""
         },
         columns: [
+            {"data": "id",
+            "class": 'text-center',
+            "render": function(data, type, row, meta){
+                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Ver Contrato" ></input>';
+                return data;
+            }},
             {"data": "solicitante"},
             {"data": "trabajador"},
             {"data": "plazos"},
