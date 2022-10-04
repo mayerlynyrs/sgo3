@@ -59,6 +59,7 @@ class TipoContrato(BaseModel):
 
 class Contrato(BaseModel):
     POR_FIRMAR = 'PF'
+    ENVIADO_FIRMAR = 'EF'
     FIRMADO_TRABAJADOR = 'FT'
     FIRMADO_EMPLEADOR = 'FE'
     FIRMADO = 'FF'
@@ -84,6 +85,7 @@ class Contrato(BaseModel):
 
     FIRMA_ESTADO = (
         (POR_FIRMAR, 'Por Firmar'),
+        (ENVIADO_FIRMAR, 'Enviado a Firmar'),
         (FIRMADO_TRABAJADOR, 'Firmado por Trabajador'),
         (FIRMADO_EMPLEADOR, 'Firmado por Empleador'),
         (FIRMADO, 'Firmado'),
@@ -93,9 +95,9 @@ class Contrato(BaseModel):
     CONTRATO_ESTADO = (
         (CREADO, 'Creado'),
         (RECHAZADO, 'Rechazado'),
-        (PROCESO_VALIDACION, 'En Proceso de  Validación'),
+        (PROCESO_VALIDACION, 'En Proceso de Validación'),
         (APROBADO, 'Aprobado'),
-        (PENDIENTE_BAJA,'En Proceso de baja'),
+        (PENDIENTE_BAJA,'En Proceso de Baja'),
         (BAJADO,'Bajado'),
     )
 
@@ -144,14 +146,15 @@ class Contrato(BaseModel):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0)
         if(self.valores_diario):
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre + " <br> Causal: " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.valores_diario.valor_diario)
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.valores_diario.valor_diario)
         else:
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre +  "<br> Causal: " + self.causal.nombre + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre + "<br> Renta:  " + str(self.sueldo_base)  
-        item['requerimiento'] = "Planta : " + self.planta.nombre
-        item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
-        item['nombre'] = self.trabajador.first_name + " " + self.trabajador.last_name
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() +  "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.sueldo_base)  
+        item['requerimiento'] = "Planta : " + self.planta.nombre.title()
+        item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
+        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
-        item['solicitante'] = self.created_by.first_name + " " + self.created_by.last_name
+        item['solicitante'] = self.created_by.first_name.title() + " " + self.created_by.last_name.title()
+        item['estado_firma'] = self.estado_firma
         return item
 
 
@@ -160,6 +163,7 @@ def contrato_directory_path(instance, filename):
 
 class Anexo(BaseModel):
     POR_FIRMAR = 'PF'
+    ENVIADO_FIRMAR = 'EF'
     FIRMADO_TRABAJADOR = 'FT'
     FIRMADO_EMPLEADOR = 'FE'
     FIRMADO = 'FF'
@@ -173,6 +177,7 @@ class Anexo(BaseModel):
 
     FIRMA_ESTADO = (
         (POR_FIRMAR, 'Por Firmar'),
+        (ENVIADO_FIRMAR, 'Enviado a Firmar'),
         (FIRMADO_TRABAJADOR, 'Firmado por Trabajador'),
         (FIRMADO_EMPLEADOR, 'Firmado por Empleador'),
         (FIRMADO, 'Firmado'),
@@ -222,11 +227,11 @@ class Anexo(BaseModel):
     def toJSON(self):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0) 
-        item['requerimiento'] = "Planta : " + self.planta.nombre
-        item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
-        item['nombre'] = self.trabajador.first_name + " " + self.trabajador.last_name
+        item['requerimiento'] = "Planta : " + self.planta.nombre.title()
+        item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
+        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
-        item['solicitante'] = self.created_by.first_name + " " + self.created_by.last_name
+        item['solicitante'] = self.created_by.first_name.title() + " " + self.created_by.last_name.title()
         return item
 
 
@@ -373,26 +378,26 @@ class Baja(BaseModel):
 
         if(self.contrato):
             if(self.contrato.valores_diario):
-                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre) + " <br> Causal : " + str(self.contrato.causal.nombre) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre) + "<br> Renta:  " + str(self.contrato.valores_diario.valor_diario)
+                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre.title()) + " <br> Causal : " + str(self.contrato.causal.nombre.title()) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre.title()) + "<br> Renta:  " + str(self.contrato.valores_diario.valor_diario)
             elif(self.contrato.sueldo_base):
-                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre )+  "<br> Causal : " + str(self.contrato.causal.nombre) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre) + "<br> Renta:  " + str(self.contrato.sueldo_base)
+                item['contrato'] = "Tipo: " + str(self.contrato.tipo_documento.nombre.title() )+  "<br> Causal : " + str(self.contrato.causal.nombre.title()) + "<br> Motivo:  " + str(self.contrato.motivo) + "<br> Jornada:  " + str(self.contrato.horario.nombre.title()) + "<br> Renta:  " + str(self.contrato.sueldo_base)
         else:
             item['contrato'] = ''
         
         if(self.contrato):     
-            item['requerimiento'] = "Planta : " + str(self.contrato.planta.nombre)
+            item['requerimiento'] = "Planta : " + str(self.contrato.planta.nombre.title())
         else:     
-            item['requerimiento'] = "Planta : " + str(self.anexo.planta.nombre)
+            item['requerimiento'] = "Planta : " + str(self.anexo.planta.nombre.title())
 
         if(self.contrato):
-            item['trabajador'] = self.contrato.trabajador.first_name + " " + self.contrato.trabajador.last_name + "<br>" + self.contrato.trabajador.rut + "<br>" + self.contrato.trabajador.email
+            item['trabajador'] = self.contrato.trabajador.first_name.title() + " " + self.contrato.trabajador.last_name.title() + "<br>" + self.contrato.trabajador.rut + "<br>" + self.contrato.trabajador.email
         else:
-            item['trabajador'] = self.anexo.trabajador.first_name + " " + self.anexo.trabajador.last_name + "<br>" + self.anexo.trabajador.rut + "<br>" + self.anexo.trabajador.email
+            item['trabajador'] = self.anexo.trabajador.first_name.title() + " " + self.anexo.trabajador.last_name.title() + "<br>" + self.anexo.trabajador.rut + "<br>" + self.anexo.trabajador.email
 
         if(self.contrato):
-            item['nombre'] = self.contrato.trabajador.first_name + " " + self.contrato.trabajador.last_name
+            item['nombre'] = self.contrato.trabajador.first_name.title() + " " + self.contrato.trabajador.last_name.title()
         else:
-            item['nombre'] = self.anexo.trabajador.first_name + " " + self.anexo.trabajador.last_name
+            item['nombre'] = self.anexo.trabajador.first_name.title() + " " + self.anexo.trabajador.last_name.title()
 
         if(self.contrato):
             item['plazos'] = "Fecha Inicio: "+ str(self.contrato.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.contrato.fecha_termino.strftime('%d-%m-%Y'))
@@ -400,9 +405,9 @@ class Baja(BaseModel):
             item['plazos'] = "Fecha Inicio: "+ str(self.anexo.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.anexo.fecha_termino.strftime('%d-%m-%Y'))
 
         if(self.contrato):    
-            item['solicitante'] = self.contrato.created_by.first_name + " " + self.contrato.created_by.last_name
+            item['solicitante'] = self.contrato.created_by.first_name.title() + " " + self.contrato.created_by.last_name.title()
         else:    
-            item['solicitante'] = self.anexo.created_by.first_name + " " + self.anexo.created_by.last_name
+            item['solicitante'] = self.anexo.created_by.first_name.title() + " " + self.anexo.created_by.last_name.title()
         item['motivo'] = self.motivo.nombre
         if(self.contrato):
             item['id_contrato'] =  self.contrato.id

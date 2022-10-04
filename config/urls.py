@@ -28,6 +28,7 @@ urlpatterns = [
     path('psicologos/', include(('psicologos.urls', 'psicologos'), namespace='psicologos')),
     path('epps/', include(('epps.urls', 'epps'), namespace='epps')),
     path('utils/', include(('utils.urls', 'utils'), namespace='profesiones')),
+    path('firmas/', include(('firmas.urls', 'firmas'), namespace='firmas')),
     path('consultas/', include(('consultas.urls', 'consultas'), namespace='consultas')),
     path('notificaciones/', include(('notificaciones.urls', 'notificaciones'), namespace='notificaciones')),
     path('password_reset/', auth_views.PasswordResetView.as_view(
