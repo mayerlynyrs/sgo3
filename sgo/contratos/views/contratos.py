@@ -751,32 +751,6 @@ class SolicitudContrato(TemplateView):
                 contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
-                nombre_archivo = Contrato.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
-                with open(nombre_archivo, "rb") as pdf_file:
-                    documento = base64.b64encode(pdf_file.read())
-                { 
-                    "subject": "ASUNTO DOCUMENTO HOSPITAL ALEMAN",
-                    "options": { 
-                        "timeToLive": 1440, 
-                        "notaryRetentionPeriod": 0, 
-                        "onlineRetentionPeriod": 1, 
-                        "language": "es-ES", 
-                        "PushNotificationUrl": "https://putsreq.com/QatBxyrqPOlHoMOZhi3S", 
-                        "PushNotificationFilter": ["Processed", "Sent", "Delivered", "Signed", "Rejected", "FullySigned", "Closed"] ,
-                        "interestedParties": ["sbarcenas666@gmail.com"] },
-
-                        "document": documento,
-                        "signingParties": [ 
-                            { 
-                                "name": "INTEGRA FIRMANTE", 
-                                "address": "nrojas@empresasintegra.cl", 
-                                "phonenumber": "+56993308819", 
-                                "signingMethod": "EmailPin", 
-                                "disablesignrequests": False, 
-                                "FinalNotificationAddress":"n.rojas.valdes@gmail.com" 
-                                } 
-                                ] 
-                                }
             elif action == 'rechazar':
                 revision = Revision.objects.get(contrato_id=request.POST['id'])
                 revision.estado = 'RC'

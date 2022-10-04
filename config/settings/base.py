@@ -75,6 +75,7 @@ LOCAL_APPS = [
     #'sgo.api.apps.ApiAppConfig'
     'sgo.users.apps.UsersConfig',
     'sgo.utils.apps.UtilsConfig',
+    'sgo.firmas.apps.FirmasConfig',
     'sgo.consultas.apps.ConsultasConfig',
     'sgo.notificaciones.apps.NotificacionesConfig',
 
