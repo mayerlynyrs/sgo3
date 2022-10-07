@@ -114,6 +114,7 @@ class Ciudad(models.Model):
         default=True,
         help_text='Para desactivar la ciudad, deshabilite esta casilla.'
     )
+    cod_uny_ciudad = models.CharField(max_length=250)
     created_date = models.DateTimeField(
             default=timezone.now,
             null=True,
@@ -199,6 +200,11 @@ class Cargo(models.Model):
         null=True,
         unique=True
     )
+    cod_uny_cargo = models.CharField(
+        max_length=240,
+        null=True,
+    )
+    
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar este cargo, deshabilite esta casilla.'
