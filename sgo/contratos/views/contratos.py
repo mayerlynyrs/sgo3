@@ -161,6 +161,8 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
         return queryset
 
+
+
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def exportar_excel_contrato(request):
@@ -172,17 +174,30 @@ def exportar_excel_contrato(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['RUT','APELLIDO PATERNO','APELLIDO MATERNO','PRIMER NOMBRE','SEGUNDO NOMBRE','Fecha Solicitud', 'Regimen', 'Nombres Trabajador','Apellidos',  'Nacionalidad', 'F. Nacimiento', 'E. Civil', 'Correo'
-    , 'Domicilio', 'Comuna', 'Cargo', 'Sueldo Base', 'Sueldo Base Palabras']
+    columns = ['RUT','APELLIDO PATERNO','APELLIDO MATERNO','PRIMER NOMBRE','SEGUNDO NOMBRE','TELEFONO', 'CELULAR', 'CORREO ELECTRONICO','PAIS (CODIGO)',  'CIUDAD (CODIGO)', 'COMUNA (CODIGO)', 'CALLE (CODIGO)', 'NRO_DIRECCION'
+    , 'DETALLE_DIRECCION', 'NACIONALIDAD', 'SEXO (CODIGO)', 'ESTADO_CIVIL (CODIGO)', 'FECHA_NACIMIENTO', 'LUGAR_DE_NACIMIENTO', 'PANTALON', 'CHAQUETA', 'ZAPATO', 'SITUACION (CODIGO)',
+'PROFESION (CODIGO)', 'SINDICATO', 'BANCO (CODIGO)', 'CODIGO_OFICINA_PAGO','NRO_CUENTA', 'TIPO_DE_CUENTA_CODIGO', 'FECHA_INI_ACTIVIDAD', 'GRUPO_SANGRE', 'ESTATURA', 'PESO', 'AFP (CODIGO)', 'AFP PACTADO'
+'AFP_CONVENIO(CODIGO)', 'AHORRO AFP', 'MONTO JUBILACION', 'N_FUN', 'ISAPRE (CODIGO)', 'ISAPRE PACTADO', 'ISA_CONVENIO(CODIGO)', 'ISA_CONVENIO(CODIGO)','SERV_MEDICO_CARGA_NORMAL', 'SERV_MEDICO_CARGA_ESPECIAL', 'SERV_MEDICO_CARGA_DENTAL',
+ 'SERV_MEDICO_ADICIONAL', 'SERVM_CONVENIO(CODIGO)', 'INST_APV (CODIGO)' , 'MONTO APV', 'APV_CONVENIO(CODIGO)', 'INST_SEGURO_CESANTIA (CODIGO)' , 'PRESENTADO_POR' , 'RUTA_CURRICULUM', 'OBSERVACIONES', 'RUTA_IMAGEN', 'NIC', 'FECHA_CONTRATO',
+ 'FECHA_INICIO', 'FECHA_TERMINO', 'CONSORCIO (CODIGO)', 'EMPRESA (CODIGO)', 'OBRA (CODIGO)', 'CENTRO_COSTO (CODIGO)' , 'CARGO (CODIGO)', 'SUELDO_BASE_MES', 'SUELDO_BASE_DIA', 'SUELDO_BASE_HORA', 'QUINCENA', 'LUGAR_PAGO (CODIGO)','DIA_PAGO',
+ 'LIQUIDO_PACTADO', 'TURNO (CODIGO)', 'CLASIFICACION_TRABAJADOR (CODIGO)', 'ID_PEDIDO', 'HITO (CODIGO)', 'SUPERVISOR', 'ID_TIPO_CONTRATO', 'NIVEL_EDUCACIONAL', 'CAUSAL_CONTRATACION', 'LETRA_CONTRATO', ' TIPO_CONTRATO', 'COLABORADOR_REFERIDO',
+ 'CODIGO_INTERNO_CC', 'MOTIVO_CONTRATO', 'CUENTA_CONTABLE','ADHERIDO ISAPRE','SEG','ASIG MOV', 'ASIG PERD CAJA', 'NO PAGA SIS', 'FECHA DE PAGO', 'FERIADO PROPORCIONAL', 'A PAGO LIQUIDO'
+ ]
 
     for col_num in range(len(columns)):
+        
         ws.write(row_num, col_num, columns[col_num], font_style)
     
     font_style = xlwt.XFStyle()
 
 
-    rows = Contrato.objects.filter(estado_contrato='PV', status=True).values_list('trabajador__rut', 'trabajador__last_name', 'trabajador__first_name',  'regimen', 'trabajador__first_name', 'trabajador__last_name',   'trabajador__nacionalidad__nombre', 'trabajador__fecha_nacimiento'
-    , 'trabajador__estado_civil__nombre', 'trabajador__email', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'sueldo_base')
+    rows = Contrato.objects.filter(estado_contrato='PV', status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
+    ,'trabajador__telefono', 'trabajador__email', 'trabajador__domicilio','trabajador__region__id', 'trabajador__ciudad__cod_uny_ciudad',  'trabajador__domicilio','requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'trabajador__domicilio', 'trabajador__nacionalidad__nombre', 'trabajador__sexo__nombre', 'trabajador__estado_civil__nombre',
+    'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
+    ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
+    ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
+    , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo'
+    , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base' )
 
     # print('variable row',rows)
 
@@ -190,34 +205,66 @@ def exportar_excel_contrato(request):
         row_num += 1
         
         for col_num in range(len(row)):
-            print('que trae esto',  col_num)
             if(col_num == 1):
                ap= row[col_num].split(' ')
                ws.write(row_num, col_num, ap[0], font_style)
-               col_num = col_num + 1
-               ws.write(row_num, col_num, ap[1], font_style)
-               print('que numero sale de aca', col_num)
             elif(col_num == 2):
-                col_num = col_num + 2
-            elif(col_num == 4):
+                ap= row[1].split(' ')
+                ws.write(row_num, col_num, ap[1], font_style)
+            elif(col_num == 3):
                 nom = row[col_num].split(' ')
                 largo = len(nom)
                 ws.write(row_num, col_num, nom[0], font_style)
-                col_num = col_num + 1
+            elif(col_num == 4):
+                nom = row[3].split(' ')
+                largo = len(nom)
                 if (largo == 1):
                     ws.write(row_num, col_num,'', font_style)
                 else:
                     ws.write(row_num, col_num, nom[1], font_style)
-            elif(col_num == 5):
-                col_num = 6
-
+            elif(col_num == 8):
+                ws.write(row_num, col_num, '0001', font_style)
+            elif(col_num == 11 or col_num == 12 or col_num == 18 or col_num == 19 or col_num == 20 
+            or col_num == 21 or col_num == 24  or col_num == 28  or col_num == 29  or col_num == 30  or col_num == 31  or col_num == 32
+            or col_num == 34 or col_num == 36 or col_num == 37  or col_num == 38  or col_num == 41 or col_num == 42 or col_num == 43 or col_num == 44 or col_num == 45 
+            or col_num == 46 or col_num == 47 or col_num == 48 or col_num == 49 or col_num == 51 or col_num == 52 or col_num == 53 or col_num == 54 or col_num == 55):
+                ws.write(row_num, col_num, '', font_style)
+            elif(col_num == 15 ):
+                sexo = row[col_num]
+                if(sexo == 'Masculino'):
+                    sexo = 'M'
+                else:
+                    sexo = 'F'
+                ws.write(row_num, col_num, sexo, font_style)
+            elif(col_num == 16 ):
+                civil = row[col_num]
+                if(civil == 'Soltero(a)'):
+                    civil = 'S'
+                elif(civil == 'Casado(a)'):
+                    civil = 'C'
+                elif(civil == 'Viudo(a)'):
+                    civil = 'V'
+                else:
+                    civil='D'
+                ws.write(row_num, col_num, civil, font_style)
+            elif(col_num == 17 or col_num == 56 or col_num == 57 or col_num == 58 ):
+                ws.write(row_num, col_num, row[col_num].strftime("%d-%m-%Y"), font_style)
+            elif(col_num == 22):
+                ws.write(row_num, col_num, '0', font_style)
+            elif(col_num == 35  ):
+                ws.write(row_num, col_num,'P', font_style)
+            elif(col_num == 40 ):
+                if(row[col_num] is None):
+                    ws.write(row_num, col_num,'P', font_style)
+                else:
+                    ws.write(row_num, col_num,'UF', font_style)
+                    print('que esta imprimiendo esta mierda', row[col_num])
+            elif(col_num == 59 ):
+                ws.write(row_num, col_num,'ZZ', font_style)
+            elif(col_num == 60 ):
+                ws.write(row_num, col_num,'003', font_style)
             else:
-                print('que valor da',col_num)
                 ws.write(row_num, col_num, row[col_num], font_style)
-            # if(col_num == 7):
-            #     ws.write(row_num, col_num, row[col_num].strftime("%d/%B/%Y"), font_style)
-            # else:
-            
     wb.save(response)
     return response
 
