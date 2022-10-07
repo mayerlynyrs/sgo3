@@ -1696,6 +1696,7 @@
     "pk": 1,
     "fields": {
       "nombre": "Fonasa",
+      "cod_uny_salud":"07",
       "status": true,
       "created_date": "2022-01-06T19:42:03.276Z"
     }
@@ -1705,6 +1706,7 @@
     "pk": 2,
     "fields": {
       "nombre": "Isapre Consalud",
+      "cod_uny_salud":"02",
       "status": true,
       "created_date": "2022-01-06T19:42:03.280Z"
     }
@@ -1714,6 +1716,7 @@
     "pk": 3,
     "fields": {
       "nombre": "Isapre Más Vida",
+      "cod_uny_salud":"10",
       "status": true,
       "created_date": "2022-01-06T19:42:03.282Z"
     }
@@ -1723,6 +1726,7 @@
     "pk": 4,
     "fields": {
       "nombre": "Isapre Banmédica",
+      "cod_uny_salud":"01",
       "status": true,
       "created_date": "2022-01-06T19:42:03.284Z"
     }
@@ -1732,6 +1736,7 @@
     "pk": 5,
     "fields": {
       "nombre": "Isapre Colmena Golden Cross",
+      "cod_uny_salud":"04",
       "status": true,
       "created_date": "2022-01-06T19:42:03.286Z"
     }
@@ -1741,6 +1746,7 @@
     "pk": 6,
     "fields": {
       "nombre": "Isapre Ferrosalud",
+      "cod_uny_salud":"0",
       "status": true,
       "created_date": "2022-01-06T19:42:03.289Z"
     }
@@ -1750,6 +1756,7 @@
     "pk": 7,
     "fields": {
       "nombre": "Isapre Cruz Blanca",
+      "cod_uny_salud":"05",
       "status": true,
       "created_date": "2022-01-06T19:42:03.293Z"
     }
@@ -1759,6 +1766,7 @@
     "pk": 8,
     "fields": {
       "nombre": "Isapre Vida Tres",
+      "cod_uny_salud":"03",
       "status": true,
       "created_date": "2022-01-06T19:42:03.296Z"
     }
@@ -1768,6 +1776,7 @@
     "pk": 9,
     "fields": {
       "nombre": "Isapre Río Blanco",
+      "cod_uny_salud":"0",
       "status": true,
       "created_date": "2022-01-06T19:42:03.298Z"
     }
@@ -1777,6 +1786,7 @@
     "pk": 10,
     "fields": {
       "nombre": "Isapre Cruz del Norte",
+      "cod_uny_salud":"25",
       "status": true,
       "created_date": "2022-01-06T19:42:03.301Z"
     }
@@ -1786,6 +1796,7 @@
     "pk": 11,
     "fields": {
       "nombre": "Isapre Fundación",
+      "cod_uny_salud":"0",
       "status": true,
       "created_date": "2022-01-06T19:42:03.303Z"
     }
@@ -1795,6 +1806,7 @@
     "pk": 12,
     "fields": {
       "nombre": "Isapre Fusat",
+      "cod_uny_salud":"11",
       "status": true,
       "created_date": "2022-01-06T19:42:03.305Z"
     }
@@ -1804,6 +1816,7 @@
     "pk": 13,
     "fields": {
       "nombre": "Isapre San Lorenzo",
+      "cod_uny_salud":"0",
       "status": true,
       "created_date": "2022-01-06T19:42:03.307Z"
     }
@@ -1813,6 +1826,7 @@
     "pk": 14,
     "fields": {
       "nombre": "Isapre Chuquicamata",
+      "cod_uny_salud":"09",
       "status": true,
       "created_date": "2022-01-06T19:42:03.310Z"
     }
@@ -1822,6 +1836,7 @@
     "pk": 1,
     "fields": {
       "nombre": "CAPITAL",
+      "cod_uny_afp": "33",
       "tasa": 11.44,
       "status": true,
       "created_date": "2022-01-06T13:43:15.253Z"
@@ -1832,6 +1847,7 @@
     "pk": 2,
     "fields": {
       "nombre": "PROVIDA",
+      "cod_uny_afp": "08",
       "tasa": 11.45,
       "status": true,
       "created_date": "2022-01-06T13:43:15.257Z"
@@ -1842,6 +1858,7 @@
     "pk": 3,
     "fields": {
       "nombre": "HABITAT",
+      "cod_uny_afp": "05",
       "tasa": 11.27,
       "status": true,
       "created_date": "2022-01-06T13:43:15.260Z"
@@ -1852,6 +1869,7 @@
     "pk": 4,
     "fields": {
       "nombre": "MODELO",
+      "cod_uny_afp": "34",
       "tasa": 10.58,
       "status": true,
       "created_date": "2022-01-06T13:43:15.263Z"
@@ -1862,6 +1880,7 @@
     "pk": 5,
     "fields": {
       "nombre": "CUPRUM",
+      "cod_uny_afp": "03",
       "tasa": 11.44,
       "status": true,
       "created_date": "2022-01-06T13:43:15.266Z"
@@ -1872,6 +1891,7 @@
     "pk": 6,
     "fields": {
       "nombre": "IPS - EX CAJA",
+      "cod_uny_afp": "0902",
       "tasa": 0.0,
       "status": true,
       "created_date": "2022-01-06T13:43:15.269Z"
@@ -1882,6 +1902,7 @@
     "pk": 7,
     "fields": {
       "nombre": "PLANVITAL",
+      "cod_uny_afp": "29",
       "tasa": 11.16,
       "status": true,
       "created_date": "2022-01-06T13:43:15.271Z"
@@ -1892,6 +1913,7 @@
     "pk": 8,
     "fields": {
       "nombre": "*No está en AFP",
+      "cod_uny_afp": "00",
       "tasa": 0.0,
       "status": true,
       "created_date": "2022-01-06T13:43:15.274Z"
@@ -1902,6 +1924,7 @@
     "pk": 9,
     "fields": {
       "nombre": "PENSIONADO",
+      "cod_uny_afp": "00",
       "tasa": 0.0,
       "status": true,
       "created_date": "2022-01-06T13:43:15.277Z"
@@ -1912,6 +1935,7 @@
     "pk": 10,
     "fields": {
       "nombre": "UNO",
+      "cod_uny_afp": "35",
       "tasa": 10.69,
       "status": true,
       "created_date": "2022-01-06T13:43:15.281Z"
@@ -1923,6 +1947,7 @@
     "fields": {
       "nombre": "Ninguno",
       "status": true,
+      "rut":"2",
       "codigo": "1",
       "created_date": "2022-01-06T13:49:22.620Z"
     }
@@ -1933,6 +1958,7 @@
     "fields": {
       "nombre": "Banco Estado",
       "status": true,
+      "rut":"97.030.000-7",
       "codigo": "12",
       "created_date": "2022-01-06T13:49:22.629Z"
     }
@@ -1943,6 +1969,7 @@
     "fields": {
       "nombre": "Banco Santander",
       "status": true,
+      "rut":"97.036.000-K",
       "codigo": "37",
       "created_date": "2022-01-06T13:49:22.639Z"
     }
@@ -1953,6 +1980,7 @@
     "fields": {
       "nombre": "Banco Chile",
       "status": true,
+      "rut":"97.004.000-5",
       "codigo": "2",
       "created_date": "2022-01-06T13:49:22.623Z"
     }
@@ -1963,6 +1991,7 @@
     "fields": {
       "nombre": "Banco BCI",
       "status": true,
+      "rut":"97.006.000-6",
       "codigo": "16",
       "created_date": "2022-01-06T13:49:22.634Z"
     }
@@ -1973,6 +2002,7 @@
     "fields": {
       "nombre": "Banco Scotiabank",
       "status": true,
+      "rut":"97.018.000-1",
       "codigo": "14",
       "created_date": "2022-01-06T13:49:22.632Z"
     }
@@ -1983,6 +2013,7 @@
     "fields": {
       "nombre": "Banco Itaú",
       "status": true,
+      "rut":"76.645.030-K",
       "codigo": "39",
       "created_date": "2022-01-06T13:49:22.642Z"
     }
@@ -1993,6 +2024,7 @@
     "fields": {
       "nombre": "Banco BBVA",
       "status": true,
+      "rut":"97.032.000-8",
       "codigo": "504",
       "created_date": "2022-01-06T13:49:22.651Z"
     }
@@ -2003,6 +2035,7 @@
     "fields": {
       "nombre": "Banco Citibank",
       "status": true,
+      "rut":"2",
       "codigo": "3",
       "created_date": "2022-01-06T13:49:22.626Z"
     }
@@ -2013,6 +2046,7 @@
     "fields": {
       "nombre": "Banco Falabella",
       "status": true,
+      "rut":"96.509.660-4",
       "codigo": "51",
       "created_date": "2022-01-06T13:49:22.644Z"
     }
@@ -2023,6 +2057,7 @@
     "fields": {
       "nombre": "Banco Ripley",
       "status": true,
+      "rut":"97.947.000-2",
       "codigo": "53",
       "created_date": "2022-01-06T13:49:22.646Z"
     }
@@ -2033,6 +2068,7 @@
     "fields": {
       "nombre": "Banco BICE",
       "status": true,
+      "rut":"97.080.000-K",
       "codigo": "28",
       "created_date": "2022-01-06T13:49:22.637Z"
     }
@@ -2043,6 +2079,7 @@
     "fields": {
       "nombre": "Banco Consorcio",
       "status": true,
+      "rut":"2",
       "codigo": "55",
       "created_date": "2022-01-06T13:49:22.649Z"
     }
@@ -2053,6 +2090,7 @@
     "fields": {
       "nombre": "Banco Coopeuch",
       "status": true,
+      "rut":"82.878.900-7",
       "codigo": "672",
       "created_date": "2022-01-06T13:49:22.654Z"
     }
@@ -4055,6 +4093,7 @@
     "pk": 1,
     "fields": {
       "provincia": 54,
+      "cod_uny_ciudad": "1201",
       "nombre": "Arica",
       "status": true,
       "created_date": "2022-01-06T19:40:06.388Z"
@@ -4065,6 +4104,7 @@
     "pk": 2,
     "fields": {
       "provincia": 54,
+      "cod_uny_ciudad": "1202",
       "nombre": "Camarones",
       "status": true,
       "created_date": "2022-01-06T19:40:06.728Z"
@@ -4075,6 +4115,7 @@
     "pk": 3,
     "fields": {
       "provincia": 55,
+      "cod_uny_ciudad": "1301",
       "nombre": "Putre",
       "status": true,
       "created_date": "2022-01-06T19:40:06.392Z"
@@ -4085,6 +4126,7 @@
     "pk": 4,
     "fields": {
       "provincia": 55,
+      "cod_uny_ciudad": "1302",
       "nombre": "General Lagos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.172Z"
@@ -4095,6 +4137,7 @@
     "pk": 5,
     "fields": {
       "provincia": 1,
+      "cod_uny_ciudad": "1101",
       "nombre": "Iquique",
       "status": true,
       "created_date": "2022-01-14T18:53:36.872Z"
@@ -4105,6 +4148,7 @@
     "pk": 6,
     "fields": {
       "provincia": 1,
+      "cod_uny_ciudad": "1107",
       "nombre": "Alto Hospicio",
       "status": true,
       "created_date": "2022-01-06T19:40:06.520Z"
@@ -4115,6 +4159,7 @@
     "pk": 7,
     "fields": {
       "provincia": 2,
+      "cod_uny_ciudad": "1106",
       "nombre": "Pozo Almonte",
       "status": true,
       "created_date": "2022-01-14T18:53:36.865Z"
@@ -4125,6 +4170,7 @@
     "pk": 8,
     "fields": {
       "provincia": 2,
+      "cod_uny_ciudad": "1",
       "nombre": "Camiña",
       "status": true,
       "created_date": "2022-01-06T19:40:06.287Z"
@@ -4135,6 +4181,7 @@
     "pk": 9,
     "fields": {
       "provincia": 2,
+      "cod_uny_ciudad": "1103",
       "nombre": "Colchane",
       "status": true,
       "created_date": "2022-01-06T19:40:06.554Z"
@@ -4145,6 +4192,7 @@
     "pk": 10,
     "fields": {
       "provincia": 2,
+      "cod_uny_ciudad": "1104",
       "nombre": "Huara",
       "status": true,
       "created_date": "2022-01-06T19:40:05.792Z"
@@ -4155,6 +4203,7 @@
     "pk": 11,
     "fields": {
       "provincia": 2,
+      "cod_uny_ciudad": "1105",
       "nombre": "Pica",
       "status": true,
       "created_date": "2022-01-06T19:40:05.796Z"
@@ -4165,6 +4214,7 @@
     "pk": 12,
     "fields": {
       "provincia": 3,
+      "cod_uny_ciudad": "2101",
       "nombre": "Antofagasta",
       "status": true,
       "created_date": "2022-01-06T19:40:06.064Z"
@@ -4175,6 +4225,7 @@
     "pk": 13,
     "fields": {
       "provincia": 3,
+      "cod_uny_ciudad": "2102",
       "nombre": "Mejillones",
       "status": true,
       "created_date": "2022-01-06T19:40:05.737Z"
@@ -4185,6 +4236,7 @@
     "pk": 14,
     "fields": {
       "provincia": 3,
+      "cod_uny_ciudad": "2103",
       "nombre": "Sierra Gorda",
       "status": true,
       "created_date": "2022-01-06T19:40:06.395Z"
@@ -4195,6 +4247,7 @@
     "pk": 15,
     "fields": {
       "provincia": 3,
+      "cod_uny_ciudad": "2104",
       "nombre": "Taltal",
       "status": true,
       "created_date": "2022-01-06T19:40:06.290Z"
@@ -4205,6 +4258,7 @@
     "pk": 16,
     "fields": {
       "provincia": 4,
+      "cod_uny_ciudad": "2201",
       "nombre": "Calama",
       "status": true,
       "created_date": "2022-01-06T19:40:06.294Z"
@@ -4215,6 +4269,7 @@
     "pk": 17,
     "fields": {
       "provincia": 4,
+      "cod_uny_ciudad": "2202",
       "nombre": "Ollagüe",
       "status": true,
       "created_date": "2022-01-14T18:53:36.829Z"
@@ -4225,6 +4280,7 @@
     "pk": 18,
     "fields": {
       "provincia": 4,
+      "cod_uny_ciudad": "2203",
       "nombre": "San Pedro de Atacama",
       "status": true,
       "created_date": "2022-01-06T19:40:06.176Z"
@@ -4235,6 +4291,7 @@
     "pk": 19,
     "fields": {
       "provincia": 5,
+      "cod_uny_ciudad": "2301",
       "nombre": "Tocopilla",
       "status": true,
       "created_date": "2022-01-06T19:40:06.180Z"
@@ -4245,6 +4302,7 @@
     "pk": 20,
     "fields": {
       "provincia": 5,
+      "cod_uny_ciudad": "2105",
       "nombre": "María Elena",
       "status": true,
       "created_date": "2022-01-06T19:40:06.730Z"
@@ -4255,6 +4313,7 @@
     "pk": 21,
     "fields": {
       "provincia": 6,
+      "cod_uny_ciudad": "3101",
       "nombre": "Copiapó",
       "status": true,
       "created_date": "2022-01-06T19:40:06.733Z"
@@ -4265,6 +4324,7 @@
     "pk": 22,
     "fields": {
       "provincia": 6,
+      "cod_uny_ciudad": "3102",
       "nombre": "Caldera",
       "status": true,
       "created_date": "2022-01-06T19:40:06.736Z"
@@ -4275,6 +4335,7 @@
     "pk": 23,
     "fields": {
       "provincia": 6,
+      "cod_uny_ciudad": "3103",
       "nombre": "Tierra Amarilla",
       "status": true,
       "created_date": "2022-01-06T19:40:06.398Z"
@@ -4285,6 +4346,7 @@
     "pk": 24,
     "fields": {
       "provincia": 7,
+      "cod_uny_ciudad": "3201",
       "nombre": "Chañaral",
       "status": true,
       "created_date": "2022-01-06T19:40:06.400Z"
@@ -4295,6 +4357,7 @@
     "pk": 25,
     "fields": {
       "provincia": 7,
+      "cod_uny_ciudad": "3202",
       "nombre": "Diego de Almagro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.403Z"
@@ -4305,6 +4368,7 @@
     "pk": 26,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4101",
       "nombre": "La Serena",
       "status": true,
       "created_date": "2022-01-06T19:40:06.406Z"
@@ -4315,6 +4379,7 @@
     "pk": 27,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4102",
       "nombre": "Coquimbo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.410Z"
@@ -4325,6 +4390,7 @@
     "pk": 28,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4103",
       "nombre": "Andacollo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.413Z"
@@ -4335,6 +4401,7 @@
     "pk": 29,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4104",
       "nombre": "La Higuera",
       "status": true,
       "created_date": "2022-01-06T19:40:06.416Z"
@@ -4345,6 +4412,7 @@
     "pk": 30,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4105",
       "nombre": "Paiguano",
       "status": true,
       "created_date": "2022-01-06T19:40:06.740Z"
@@ -4355,6 +4423,7 @@
     "pk": 31,
     "fields": {
       "provincia": 9,
+      "cod_uny_ciudad": "4106",
       "nombre": "Vicuña",
       "status": true,
       "created_date": "2022-01-06T19:40:06.744Z"
@@ -4365,6 +4434,7 @@
     "pk": 32,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "4201",
       "nombre": "Illapel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.419Z"
@@ -4375,6 +4445,7 @@
     "pk": 33,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "4202",
       "nombre": "Canela",
       "status": true,
       "created_date": "2022-01-06T19:40:06.422Z"
@@ -4385,6 +4456,7 @@
     "pk": 34,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "4203",
       "nombre": "Los Vilos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.747Z"
@@ -4395,6 +4467,7 @@
     "pk": 35,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "4204",
       "nombre": "Salamanca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.749Z"
@@ -4405,6 +4478,7 @@
     "pk": 36,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "4301",
       "nombre": "Ovalle",
       "status": true,
       "created_date": "2022-01-06T19:40:06.425Z"
@@ -4415,6 +4489,7 @@
     "pk": 37,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "4302",
       "nombre": "Combarbalá",
       "status": true,
       "created_date": "2022-01-06T19:40:06.752Z"
@@ -4425,6 +4500,7 @@
     "pk": 38,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "4303",
       "nombre": "Monte Patria",
       "status": true,
       "created_date": "2022-01-06T19:40:06.429Z"
@@ -4435,6 +4511,7 @@
     "pk": 39,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "4304",
       "nombre": "Punitaqui",
       "status": true,
       "created_date": "2022-01-06T19:40:06.557Z"
@@ -4445,6 +4522,7 @@
     "pk": 40,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "4305",
       "nombre": "Río Hurtado",
       "status": true,
       "created_date": "2022-01-06T19:40:06.561Z"
@@ -4455,6 +4533,7 @@
     "pk": 41,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5101",
       "nombre": "Valparaíso",
       "status": true,
       "created_date": "2022-01-06T19:40:06.564Z"
@@ -4465,6 +4544,7 @@
     "pk": 42,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5102",
       "nombre": "Casablanca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.567Z"
@@ -4475,6 +4555,7 @@
     "pk": 43,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5103",
       "nombre": "Concón",
       "status": true,
       "created_date": "2022-01-06T19:40:06.570Z"
@@ -4485,6 +4566,7 @@
     "pk": 44,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5104",
       "nombre": "Juan Fernández",
       "status": true,
       "created_date": "2022-01-06T19:40:06.573Z"
@@ -4495,6 +4577,7 @@
     "pk": 45,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5105",
       "nombre": "Puchuncaví",
       "status": true,
       "created_date": "2022-01-06T19:40:06.576Z"
@@ -4505,6 +4588,7 @@
     "pk": 46,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5107",
       "nombre": "Quintero",
       "status": true,
       "created_date": "2022-01-06T19:40:06.579Z"
@@ -4515,6 +4599,7 @@
     "pk": 47,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "5109",
       "nombre": "Viña del Mar",
       "status": true,
       "created_date": "2022-01-06T19:40:06.582Z"
@@ -4525,6 +4610,7 @@
     "pk": 48,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "5201",
       "nombre": "Isla de Pascua",
       "status": true,
       "created_date": "2022-01-06T19:40:06.585Z"
@@ -4535,6 +4621,7 @@
     "pk": 49,
     "fields": {
       "provincia": 14,
+      "cod_uny_ciudad": "5301",
       "nombre": "Los Andes",
       "status": true,
       "created_date": "2022-01-06T19:40:06.588Z"
@@ -4545,6 +4632,7 @@
     "pk": 50,
     "fields": {
       "provincia": 14,
+      "cod_uny_ciudad": "5302",
       "nombre": "Calle Larga",
       "status": true,
       "created_date": "2022-01-06T19:40:06.591Z"
@@ -4555,6 +4643,7 @@
     "pk": 51,
     "fields": {
       "provincia": 14,
+      "cod_uny_ciudad": "1",
       "nombre": "Riconada",
       "status": true,
       "created_date": "2022-01-06T19:40:06.297Z"
@@ -4565,6 +4654,7 @@
     "pk": 52,
     "fields": {
       "provincia": 14,
+      "cod_uny_ciudad": "1",
       "nombre": "San Esteban",
       "status": true,
       "created_date": "2022-01-06T19:40:06.184Z"
@@ -4575,6 +4665,7 @@
     "pk": 53,
     "fields": {
       "provincia": 15,
+      "cod_uny_ciudad": "5401",
       "nombre": "La Ligua",
       "status": true,
       "created_date": "2022-01-06T19:40:06.487Z"
@@ -4585,6 +4676,7 @@
     "pk": 54,
     "fields": {
       "provincia": 15,
+      "cod_uny_ciudad": "5402",
       "nombre": "Cabildo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.594Z"
@@ -4595,6 +4687,7 @@
     "pk": 55,
     "fields": {
       "provincia": 15,
+      "cod_uny_ciudad": "5403",
       "nombre": "Papudo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.780Z"
@@ -4605,6 +4698,7 @@
     "pk": 56,
     "fields": {
       "provincia": 15,
+      "cod_uny_ciudad": "5404",
       "nombre": "Petorca",
       "status": true,
       "created_date": "2022-01-14T18:53:36.689Z"
@@ -4615,6 +4709,7 @@
     "pk": 57,
     "fields": {
       "provincia": 15,
+      "cod_uny_ciudad": "5405",
       "nombre": "Zapallar",
       "status": true,
       "created_date": "2022-01-06T19:40:06.598Z"
@@ -4625,6 +4720,7 @@
     "pk": 58,
     "fields": {
       "provincia": 16,
+      "cod_uny_ciudad": "5501",
       "nombre": "Quillota",
       "status": true,
       "created_date": "2022-01-06T19:40:06.601Z"
@@ -4635,6 +4731,7 @@
     "pk": 59,
     "fields": {
       "provincia": 16,
+      "cod_uny_ciudad": "1",
       "nombre": "La Calera",
       "status": true,
       "created_date": "2022-01-06T19:40:06.604Z"
@@ -4645,6 +4742,7 @@
     "pk": 60,
     "fields": {
       "provincia": 16,
+      "cod_uny_ciudad": "5503",
       "nombre": "Hijuelas",
       "status": true,
       "created_date": "2022-01-06T19:40:06.607Z"
@@ -4655,6 +4753,7 @@
     "pk": 61,
     "fields": {
       "provincia": 16,
+      "cod_uny_ciudad": "5504",
       "nombre": "La Cruz",
       "status": true,
       "created_date": "2022-01-14T18:53:36.668Z"
@@ -4665,6 +4764,7 @@
     "pk": 62,
     "fields": {
       "provincia": 16,
+      "cod_uny_ciudad": "5506",
       "nombre": "Nogales",
       "status": true,
       "created_date": "2022-01-06T19:40:06.610Z"
@@ -4675,6 +4775,7 @@
     "pk": 63,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5601",
       "nombre": "San Antonio",
       "status": true,
       "created_date": "2022-01-14T18:53:36.662Z"
@@ -4685,6 +4786,7 @@
     "pk": 64,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5602",
       "nombre": "Algarrobo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.613Z"
@@ -4695,6 +4797,7 @@
     "pk": 65,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5603",
       "nombre": "Cartagena",
       "status": true,
       "created_date": "2022-01-06T19:40:06.616Z"
@@ -4705,6 +4808,7 @@
     "pk": 66,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5604",
       "nombre": "El Quisco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.619Z"
@@ -4715,6 +4819,7 @@
     "pk": 67,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5605",
       "nombre": "El Tabo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.622Z"
@@ -4725,6 +4830,7 @@
     "pk": 68,
     "fields": {
       "provincia": 17,
+      "cod_uny_ciudad": "5606",
       "nombre": "Santo Domingo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.625Z"
@@ -4735,6 +4841,7 @@
     "pk": 69,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "5701",
       "nombre": "San Felipe",
       "status": true,
       "created_date": "2022-01-14T18:53:36.638Z"
@@ -4745,6 +4852,7 @@
     "pk": 70,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "5702",
       "nombre": "Catemu",
       "status": true,
       "created_date": "2022-01-06T19:40:05.799Z"
@@ -4755,6 +4863,7 @@
     "pk": 71,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "5703",
       "nombre": "Llaillay",
       "status": true,
       "created_date": "2022-01-06T19:40:05.802Z"
@@ -4765,6 +4874,7 @@
     "pk": 72,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "10511",
       "nombre": "Panquehue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.187Z"
@@ -4775,6 +4885,7 @@
     "pk": 73,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "5705",
       "nombre": "Putaendo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.191Z"
@@ -4785,6 +4896,7 @@
     "pk": 74,
     "fields": {
       "provincia": 18,
+      "cod_uny_ciudad": "570",
       "nombre": "Santa María",
       "status": true,
       "created_date": "2022-01-06T19:40:06.195Z"
@@ -4795,6 +4907,7 @@
     "pk": 75,
     "fields": {
       "provincia": 19,
+      "cod_uny_ciudad": "5106",
       "nombre": "Quilpué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.198Z"
@@ -4805,6 +4918,7 @@
     "pk": 76,
     "fields": {
       "provincia": 19,
+      "cod_uny_ciudad": "5505",
       "nombre": "Limache",
       "status": true,
       "created_date": "2022-01-06T19:40:06.067Z"
@@ -4815,6 +4929,7 @@
     "pk": 77,
     "fields": {
       "provincia": 19,
+      "cod_uny_ciudad": "5507",
       "nombre": "Olmué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.489Z"
@@ -4825,6 +4940,7 @@
     "pk": 78,
     "fields": {
       "provincia": 19,
+      "cod_uny_ciudad": "5108",
       "nombre": "Villa Alemana",
       "status": true,
       "created_date": "2022-01-06T19:40:06.202Z"
@@ -4835,6 +4951,7 @@
     "pk": 79,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6101",
       "nombre": "Rancagua",
       "status": true,
       "created_date": "2022-01-06T19:40:06.299Z"
@@ -4845,6 +4962,7 @@
     "pk": 80,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6102",
       "nombre": "Codegua",
       "status": true,
       "created_date": "2022-01-06T19:40:05.807Z"
@@ -4855,6 +4973,7 @@
     "pk": 81,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6103",
       "nombre": "Coinco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.629Z"
@@ -4865,6 +4984,7 @@
     "pk": 82,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6104",
       "nombre": "Coltauco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.783Z"
@@ -4875,6 +4995,7 @@
     "pk": 83,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6105",
       "nombre": "Doñihue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.493Z"
@@ -4885,6 +5006,7 @@
     "pk": 84,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6106",
       "nombre": "Graneros",
       "status": true,
       "created_date": "2022-01-06T19:40:06.786Z"
@@ -4895,6 +5017,7 @@
     "pk": 85,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6107",
       "nombre": "Las Cabras",
       "status": true,
       "created_date": "2022-01-06T19:40:06.303Z"
@@ -4905,6 +5028,7 @@
     "pk": 86,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6108",
       "nombre": "Machalí",
       "status": true,
       "created_date": "2022-01-06T19:40:06.632Z"
@@ -4915,6 +5039,7 @@
     "pk": 87,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6109",
       "nombre": "Malloa",
       "status": true,
       "created_date": "2022-01-06T19:40:05.811Z"
@@ -4925,6 +5050,7 @@
     "pk": 88,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6110",
       "nombre": "Mostazal",
       "status": true,
       "created_date": "2022-01-14T18:53:36.563Z"
@@ -4935,6 +5061,7 @@
     "pk": 89,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6111",
       "nombre": "Olivar",
       "status": true,
       "created_date": "2022-01-06T19:40:06.205Z"
@@ -4945,6 +5072,7 @@
     "pk": 90,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6112",
       "nombre": "Peumo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.306Z"
@@ -4955,6 +5083,7 @@
     "pk": 91,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6113",
       "nombre": "Pichidegua",
       "status": true,
       "created_date": "2022-01-06T19:40:06.635Z"
@@ -4965,6 +5094,7 @@
     "pk": 92,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6114",
       "nombre": "Quinta de Tilcoco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.209Z"
@@ -4975,6 +5105,7 @@
     "pk": 93,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6115",
       "nombre": "Rengo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.071Z"
@@ -4985,6 +5116,7 @@
     "pk": 94,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6116",
       "nombre": "Requínoa",
       "status": true,
       "created_date": "2022-01-14T18:53:36.543Z"
@@ -4995,6 +5127,7 @@
     "pk": 95,
     "fields": {
       "provincia": 20,
+      "cod_uny_ciudad": "6117",
       "nombre": "San Vicente",
       "status": true,
       "created_date": "2022-01-14T18:53:36.540Z"
@@ -5005,6 +5138,7 @@
     "pk": 96,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6201",
       "nombre": "Pichilemu",
       "status": true,
       "created_date": "2022-01-06T19:40:06.637Z"
@@ -5015,6 +5149,7 @@
     "pk": 97,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6202",
       "nombre": "La Estrella",
       "status": true,
       "created_date": "2022-01-06T19:40:06.640Z"
@@ -5025,6 +5160,7 @@
     "pk": 98,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6203",
       "nombre": "Litueche",
       "status": true,
       "created_date": "2022-01-06T19:40:06.644Z"
@@ -5035,6 +5171,7 @@
     "pk": 99,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6204",
       "nombre": "Marichihue",
       "status": true,
       "created_date": "2022-01-06T19:40:05.814Z"
@@ -5045,6 +5182,7 @@
     "pk": 100,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6205",
       "nombre": "Navidad",
       "status": true,
       "created_date": "2022-01-06T19:40:06.647Z"
@@ -5055,6 +5193,7 @@
     "pk": 101,
     "fields": {
       "provincia": 21,
+      "cod_uny_ciudad": "6206",
       "nombre": "Paredones",
       "status": true,
       "created_date": "2022-01-14T18:53:36.517Z"
@@ -5065,6 +5204,7 @@
     "pk": 102,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6301",
       "nombre": "San Fernando",
       "status": true,
       "created_date": "2022-01-06T19:40:06.650Z"
@@ -5075,6 +5215,7 @@
     "pk": 103,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6302",
       "nombre": "Chépica",
       "status": true,
       "created_date": "2022-01-14T18:53:36.511Z"
@@ -5085,6 +5226,7 @@
     "pk": 104,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6303",
       "nombre": "Chimbarongo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.653Z"
@@ -5095,6 +5237,7 @@
     "pk": 105,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6304",
       "nombre": "Lolol",
       "status": true,
       "created_date": "2022-01-06T19:40:06.656Z"
@@ -5105,6 +5248,7 @@
     "pk": 106,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6305",
       "nombre": "Nancagua",
       "status": true,
       "created_date": "2022-01-06T19:40:06.660Z"
@@ -5115,6 +5259,7 @@
     "pk": 107,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6306",
       "nombre": "Palmilla",
       "status": true,
       "created_date": "2022-01-06T19:40:06.663Z"
@@ -5125,6 +5270,7 @@
     "pk": 108,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6307",
       "nombre": "Peralillo",
       "status": true,
       "created_date": "2022-01-14T18:53:36.494Z"
@@ -5135,6 +5281,7 @@
     "pk": 109,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6308",
       "nombre": "Placilla",
       "status": true,
       "created_date": "2022-01-14T18:53:36.491Z"
@@ -5145,6 +5292,7 @@
     "pk": 110,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6309",
       "nombre": "Pumanque",
       "status": true,
       "created_date": "2022-01-14T18:53:36.488Z"
@@ -5155,6 +5303,7 @@
     "pk": 111,
     "fields": {
       "provincia": 22,
+      "cod_uny_ciudad": "6310",
       "nombre": "Santa Cruz",
       "status": true,
       "created_date": "2022-01-06T19:40:06.666Z"
@@ -5165,6 +5314,7 @@
     "pk": 112,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7101",
       "nombre": "Talca",
       "status": true,
       "created_date": "2022-01-06T19:40:05.818Z"
@@ -5175,6 +5325,7 @@
     "pk": 113,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7102",
       "nombre": "Constitución",
       "status": true,
       "created_date": "2022-01-06T19:40:06.669Z"
@@ -5185,6 +5336,7 @@
     "pk": 114,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7103",
       "nombre": "Curepto",
       "status": true,
       "created_date": "2022-01-06T19:40:06.671Z"
@@ -5195,6 +5347,7 @@
     "pk": 115,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7104",
       "nombre": "Empedrado",
       "status": true,
       "created_date": "2022-01-14T18:53:36.472Z"
@@ -5205,6 +5358,7 @@
     "pk": 116,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7105",
       "nombre": "Maule",
       "status": true,
       "created_date": "2022-01-06T19:40:06.310Z"
@@ -5215,6 +5369,7 @@
     "pk": 117,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7106",
       "nombre": "Pelarco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.740Z"
@@ -5225,6 +5380,7 @@
     "pk": 118,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7107",
       "nombre": "Pencahue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.675Z"
@@ -5235,6 +5391,7 @@
     "pk": 119,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7108",
       "nombre": "Río Claro",
       "status": true,
       "created_date": "2022-01-14T18:53:36.459Z"
@@ -5245,6 +5402,7 @@
     "pk": 120,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7109",
       "nombre": "San Clemente",
       "status": true,
       "created_date": "2022-01-06T19:40:06.074Z"
@@ -5255,6 +5413,7 @@
     "pk": 121,
     "fields": {
       "provincia": 23,
+      "cod_uny_ciudad": "7110",
       "nombre": "San Rafael",
       "status": true,
       "created_date": "2022-01-06T19:40:05.822Z"
@@ -5265,6 +5424,7 @@
     "pk": 122,
     "fields": {
       "provincia": 5,
+      "cod_uny_ciudad": "5703",
       "nombre": "Llay Llay",
       "status": true,
       "created_date": "2022-01-06T19:40:05.826Z"
@@ -5275,6 +5435,7 @@
     "pk": 123,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13128",
       "nombre": "Renca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.678Z"
@@ -5285,6 +5446,7 @@
     "pk": 125,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7301",
       "nombre": "Curicó",
       "status": true,
       "created_date": "2022-01-14T18:58:39.315Z"
@@ -5295,6 +5457,7 @@
     "pk": 126,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7302",
       "nombre": "Hualañé",
       "status": true,
       "created_date": "2022-01-06T19:40:06.681Z"
@@ -5305,6 +5468,7 @@
     "pk": 127,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7303",
       "nombre": "Licantén",
       "status": true,
       "created_date": "2022-01-14T18:53:36.445Z"
@@ -5315,6 +5479,7 @@
     "pk": 128,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7304",
       "nombre": "Molina",
       "status": true,
       "created_date": "2022-01-06T19:40:05.829Z"
@@ -5325,6 +5490,7 @@
     "pk": 129,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7305",
       "nombre": "Rauco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.933Z"
@@ -5335,6 +5501,7 @@
     "pk": 130,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7306",
       "nombre": "Romeral",
       "status": true,
       "created_date": "2022-01-06T19:40:06.312Z"
@@ -5345,6 +5512,7 @@
     "pk": 131,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7307",
       "nombre": "Sagrada Familia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.078Z"
@@ -5355,6 +5523,7 @@
     "pk": 132,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7308",
       "nombre": "Teno",
       "status": true,
       "created_date": "2022-01-06T19:40:06.082Z"
@@ -5365,6 +5534,7 @@
     "pk": 133,
     "fields": {
       "provincia": 25,
+      "cod_uny_ciudad": "7309",
       "nombre": "Vichuquén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.085Z"
@@ -5375,6 +5545,7 @@
     "pk": 134,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7401",
       "nombre": "Linares",
       "status": true,
       "created_date": "2022-01-06T19:40:06.088Z"
@@ -5385,6 +5556,7 @@
     "pk": 135,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7402",
       "nombre": "Colbún",
       "status": true,
       "created_date": "2022-01-06T19:40:05.936Z"
@@ -5395,6 +5567,7 @@
     "pk": 136,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7403",
       "nombre": "Longaví",
       "status": true,
       "created_date": "2022-01-06T19:40:05.833Z"
@@ -5405,6 +5578,7 @@
     "pk": 137,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7404",
       "nombre": "Parral",
       "status": true,
       "created_date": "2022-01-06T19:40:05.940Z"
@@ -5415,6 +5589,7 @@
     "pk": 138,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7405",
       "nombre": "Retiro",
       "status": true,
       "created_date": "2022-01-06T19:40:05.944Z"
@@ -5425,6 +5600,7 @@
     "pk": 139,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7406",
       "nombre": "San Javier",
       "status": true,
       "created_date": "2022-01-06T19:40:05.947Z"
@@ -5435,6 +5611,7 @@
     "pk": 140,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7407",
       "nombre": "Villa Alegre",
       "status": true,
       "created_date": "2022-01-06T19:40:05.951Z"
@@ -5445,6 +5622,7 @@
     "pk": 141,
     "fields": {
       "provincia": 26,
+      "cod_uny_ciudad": "7408",
       "nombre": "Yerbas Buenas",
       "status": true,
       "created_date": "2022-01-06T19:40:05.954Z"
@@ -5455,6 +5633,7 @@
     "pk": 142,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8401",
       "nombre": "Chillán",
       "status": true,
       "created_date": "2022-01-06T19:40:06.431Z"
@@ -5465,6 +5644,7 @@
     "pk": 143,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8404",
       "nombre": "Chillán Viejo",
       "status": true,
       "created_date": "2022-01-14T18:53:36.389Z"
@@ -5475,6 +5655,7 @@
     "pk": 144,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8413",
       "nombre": "Quillón",
       "status": true,
       "created_date": "2022-01-14T18:53:36.385Z"
@@ -5485,6 +5666,7 @@
     "pk": 145,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8402",
       "nombre": "Bulnes",
       "status": true,
       "created_date": "2022-01-14T18:53:36.380Z"
@@ -5495,6 +5677,7 @@
     "pk": 146,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8418",
       "nombre": "San Ignacio",
       "status": true,
       "created_date": "2022-01-14T18:53:36.374Z"
@@ -5505,6 +5688,7 @@
     "pk": 147,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8407",
       "nombre": "El Carmen",
       "status": true,
       "created_date": "2022-01-14T18:53:36.371Z"
@@ -5515,6 +5699,7 @@
     "pk": 148,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8411",
       "nombre": "Pinto",
       "status": true,
       "created_date": "2022-01-14T18:53:36.368Z"
@@ -5525,6 +5710,7 @@
     "pk": 149,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8410",
       "nombre": "Pemuco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.755Z"
@@ -5535,6 +5721,7 @@
     "pk": 150,
     "fields": {
       "provincia": 56,
+      "cod_uny_ciudad": "8421",
       "nombre": "Yungay",
       "status": true,
       "created_date": "2022-01-06T19:40:06.758Z"
@@ -5545,6 +5732,7 @@
     "pk": 151,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8414",
       "nombre": "Quirihue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.761Z"
@@ -5555,6 +5743,7 @@
     "pk": 152,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8403",
       "nombre": "Cobquecura",
       "status": true,
       "created_date": "2022-01-06T19:40:06.434Z"
@@ -5565,6 +5754,7 @@
     "pk": 153,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "84018",
       "nombre": "Ninhue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.437Z"
@@ -5575,6 +5765,7 @@
     "pk": 154,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8420",
       "nombre": "Treguaco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.092Z"
@@ -5585,6 +5776,7 @@
     "pk": 155,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8404",
       "nombre": "Coelemu",
       "status": true,
       "created_date": "2022-01-06T19:40:06.767Z"
@@ -5595,6 +5787,7 @@
     "pk": 156,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8412",
       "nombre": "Portezuelo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.771Z"
@@ -5605,6 +5798,7 @@
     "pk": 157,
     "fields": {
       "provincia": 57,
+      "cod_uny_ciudad": "8415",
       "nombre": "Ránqui",
       "status": true,
       "created_date": "2022-01-06T19:40:06.773Z"
@@ -5615,6 +5809,7 @@
     "pk": 158,
     "fields": {
       "provincia": 58,
+      "cod_uny_ciudad": "8416",
       "nombre": "San Carlos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.777Z"
@@ -5625,6 +5820,7 @@
     "pk": 159,
     "fields": {
       "provincia": 58,
+      "cod_uny_ciudad": "8409",
       "nombre": "Ñiquén",
       "status": true,
       "created_date": "2022-01-14T18:53:36.330Z"
@@ -5635,6 +5831,7 @@
     "pk": 160,
     "fields": {
       "provincia": 58,
+      "cod_uny_ciudad": "8405",
       "nombre": "Coihueco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.657Z"
@@ -5645,6 +5842,7 @@
     "pk": 161,
     "fields": {
       "provincia": 58,
+      "cod_uny_ciudad": "8417",
       "nombre": "San Fabián",
       "status": true,
       "created_date": "2022-01-06T19:40:05.665Z"
@@ -5655,7 +5853,8 @@
     "pk": 162,
     "fields": {
       "provincia": 58,
-      "nombre": "San Nico",
+      "cod_uny_ciudad": "8419",
+      "nombre": "San Nicolás",
       "status": true,
       "created_date": "2022-01-06T19:40:05.668Z"
     }
@@ -5665,6 +5864,7 @@
     "pk": 163,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8101",
       "nombre": "Concepción",
       "status": true,
       "created_date": "2022-01-06T19:40:05.671Z"
@@ -5675,6 +5875,7 @@
     "pk": 164,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8102",
       "nombre": "Coronel",
       "status": true,
       "created_date": "2022-01-06T19:40:05.674Z"
@@ -5685,6 +5886,7 @@
     "pk": 165,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8103",
       "nombre": "Chiguayante",
       "status": true,
       "created_date": "2022-01-06T19:40:05.678Z"
@@ -5695,6 +5897,7 @@
     "pk": 166,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8104",
       "nombre": "Florida",
       "status": true,
       "created_date": "2022-01-06T19:40:05.681Z"
@@ -5705,6 +5908,7 @@
     "pk": 167,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8105",
       "nombre": "Hualqui",
       "status": true,
       "created_date": "2022-01-06T19:40:05.684Z"
@@ -5715,6 +5919,7 @@
     "pk": 168,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8106",
       "nombre": "Lota",
       "status": true,
       "created_date": "2022-01-06T19:40:05.687Z"
@@ -5725,6 +5930,7 @@
     "pk": 169,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8107",
       "nombre": "Penco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.689Z"
@@ -5735,6 +5941,7 @@
     "pk": 170,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8108",
       "nombre": "San Pedro de la Paz",
       "status": true,
       "created_date": "2022-01-06T19:40:05.693Z"
@@ -5745,6 +5952,7 @@
     "pk": 171,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8109",
       "nombre": "Santa Juana",
       "status": true,
       "created_date": "2022-01-06T19:40:05.696Z"
@@ -5755,6 +5963,7 @@
     "pk": 172,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8110",
       "nombre": "Talcahuano",
       "status": true,
       "created_date": "2022-01-06T19:40:05.699Z"
@@ -5765,6 +5974,7 @@
     "pk": 173,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8111",
       "nombre": "Tomé",
       "status": true,
       "created_date": "2022-01-06T19:40:05.702Z"
@@ -5775,6 +5985,7 @@
     "pk": 174,
     "fields": {
       "provincia": 27,
+      "cod_uny_ciudad": "8208",
       "nombre": "Hualpén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.705Z"
@@ -5785,6 +5996,7 @@
     "pk": 175,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8204",
       "nombre": "Lebu",
       "status": true,
       "created_date": "2022-01-06T19:40:05.708Z"
@@ -5795,6 +6007,7 @@
     "pk": 176,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8202",
       "nombre": "Arauco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.711Z"
@@ -5805,6 +6018,7 @@
     "pk": 177,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8203",
       "nombre": "Cañete",
       "status": true,
       "created_date": "2022-01-06T19:40:05.714Z"
@@ -5815,6 +6029,7 @@
     "pk": 178,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8204",
       "nombre": "Contulmo",
       "status": true,
       "created_date": "2022-01-06T19:40:05.717Z"
@@ -5825,6 +6040,7 @@
     "pk": 179,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8205",
       "nombre": "Curanilahue",
       "status": true,
       "created_date": "2022-01-06T19:40:05.720Z"
@@ -5835,6 +6051,7 @@
     "pk": 180,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8206",
       "nombre": "Los Álamos",
       "status": true,
       "created_date": "2022-01-06T19:40:05.722Z"
@@ -5845,6 +6062,7 @@
     "pk": 181,
     "fields": {
       "provincia": 28,
+      "cod_uny_ciudad": "8207",
       "nombre": "Tirúa",
       "status": true,
       "created_date": "2022-01-06T19:40:05.726Z"
@@ -5855,6 +6073,7 @@
     "pk": 182,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8301",
       "nombre": "Los Ángeles",
       "status": true,
       "created_date": "2022-01-06T19:40:05.729Z"
@@ -5865,6 +6084,7 @@
     "pk": 183,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8302",
       "nombre": "Antuco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.731Z"
@@ -5875,6 +6095,7 @@
     "pk": 184,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8303",
       "nombre": "Cabrero",
       "status": true,
       "created_date": "2022-01-06T19:40:05.734Z"
@@ -5885,6 +6106,7 @@
     "pk": 185,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8304",
       "nombre": "Laja",
       "status": true,
       "created_date": "2022-01-06T19:40:05.745Z"
@@ -5895,6 +6117,7 @@
     "pk": 186,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8305",
       "nombre": "Mulchén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.748Z"
@@ -5905,6 +6128,7 @@
     "pk": 187,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8306",
       "nombre": "Nacimiento",
       "status": true,
       "created_date": "2022-01-06T19:40:05.752Z"
@@ -5915,6 +6139,7 @@
     "pk": 188,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8307",
       "nombre": "Negrete",
       "status": true,
       "created_date": "2022-01-06T19:40:05.756Z"
@@ -5925,6 +6150,7 @@
     "pk": 189,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8308",
       "nombre": "Quilaco",
       "status": true,
       "created_date": "2022-01-14T18:53:36.225Z"
@@ -5935,6 +6161,7 @@
     "pk": 190,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8309",
       "nombre": "Quilleco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.760Z"
@@ -5945,6 +6172,7 @@
     "pk": 191,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8310",
       "nombre": "San Rosendo",
       "status": true,
       "created_date": "2022-01-06T19:40:05.764Z"
@@ -5955,6 +6183,7 @@
     "pk": 192,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8311",
       "nombre": "Santa Bárbara",
       "status": true,
       "created_date": "2022-01-06T19:40:05.767Z"
@@ -5965,6 +6194,7 @@
     "pk": 193,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8312",
       "nombre": "Tucapel",
       "status": true,
       "created_date": "2022-01-06T19:40:05.771Z"
@@ -5975,6 +6205,7 @@
     "pk": 194,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8313",
       "nombre": "Yumbel",
       "status": true,
       "created_date": "2022-01-06T19:40:05.775Z"
@@ -5985,6 +6216,7 @@
     "pk": 195,
     "fields": {
       "provincia": 29,
+      "cod_uny_ciudad": "8314",
       "nombre": "Alto Biobío",
       "status": true,
       "created_date": "2022-01-06T19:40:05.779Z"
@@ -5995,6 +6227,7 @@
     "pk": 196,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9101",
       "nombre": "Temuco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.782Z"
@@ -6005,6 +6238,7 @@
     "pk": 197,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9102",
       "nombre": "Carahue",
       "status": true,
       "created_date": "2022-01-06T19:40:05.785Z"
@@ -6015,6 +6249,7 @@
     "pk": 198,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9103",
       "nombre": "Cunco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.837Z"
@@ -6025,6 +6260,7 @@
     "pk": 199,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9104",
       "nombre": "Curarrehue",
       "status": true,
       "created_date": "2022-01-06T19:40:05.840Z"
@@ -6035,6 +6271,7 @@
     "pk": 200,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9105",
       "nombre": "Freire",
       "status": true,
       "created_date": "2022-01-06T19:40:05.844Z"
@@ -6045,6 +6282,7 @@
     "pk": 201,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9106",
       "nombre": "Galvarino",
       "status": true,
       "created_date": "2022-01-06T19:40:05.848Z"
@@ -6055,6 +6293,7 @@
     "pk": 202,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9107",
       "nombre": "Gorbea",
       "status": true,
       "created_date": "2022-01-06T19:40:05.851Z"
@@ -6065,6 +6304,7 @@
     "pk": 203,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9108",
       "nombre": "Lautaro",
       "status": true,
       "created_date": "2022-01-06T19:40:05.854Z"
@@ -6075,6 +6315,7 @@
     "pk": 204,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9109",
       "nombre": "Loncoche",
       "status": true,
       "created_date": "2022-01-06T19:40:05.858Z"
@@ -6085,6 +6326,7 @@
     "pk": 205,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9110",
       "nombre": "Melipeuco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.789Z"
@@ -6095,6 +6337,7 @@
     "pk": 206,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9111",
       "nombre": "Nueva Imperial",
       "status": true,
       "created_date": "2022-01-06T19:40:05.861Z"
@@ -6105,6 +6348,7 @@
     "pk": 207,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9112",
       "nombre": "Padre Las Casas",
       "status": true,
       "created_date": "2022-01-06T19:40:05.865Z"
@@ -6115,6 +6359,7 @@
     "pk": 208,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9113",
       "nombre": "Perquenco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.869Z"
@@ -6125,6 +6370,7 @@
     "pk": 209,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9114",
       "nombre": "Pitrufquén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.872Z"
@@ -6135,6 +6381,7 @@
     "pk": 210,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9115",
       "nombre": "Pucón",
       "status": true,
       "created_date": "2022-01-06T19:40:05.876Z"
@@ -6145,6 +6392,7 @@
     "pk": 211,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9116",
       "nombre": "Saavedra",
       "status": true,
       "created_date": "2022-01-06T19:40:05.880Z"
@@ -6155,6 +6403,7 @@
     "pk": 212,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9117",
       "nombre": "Teodoro Schmidt",
       "status": true,
       "created_date": "2022-01-06T19:40:05.883Z"
@@ -6165,6 +6414,7 @@
     "pk": 213,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9118",
       "nombre": "Toltén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.887Z"
@@ -6175,6 +6425,7 @@
     "pk": 214,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9119",
       "nombre": "Vilcún",
       "status": true,
       "created_date": "2022-01-06T19:40:05.890Z"
@@ -6185,6 +6436,7 @@
     "pk": 215,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9120",
       "nombre": "Villarrica",
       "status": true,
       "created_date": "2022-01-06T19:40:05.894Z"
@@ -6195,6 +6447,7 @@
     "pk": 216,
     "fields": {
       "provincia": 31,
+      "cod_uny_ciudad": "9121",
       "nombre": "Cholchol",
       "status": true,
       "created_date": "2022-01-06T19:40:05.898Z"
@@ -6205,6 +6458,7 @@
     "pk": 217,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9201",
       "nombre": "Angol",
       "status": true,
       "created_date": "2022-01-06T19:40:05.902Z"
@@ -6215,6 +6469,7 @@
     "pk": 218,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9202",
       "nombre": "Collipulli",
       "status": true,
       "created_date": "2022-01-06T19:40:05.905Z"
@@ -6225,6 +6480,7 @@
     "pk": 219,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9203",
       "nombre": "Curacautín",
       "status": true,
       "created_date": "2022-01-06T19:40:05.908Z"
@@ -6235,6 +6491,7 @@
     "pk": 220,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9204",
       "nombre": "Ercilla",
       "status": true,
       "created_date": "2022-01-06T19:40:05.912Z"
@@ -6245,6 +6502,7 @@
     "pk": 221,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9205",
       "nombre": "Lonquimay",
       "status": true,
       "created_date": "2022-01-06T19:40:05.916Z"
@@ -6255,6 +6513,7 @@
     "pk": 222,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9206",
       "nombre": "Los Sauces",
       "status": true,
       "created_date": "2022-01-06T19:40:05.919Z"
@@ -6265,6 +6524,7 @@
     "pk": 223,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9207",
       "nombre": "Lumaco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.922Z"
@@ -6275,6 +6535,7 @@
     "pk": 224,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9208",
       "nombre": "Purén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.926Z"
@@ -6285,6 +6546,7 @@
     "pk": 225,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9209",
       "nombre": "Renaico",
       "status": true,
       "created_date": "2022-01-06T19:40:05.929Z"
@@ -6295,6 +6557,7 @@
     "pk": 226,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9210",
       "nombre": "Traiguén",
       "status": true,
       "created_date": "2022-01-06T19:40:05.958Z"
@@ -6305,6 +6568,7 @@
     "pk": 227,
     "fields": {
       "provincia": 32,
+      "cod_uny_ciudad": "9211",
       "nombre": "Victoria",
       "status": true,
       "created_date": "2022-01-06T19:40:05.962Z"
@@ -6315,6 +6579,7 @@
     "pk": 228,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10501",
       "nombre": "Valdivia",
       "status": true,
       "created_date": "2022-01-06T19:40:05.966Z"
@@ -6325,6 +6590,7 @@
     "pk": 229,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10502",
       "nombre": "Corral",
       "status": true,
       "created_date": "2022-01-06T19:40:05.970Z"
@@ -6335,6 +6601,7 @@
     "pk": 230,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10506",
       "nombre": "Lanco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.973Z"
@@ -6345,6 +6612,7 @@
     "pk": 231,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10507",
       "nombre": "Los Lagos",
       "status": true,
       "created_date": "2022-01-06T19:40:05.977Z"
@@ -6355,6 +6623,7 @@
     "pk": 232,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10508",
       "nombre": "Máfil",
       "status": true,
       "created_date": "2022-01-06T19:40:05.980Z"
@@ -6365,6 +6634,7 @@
     "pk": 233,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10509",
       "nombre": "Mariquina",
       "status": true,
       "created_date": "2022-01-06T19:40:05.984Z"
@@ -6375,6 +6645,7 @@
     "pk": 234,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10510",
       "nombre": "Paillaco",
       "status": true,
       "created_date": "2022-01-06T19:40:05.987Z"
@@ -6385,6 +6656,7 @@
     "pk": 235,
     "fields": {
       "provincia": 52,
+      "cod_uny_ciudad": "10511",
       "nombre": "Panguipulli",
       "status": true,
       "created_date": "2022-01-06T19:40:05.991Z"
@@ -6395,6 +6667,7 @@
     "pk": 236,
     "fields": {
       "provincia": 53,
+      "cod_uny_ciudad": "10504",
       "nombre": "La Unión",
       "status": true,
       "created_date": "2022-01-06T19:40:05.995Z"
@@ -6405,6 +6678,7 @@
     "pk": 237,
     "fields": {
       "provincia": 53,
+      "cod_uny_ciudad": "10503",
       "nombre": "Futrono",
       "status": true,
       "created_date": "2022-01-06T19:40:05.999Z"
@@ -6415,6 +6689,7 @@
     "pk": 238,
     "fields": {
       "provincia": 53,
+      "cod_uny_ciudad": "10505",
       "nombre": "Lago Ranco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.002Z"
@@ -6425,6 +6700,7 @@
     "pk": 239,
     "fields": {
       "provincia": 53,
+      "cod_uny_ciudad": "10512",
       "nombre": "Río Bueno",
       "status": true,
       "created_date": "2022-01-06T19:40:06.005Z"
@@ -6435,6 +6711,7 @@
     "pk": 240,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "1",
       "nombre": "Puerto Montt",
       "status": true,
       "created_date": "2022-01-06T19:40:06.009Z"
@@ -6445,6 +6722,7 @@
     "pk": 241,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10102",
       "nombre": "Calbuco",
       "status": true,
       "created_date": "2022-01-06T19:40:06.012Z"
@@ -6455,6 +6733,7 @@
     "pk": 242,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10103",
       "nombre": "Cochamó",
       "status": true,
       "created_date": "2022-01-06T19:40:06.016Z"
@@ -6465,6 +6744,7 @@
     "pk": 243,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10104",
       "nombre": "Fresia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.019Z"
@@ -6475,6 +6755,7 @@
     "pk": 244,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10105",
       "nombre": "Frutillar",
       "status": true,
       "created_date": "2022-01-06T19:40:06.022Z"
@@ -6485,6 +6766,7 @@
     "pk": 245,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10106",
       "nombre": "Los Muermos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.026Z"
@@ -6495,6 +6777,7 @@
     "pk": 246,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10107",
       "nombre": "Llanquihue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.030Z"
@@ -6505,6 +6788,7 @@
     "pk": 247,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10108",
       "nombre": "Maullín",
       "status": true,
       "created_date": "2022-01-06T19:40:06.033Z"
@@ -6515,6 +6799,7 @@
     "pk": 248,
     "fields": {
       "provincia": 33,
+      "cod_uny_ciudad": "10109",
       "nombre": "Puerto Varas",
       "status": true,
       "created_date": "2022-01-06T19:40:06.037Z"
@@ -6525,6 +6810,7 @@
     "pk": 249,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10201",
       "nombre": "Castro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.040Z"
@@ -6535,6 +6821,7 @@
     "pk": 250,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10202",
       "nombre": "Ancud",
       "status": true,
       "created_date": "2022-01-06T19:40:06.045Z"
@@ -6545,6 +6832,7 @@
     "pk": 251,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10203",
       "nombre": "Chonchi",
       "status": true,
       "created_date": "2022-01-06T19:40:06.049Z"
@@ -6555,6 +6843,7 @@
     "pk": 252,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10407",
       "nombre": "Curaco de Vélez",
       "status": true,
       "created_date": "2022-01-06T19:40:06.052Z"
@@ -6565,6 +6854,7 @@
     "pk": 253,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10205",
       "nombre": "Dalcahue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.056Z"
@@ -6575,6 +6865,7 @@
     "pk": 254,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10406",
       "nombre": "Puqueldón",
       "status": true,
       "created_date": "2022-01-06T19:40:06.060Z"
@@ -6585,6 +6876,7 @@
     "pk": 255,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10207",
       "nombre": "Queilén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.096Z"
@@ -6595,6 +6887,7 @@
     "pk": 256,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10208",
       "nombre": "Quellón",
       "status": true,
       "created_date": "2022-01-06T19:40:06.100Z"
@@ -6605,6 +6898,7 @@
     "pk": 257,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10209",
       "nombre": "Quemchi",
       "status": true,
       "created_date": "2022-01-06T19:40:06.103Z"
@@ -6615,6 +6909,7 @@
     "pk": 258,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10210",
       "nombre": "Quinchao",
       "status": true,
       "created_date": "2022-01-06T19:40:06.107Z"
@@ -6625,6 +6920,7 @@
     "pk": 259,
     "fields": {
       "provincia": 35,
+      "cod_uny_ciudad": "10301",
       "nombre": "Osorno",
       "status": true,
       "created_date": "2022-01-06T19:40:06.111Z"
@@ -6635,6 +6931,7 @@
     "pk": 260,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10302",
       "nombre": "Puerto Octay",
       "status": true,
       "created_date": "2022-01-06T19:40:06.115Z"
@@ -6645,6 +6942,7 @@
     "pk": 261,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10303",
       "nombre": "Purranque",
       "status": true,
       "created_date": "2022-01-06T19:40:06.119Z"
@@ -6655,6 +6953,7 @@
     "pk": 262,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10304",
       "nombre": "Puyehue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.122Z"
@@ -6665,6 +6964,7 @@
     "pk": 263,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10305",
       "nombre": "Río Negro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.126Z"
@@ -6675,6 +6975,7 @@
     "pk": 264,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10306",
       "nombre": "San Juan de la Costa",
       "status": true,
       "created_date": "2022-01-06T19:40:06.130Z"
@@ -6685,6 +6986,7 @@
     "pk": 265,
     "fields": {
       "provincia": 34,
+      "cod_uny_ciudad": "10307",
       "nombre": "San Pablo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.133Z"
@@ -6695,6 +6997,7 @@
     "pk": 266,
     "fields": {
       "provincia": 36,
+      "cod_uny_ciudad": "10401",
       "nombre": "Chaitén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.137Z"
@@ -6705,6 +7008,7 @@
     "pk": 267,
     "fields": {
       "provincia": 36,
+      "cod_uny_ciudad": "10402",
       "nombre": "Futaleufú",
       "status": true,
       "created_date": "2022-01-06T19:40:06.140Z"
@@ -6715,6 +7019,7 @@
     "pk": 268,
     "fields": {
       "provincia": 36,
+      "cod_uny_ciudad": "10403",
       "nombre": "Hualaihué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.144Z"
@@ -6725,6 +7030,7 @@
     "pk": 269,
     "fields": {
       "provincia": 36,
+      "cod_uny_ciudad": "10404",
       "nombre": "Palena",
       "status": true,
       "created_date": "2022-01-06T19:40:06.147Z"
@@ -6735,6 +7041,7 @@
     "pk": 270,
     "fields": {
       "provincia": 38,
+      "cod_uny_ciudad": "11101",
       "nombre": "Coihaique",
       "status": true,
       "created_date": "2022-01-06T19:40:06.150Z"
@@ -6745,6 +7052,7 @@
     "pk": 271,
     "fields": {
       "provincia": 38,
+      "cod_uny_ciudad": "11102",
       "nombre": "Lago Verde",
       "status": true,
       "created_date": "2022-01-06T19:40:06.154Z"
@@ -6755,6 +7063,7 @@
     "pk": 272,
     "fields": {
       "provincia": 39,
+      "cod_uny_ciudad": "11201",
       "nombre": "Aysén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.157Z"
@@ -6765,6 +7074,7 @@
     "pk": 273,
     "fields": {
       "provincia": 39,
+      "cod_uny_ciudad": "11202",
       "nombre": "Cisnes",
       "status": true,
       "created_date": "2022-01-06T19:40:06.162Z"
@@ -6775,6 +7085,7 @@
     "pk": 274,
     "fields": {
       "provincia": 39,
+      "cod_uny_ciudad": "11203",
       "nombre": "Guaitecas",
       "status": true,
       "created_date": "2022-01-06T19:40:06.165Z"
@@ -6785,6 +7096,7 @@
     "pk": 275,
     "fields": {
       "provincia": 40,
+      "cod_uny_ciudad": "11301",
       "nombre": "Cochrane",
       "status": true,
       "created_date": "2022-01-06T19:40:06.169Z"
@@ -6795,6 +7107,7 @@
     "pk": 276,
     "fields": {
       "provincia": 40,
+      "cod_uny_ciudad": "11302",
       "nombre": "O'Higgins",
       "status": true,
       "created_date": "2022-01-06T19:40:06.213Z"
@@ -6805,6 +7118,7 @@
     "pk": 277,
     "fields": {
       "provincia": 40,
+      "cod_uny_ciudad": "11303",
       "nombre": "Tortel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.216Z"
@@ -6815,6 +7129,7 @@
     "pk": 278,
     "fields": {
       "provincia": 41,
+      "cod_uny_ciudad": "11401",
       "nombre": "Chile Chico",
       "status": true,
       "created_date": "2022-01-06T19:40:06.220Z"
@@ -6825,6 +7140,7 @@
     "pk": 279,
     "fields": {
       "provincia": 41,
+      "cod_uny_ciudad": "11402",
       "nombre": "Río Ibáñez",
       "status": true,
       "created_date": "2022-01-06T19:40:06.223Z"
@@ -6835,6 +7151,7 @@
     "pk": 280,
     "fields": {
       "provincia": 42,
+      "cod_uny_ciudad": "12101",
       "nombre": "Punta Arenas",
       "status": true,
       "created_date": "2022-01-06T19:40:06.227Z"
@@ -6845,6 +7162,7 @@
     "pk": 281,
     "fields": {
       "provincia": 42,
+      "cod_uny_ciudad": "12102",
       "nombre": "Laguna Blanca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.231Z"
@@ -6855,6 +7173,7 @@
     "pk": 282,
     "fields": {
       "provincia": 42,
+      "cod_uny_ciudad": "12103",
       "nombre": "Río Verde",
       "status": true,
       "created_date": "2022-01-06T19:40:06.234Z"
@@ -6865,6 +7184,7 @@
     "pk": 283,
     "fields": {
       "provincia": 42,
+      "cod_uny_ciudad": "12104",
       "nombre": "San Gregorio",
       "status": true,
       "created_date": "2022-01-06T19:40:06.238Z"
@@ -6875,6 +7195,7 @@
     "pk": 284,
     "fields": {
       "provincia": 43,
+      "cod_uny_ciudad": "12201",
       "nombre": "Cabo de Hornos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.242Z"
@@ -6885,6 +7206,7 @@
     "pk": 285,
     "fields": {
       "provincia": 43,
+      "cod_uny_ciudad": "12202",
       "nombre": "Antártica",
       "status": true,
       "created_date": "2022-01-06T19:40:06.246Z"
@@ -6895,6 +7217,7 @@
     "pk": 286,
     "fields": {
       "provincia": 44,
+      "cod_uny_ciudad": "12301",
       "nombre": "Porvenir",
       "status": true,
       "created_date": "2022-01-06T19:40:06.249Z"
@@ -6905,6 +7228,7 @@
     "pk": 287,
     "fields": {
       "provincia": 44,
+      "cod_uny_ciudad": "12302",
       "nombre": "Primavera",
       "status": true,
       "created_date": "2022-01-06T19:40:06.251Z"
@@ -6915,6 +7239,7 @@
     "pk": 288,
     "fields": {
       "provincia": 44,
+      "cod_uny_ciudad": "12303",
       "nombre": "Timaukel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.254Z"
@@ -6925,6 +7250,7 @@
     "pk": 289,
     "fields": {
       "provincia": 45,
+      "cod_uny_ciudad": "12401",
       "nombre": "Natales",
       "status": true,
       "created_date": "2022-01-06T19:40:06.257Z"
@@ -6935,6 +7261,7 @@
     "pk": 290,
     "fields": {
       "provincia": 45,
+      "cod_uny_ciudad": "12402",
       "nombre": "Torres del Paine",
       "status": true,
       "created_date": "2022-01-06T19:40:06.260Z"
@@ -6945,6 +7272,7 @@
     "pk": 291,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13101",
       "nombre": "Santiago",
       "status": true,
       "created_date": "2022-01-06T19:40:06.263Z"
@@ -6955,6 +7283,7 @@
     "pk": 292,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13102",
       "nombre": "Cerrillos",
       "status": true,
       "created_date": "2022-01-06T19:40:06.266Z"
@@ -6965,6 +7294,7 @@
     "pk": 293,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13103",
       "nombre": "Cerro Navia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.269Z"
@@ -6975,6 +7305,7 @@
     "pk": 294,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13104",
       "nombre": "Conchalí",
       "status": true,
       "created_date": "2022-01-06T19:40:06.272Z"
@@ -6985,6 +7316,7 @@
     "pk": 295,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13105",
       "nombre": "El Bosque",
       "status": true,
       "created_date": "2022-01-06T19:40:06.275Z"
@@ -6995,6 +7327,7 @@
     "pk": 296,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13106",
       "nombre": "Estación Central",
       "status": true,
       "created_date": "2022-01-06T19:40:06.279Z"
@@ -7005,6 +7338,7 @@
     "pk": 297,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13107",
       "nombre": "Huechuraba",
       "status": true,
       "created_date": "2022-01-06T19:40:06.282Z"
@@ -7015,6 +7349,7 @@
     "pk": 298,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13108",
       "nombre": "Independencia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.789Z"
@@ -7025,6 +7360,7 @@
     "pk": 299,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13109",
       "nombre": "La Cisterna",
       "status": true,
       "created_date": "2022-01-06T19:40:06.792Z"
@@ -7035,6 +7371,7 @@
     "pk": 300,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13110",
       "nombre": "La Florida",
       "status": true,
       "created_date": "2022-01-06T19:40:06.795Z"
@@ -7045,6 +7382,7 @@
     "pk": 301,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13111",
       "nombre": "La Granja",
       "status": true,
       "created_date": "2022-01-06T19:40:06.798Z"
@@ -7055,6 +7393,7 @@
     "pk": 302,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13112",
       "nombre": "La Pintana",
       "status": true,
       "created_date": "2022-01-06T19:40:06.802Z"
@@ -7065,6 +7404,7 @@
     "pk": 303,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13113",
       "nombre": "La Reina",
       "status": true,
       "created_date": "2022-01-06T19:40:06.805Z"
@@ -7075,6 +7415,7 @@
     "pk": 304,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13114",
       "nombre": "Las Condes",
       "status": true,
       "created_date": "2022-01-06T19:40:06.808Z"
@@ -7085,6 +7426,7 @@
     "pk": 305,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13115",
       "nombre": "Lo Barnechea",
       "status": true,
       "created_date": "2022-01-06T19:40:06.811Z"
@@ -7095,6 +7437,7 @@
     "pk": 306,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13116",
       "nombre": "Lo Espejo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.814Z"
@@ -7105,6 +7448,7 @@
     "pk": 307,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13117",
       "nombre": "Lo Prado",
       "status": true,
       "created_date": "2022-01-06T19:40:06.817Z"
@@ -7115,6 +7459,7 @@
     "pk": 308,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13118",
       "nombre": "Macul",
       "status": true,
       "created_date": "2022-01-06T19:40:06.820Z"
@@ -7125,6 +7470,7 @@
     "pk": 309,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13119",
       "nombre": "Maipú",
       "status": true,
       "created_date": "2022-01-06T19:40:06.823Z"
@@ -7135,6 +7481,7 @@
     "pk": 310,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13120",
       "nombre": "Ñuñoa",
       "status": true,
       "created_date": "2022-01-06T19:40:06.826Z"
@@ -7145,6 +7492,7 @@
     "pk": 311,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13121",
       "nombre": "Pedro Aguirre Cerda",
       "status": true,
       "created_date": "2022-01-06T19:40:06.829Z"
@@ -7155,6 +7503,7 @@
     "pk": 312,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13122",
       "nombre": "Peñalolén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.832Z"
@@ -7165,6 +7514,7 @@
     "pk": 313,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13123",
       "nombre": "Providencia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.835Z"
@@ -7175,6 +7525,7 @@
     "pk": 314,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13124",
       "nombre": "Pudahuel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.838Z"
@@ -7185,6 +7536,7 @@
     "pk": 315,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13125",
       "nombre": "Quilicura",
       "status": true,
       "created_date": "2022-01-06T19:40:06.840Z"
@@ -7195,6 +7547,7 @@
     "pk": 316,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13126",
       "nombre": "Quinta Normal",
       "status": true,
       "created_date": "2022-01-06T19:40:06.315Z"
@@ -7205,6 +7558,7 @@
     "pk": 317,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13127",
       "nombre": "Recoleta",
       "status": true,
       "created_date": "2022-01-06T19:40:06.318Z"
@@ -7215,6 +7569,7 @@
     "pk": 318,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13128",
       "nombre": "Renca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.321Z"
@@ -7225,6 +7580,7 @@
     "pk": 319,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13129",
       "nombre": "San Joaquín",
       "status": true,
       "created_date": "2022-01-06T19:40:06.324Z"
@@ -7235,6 +7591,7 @@
     "pk": 320,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13130",
       "nombre": "San Miguel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.327Z"
@@ -7245,6 +7602,7 @@
     "pk": 321,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13131",
       "nombre": "San Ramón",
       "status": true,
       "created_date": "2022-01-06T19:40:06.330Z"
@@ -7255,6 +7613,7 @@
     "pk": 322,
     "fields": {
       "provincia": 46,
+      "cod_uny_ciudad": "13132",
       "nombre": "Vitacura",
       "status": true,
       "created_date": "2022-01-06T19:40:06.333Z"
@@ -7265,6 +7624,7 @@
     "pk": 323,
     "fields": {
       "provincia": 47,
+      "cod_uny_ciudad": "13201",
       "nombre": "Puente Alto",
       "status": true,
       "created_date": "2022-01-06T19:40:06.336Z"
@@ -7275,6 +7635,7 @@
     "pk": 324,
     "fields": {
       "provincia": 47,
+      "cod_uny_ciudad": "13202",
       "nombre": "Pirque",
       "status": true,
       "created_date": "2022-01-14T18:48:32.655Z"
@@ -7285,6 +7646,7 @@
     "pk": 325,
     "fields": {
       "provincia": 47,
+      "cod_uny_ciudad": "13203",
       "nombre": "San José de Maipo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.339Z"
@@ -7295,6 +7657,7 @@
     "pk": 326,
     "fields": {
       "provincia": 48,
+      "cod_uny_ciudad": "13301",
       "nombre": "Colina",
       "status": true,
       "created_date": "2022-01-06T19:40:06.343Z"
@@ -7305,6 +7668,7 @@
     "pk": 327,
     "fields": {
       "provincia": 48,
+      "cod_uny_ciudad": "13302",
       "nombre": "Lampa",
       "status": true,
       "created_date": "2022-01-06T19:40:06.346Z"
@@ -7315,6 +7679,7 @@
     "pk": 328,
     "fields": {
       "provincia": 48,
+      "cod_uny_ciudad": "13303",
       "nombre": "Tiltil",
       "status": true,
       "created_date": "2022-01-06T19:40:06.349Z"
@@ -7325,6 +7690,7 @@
     "pk": 329,
     "fields": {
       "provincia": 49,
+      "cod_uny_ciudad": "13401",
       "nombre": "San Bernardo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.352Z"
@@ -7335,6 +7701,7 @@
     "pk": 330,
     "fields": {
       "provincia": 49,
+      "cod_uny_ciudad": "13402",
       "nombre": "Buin",
       "status": true,
       "created_date": "2022-01-06T19:40:06.355Z"
@@ -7345,6 +7712,7 @@
     "pk": 331,
     "fields": {
       "provincia": 49,
+      "cod_uny_ciudad": "13403",
       "nombre": "Calera de Tango",
       "status": true,
       "created_date": "2022-01-06T19:40:06.358Z"
@@ -7355,6 +7723,7 @@
     "pk": 332,
     "fields": {
       "provincia": 49,
+      "cod_uny_ciudad": "13404",
       "nombre": "Paine",
       "status": true,
       "created_date": "2022-01-06T19:40:06.361Z"
@@ -7365,6 +7734,7 @@
     "pk": 333,
     "fields": {
       "provincia": 50,
+      "cod_uny_ciudad": "13501",
       "nombre": "Melipilla",
       "status": true,
       "created_date": "2022-01-06T19:40:06.364Z"
@@ -7375,6 +7745,7 @@
     "pk": 334,
     "fields": {
       "provincia": 50,
+      "cod_uny_ciudad": "13502",
       "nombre": "Alhué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.368Z"
@@ -7385,6 +7756,7 @@
     "pk": 335,
     "fields": {
       "provincia": 50,
+      "cod_uny_ciudad": "13503",
       "nombre": "Curacaví",
       "status": true,
       "created_date": "2022-01-06T19:40:06.371Z"
@@ -7395,6 +7767,7 @@
     "pk": 336,
     "fields": {
       "provincia": 50,
+      "cod_uny_ciudad": "13504",
       "nombre": "María Pinto",
       "status": true,
       "created_date": "2022-01-06T19:40:06.374Z"
@@ -7405,6 +7778,7 @@
     "pk": 337,
     "fields": {
       "provincia": 50,
+      "cod_uny_ciudad": "13505",
       "nombre": "San Pedro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.377Z"
@@ -7415,6 +7789,7 @@
     "pk": 338,
     "fields": {
       "provincia": 51,
+      "cod_uny_ciudad": "13601",
       "nombre": "Talagante",
       "status": true,
       "created_date": "2022-01-06T19:40:06.380Z"
@@ -7425,6 +7800,7 @@
     "pk": 339,
     "fields": {
       "provincia": 51,
+      "cod_uny_ciudad": "13602",
       "nombre": "El Monte",
       "status": true,
       "created_date": "2022-01-06T19:40:06.383Z"
@@ -7435,6 +7811,7 @@
     "pk": 340,
     "fields": {
       "provincia": 51,
+      "cod_uny_ciudad": "13603",
       "nombre": "Isla de Maipo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.386Z"
@@ -7445,6 +7822,7 @@
     "pk": 341,
     "fields": {
       "provincia": 51,
+      "cod_uny_ciudad": "13604",
       "nombre": "Padre Hurtado",
       "status": true,
       "created_date": "2022-01-06T19:40:06.764Z"
@@ -7455,6 +7833,7 @@
     "pk": 342,
     "fields": {
       "provincia": 51,
+      "cod_uny_ciudad": "13605",
       "nombre": "Peñaflor",
       "status": true,
       "created_date": "2022-01-06T19:40:06.440Z"
@@ -7465,6 +7844,7 @@
     "pk": 343,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10104",
       "nombre": "Fresia",
       "status": true,
       "created_date": "2022-01-06T19:40:06.444Z"
@@ -7475,6 +7855,7 @@
     "pk": 344,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10407",
       "nombre": "Curaco de Vélez",
       "status": true,
       "created_date": "2022-01-06T19:40:06.447Z"
@@ -7485,6 +7866,7 @@
     "pk": 345,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10406",
       "nombre": "Puqueldón",
       "status": true,
       "created_date": "2022-01-06T19:40:06.449Z"
@@ -7495,6 +7877,7 @@
     "pk": 346,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10207",
       "nombre": "Queilén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.452Z"
@@ -7505,6 +7888,7 @@
     "pk": 347,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10209",
       "nombre": "Quemchi",
       "status": true,
       "created_date": "2022-01-06T19:40:06.456Z"
@@ -7515,6 +7899,7 @@
     "pk": 348,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10210",
       "nombre": "Quinchao",
       "status": true,
       "created_date": "2022-01-06T19:40:06.460Z"
@@ -7525,6 +7910,7 @@
     "pk": 349,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10302",
       "nombre": "Puerto Octay",
       "status": true,
       "created_date": "2022-01-06T19:40:06.462Z"
@@ -7535,6 +7921,7 @@
     "pk": 350,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10303",
       "nombre": "Purranque",
       "status": true,
       "created_date": "2022-01-06T19:40:06.465Z"
@@ -7545,6 +7932,7 @@
     "pk": 351,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10304",
       "nombre": "Puyehue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.468Z"
@@ -7555,6 +7943,7 @@
     "pk": 352,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10305",
       "nombre": "Río Negro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.471Z"
@@ -7565,6 +7954,7 @@
     "pk": 353,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10306",
       "nombre": "San Juan de la Costa",
       "status": true,
       "created_date": "2022-01-06T19:40:06.474Z"
@@ -7575,6 +7965,7 @@
     "pk": 354,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10402",
       "nombre": "Futaleufú",
       "status": true,
       "created_date": "2022-01-06T19:40:06.478Z"
@@ -7585,6 +7976,7 @@
     "pk": 355,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10403",
       "nombre": "Hualaihué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.480Z"
@@ -7595,6 +7987,7 @@
     "pk": 356,
     "fields": {
       "provincia": 10,
+      "cod_uny_ciudad": "10404",
       "nombre": "Palena",
       "status": true,
       "created_date": "2022-01-06T19:40:06.483Z"
@@ -7605,6 +7998,7 @@
     "pk": 357,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11102",
       "nombre": "Lago Verde",
       "status": true,
       "created_date": "2022-01-06T19:40:06.496Z"
@@ -7615,6 +8009,7 @@
     "pk": 358,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "1",
       "nombre": "Aisén",
       "status": true,
       "created_date": "2022-01-06T19:40:06.499Z"
@@ -7625,6 +8020,7 @@
     "pk": 359,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11202",
       "nombre": "Cisnes",
       "status": true,
       "created_date": "2022-01-06T19:40:06.502Z"
@@ -7635,6 +8031,7 @@
     "pk": 360,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11203",
       "nombre": "Guaitecas",
       "status": true,
       "created_date": "2022-01-06T19:40:06.505Z"
@@ -7645,6 +8042,7 @@
     "pk": 361,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11302",
       "nombre": "O'Higgins",
       "status": true,
       "created_date": "2022-01-06T19:40:06.508Z"
@@ -7655,6 +8053,7 @@
     "pk": 362,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11303",
       "nombre": "Tortel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.511Z"
@@ -7665,6 +8064,7 @@
     "pk": 363,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11401",
       "nombre": "Chile Chico",
       "status": true,
       "created_date": "2022-01-06T19:40:06.514Z"
@@ -7675,6 +8075,7 @@
     "pk": 364,
     "fields": {
       "provincia": 11,
+      "cod_uny_ciudad": "11402",
       "nombre": "Río Ibáñez",
       "status": true,
       "created_date": "2022-01-06T19:40:06.517Z"
@@ -7685,6 +8086,7 @@
     "pk": 365,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12102",
       "nombre": "Laguna Blanca",
       "status": true,
       "created_date": "2022-01-06T19:40:06.524Z"
@@ -7695,6 +8097,7 @@
     "pk": 366,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12103",
       "nombre": "Río Verde",
       "status": true,
       "created_date": "2022-01-06T19:40:06.528Z"
@@ -7705,6 +8108,7 @@
     "pk": 367,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12104",
       "nombre": "San Gregorio",
       "status": true,
       "created_date": "2022-01-06T19:40:06.530Z"
@@ -7715,6 +8119,7 @@
     "pk": 368,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12201",
       "nombre": "Cabo de Hornos (Ex- Navarino)",
       "status": true,
       "created_date": "2022-01-06T19:40:06.533Z"
@@ -7725,6 +8130,7 @@
     "pk": 369,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12202",
       "nombre": "Antártica",
       "status": true,
       "created_date": "2022-01-06T19:40:06.536Z"
@@ -7735,6 +8141,7 @@
     "pk": 370,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12301",
       "nombre": "Porvenir",
       "status": true,
       "created_date": "2022-01-06T19:40:06.539Z"
@@ -7745,6 +8152,7 @@
     "pk": 371,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12302",
       "nombre": "Primavera",
       "status": true,
       "created_date": "2022-01-06T19:40:06.542Z"
@@ -7755,6 +8163,7 @@
     "pk": 372,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12303",
       "nombre": "Timaukel",
       "status": true,
       "created_date": "2022-01-06T19:40:06.545Z"
@@ -7765,6 +8174,7 @@
     "pk": 373,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12401",
       "nombre": "Natales",
       "status": true,
       "created_date": "2022-01-06T19:40:06.548Z"
@@ -7775,6 +8185,7 @@
     "pk": 374,
     "fields": {
       "provincia": 12,
+      "cod_uny_ciudad": "12402",
       "nombre": "Torres del Paine",
       "status": true,
       "created_date": "2022-01-06T19:40:06.551Z"
@@ -7785,6 +8196,7 @@
     "pk": 375,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13115",
       "nombre": "Lo Barnechea",
       "status": true,
       "created_date": "2022-01-06T19:40:06.683Z"
@@ -7795,6 +8207,7 @@
     "pk": 376,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13121",
       "nombre": "Pedro Aguirre Cerda",
       "status": true,
       "created_date": "2022-01-06T19:40:06.687Z"
@@ -7805,6 +8218,7 @@
     "pk": 377,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "1",
       "nombre": "Joaquín",
       "status": true,
       "created_date": "2022-01-06T19:40:06.690Z"
@@ -7815,6 +8229,7 @@
     "pk": 378,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13202",
       "nombre": "Pirque",
       "status": true,
       "created_date": "2022-01-06T19:40:06.693Z"
@@ -7825,6 +8240,7 @@
     "pk": 379,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13203",
       "nombre": "San José de Maipo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.697Z"
@@ -7835,6 +8251,7 @@
     "pk": 380,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13302",
       "nombre": "Lampa",
       "status": true,
       "created_date": "2022-01-06T19:40:06.699Z"
@@ -7845,6 +8262,7 @@
     "pk": 381,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13303",
       "nombre": "Tiltil",
       "status": true,
       "created_date": "2022-01-06T19:40:06.702Z"
@@ -7855,6 +8273,7 @@
     "pk": 382,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13401",
       "nombre": "San Bernardo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.706Z"
@@ -7865,6 +8284,7 @@
     "pk": 383,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13404",
       "nombre": "Paine",
       "status": true,
       "created_date": "2022-01-06T19:40:06.710Z"
@@ -7875,6 +8295,7 @@
     "pk": 384,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13502",
       "nombre": "Alhué",
       "status": true,
       "created_date": "2022-01-06T19:40:06.713Z"
@@ -7885,6 +8306,7 @@
     "pk": 385,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13504",
       "nombre": "María Pinto",
       "status": true,
       "created_date": "2022-01-06T19:40:06.716Z"
@@ -7895,6 +8317,7 @@
     "pk": 386,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13505",
       "nombre": "San Pedro",
       "status": true,
       "created_date": "2022-01-06T19:40:06.718Z"
@@ -7905,6 +8328,7 @@
     "pk": 387,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13602",
       "nombre": "El Monte",
       "status": true,
       "created_date": "2022-01-06T19:40:06.721Z"
@@ -7915,6 +8339,7 @@
     "pk": 388,
     "fields": {
       "provincia": 13,
+      "cod_uny_ciudad": "13603",
       "nombre": "Isla de Maipo",
       "status": true,
       "created_date": "2022-01-06T19:40:06.724Z"
@@ -7925,6 +8350,7 @@
     "pk": 389,
     "fields": {
       "provincia": 8,
+      "cod_uny_ciudad": "1",
       "nombre": "Carampangue",
       "status": true,
       "created_date": "2022-01-06T19:40:06.284Z"
@@ -7935,6 +8361,7 @@
     "pk": 390,
     "fields": {
       "provincia": 30,
+      "cod_uny_ciudad": "7201",
       "nombre": "Cauquenes",
       "status": true,
       "created_date": "2022-01-14T18:58:58.144Z"
@@ -7945,6 +8372,7 @@
     "pk": 391,
     "fields": {
       "provincia": 30,
+      "cod_uny_ciudad": "7202",
       "nombre": "Chanco",
       "status": true,
       "created_date": "2022-01-14T18:59:10.581Z"
@@ -7955,6 +8383,7 @@
     "pk": 392,
     "fields": {
       "provincia": 30,
+      "cod_uny_ciudad": "7203",
       "nombre": "Pelluhue",
       "status": true,
       "created_date": "2022-01-14T18:59:21.341Z"
@@ -14315,6 +14744,16 @@
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
     }
+  },  
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 9,
+    "fields": {
+      "nombre": "Doc. Adicionales",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
   },
   {
     "model": "psicologos.psicologicotipo",
@@ -14421,6 +14860,17 @@
       "status": true,
       "created_date": "2022-01-24T15:52:23.431Z"
     }
-  }
+  },
+  {
+    "model": "firmas.estadofirma",
+    "pk": 1,
+    "fields": {
+      "nombre": "Pendiente de Firma",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03",
+      "created_by": 1,
+      "modified_by": 1
+    }
+  } 
 ]
-  

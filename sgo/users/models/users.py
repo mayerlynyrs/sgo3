@@ -84,6 +84,10 @@ class Salud(models.Model):
         default=True,
         help_text='Para desactivar el sistema de salud, deshabilite esta casilla.'
     )
+    cod_uny_salud = models.CharField(
+        max_length=240,
+        null=True,
+    )
     created_date = models.DateTimeField(
             default=timezone.now,
             null=True,
@@ -108,6 +112,10 @@ class Afp(models.Model):
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la AFP, deshabilite esta casilla.'
+    )
+    cod_uny_afp = models.CharField(
+        max_length=240,
+        null=True,
     )
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -207,6 +215,10 @@ class Banco(models.Model):
         blank=True,
         null=True
     )
+    rut = models.CharField(
+        max_length=120,
+    )
+
     created_date = models.DateTimeField(
             default=timezone.now,
             null=True,
