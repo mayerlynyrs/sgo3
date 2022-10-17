@@ -382,6 +382,7 @@
     "pk": 1,
     "fields": {
       "nombre": "Básico",
+      "cod_uny_estudio": "2",
       "status": true,
       "created_date": "2022-01-06T19:50:41.620Z"
     }
@@ -391,6 +392,7 @@
     "pk": 2,
     "fields": {
       "nombre": "Medio/Liceo Humanista Incompleto",
+      "cod_uny_estudio": "4",
       "status": true,
       "created_date": "2022-01-06T19:50:41.624Z"
     }
@@ -400,6 +402,7 @@
     "pk": 3,
     "fields": {
       "nombre": "Medio/Liceo Humanista Completo",
+      "cod_uny_estudio": "4",
       "status": true,
       "created_date": "2022-01-06T19:50:41.626Z"
     }
@@ -409,6 +412,7 @@
     "pk": 4,
     "fields": {
       "nombre": "Medio/Liceo Técnico Incompleto",
+      "cod_uny_estudio": "3",
       "status": true,
       "created_date": "2022-01-06T19:50:41.629Z"
     }
@@ -418,6 +422,7 @@
     "pk": 5,
     "fields": {
       "nombre": "Medio/Liceo Técnico Completo",
+      "cod_uny_estudio": "5",
       "status": true,
       "created_date": "2022-01-06T19:50:41.631Z"
     }
@@ -427,6 +432,7 @@
     "pk": 6,
     "fields": {
       "nombre": "Técnico Profesional Superior/Técnico Universitario Incompleto",
+      "cod_uny_estudio": "4",
       "status": true,
       "created_date": "2022-01-06T19:50:41.633Z"
     }
@@ -436,6 +442,7 @@
     "pk": 7,
     "fields": {
       "nombre": "Técnico Profesional Superior/Técnico Universitario Completo",
+      "cod_uny_estudio": "6",
       "status": true,
       "created_date": "2022-01-06T19:50:41.636Z"
     }
@@ -445,6 +452,7 @@
     "pk": 8,
     "fields": {
       "nombre": "Universitario Incompleto",
+      "cod_uny_estudio": "4",
       "status": true,
       "created_date": "2022-01-06T19:50:41.638Z"
     }
@@ -454,6 +462,7 @@
     "pk": 9,
     "fields": {
       "nombre": "Universitario Completo",
+      "cod_uny_estudio": "7",
       "status": true,
       "created_date": "2022-01-06T19:50:41.640Z"
     }
@@ -463,6 +472,7 @@
     "pk": 10,
     "fields": {
       "nombre": "Postgrado",
+      "cod_uny_estudio": "9",
       "status": true,
       "created_date": "2022-01-06T19:50:41.642Z"
     }
@@ -472,6 +482,7 @@
     "pk": 11,
     "fields": {
       "nombre": "Magister",
+      "cod_uny_estudio": "9",
       "status": true,
       "created_date": "2022-01-06T19:50:41.645Z"
     }
@@ -481,6 +492,7 @@
     "pk": 12,
     "fields": {
       "nombre": "Doctorado",
+      "cod_uny_estudio": "0",
       "status": true,
       "created_date": "2022-01-06T19:50:41.647Z"
     }

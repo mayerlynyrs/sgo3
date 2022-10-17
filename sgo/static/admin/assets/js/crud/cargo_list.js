@@ -68,6 +68,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
+        $('input[name="cod_uny_cargo"]').val(data.codigo);
         $('textarea[name="descripcion"]').val(data.descripcion);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
@@ -86,6 +87,7 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
+        $('input[name="cod_uny_cargo"]').val(data.codigo);
         $('textarea[name="descripcion"]').val(data.descripcion);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#de555e';

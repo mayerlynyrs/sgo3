@@ -410,6 +410,7 @@ class ClienteIdView(TemplateView):
                 planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
+                planta.cod_uny_planta = request.POST['cod_uny_planta']
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email']
@@ -443,7 +444,8 @@ class ClienteIdView(TemplateView):
                 planta = Planta.objects.get(pk=request.POST['id'])
                 planta.masso = estadomasso
                 planta.psicologico = estadopsico
-                planta.hal2 = estadohal2
+                planta.hal2 = estadohal2    
+                planta.cod_uny_planta = request.POST['cod_uny_planta']
                 planta.negocio_id = request.POST['negocio']
                 planta.rut = request.POST['rut']
                 planta.nombre = request.POST['nombre'].lower()

@@ -51,7 +51,7 @@ from ficheros.models import Fichero
 from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo, Revision, Baja, ContratosParametrosGen
 from requerimientos.models import RequerimientoTrabajador
 from contratos.models import Plantilla
-from users.models import User
+from users.models import User, Trabajador, ValoresDiarioAfp
 from clientes.models import Planta
 # Form
 from contratos.forms import TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
@@ -196,8 +196,9 @@ def exportar_excel_contrato(request):
     'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
     ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
     ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
-    , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo'
-    , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base' )
+    , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','planta__cliente__cod_uny_cliente', 'planta__cod_uny_planta'
+    , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base', 'sueldo_base', 'sueldo_base', 'sueldo_base',"planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "horario__cod_uny_horario", "planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "created_by_id__rut", "trabajador__nivel_estudio__cod_uny_estudio"
+    , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "id", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "id", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
 
     # print('variable row',rows)
 
@@ -227,7 +228,9 @@ def exportar_excel_contrato(request):
             elif(col_num == 11 or col_num == 12 or col_num == 18 or col_num == 19 or col_num == 20 
             or col_num == 21 or col_num == 24  or col_num == 28  or col_num == 29  or col_num == 30  or col_num == 31  or col_num == 32
             or col_num == 34 or col_num == 36 or col_num == 37  or col_num == 38  or col_num == 41 or col_num == 42 or col_num == 43 or col_num == 44 or col_num == 45 
-            or col_num == 46 or col_num == 47 or col_num == 48 or col_num == 49 or col_num == 51 or col_num == 52 or col_num == 53 or col_num == 54 or col_num == 55):
+            or col_num == 46 or col_num == 47 or col_num == 48 or col_num == 49 or col_num == 51 or col_num == 52 or col_num == 53 or col_num == 54 or col_num == 55
+            or col_num == 65 or col_num == 66 or col_num == 67  or col_num == 69 or col_num == 70 or col_num == 73 or col_num == 74 or col_num == 84
+            or col_num == 87 or col_num == 88 or col_num == 89 or col_num == 93):
                 ws.write(row_num, col_num, '', font_style)
             elif(col_num == 15 ):
                 sexo = row[col_num]
@@ -258,11 +261,50 @@ def exportar_excel_contrato(request):
                     ws.write(row_num, col_num,'P', font_style)
                 else:
                     ws.write(row_num, col_num,'UF', font_style)
-                    print('que esta imprimiendo esta mierda', row[col_num])
             elif(col_num == 59 ):
                 ws.write(row_num, col_num,'ZZ', font_style)
             elif(col_num == 60 ):
                 ws.write(row_num, col_num,'003', font_style)
+            elif(col_num == 72 ):
+                ws.write(row_num, col_num,'AO', font_style)
+            elif(col_num == 76 ):
+                ws.write(row_num, col_num,'CTPF', font_style)
+            elif(col_num == 80 ):
+                ws.write(row_num, col_num,'id 1', font_style)
+            elif(col_num == 81 ):
+                if (row[col_num] == True):
+                    ws.write(row_num, col_num,'1', font_style)
+                else:
+                    ws.write(row_num, col_num,'2', font_style)
+            elif(col_num == 85 ):
+                if (row[col_num] != 1):
+                    ws.write(row_num, col_num,'1', font_style)
+                else:
+                    ws.write(row_num, col_num,'', font_style)
+            elif(col_num == 86 ):
+                ws.write(row_num, col_num,'id 3', font_style)
+            elif(col_num == 90):
+                if(row[col_num] is None):
+                    ws.write(row_num, col_num,'', font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num].strftime("%d-%m-%Y"), font_style)
+            elif(col_num == 91 ):
+                if(row[col_num] == 8):
+                    ferido = round((row[92] / 30 ) * 1.25) / 30
+                    feriadorendeado = round(ferido)
+                    total = feriadorendeado + row[93]
+                    ws.write(row_num, col_num, feriadorendeado, font_style)
+                else:
+                    ws.write(row_num, col_num, '', font_style)
+            elif(col_num == 92 ):
+                if(row[91] == 8):
+                    ferido = round((row[92] / 30 ) * 1.25) / 30
+                    feriadorendeado = round(ferido)
+                    total = feriadorendeado + row[93]
+                    ws.write(row_num, col_num, total, font_style)
+                else:
+                    ws.write(row_num, col_num, '', font_style)
+        
             else:
                 ws.write(row_num, col_num, row[col_num], font_style)
     wb.save(response)
@@ -272,8 +314,10 @@ def exportar_excel_contrato(request):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create(request):
- 
-    requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+    
+    requrimientotrabajador = request.POST['requerimiento_trabajador_id']
+    trabajador = get_object_or_404(Trabajador, pk=request.POST['trabajador_id'])
+    sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id ) 
     contrato = Contrato()
     contrato.causal_id = request.POST['causal']
     contrato.motivo = request.POST['motivo']
@@ -285,6 +329,7 @@ def create(request):
         contrato.tipo_documento_id = request.POST['tipo_documento']
         contrato.sueldo_base = request.POST['sueldo_base']
     else:
+        contrato.sueldo_base = sueldomensual
         contrato.fecha_termino = request.POST['fecha_inicio']
         contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
         contrato.tipo_documento_id = 8
@@ -430,6 +475,7 @@ def aprobacion_masiva(request, aprobacion):
 def update_contrato(request, contrato_id, template_name='contratos/contrato_update.html'):
             data = dict()
             contrato = get_object_or_404(Contrato, pk=contrato_id)
+            trabajador = get_object_or_404(Trabajador, pk=contrato.trabajador_id)
             try:
                 revision = Revision.objects.get(contrato_id=contrato_id)
             except:
@@ -438,6 +484,7 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
    
             requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=contrato.requerimiento_trabajador_id)
             if request.method == 'POST':
+                sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id )
                 contrato.motivo = request.POST['motivo']
                 contrato.fecha_inicio = request.POST['fecha_inicio']
                 contrato.horario_id = request.POST['horario']
@@ -449,7 +496,7 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                     contrato.tipo_documento_id = request.POST['tipo_documento']
                     contrato.sueldo_base = request.POST['sueldo_base']
                 else:
-                    contrato.sueldo_base = 0
+                    contrato.sueldo_base = sueldomensual
                     contrato.fecha_termino = request.POST['fecha_inicio']
                     contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
                     contrato.tipo_documento_id = 8
@@ -733,7 +780,7 @@ class ContratoIdView(TemplateView):
         try:
             contrato = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
             print(contrato.fecha_termino_ultimo_anexo)
-            ahora = datetime.datetime.now().strftime("%Y-%m-%d")
+            ahora = datetime.now().strftime("%Y-%m-%d")
             print('ahora',ahora)
             dias = contrato.fecha_termino_ultimo_anexo - ahora
             print('los dias son', dias)

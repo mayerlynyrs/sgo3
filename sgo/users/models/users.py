@@ -100,6 +100,7 @@ class Salud(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['nombre'] = self.nombre.title()
+        item['codigo'] = self.cod_uny_salud.title()
         return item
 
 
@@ -129,6 +130,7 @@ class Afp(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['nombre'] = self.nombre.title()
+        item['codigo'] = self.cod_uny_afp.title()
         return item
 
 
@@ -184,6 +186,10 @@ class NivelEstudio(models.Model):
     nombre = models.CharField(
         max_length=120,
         unique=True
+    )
+    cod_uny_estudio = models.CharField(
+        max_length=240,
+        null=True,
     )
     status = models.BooleanField(
         default=True,

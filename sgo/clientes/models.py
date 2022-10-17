@@ -135,6 +135,10 @@ class Cliente(BaseModel):
         verbose_name="Dirección",
         max_length=200
     )
+    cod_uny_cliente = models.CharField(
+        max_length=240,
+        null=True,
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el cliente, deshabilite esta casilla.'
@@ -230,7 +234,10 @@ class Planta(models.Model):
             'unique': 'Ya existe un negocio con este email registrado.'
         }
     )
-
+    cod_uny_planta = models.CharField(
+        max_length=240,
+        null=True,
+    )
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
     cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
@@ -287,6 +294,7 @@ class Planta(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['nombre'] = self.nombre.title()
+        item['codigo'] = self.cod_uny_planta
         item['negocio'] = self.negocio.nombre.title()
         item['negocio_id'] = self.negocio.id
         item['region_id'] = self.region.id

@@ -222,6 +222,10 @@ class Cargo(models.Model):
         item = model_to_dict(self)
         item['nombre'] = self.nombre.title()
         item['alias'] = self.alias.title()
+        if (self.cod_uny_cargo):
+            item['codigo'] = self.cod_uny_cargo.title()
+        else:
+            item['codigo'] = ' '
         return item
     
 
@@ -256,6 +260,10 @@ class Horario(models.Model):
    
     nombre = models.CharField(max_length=120, unique=True)
     descripcion = models.TextField('Descripción', blank=True, null=True, unique=True)
+    cod_uny_horario = models.CharField(
+        max_length=240,
+        null=True,
+    )
 
     status = models.BooleanField(
         default=True,

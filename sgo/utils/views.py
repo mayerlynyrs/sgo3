@@ -171,6 +171,7 @@ class CargoView(TemplateView):
                 cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
                 cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
+                cargo.cod_uny_cargo =request.POST['cod_uny_cargo']
                 cargo.status = True
                 # espec.created_date = request.POST['created_date']
                 cargo.save()
@@ -179,6 +180,7 @@ class CargoView(TemplateView):
                 cargo.nombre = request.POST['nombre'].lower()
                 cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
+                cargo.cod_uny_cargo =request.POST['cod_uny_cargo']
                 cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
                 cargo.save()
             elif action == 'delete':
@@ -315,12 +317,14 @@ class SaludView(TemplateView):
             elif action == 'add':
                 salud = Salud()
                 salud.nombre = request.POST['nombre'].lower()
+                salud.cod_uny_salud = request.POST['cod_uny_salud']
                 salud.status = True
                 # espec.created_date = request.POST['created_date']
                 salud.save()
             elif action == 'edit':
                 salud = Salud.objects.get(pk=request.POST['id'])
                 salud.nombre = request.POST['nombre'].lower()
+                salud.cod_uny_salud = request.POST['cod_uny_salud']
                 salud.save()
             elif action == 'delete':
                 salud = Salud.objects.get(pk=request.POST['id'])
@@ -361,12 +365,14 @@ class AfpView(TemplateView):
                 previs = Afp()
                 previs.nombre = request.POST['nombre'].lower()
                 previs.tasa = request.POST['tasa']
+                previs.cod_uny_afp = request.POST['cod_uny_afp']
                 previs.status = True
                 # espec.created_date = request.POST['created_date']
                 previs.save()
             elif action == 'edit':
                 previs = Afp.objects.get(pk=request.POST['id'])
                 previs.nombre = request.POST['nombre'].lower()
+                previs.cod_uny_afp = request.POST['cod_uny_afp']
                 previs.tasa = request.POST['tasa']
                 previs.save()
             elif action == 'delete':

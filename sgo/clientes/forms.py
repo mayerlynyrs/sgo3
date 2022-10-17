@@ -29,6 +29,9 @@ class CrearClienteForm(forms.ModelForm):
                              widget=forms.TextInput(attrs={'class': "form-control" }))
     giro = forms.CharField(required=True, label="Giro",
                              widget=forms.TextInput(attrs={'class': "form-control"}))
+    cod_uny_cliente = forms.CharField(required=True, label="Código Unysoft",
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
+
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     
@@ -91,7 +94,8 @@ class CrearClienteForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('horario', css_class='form-group col-md-12 mb-0'),
+                Column('cod_uny_cliente', css_class='form-group col-md-6 mb-0'),
+                Column('horario', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),         
 
@@ -110,7 +114,7 @@ class CrearClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ("rut", "razon_social", "giro", "abreviatura", "email", "telefono", "area", "cargo", "horario",
-                  "direccion", "region", "provincia", "ciudad", )
+                  "direccion", "region", "provincia", "ciudad", "cod_uny_cliente")
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",
@@ -146,6 +150,8 @@ class EditarClienteForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    cod_uny_cliente = forms.CharField(required=True, label="Código Unysoft",
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
     cargo = forms.ModelMultipleChoiceField(queryset=Cargo.objects.all(), required=True, label="Cargos",
                                             widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -222,7 +228,8 @@ class EditarClienteForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('horario', css_class='form-group col-md-12 mb-0'),
+                Column('cod_uny_cliente', css_class='form-group col-md-6 mb-0'),
+                Column('horario', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
         )
@@ -240,7 +247,7 @@ class EditarClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ("rut", "razon_social", "giro", "abreviatura", "email", "telefono", "area", "cargo", "horario",
-                  "direccion", "region", "provincia", "ciudad", )
+                  "direccion", "region", "provincia", "ciudad", "cod_uny_cliente")
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",
@@ -335,7 +342,10 @@ class PlantaForm(forms.ModelForm):
                                                                    }))
     hal2 =forms.BooleanField(required=False,label='Hal2',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
-                                                                   'disabled':'disabled',}))
+                                                                   'disabled':'disabled',})) 
+    cod_uny_planta = forms.CharField(required=True, label="Código Unysoft",
+                                 widget=forms.TextInput(attrs={'class': "form-control "}))
+
 
     def __init__(self, *args, **kwargs):
         planta = kwargs.pop('planta', None)
@@ -420,7 +430,7 @@ class PlantaForm(forms.ModelForm):
 
     class Meta:
         model = Planta
-        fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion', 'psicologico', 'hal2')
+        fields = ('rut','nombre', 'rut_gerente','nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'negocio', 'gratificacion', 'bono', 'region', 'provincia', 'ciudad', 'direccion', 'psicologico', 'hal2', 'cod_uny_planta')
 
 
 class ContactoPlantaForm(forms.ModelForm):
