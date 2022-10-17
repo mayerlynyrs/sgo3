@@ -17,6 +17,7 @@ function getData() {
         },
         columns: [
             {"data": "nombre"},
+            {"data": "codigo"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -65,6 +66,7 @@ $(function () {
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
+        $('input[name="cod_uny_salud"]').val(data.codigo);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
@@ -81,6 +83,7 @@ $(function () {
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
+        $('input[name="cod_uny_salud"]').val(data.codigo);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';

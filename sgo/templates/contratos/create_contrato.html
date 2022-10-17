@@ -184,7 +184,7 @@
                   <td >{{ con.motivo }}</td>
                   <td>Inicio: {{ con.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ con.fecha_termino|date:'d-m-Y' }} </td>
                   <td >{{ con.horario__nombre }}</td>
-                  <td>$ {% if con.sueldo_base != 0 %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
+                  <td>$ {% if con.valores_diario__valor_diario is None %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
                   <td >
                     {% if con.estado_contrato == 'CR' or con.estado_contrato == 'RC'   %}
                     <button data-id="{{ con.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">

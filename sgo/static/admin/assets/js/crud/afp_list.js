@@ -18,6 +18,7 @@ function getData() {
         columns: [
             {"data": "nombre"},
             {"data": "tasa"},
+            {"data": "codigo"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -65,7 +66,8 @@ $(function () {
         var data = tblAfp.row(tr.row).data();
         $('input[name="action"]').val('edit');
         $('input[name="id"]' ).val(data.id);
-        $('input[name="nombre"]').val(data.nombre);
+        $('input[name="nombre"]').val(data.nombre);        
+        $('input[name="cod_uny_afp"]').val(data.codigo);
         $('input[name="tasa"]').val(data.tasa);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
@@ -83,6 +85,7 @@ $(function () {
         $('input[name="action"]').val('delete');
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
+        $('input[name="cod_uny_afp"]').val(data.codigo);
         $('input[name="tasa"]').val(data.tasa);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#de555e';

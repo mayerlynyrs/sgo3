@@ -89,6 +89,7 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('select[name="negocio"]').val(data.negocio_id).trigger("change");
         $('input[name="rut"]').val(data.rut);
+        $('input[name="cod_uny_planta"]').val(data.codigo);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="email"]').val(data.email);
@@ -131,6 +132,7 @@ $(function () {
         $('input[name="rut"]').val(data.rut);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
+        $('input[name="cod_uny_planta"]').val(data.codigo);
         $('input[name="email"]').val(data.email);
         $('select[name="region"]').val(data.region_id).trigger("change");
         $('select[name="provincia"]').val(data.provincia_id).trigger("change");

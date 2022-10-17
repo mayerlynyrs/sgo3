@@ -25,6 +25,8 @@ class CargoForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     alias = forms.CharField(required=True,
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+    cod_uny_cargo = forms.CharField(required=True, label="Codigo Unysoft",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     descripcion = forms.CharField (required=True, label="Descripción",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
 
@@ -33,7 +35,7 @@ class CargoForm(forms.ModelForm):
 
     class Meta:
         model = Cargo
-        fields = ("nombre", "alias", "descripcion",)
+        fields = ("nombre", "alias", "cod_uny_cargo", "descripcion")
 
 
 class HorarioForm(forms.ModelForm):
@@ -69,18 +71,24 @@ class BonoForm(forms.ModelForm):
 class SaludForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 
+    cod_uny_salud = forms.CharField(required=True, label="Código Unysoft",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
 
     def __init__(self, *args, **kwargs):
         super(SaludForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Salud
-        fields = ("nombre",)
+        fields = ("nombre", "cod_uny_salud",)
 
 
 class AfpForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+    cod_uny_afp = forms.CharField(required=True, label="Código AFP",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+
     tasa = forms.FloatField(required=True, label="Tasa",
                                  widget=forms.NumberInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
 
@@ -89,7 +97,7 @@ class AfpForm(forms.ModelForm):
 
     class Meta:
         model = Afp
-        fields = ("nombre", "tasa",)
+        fields = ("nombre","cod_uny_afp", "tasa",)
 
 
 class ValoresDiarioForm(forms.ModelForm):
