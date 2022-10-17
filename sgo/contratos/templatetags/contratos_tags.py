@@ -11,7 +11,8 @@ def estado_firma(value):
 
     estado = {
         Contrato.POR_FIRMAR: '<span class="label label-warning"><i class="fa fa-chain margin-r-5"></i>POR FIRMAR</span>',
-        Contrato.FIRMADO_TRABAJADOR: '<span class="label label-success"><i class="fa fa-lock margin-r-5"></i> FIRMADO TRABAJADOR</span>',
+        Contrato.ENVIADO_FIRMAR: '<span class="label label-info"><i class="fa fa-lock margin-r-5"></i>ENVIADO FIRMAR</span>',
+        Contrato.FIRMADO_TRABAJADOR: '<span class="label label-success"><i class="fa fa-lock margin-r-5"></i>FIRMADO TRABAJADOR</span>',
         Contrato.FIRMADO_EMPLEADOR: '<span class="label label-purple">FIRMADO EMPLEADOR</span>',
         Contrato.FIRMADO: '<span class="label label-green">FIRMADO</span>',
         Contrato.OBJETADO: '<span class="label label-danger">OBJETADO</span>',

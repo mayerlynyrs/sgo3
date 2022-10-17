@@ -211,7 +211,6 @@ class Banco(models.Model):
     codigo = models.CharField(
         'código',
         max_length=3,
-        unique=True,
         blank=True,
         null=True
     )

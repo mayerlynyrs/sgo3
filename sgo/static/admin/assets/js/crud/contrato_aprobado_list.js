@@ -23,8 +23,8 @@ function getData() {
                 return data;
             }},
             
-            {"data": "solicitante"},
             {"data": "trabajador"},
+            {"data": "requerimiento"},
             {"data": "plazos"},
             {"data": "contrato"},
             {"data": "estado_firma",
@@ -44,8 +44,8 @@ function getData() {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="#"  rel="aprobar" title="Enviar a Firma" class="btn btn-green btn-xs btn-flat btnEdit"><i class="fa fa-check-square"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<a href="#"  rel="rechazar" title="'+data+'" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    var buttons = '<a href="#"  rel="aprobar" title="Enviar a Firma" class="btn btn-outline-success btn-xs btn-flat btnEdit"><i class="fa fa-signature"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    // buttons += '<a href="#"  rel="rechazar" title="'+data+'" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     buttons += '<button   data-id="'+data+'" name="estado" value="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
