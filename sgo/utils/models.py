@@ -114,7 +114,7 @@ class Ciudad(models.Model):
         default=True,
         help_text='Para desactivar la ciudad, deshabilite esta casilla.'
     )
-    cod_uny_ciudad = models.CharField(max_length=250)
+    cod_uny_ciudad = models.CharField(max_length=250, null=True)
     created_date = models.DateTimeField(
             default=timezone.now,
             null=True,

@@ -1,14 +1,15 @@
-from django.shortcuts import render
-
 # Create your views here.
 """Firmas  Views."""
 
 import os
 import base64
 import requests
-import json
+import json 
+import sys
 from datetime import date, datetime
+from queue import Empty
 # Django
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +17,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.http import Http404, JsonResponse
 # Model
-from contratos.models import Contrato
+from contratos.models import Contrato, DocumentosContrato
 from firmas.models import Firma
 
 
@@ -37,48 +38,53 @@ class ContratoAprobadoList(TemplateView):
                 for i in Contrato.objects.filter(estado_contrato='AP', status=True):
                     data.append(i.toJSON())
             elif action == 'aprobar':
-                # Variables para la API
+                # Inicio integración de la API
                 contrato = Contrato.objects.get(pk=request.POST['id'])
                 nombre_archivo = Contrato.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
-                print('nombre archivo ', contrato.archivo)
-                # exit()
                 with open(nombre_archivo, "rb") as pdf_file:
                     documento = base64.b64encode(pdf_file.read()).decode('utf-8')
                 document = f'{documento}'
-                # print('document ', document)
                 
                 url = "https://app.ecertia.com/api/EviSign/Submit"
+
+                doc_adicionales = DocumentosContrato.objects.filter(contrato_id  = request.POST['id'])
+                data = {}
+                try:
+                    if not doc_adicionales == Empty:
+                        data = []
+                        doc_contrato = []
+                        orden = 0
+                        for i in DocumentosContrato.objects.filter(contrato_id  = request.POST['id']):
+                            orden = orden + 1
+                            nombre = str(i.archivo).split("\\")
+                            nombre_pdf = nombre[-1]
+                            da_archivo = str(i.archivo)
+                            with open(da_archivo, "rb") as pdf_file:
+                                documento_ad = base64.b64encode(pdf_file.read()).decode('utf-8')
+                            doc_ad_base64 = f'{documento_ad}'
+                            # exit()
+                                
+                            doc_contrato.append({
+                                "Filename": nombre_pdf,
+                                "MimeType": "application/pdf",
+                                "Data": doc_ad_base64,
+                                "attributes": [
+                                    {
+                                        "Key": "RequireContentCommitment", "Value": True
+                                    },
+                                    {
+                                        "Key": "RequireContentCommitmentOrder", "Value": orden
+                                    }
+                                ]
+                            })
+                except Exception as e:
+                    data['error'] = str(e)
 
                 payload = json.dumps({
                 "Subject": "Prueba Firma Contrato",
                 "Document": document,
-                "Attachments": [
-                    {
-                        "Filename": "attach1.pdf",
-                        "MimeType": "application/pdf",
-                        "Data": "JVBERi0xLjEKJcKlwrHDqwoKMSAwIG9iagogIDw8IC9UeXBlIC9DYXRhbG9nCiAgICAgL1BhZ2VzIDIgMCBSCiAgPj4KZW5kb2JqCgoyIDAgb2JqCiAgPDwgL1R5cGUgL1BhZ2VzCiAgICAgL0tpZHMgWzMgMCBSXQogICAgIC9Db3VudCAxCiAgICAgL01lZGlhQm94IFswIDAgNTk1IDgyMl0KICA+PgplbmRvYmoKCjMgMCBvYmoKICA8PCAgL1R5cGUgL1BhZ2UKICAgICAgL1BhcmVudCAyIDAgUgogICAgICAvUmVzb3VyY2VzCiAgICAgICA8PCAvRm9udAogICAgICAgICAgIDw8IC9GMQogICAgICAgICAgICAgICA8PCAvVHlwZSAvRm9udAogICAgICAgICAgICAgICAgICAvU3VidHlwZSAvVHlwZTEKICAgICAgICAgICAgICAgICAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgogICAgICAgICAgICAgICA+PgogICAgICAgICAgID4+CiAgICAgICA+PgogICAgICAvQ29udGVudHMgNCAwIFIKICA+PgplbmRvYmoKCjQgMCBvYmoKICA8PCAvTGVuZ3RoIDU1ID4+CnN0cmVhbQogIEJUCiAgICAvRjEgMTggVGYKICAgIDE4MCA3MDAgVGQKICAgIChFVklDRVJUSUEgLSBUZXN0IERvY3VtZW50KSBUagogIEVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxOCAwMDAwMCBuIAowMDAwMDAwMDc3IDAwMDAwIG4gCjAwMDAwMDAxNzggMDAwMDAgbiAKMDAwMDAwMDQ1NyAwMDAwMCBuIAp0cmFpbGVyCiAgPDwgIC9Sb290IDEgMCBSCiAgICAgIC9TaXplIDUKICA+PgpzdGFydHhyZWYKNTY1CiUlRU9G",
-                        "attributes": [
-                            {
-                                "Key": "RequireContentCommitment", "Value": True
-                            },
-                            { "Key": "RequireContentCommitmentOrder", "Value": 1
-                            }
-                        ]
-                    },
-                    {
-                        "Filename": "attach2.pdf",
-                        "MimeType": "application/pdf",
-                        "Data": "JVBERi0xLjEKJcKlwrHDqwoKMSAwIG9iagogIDw8IC9UeXBlIC9DYXRhbG9nCiAgICAgL1BhZ2VzIDIgMCBSCiAgPj4KZW5kb2JqCgoyIDAgb2JqCiAgPDwgL1R5cGUgL1BhZ2VzCiAgICAgL0tpZHMgWzMgMCBSXQogICAgIC9Db3VudCAxCiAgICAgL01lZGlhQm94IFswIDAgNTk1IDgyMl0KICA+PgplbmRvYmoKCjMgMCBvYmoKICA8PCAgL1R5cGUgL1BhZ2UKICAgICAgL1BhcmVudCAyIDAgUgogICAgICAvUmVzb3VyY2VzCiAgICAgICA8PCAvRm9udAogICAgICAgICAgIDw8IC9GMQogICAgICAgICAgICAgICA8PCAvVHlwZSAvRm9udAogICAgICAgICAgICAgICAgICAvU3VidHlwZSAvVHlwZTEKICAgICAgICAgICAgICAgICAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgogICAgICAgICAgICAgICA+PgogICAgICAgICAgID4+CiAgICAgICA+PgogICAgICAvQ29udGVudHMgNCAwIFIKICA+PgplbmRvYmoKCjQgMCBvYmoKICA8PCAvTGVuZ3RoIDU1ID4+CnN0cmVhbQogIEJUCiAgICAvRjEgMTggVGYKICAgIDE4MCA3MDAgVGQKICAgIChFVklDRVJUSUEgLSBUZXN0IERvY3VtZW50KSBUagogIEVUCmVuZHN0cmVhbQplbmRvYmoKCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxOCAwMDAwMCBuIAowMDAwMDAwMDc3IDAwMDAwIG4gCjAwMDAwMDAxNzggMDAwMDAgbiAKMDAwMDAwMDQ1NyAwMDAwMCBuIAp0cmFpbGVyCiAgPDwgIC9Sb290IDEgMCBSCiAgICAgIC9TaXplIDUKICA+PgpzdGFydHhyZWYKNTY1CiUlRU9G",
-                        "attributes": [
-                            {
-                                "Key": "RequireContentCommitment", "Value": True
-                            },
-                            {
-                                "Key": "RequireContentCommitmentOrder", "Value": 2
-                            }
-                        ]
-                    }
-                ],
+                "Attachments": 
+                    doc_contrato,
                 "SigningParties": {
                     "Name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
                     "Address": contrato.trabajador.email,
@@ -93,15 +99,15 @@ class ContratoAprobadoList(TemplateView):
                 "Issuer": "EVISA"
                 })
                 headers = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
-                'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
-                }
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+                            }
 
                 response = requests.request("POST", url, headers=headers, data=payload)
 
-                print(response.text)
+                print('API', response.text)
                 contrato = Contrato.objects.get(pk=request.POST['id'])
                 contrato.estado_firma = 'EF'
                 contrato.obs = response.text
@@ -119,17 +125,6 @@ class ContratoAprobadoList(TemplateView):
                 # contrato.save()
 
                 # exit()
-            # elif action == 'rechazar':
-            #     revision = Revision.objects.get(contrato_id=request.POST['id'])
-            #     revision.estado = 'RC'
-            #     revision.obs = request.POST['obs']
-            #     revision.save()
-            #     contrato = Contrato.objects.get(pk=request.POST['id'])
-            #     url = contrato.archivo
-            #     os.remove(str(url))
-            #     contrato.archivo = None
-            #     contrato.estado_contrato = 'RC'
-            #     contrato.save()
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

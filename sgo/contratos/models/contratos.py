@@ -19,6 +19,7 @@ from requerimientos.models import RequerimientoTrabajador, Causal, Requerimiento
 
 User = get_user_model()
 
+
 class Renuncia(BaseModel):
     nombre = models.CharField(max_length=250)
     archivo = models.FileField(
@@ -149,7 +150,8 @@ class Contrato(BaseModel):
             item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.valores_diario.valor_diario)
         else:
             item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() +  "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.sueldo_base)  
-        item['requerimiento'] = "Planta : " + self.planta.nombre.title()
+        item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title()
+        # item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title() + "<br> Solicitante: " + self.created_by.first_name.title() + " " + self.created_by.last_name.title()
         item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
@@ -160,6 +162,58 @@ class Contrato(BaseModel):
 
 def contrato_directory_path(instance, filename):
     return '/'.join(['contratos', str(instance.contrato.trabajador.id), filename])
+
+
+#DocAdicional
+class DocumentosContrato(BaseModel):
+    archivo = models.FileField(upload_to=contrato_directory_path,
+                               validators=[
+                                   FileExtensionValidator(allowed_extensions=['pdf', ])])
+    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
+    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.CASCADE)
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el Documento, deshabilite esta casilla.'
+    )
+
+    class Meta:
+        ordering = ['contrato']
+        verbose_name = "Documento"
+        verbose_name_plural = "Documentos"
+
+    def __str__(self):
+        return str(self.contrato.trabajador) + '-' + self.nombre_archivo
+    
+    def toJSON(self):
+        item = model_to_dict(self) 
+        item['archivo'] = str(self.archivo).zfill(0)
+        item['contrato'] = self.contrato.id
+        item['tipo_documento_id'] = self.tipo_documento.id
+        item['tipo_documento'] = self.tipo_documento.nombre.title()
+        return item
+
+    @property
+    def nombre_archivo(self):
+        return os.path.basename(self.archivo.name)
+
+
+class ContratosBono(models.Model):
+    valor = models.IntegerField(default=0)
+    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
+    bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
+
+    status = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el bono, deshabilite esta casilla.'
+    )                                                                                                                                                                                                                
+    created_date = models.DateTimeField(
+        default= timezone.now,
+        null=True,
+        blank=True
+    )
+    def __str__(self):
+        return str(self.valor)
+
 
 class Anexo(BaseModel):
     POR_FIRMAR = 'PF'
@@ -238,47 +292,6 @@ class Anexo(BaseModel):
 def contrato_directory_path(instance, filename):
     return '/'.join(['contratos', str(instance.contrato.trabajador.id), filename])
 
-class DocumentosContrato(BaseModel):
-    archivo = models.FileField(upload_to=contrato_directory_path,
-                               validators=[
-                                   FileExtensionValidator(allowed_extensions=['pdf', ])])
-    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
-    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.CASCADE)
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el Documento, deshabilite esta casilla.'
-    )
-
-    class Meta:
-        ordering = ['contrato']
-        verbose_name = "Documento"
-        verbose_name_plural = "Documentos"
-
-    def __str__(self):
-        return str(self.contrato.trabajador) + '-' + self.nombre_archivo
-
-    @property
-    def nombre_archivo(self):
-        return os.path.basename(self.archivo.name)
-
-
-class ContratosBono(models.Model):
-    valor = models.IntegerField(default=0)
-    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
-    bono = models.ForeignKey(Bono, on_delete=models.CASCADE)
-
-    status = models.BooleanField(
-        default=True,
-        help_text='Para desactivar el bono, deshabilite esta casilla.'
-    )                                                                                                                                                                                                                
-    created_date = models.DateTimeField(
-        default= timezone.now,
-        null=True,
-        blank=True
-    )
-    def __str__(self):
-        return str(self.valor)
-
 
 class Finiquito(BaseModel):
     total_pagar = models.IntegerField(default=0)
@@ -292,6 +305,7 @@ class Finiquito(BaseModel):
     def __str__(self):
         return str(self.total_pagar)
 
+
 class ContratosEquipo(BaseModel):
     cantidad = models.IntegerField(default=0)
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
@@ -303,6 +317,7 @@ class ContratosEquipo(BaseModel):
     
     def __str__(self):
         return str(self.cantidad)
+
 
 class Revision(BaseModel):
 
@@ -327,7 +342,6 @@ class Revision(BaseModel):
     def __str__(self):
         return self.obs
 
-        
 
 class MotivoBaja(BaseModel):
     """Modelo Motivo baja.
@@ -345,6 +359,7 @@ class MotivoBaja(BaseModel):
 
     def __str__(self):
         return self.nombre
+
 
 class Baja(BaseModel):
 
@@ -417,7 +432,6 @@ class Baja(BaseModel):
         return item
 
         
-
 class TemporalContratoDia(BaseModel):
     """Modelo temporal contrato dia .
     """
