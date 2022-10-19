@@ -770,7 +770,7 @@ class ContratoIdView(TemplateView):
     def get_context_data(self, requerimiento_trabajador_id, **kwargs):
         anex = 'NO'
         finiquito = 'NO'
-        requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id)
+        requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id, status= True)
         try:
             contrato = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
             print(contrato.fecha_termino_ultimo_anexo)
@@ -799,7 +799,7 @@ class ContratoIdView(TemplateView):
                 'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
         context['contratos'] = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True ).values( 'id', 'valores_diario__valor_diario',
                 'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
-                 'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio' )
+                 'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio', 'tipo_documento' )
         context['anexos'] = Anexo.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).values( 'id', 'estado_anexo',
                 'requerimiento_trabajador', 'nueva_renta', 'contrato__tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
                  'fecha_termino' ).order_by('fecha_inicio')
@@ -810,7 +810,7 @@ class ContratoIdView(TemplateView):
         contrato_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).exists()
         if(contrato_diario == True):
             # La fecha de inicio y la fecha de termino es la misma en contrato diario
-            fecha_diario = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
+            fecha_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
             inicio_termino = str(fecha_diario.fecha_termino)
             if (now.strftime("%Y-%m-%d") > inicio_termino):
                 finiquito = 'SI'

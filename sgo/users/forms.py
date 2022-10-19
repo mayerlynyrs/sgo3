@@ -17,7 +17,7 @@ from django.forms import TextInput
 from clientes.models import Cliente, Negocio, Planta
 from utils.models import Region, Provincia, Ciudad
 from examenes.models import Evaluacion , Examen
-from users.models import Trabajador, Civil, Salud, Afp, Profesion, ProfesionTrabajador, Especialidad, NivelEstudio, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoTrabajador, ListaNegra
+from users.models import Trabajador, Civil, Salud, Afp, Profesion, ProfesionTrabajador, Especialidad, NivelEstudio, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoTrabajador, ListaNegra, Banco , Nacionalidad, Ciudad
 
 User = get_user_model()
 
@@ -298,6 +298,8 @@ class CrearTrabajadorForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control" }))
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    telefono2 = forms.CharField(required=True, label="Teléfono",
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD-MM-AAAA','class': "form-control", 'autocomplete':'off' ,'id':"fecha"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
@@ -314,8 +316,22 @@ class CrearTrabajadorForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
+    nacionalidad = forms.ModelChoiceField(queryset=Nacionalidad.objects.filter(status=True), required=True, label="Nacionalidad",
+                                            widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.filter(status=True), required=True, label="Ciudad",
+                                            widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
     pacto_uf = forms.CharField(required=True, label="Pacto UF",
-                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -350,6 +366,13 @@ class CrearTrabajadorForm(forms.ModelForm):
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
                                             widget=forms.Select(
                                                 attrs={'class': 'show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    banco = forms.ModelChoiceField(queryset=Banco.objects.filter(status=True), required=True, label="Banco",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
                                                               'data-live-search-normalize': 'true'
@@ -501,6 +524,8 @@ class EditarTrabajadorForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     email = forms.EmailField(required=True,
+                             widget=forms.EmailInput(attrs={'class': "form-control"}))
+    domicilio = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",

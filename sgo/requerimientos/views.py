@@ -36,7 +36,7 @@ from requerimientos.models import Requerimiento, AreaCargo, RequerimientoTrabaja
 from clientes.models import Negocio, Planta
 from utils.models import PuestaDisposicion, Gratificacion
 from contratos.models import Plantilla
-from users.models import User
+from users.models import User, Trabajador, ListaNegra
 from epps.models import Convenio, ConvenioRequerimiento, ConvenioRequerTrabajador, AsignacionTrabajador
 from examenes.models import Requerimiento as RequerimientoExam
 # Form
@@ -599,6 +599,11 @@ class RequerimientoIdView(TemplateView):
         pk = requerimiento_id
         quantity = RequerimientoTrabajador.objects.filter(requerimiento_id=pk).count()
 
+
+        listanegra = ListaNegra.objects.values_list('trabajador_id', flat=True).filter(status = True)
+  
+        trabajadores = Trabajador.objects.filter(is_active = True).exclude(id__in=listanegra)
+
         context = super().get_context_data(**kwargs)
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
         context['update_url'] = reverse_lazy('requerimientos:update')
@@ -611,7 +616,7 @@ class RequerimientoIdView(TemplateView):
                                    cantidad=quantity
                                    )
         context['form3'] = ConvenioRequerForm(instance=requerimiento, convenio=convenio_plant, area_cargo=ac)
-        context['form4'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac)
+        context['form4'] = RequeriTrabajadorForm(instance=requerimiento, area_cargo=ac,trab = trabajadores)
         context['form5'] = AsignacionTrabajadorForm(instance=requerimiento)
         # context['req_trab'] = RequerimientoTrabajador(instance=requerimiento, pk=requerimiento_id)
         context['trabajadores'] = RequerimientoTrabajador.objects.filter(requerimiento_id=requerimiento_id, status=True)
@@ -766,18 +771,7 @@ def a_puesta_disposicion(request, requerimiento_id):
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Trae la plantilla que tiene la planta
-    # formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
-    # formato = get_object_or_404(Plantilla, plantas=plant_template, tipo_id=3)
-    # print('formato', formato)
-    # try:
-    #     if not get_object_or_404(Plantilla, plantas=plant_template, tipo_id=3).exists():
-    #     # if not Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3).exists():
-    #     print('if')
-    #     messages.success(request, 'No hay plantilla')
-    # except:
-    #     print('else')
-
-    exit()
+    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
 
     # if formato == '':
     #     print('sin planilla')
