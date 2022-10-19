@@ -63,7 +63,7 @@ class TipoDocumentoSetResource(resources.ModelResource):
 
     class Meta:
         model = TipoDocumento
-        fields = ('id', 'nombre','status', )
+        fields = ('id', 'nombre', 'status', )
     
 class DocumentoContratoInLine(admin.TabularInline):
     contrato = fields.Field(column_name='contrato', attribute='contrato', widget=ForeignKeyWidget(Contrato, 'nombre'))
@@ -113,11 +113,11 @@ class MotivoBajaSetResource(resources.ModelResource):
 class PlantillaAdmin(admin.ModelAdmin):
     """PlantillaAdmin model Admin."""
 
-    fields = ('nombre', 'tipo', 'archivo', 'clientes', 'plantas', 'activo')
-    list_display = ('id', 'nombre', 'tipo', 'clientes_list', 'plantas_list', 'activo', 'modified_by', )
+    fields = ('nombre', 'tipo', 'abreviatura', 'archivo', 'clientes', 'plantas', 'activo')
+    list_display = ('id', 'nombre', 'tipo', 'abreviatura', 'clientes_list', 'plantas_list', 'activo', 'modified_by', )
     # list_display = ('codigo', 'nombre', 'tipo', 'cliente', 'plantas_list', 'activo', 'modified_by', 'modified', )
     list_filter = ['clientes', 'plantas', ]
-    search_fields = ('id', 'nombre', 'tipo', 'clientes_razon_social', 'plantas_nombre', )
+    search_fields = ('id', 'nombre', 'tipo', 'abreviatura', 'clientes_razon_social', 'plantas_nombre', )
 
     def clientes_list(self, obj):
         return u", ".join(o.razon_social for o in obj.clientes.all())

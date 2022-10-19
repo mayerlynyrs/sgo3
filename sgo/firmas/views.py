@@ -17,7 +17,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.http import Http404, JsonResponse
 # Model
-from contratos.models import Contrato, DocumentosContrato
+from contratos.models import Contrato, DocumentosContrato, Anexo, ContratosParametrosGen
 from firmas.models import Firma
 
 
@@ -35,13 +35,15 @@ class ContratoAprobadoList(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Contrato.objects.filter(estado_contrato='AP', status=True):
+                for i in Contrato.objects.filter(estado_contrato='AP', estado_firma='PF', status=True):
                     data.append(i.toJSON())
             elif action == 'aprobar':
                 # Inicio integración de la API
                 contrato = Contrato.objects.get(pk=request.POST['id'])
+                parametro_general = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1)
                 nombre_archivo = Contrato.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
-                with open(nombre_archivo, "rb") as pdf_file:
+                ubicacion = parametro_general + nombre_archivo
+                with open(ubicacion, "rb") as pdf_file:
                     documento = base64.b64encode(pdf_file.read()).decode('utf-8')
                 document = f'{documento}'
                 
@@ -125,6 +127,123 @@ class ContratoAprobadoList(TemplateView):
                 # contrato.save()
 
                 # exit()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class ContratoEnviadoList(TemplateView):
+    template_name = 'contratos/anexo_aprobado_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Contrato.objects.filter(estado_contrato='AP', estado_firma='EF', status=True):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class AnexoAprobadoList(TemplateView):
+    template_name = 'contratos/anexo_aprobado_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Anexo.objects.filter(estado_anexo='AP', estado_firma='PF', status=True):
+                    data.append(i.toJSON())
+            elif action == 'aprobar':
+                # Inicio integración de la API
+                anexo = Anexo.objects.get(pk=request.POST['id'])
+                parametro_general = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1)
+                nombre_archivo = Anexo.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
+                ubicacion = parametro_general + nombre_archivo
+                with open(ubicacion, "rb") as pdf_file:
+                    documento = base64.b64encode(pdf_file.read()).decode('utf-8')
+                document = f'{documento}'
+                
+                url = "https://app.ecertia.com/api/EviSign/Submit"
+
+                payload = json.dumps({
+                "Subject": "Prueba Firma Anexo",
+                "Document": document,
+                "SigningParties": {
+                    "Name": anexo.trabajador.first_name + ' ' + anexo.trabajador.last_name,
+                    "Address": anexo.trabajador.email,
+                    "SigningMethod": "Email Pin"
+                },
+                "Options": {
+                    "TimeToLive": 1200,
+                    "RequireCaptcha": False,
+                    "NotaryRetentionPeriod": 0,
+                    "OnlineRetentionPeriod": 1
+                },
+                "Issuer": "EVISA"
+                })
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+                            }
+
+                response = requests.request("POST", url, headers=headers, data=payload)
+
+                print('API', response.text)
+                anexo = Anexo.objects.get(pk=request.POST['id'])
+                anexo.estado_firma = 'EF'
+                anexo.obs = response.text
+                anexo.save()
+                api = Firma()
+                api.respuesta_api = response.text
+                api.rut_trabajador = anexo.trabajador.rut
+                api.estado_firma_id = 1
+                api.status = True
+                api.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+
+class AnexoEnviadoList(TemplateView):
+    template_name = 'contratos/anexo_aprobado_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Anexo.objects.filter(estado_anexo='AP', estado_firma='EF', status=True):
+                    data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

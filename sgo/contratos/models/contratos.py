@@ -40,11 +40,14 @@ class Renuncia(BaseModel):
 
 
 class TipoContrato(BaseModel):
-    nombre = models.CharField(max_length=60)
+    nombre = models.CharField(
+                max_length = 60,
+                unique = True
+                )
     status = models.BooleanField(
-        default=True,
-        help_text='para desactivar el tipo de contrato, deshabilite esta casilla.'
-    )
+                default=True,
+                help_text='para desactivar el tipo de contrato, deshabilite esta casilla.'
+                )
 
     def __str__(self):
         return self.nombre
@@ -108,7 +111,7 @@ class Contrato(BaseModel):
     fecha_termino = models.DateField(blank=False, null=False)
     fecha_termino_ultimo_anexo = models.DateField(blank=True, null=True)
     archivo = models.FileField(
-        upload_to='contratoscreados/',
+        upload_to='contratos/',
         blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
@@ -248,7 +251,7 @@ class Anexo(BaseModel):
 
     
     archivo = models.FileField(
-        upload_to='anexoscreados/',
+        upload_to='anexos/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
     )
     motivo = models.TextField(blank=True, null=True)
@@ -281,7 +284,10 @@ class Anexo(BaseModel):
     def toJSON(self):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0) 
-        item['requerimiento'] = "Planta : " + self.planta.nombre.title()
+        item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title()
+        # item['requerimiento'] = "Planta : " + self.planta.nombre.title()
+        item['contrato'] = "Tipo: " + self.contrato.tipo_documento.nombre.title() + "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.contrato.motivo + "<br> Jornada:  " + self.contrato.horario.nombre.title()
+        # item['contrato'] = "Tipo: " + self.contrato.tipo_documento.nombre.title() + "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.contrato.horario.nombre.title() + "<br> Renta:  " + str(self.nueva_renta)
         item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    

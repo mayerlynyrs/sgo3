@@ -568,7 +568,11 @@ class TrabajadoresIdView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    user = get_object_or_404(User, pk=1)
+    try:
+        user = get_object_or_404(User, pk=1)
+        print("Hay registros!")
+    except:
+        print("No existen registros")
 
     def post(self, request, user_id, *args, **kwargs):
         

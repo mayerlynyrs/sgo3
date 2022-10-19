@@ -766,7 +766,18 @@ def a_puesta_disposicion(request, requerimiento_id):
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Trae la plantilla que tiene la planta
-    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
+    # formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
+    # formato = get_object_or_404(Plantilla, plantas=plant_template, tipo_id=3)
+    # print('formato', formato)
+    # try:
+    #     if not get_object_or_404(Plantilla, plantas=plant_template, tipo_id=3).exists():
+    #     # if not Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3).exists():
+    #     print('if')
+    #     messages.success(request, 'No hay plantilla')
+    # except:
+    #     print('else')
+
+    exit()
 
     # if formato == '':
     #     print('sin planilla')

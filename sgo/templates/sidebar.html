@@ -224,7 +224,7 @@
 						</a>
 						<ul class="sub-menu" style="{% if menu_module == 'contrato' %}display: block;{% else %}display: none;{% endif %}">
 						  <li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
-						  <li {% if menu_module == contrato and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Tipo Contratos</a></li>
+						  <!-- <li {% if menu_module == contrato and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:tipo-contratos' %}">Tipo Contratos</a></li> -->
 						</ul>
 					</li>
         {% endif %}
@@ -244,10 +244,14 @@
           <span>Firmas </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'firmas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'firmas:list' %}">Ver Contratos </a></li>
         {% if perms.firmas.add_firma %}
-          <li {% if menu_app == 'firmas' and menu_page == 'create' %} class="active"{% endif %}><a href="">Contratos Firmados</a></li>
+          <li {% if menu_app == 'firmas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'firmas:list' %}">Ver Contratos </a></li>
         {% endif %}
+          <li {% if menu_app == 'firmas' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-contrato' %}">Contratos Firmados</a></li>
+        {% if perms.firmas.add_firma %}
+        <li {% if menu_app == 'firmas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'firmas:list-anexo' %}">Ver Anexos </a></li>
+        {% endif %}
+        <li {% if menu_app == 'firmas' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-anexo' %}">Anexos Firmados</a></li>
         </ul>
       </li>
       {% endif %}

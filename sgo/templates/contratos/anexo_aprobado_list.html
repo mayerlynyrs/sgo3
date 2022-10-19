@@ -5,7 +5,7 @@
 {% block content %}
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Firmas / Contratos</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Firmas / Anexos</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <h1 class="page-header">Gestión de Firma <small>Listado</small></h1>
@@ -15,7 +15,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Todos los contratos</h4>
+    <h4 class="panel-title">Todos los anexos</h4>
   </div>
   <div class="panel-body ">
     <form method="post" id="form" action="{% url 'contratos:exportar_excel' %}" novalidate id="UserAgendar" enctype="multipart/form-data">
@@ -102,7 +102,7 @@
 {% endblock %}
 {% endblock %}
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/contrato_aprobado_list.js' %}"></script>
+<script src="{% static 'admin/assets/js/crud/anexo_aprobado_list.js' %}"></script>
 <script type="text/javascript">
   function GetSelected() {
       //Reference the Table.
