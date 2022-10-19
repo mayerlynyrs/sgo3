@@ -770,245 +770,237 @@ def a_puesta_disposicion(request, requerimiento_id):
 
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
-    # Trae la plantilla que tiene la planta
-    formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
+    # Busca si la planta tiene plantilla 
+    if not Plantilla.objects.filter(plantas=plant_template, tipo_id=3).exists():
+        messages.error(request, 'La Planta no posee Plantilla ')
+        return redirect('requerimientos:list')
+    else:
+        # Trae la plantilla que tiene la planta 
+        formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=3)
+        
+        # Fecha actual que se utiliza en el documento Puesta Disposición (codigo/año_actual)
+        now = datetime.now()
 
-    # if formato == '':
-    #     print('sin planilla')
-    #     messages.warning(request, 'La planta no posee Plantilla ')
-    #     return redirect('requerimientos:list')
-    # else:
-    #     print('con planilla')
-    #     print(formato)
+        # cargos = AreaCargo.objects.filter(requerimiento=requerimiento_id).values('cargo__nombre')
+        razon_social = Requerimiento.objects.values_list('cliente__razon_social', flat=True).get(pk=requerimiento_id, status=True)
 
-    # requer = Requerimiento.objects.filter(pk=requerimiento_id).values('codigo', 'fecha_solicitud', 'planta__ciudad__nombre',
-    #                                         'planta__direccion_gerente', 'cliente__razon_social', 'cliente__rut',
-    #                                         'planta__nombre', 'planta__nombre_gerente', 'planta__rut', 'causal__nombre',
-    #                                         'causal__descripcion', 'descripcion', 'fecha_inicio', 'fecha_termino')
-    # print('requer', requer)
+        # Cargo(s) del requerimiento
+        acr = AreaCargo.objects.values('cargo__nombre', 'cantidad', 'area__nombre', ).filter(requerimiento=requerimiento_id, status=True)
+        acreq = []
+        for i in acr:
+            acreq.append(i)
+            # print('acreq', acreq)
 
-    
-    # Fecha actual que se utiliza en el documento Puesta Disposición (codigo/año_actual)
-    now = datetime.now()
+        # # Cantidad de personas del requerimiento
+        # cantidades = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id)
+        # numero = []
+        # for i in cantidades:
+        #     numero.append(i)
 
-    # cargos = AreaCargo.objects.filter(requerimiento=requerimiento_id).values('cargo__nombre')
-    razon_social = Requerimiento.objects.values_list('cliente__razon_social', flat=True).get(pk=requerimiento_id, status=True)
+        fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
+        fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
+        # Total de días del requerimiento
+        duracion = (fecha_termino - fecha_inicio).days
+        # print('totalDiasRequerimiento', duracion)
 
-    # Cargo(s) del requerimiento
-    acr = AreaCargo.objects.values('cargo__nombre', 'cantidad', 'area__nombre', ).filter(requerimiento=requerimiento_id, status=True)
-    acreq = []
-    for i in acr:
-        acreq.append(i)
-        # print('acreq', acreq)
+        for e in PuestaDisposicion.objects.all():
+            gratificacion = (e.gratificacion)
+            # print('gratificacion', gratificacion)
 
-    # # Cantidad de personas del requerimiento
-    # cantidades = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id)
-    # numero = []
-    # for i in cantidades:
-    #     numero.append(i)
+        for e in PuestaDisposicion.objects.all():
+            seguro_cesantia = (e.seguro_cesantia)
 
-    fecha_inicio = Requerimiento.objects.values_list('fecha_inicio', flat=True).get(pk=requerimiento_id, status=True)
-    fecha_termino = Requerimiento.objects.values_list('fecha_termino', flat=True).get(pk=requerimiento_id, status=True)
-    # Total de días del requerimiento
-    duracion = (fecha_termino - fecha_inicio).days
-    # print('totalDiasRequerimiento', duracion)
+        for e in PuestaDisposicion.objects.all():
+            seguro_invalidez = (e.seguro_invalidez)
 
-    for e in PuestaDisposicion.objects.all():
-        gratificacion = (e.gratificacion)
-        # print('gratificacion', gratificacion)
+        for e in PuestaDisposicion.objects.all():
+            seguro_vida = (e.seguro_vida)
 
-    for e in PuestaDisposicion.objects.all():
-        seguro_cesantia = (e.seguro_cesantia)
+        for e in PuestaDisposicion.objects.all():
+            mutual = (e.mutual)
 
-    for e in PuestaDisposicion.objects.all():
-        seguro_invalidez = (e.seguro_invalidez)
+        # valor_aprox del requerimiento
+        valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
+        # print('valor_aprox', valor_aprox)
+        # doc = DocxTemplate("sgo/media/"+formato)
+        
+        # Fecha de Inicio en Palabras
+        if fecha_inicio.month == 1:
+            mes = 'Enero'
+        elif fecha_inicio.month == 2:
+            mes = 'Febrero'
+        elif fecha_inicio.month == 3:
+            mes = 'Marzo'
+        elif fecha_inicio.month == 4:
+            mes = 'Abril'
+        elif fecha_inicio.month == 5:
+            mes = 'Mayo'
+        elif fecha_inicio.month == 6:
+            mes = 'Junio'
+        elif fecha_inicio.month == 7:
+            mes = 'Julio'
+        elif fecha_inicio.month == 8:
+            mes = 'Agosto'
+        elif fecha_inicio.month == 9:
+            mes = 'Septiembre'
+        elif fecha_inicio.month == 10:
+            mes = 'Octubre'
+        elif fecha_inicio.month == 11:
+            mes = 'Noviembre'
+        elif fecha_inicio.month == 12:
+            mes = 'Diciembre'
+        fechainicio_palabras = str(fecha_inicio.day) + ' de ' + mes + ' de ' + str(fecha_inicio.year)
+        
+        # Fecha Término en Palabras 
+        if fecha_termino.month == 1:
+            mes = 'Enero'
+        elif fecha_termino.month == 2:
+            mes = 'Febrero'
+        elif fecha_termino.month == 3:
+            mes = 'Marzo'
+        elif fecha_termino.month == 4:
+            mes = 'Abril'
+        elif fecha_termino.month == 5:
+            mes = 'Mayo'
+        elif fecha_termino.month == 6:
+            mes = 'Junio'
+        elif fecha_termino.month == 7:
+            mes = 'Julio'
+        elif fecha_termino.month == 8:
+            mes = 'Agosto'
+        elif fecha_termino.month == 9:
+            mes = 'Septiembre'
+        elif fecha_termino.month == 10:
+            mes = 'Octubre'
+        elif fecha_termino.month == 11:
+            mes = 'Noviembre'
+        elif fecha_termino.month == 12:
+            mes = 'Diciembre'
+        fechatermino_palabras = str(fecha_termino.day) + ' de ' + mes + ' de ' + str(fecha_termino.year)
+        codigo= Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True)+'/'+str(now.year)
+        motivo = Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True)
 
-    for e in PuestaDisposicion.objects.all():
-        seguro_vida = (e.seguro_vida)
+        # valor_aprox = []
+        # if not valor_aprox:
+        #     print('sin total')
+        #     messages.warning(request, 'El requerimiento no posee Área-Cargo')
+        #     return redirect('requerimientos:list')
+        # else:
+        #     print('con total')
+        #     print(valor_aprox)
+        totalpalabras = ''
+        total = 0
+        k = 0
+        sueldo_base_gratif = 0
+        sueldototal = []
+        subtotal_pd = 0
+        valortotal = []
+        trabajadores = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id, status=True)
+        # cantidad_trabajadores = 0
+        cargos = AreaCargo.objects.values_list('cargo', flat=True).filter(requerimiento=requerimiento_id, status=True)
+        # cargo = 0
+        trabajador = []
+        cargo = []
+        for sueldo_base in valor_aprox:
+            # print('sueldo_base', sueldo_base)
+            sueldototal.append((((sueldo_base+gratificacion)/30)*duracion))
+            sueldo_base_gratif=round((((sueldo_base+gratificacion)/30)*duracion))
+            valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion)))
+            subtotal_pd=round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion))
+            total = round(sum(valortotal))
+            totalpalabras = numero_a_letras(total)
 
-    for e in PuestaDisposicion.objects.all():
-        mutual = (e.mutual)
+        for trabajador, cargo in zip(trabajadores, cargos):
+            print('valortotal', total)
 
-    # valor_aprox del requerimiento
-    valor_aprox = AreaCargo.objects.values_list('valor_aprox', flat=True).filter(requerimiento=requerimiento_id, status=True)
-    # print('valor_aprox', valor_aprox)
-    # doc = DocxTemplate("sgo/media/"+formato)
-    
-    # Fecha de Inicio en Palabras
-    if fecha_inicio.month == 1:
-        mes = 'Enero'
-    elif fecha_inicio.month == 2:
-        mes = 'Febrero'
-    elif fecha_inicio.month == 3:
-        mes = 'Marzo'
-    elif fecha_inicio.month == 4:
-        mes = 'Abril'
-    elif fecha_inicio.month == 5:
-        mes = 'Mayo'
-    elif fecha_inicio.month == 6:
-        mes = 'Junio'
-    elif fecha_inicio.month == 7:
-        mes = 'Julio'
-    elif fecha_inicio.month == 8:
-        mes = 'Agosto'
-    elif fecha_inicio.month == 9:
-        mes = 'Septiembre'
-    elif fecha_inicio.month == 10:
-        mes = 'Octubre'
-    elif fecha_inicio.month == 11:
-        mes = 'Noviembre'
-    elif fecha_inicio.month == 12:
-        mes = 'Diciembre'
-    fechainicio_palabras = str(fecha_inicio.day) + ' de ' + mes + ' de ' + str(fecha_inicio.year)
-    
-    # Fecha Término en Palabras 
-    if fecha_termino.month == 1:
-        mes = 'Enero'
-    elif fecha_termino.month == 2:
-        mes = 'Febrero'
-    elif fecha_termino.month == 3:
-        mes = 'Marzo'
-    elif fecha_termino.month == 4:
-        mes = 'Abril'
-    elif fecha_termino.month == 5:
-        mes = 'Mayo'
-    elif fecha_termino.month == 6:
-        mes = 'Junio'
-    elif fecha_termino.month == 7:
-        mes = 'Julio'
-    elif fecha_termino.month == 8:
-        mes = 'Agosto'
-    elif fecha_termino.month == 9:
-        mes = 'Septiembre'
-    elif fecha_termino.month == 10:
-        mes = 'Octubre'
-    elif fecha_termino.month == 11:
-        mes = 'Noviembre'
-    elif fecha_termino.month == 12:
-        mes = 'Diciembre'
-    fechatermino_palabras = str(fecha_termino.day) + ' de ' + mes + ' de ' + str(fecha_termino.year)
-    codigo= Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True)+'/'+str(now.year)
-    motivo = Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True)
+            requer = AnexoPuestaDisposicion()
+            requer.codigo_pd = codigo
+            requer.fecha_pd = now
+            requer.motivo_pd = motivo
+            requer.fecha_inicio = fecha_inicio
+            requer.fechainicio_text = fechainicio_palabras
+            requer.fecha_termino = fecha_termino
+            requer.fechatermino_text = fechatermino_palabras
+            requer.dias_pd = duracion
+            requer.dias_totales = duracion
+            requer.sueldo_base = sueldo_base
+            requer.sueldo_base_gratif = sueldo_base_gratif
+            requer.subtotal_pd = subtotal_pd
+            requer.valor_total_pd = total
+            requer.total_redondeado = total
+            requer.total_redondeado_text = totalpalabras
+            requer.cantidad_trabajadores = trabajador
+            requer.cargo_id = cargo
+            requer.causal_id = 1
+            requer.requerimiento_id = requerimiento_id
+            requer.status = True
+            requer.save()
+            k = k + 1
 
-    # valor_aprox = []
-    # if not valor_aprox:
-    #     print('sin total')
-    #     messages.warning(request, 'El requerimiento no posee Área-Cargo')
-    #     return redirect('requerimientos:list')
-    # else:
-    #     print('con total')
-    #     print(valor_aprox)
-    
-    k = 0
-    sueldo_base_gratif = 0
-    sueldototal = []
-    subtotal_pd = 0
-    valortotal = []
-    trabajadores = AreaCargo.objects.values_list('cantidad', flat=True).filter(requerimiento=requerimiento_id, status=True)
-    # cantidad_trabajadores = 0
-    cargos = AreaCargo.objects.values_list('cargo', flat=True).filter(requerimiento=requerimiento_id, status=True)
-    # cargo = 0
-    trabajador = []
-    cargo = []
-    for sueldo_base in valor_aprox:
-        # print('sueldo_base', sueldo_base)
-        sueldototal.append((((sueldo_base+gratificacion)/30)*duracion))
-        sueldo_base_gratif=round((((sueldo_base+gratificacion)/30)*duracion))
-        valortotal.append(round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion)))
-        subtotal_pd=round(sueldototal[k]+((sueldototal[k]*mutual)/100)+((sueldototal[k] *seguro_cesantia)/100)+(sueldototal[k] *seguro_invalidez)+((seguro_vida/30)*duracion))
-        total = round(sum(valortotal))
-        totalpalabras = numero_a_letras(total)
-    for trabajador, cargo in zip(trabajadores, cargos):
-        print('valortotal', total)
 
-        requer = AnexoPuestaDisposicion()
-        requer.codigo_pd = codigo
-        requer.fecha_pd = now
-        requer.motivo_pd = motivo
-        requer.fecha_inicio = fecha_inicio
-        requer.fechainicio_text = fechainicio_palabras
-        requer.fecha_termino = fecha_termino
-        requer.fechatermino_text = fechatermino_palabras
-        requer.dias_pd = duracion
-        requer.dias_totales = duracion
-        requer.sueldo_base = sueldo_base
-        requer.sueldo_base_gratif = sueldo_base_gratif
-        requer.subtotal_pd = subtotal_pd
-        requer.valor_total_pd = total
-        requer.total_redondeado = total
-        requer.total_redondeado_text = totalpalabras
-        requer.cantidad_trabajadores = trabajador
-        requer.cargo_id = cargo
-        requer.causal_id = 1
+            # valor = [248886.4602, 248886.4602, 83137.20000000001]
+            # print("***valor_total['248886.4602', '248886.4602', '83137.20000000001']***", valor_total[0:1] = [float(0)])
+            
+            
+
+        # Documento word a trabajar, segun el requerimiento
+        doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
+
+        context = { 'codigo': codigo,
+                    'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
+                    'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                    'razonSocial': razon_social,
+                    'razonSocialMayus': razon_social.upper(),
+                    'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
+                    'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                    'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
+                    'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                    'motivo': motivo,
+                    'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
+                    'totalDiasRequerimiento': duracion,
+                    'fechainicioreq': fechainicio_palabras,
+                    'fechaterminoreq': fecha_termino,
+                    'cargo': acreq,    
+                    # 'numero': numero,
+                    'valor': valortotal,
+                    'totalredondeado': total,
+                    'totalredondeadopalabras': totalpalabras,
+                    }
+
+        doc.render(context)
+        # exit()
+        # Obtengo el usuario
+        usuario = get_object_or_404(User, pk=1)
+        # Obtengo todas las negocios a las que pertenece el usuario.
+        plantas = usuario.planta.all()
+        # Obtengo el set de contrato de la primera negocio relacionada.
+        plantillas_attr = list()
+        plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+        # Obtengo los atributos de cada plantilla
+        for p in plantillas:
+            plantillas_attr.extend(list(p.atributos))
+
+        path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+        doc.save(path + '/PuestaDisposicion#' + str(requerimiento_id) + '.docx')
+        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+        # convert("PuestaDisposicion#1.docx")
+        convert(path + "PuestaDisposicion#" + str(requerimiento_id) + ".docx", path + "PuestaDisposicion#" + str(requerimiento_id) + ".pdf")
+
+        # Elimino el documento word.
+        os.remove(path + 'PuestaDisposicion#' + str(requerimiento_id) + '.docx')
+
+        messages.success(request, 'Anexo Puesta Dispocisión Exitosamente')
+
+        requer = Requerimiento.objects.get(pk=requerimiento_id)
+        requer.bloqueo = True
         requer.requerimiento_id = requerimiento_id
-        requer.status = True
         requer.save()
-        k = k + 1
 
-
-        # valor = [248886.4602, 248886.4602, 83137.20000000001]
-        # print("***valor_total['248886.4602', '248886.4602', '83137.20000000001']***", valor_total[0:1] = [float(0)])
-        
-        
-
-    # Documento word a trabajar, segun el requerimiento
-    doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-
-    context = { 'codigo': codigo,
-                'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
-                'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                'razonSocial': razon_social,
-                'razonSocialMayus': razon_social.upper(),
-                'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
-                'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
-                'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
-                'motivo': motivo,
-                'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
-                'totalDiasRequerimiento': duracion,
-                'fechainicioreq': fechainicio_palabras,
-                'fechaterminoreq': fecha_termino,
-                'cargo': acreq,    
-                # 'numero': numero,
-                'valor': valortotal,
-                'totalredondeado': total,
-                'totalredondeadopalabras': totalpalabras,
-                }
-
-    doc.render(context)
-    # exit()
-    # Obtengo el usuario
-    usuario = get_object_or_404(User, pk=1)
-    # Obtengo todas las negocios a las que pertenece el usuario.
-    plantas = usuario.planta.all()
-    # Obtengo el set de contrato de la primera negocio relacionada.
-    plantillas_attr = list()
-    plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
-    # Obtengo los atributos de cada plantilla
-    for p in plantillas:
-        plantillas_attr.extend(list(p.atributos))
-
-    path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-    doc.save(path + '/PuestaDisposicion#' + str(requerimiento_id) + '.docx')
-    win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-    # convert("PuestaDisposicion#1.docx")
-    convert(path + "PuestaDisposicion#" + str(requerimiento_id) + ".docx", path + "PuestaDisposicion#" + str(requerimiento_id) + ".pdf")
-
-    # Elimino el documento word.
-    os.remove(path + 'PuestaDisposicion#' + str(requerimiento_id) + '.docx')
-
-    messages.success(request, 'Anexo Puesta Dispocisión Exitosamente')
-
-    requer = Requerimiento.objects.get(pk=requerimiento_id)
-    requer.bloqueo = True
-    requer.requerimiento_id = requerimiento_id
-    requer.save()
-
-    messages.success(request, 'Requerimiento Bloqueado')
-    return redirect('requerimientos:list')
+        messages.success(request, 'Requerimiento Bloqueado')
+        return redirect('requerimientos:list')
 
 
 def descargar_adendum(request, adendum_id):

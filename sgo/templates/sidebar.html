@@ -92,12 +92,14 @@
           <span>Psicólogos </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
-        {% if perms.psicologos.view_evaluacionpsicologico %}
-          <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
-        {% endif %}
-          <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
-        </ul>
+          {% if perms.psicologos.view_evaluacionpsicologico %}
+            <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
+          {% endif %}
+            <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
+          {% if perms.psicologos.view_evaluacionpsicologico %}
+            <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
+          {% endif %}
+          </ul>
       </li>
       {% endif %}
       {% if perms.examenes.view_examen %}
