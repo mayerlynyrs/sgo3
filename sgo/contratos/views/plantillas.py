@@ -92,7 +92,11 @@ def update_plantilla(request, plantilla_id):
         form = ActualizarPlantillaForm(data=request.POST, instance=plantilla, files=request.FILES, user=request.user)
 
         if form.is_valid():
-            form.save()
+            plantilla = form.save(commit=False)
+            plantilla.nombre = request.POST['nombre'].lower()
+            plantilla.abreviatura = request.POST['abreviatura'].upper()
+            plantilla.save()
+            plantilla = form.save()
             messages.success(request, 'Plantilla actualizada exitosamente')
             page = request.GET.get('page')
             if page != '':
@@ -122,9 +126,13 @@ def create_plantilla(request):
     if request.method == 'POST':
 
         form = CrearPlantillaForm(data=request.POST, files=request.FILES, user=request.user)
-
+            
         if form.is_valid():
-            form.save()
+            plantilla = form.save(commit=False)
+            plantilla.nombre = request.POST['nombre'].lower()
+            plantilla.abreviatura = request.POST['abreviatura'].upper()
+            plantilla.save()
+            plantilla = form.save()
             messages.success(request, 'Plantilla Creada Exitosamente')
 
             return redirect('contratos:list-plantilla')

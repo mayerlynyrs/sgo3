@@ -170,7 +170,7 @@ class CargoView(TemplateView):
                 cargo.nombre = request.POST['nombre'].lower()
                 cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
-                cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
+                cargo.nombre_alias = request.POST['nombre'].lower() + request.POST['alias'].lower()
                 cargo.cod_uny_cargo =request.POST['cod_uny_cargo']
                 cargo.status = True
                 # espec.created_date = request.POST['created_date']
@@ -181,7 +181,7 @@ class CargoView(TemplateView):
                 cargo.alias = request.POST['alias'].lower()
                 cargo.descripcion = request.POST['descripcion']
                 cargo.cod_uny_cargo =request.POST['cod_uny_cargo']
-                cargo.nombre_alias = request.POST['nombre']+request.POST['alias']
+                cargo.nombre_alias = request.POST['nombre'].lower() + request.POST['alias'].lower()
                 cargo.save()
             elif action == 'delete':
                 cargo = Cargo.objects.get(pk=request.POST['id'])

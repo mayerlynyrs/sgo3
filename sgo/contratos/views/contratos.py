@@ -362,12 +362,12 @@ def create(request):
     # Doc. Adicionales
     # Trae el id de la planta del Requerimiento
     plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato.id, status=True)
-    print('plant_template', plant_template)
+    # print('plant_template', plant_template)
     # Trae las plantillas (formatos) que tiene la planta. tipo_id=9=Doc. Adicionales
-    formato = Plantilla.objects.values('archivo', 'nombre').filter(plantas=plant_template, tipo_id=9)
-    print('formato', formato)
+    formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=9)
+    # print('formato', formato)
     for formt in formato:
-        print(formt['archivo'])
+        # print(formt['abreviatura'])
         # import yaml
         # print(yaml.dump(l, sort_keys=False, default_flow_style=False))
         now = datetime.now()
@@ -410,13 +410,7 @@ def create(request):
                             }
         rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True)
         doc.render(context)
-        nomenclatura = []
-        if formt['nombre'] == 'Carta de Término':
-            nomenclatura = 'CT'
-        if formt['nombre'] == 'Seguro de Vida':
-            nomenclatura = 'SV'
 
-        # exit()
         # Obtengo el usuario
         usuario = get_object_or_404(User, pk=1)
         # Obtengo todas las negocios a las que pertenece el usuario.
@@ -432,23 +426,23 @@ def create(request):
         ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
         path = os.path.join(ruta_documentos)
         # path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-        doc.save(path + str(rut_trabajador) + "_" + nomenclatura + "_" +str(contrato.id)  + '.docx')
+        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id)  + '.docx')
         win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
         # convert("Contrato#1.docx")
 
-        convert(path + str(rut_trabajador) + "_" + nomenclatura + "_" +str(contrato.id) + ".docx", path +  str(rut_trabajador) + "_" + nomenclatura + "_" + str(contrato.id) + ".pdf")
-        url = path + str(rut_trabajador) + "_" + nomenclatura + "_" +str(contrato.id) + ".pdf"
+        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
+        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + ".pdf"
         contrato.archivo = url
-        tipo_documento = []
-        if formt['nombre'] == 'Carta de Término':
-            tipo_documento = 6
-        if formt['nombre'] == 'Seguro de Vida':
-            tipo_documento = 5
+        # tipo_documento = []
+        # if formt['nombre'] == 'Carta de Término':
+        #     tipo_documento = 6
+        # if formt['nombre'] == 'Seguro de Vida':
+        #     tipo_documento = 5
         doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
-        doc_contrato.tipo_documento_id = tipo_documento
+        doc_contrato.tipo_documento_id = formt['tipo_id']
         doc_contrato.save()
         # Elimino el documento word.
-        os.remove(path + str(rut_trabajador) + "_" + nomenclatura + "_" +str(contrato.id) + '.docx')
+        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + '.docx')
         messages.success(request, 'Contrato Creado Exitosamente')
     return redirect('contratos:create_contrato',requrimientotrabajador)
 
@@ -697,7 +691,7 @@ def enviar_revision_contrato(request, contrato_id):
             # convert("Contrato#1.docx")
 
             convert(path + str(rut_trabajador) + "_C_" +str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_C_" + str(contrato_id) + ".pdf")
-            url = path + str(rut_trabajador) + "_C_" +str(contrato_id) + ".pdf"
+            url = str(rut_trabajador) + "_C_" +str(contrato_id) + ".pdf"
             contrato.archivo = url
             contrato.save()
             # Elimino el documento word.
@@ -1214,7 +1208,7 @@ def enviar_revision_anexo(request, anexo_id):
 
             convert(path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".docx", path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf")
             
-            url = path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf"
+            url = 'anexo/' + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf"
             anexo.archivo = url
             anexo.save()
             # Elimino el documento word.

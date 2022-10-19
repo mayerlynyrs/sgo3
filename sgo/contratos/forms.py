@@ -4,6 +4,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
+from django.forms import TextInput
 # Model
 from contratos.models import Plantilla, TipoContrato, Contrato, TipoDocumento, Baja, MotivoBaja
 from clientes.models import Cliente, Planta
@@ -131,7 +132,13 @@ class CrearPlantillaForm(forms.ModelForm):
 
     class Meta:
         model = Plantilla
-        fields = ("nombre", "tipo", "archivo",  "clientes", "plantas", )
+        fields = ("nombre", "tipo", "abreviatura", "archivo",  "clientes", "plantas", )
+        widgets = {
+            'abreviatura': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'ABCD'
+                }),
+        }
 
 
 class ActualizarPlantillaForm(forms.ModelForm):
@@ -169,7 +176,13 @@ class ActualizarPlantillaForm(forms.ModelForm):
 
     class Meta:
         model = Plantilla
-        fields = ("nombre", "tipo", "archivo", "clientes", "plantas", 'activo')
+        fields = ("nombre", "tipo", "abreviatura", "archivo", "clientes", "plantas", 'activo')
+        widgets = {
+            'abreviatura': TextInput(attrs={
+                'class': "form-control",
+                'placeholder': 'ABCD'
+                }),
+        }
 
 
 class ContratoForm(forms.ModelForm):
