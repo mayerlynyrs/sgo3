@@ -21,6 +21,9 @@ def image_profile(value):
     perfiles = {
         'Administrador': '<img src="{0}" alt="profile image" />'.format(static('img/admin_masculino.png')),
         'Administrador Contratos': '<img src="{0}" alt="profile image" />'.format(static('img/supervisor_masculino.png')),
+        'Analista Operación': '<img src="{0}" alt="profile image" />'.format(static('img/analista_operaciones.png')),
+        'Jefe RRHH': '<img src="{0}" alt="profile image" />'.format(static('img/jefe_rrhh.png')),
+        'Analista RRHH': '<img src="{0}" alt="profile image" />'.format(static('img/analista_rrhh.png')),
         'Fiscalizador Interno': '<img src="{0}" alt="profile image" />'.format(static('img/fiscalizador_masculino.png')),
         'Fiscalizador DT': '<img src="{0}" alt="profile image" />'.format(static('img/fiscalizador_dirc_trab.png')),
         'Trabajador': '<img src="{0}" alt="profile image" />'.format(static('img/trabajador_masculino.png')),
