@@ -434,8 +434,8 @@ class Trabajador(BaseModel):
         'Teléfono',
         validators=[telefono_regex, ],
         max_length=15,
-        blank=True,
-        null=True
+        blank=False,
+        null=False
     )
 
     telefono2 = models.CharField(
@@ -465,7 +465,7 @@ class Trabajador(BaseModel):
 
     especialidad = models.ForeignKey(Especialidad, on_delete=models.PROTECT, null=True, blank=True)
 
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.PROTECT, null=True, blank=True)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.PROTECT, null=False, blank=True)
 
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -475,8 +475,8 @@ class Trabajador(BaseModel):
 
     domicilio = models.CharField(
         max_length=200,
-        null=True,
-        blank=True
+        null=False,
+
     )
     examen = models.BooleanField(
         default=False,
@@ -490,9 +490,9 @@ class Trabajador(BaseModel):
 
     pacto_uf = models.FloatField(null=True, blank=True)
 
-    banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=True, blank=True)
+    banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=False, blank=False)
 
-    tipo_cuenta = models.ForeignKey(TipoCta, on_delete=models.PROTECT, null=True, blank=True)
+    tipo_cuenta = models.ForeignKey(TipoCta, on_delete=models.PROTECT, null=False, blank=False)
 
     cuenta = models.CharField(
         'Número de cuenta',

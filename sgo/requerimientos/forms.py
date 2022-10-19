@@ -144,7 +144,7 @@ class RequeriTrabajadorForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    trabajador = forms.ModelChoiceField(queryset=Trabajador.objects.filter(is_active=True), required=True, label="Trabajador",
+    trabajador = forms.ModelChoiceField(queryset=Trabajador.objects.none(), required=True, label="Trabajador",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
@@ -163,9 +163,10 @@ class RequeriTrabajadorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         area_cargo = kwargs.pop('area_cargo', None)
+        trabajador = kwargs.pop('trab', None)
         total = kwargs.pop('total', None)
         super(RequeriTrabajadorForm, self).__init__(*args, **kwargs)
-        
+        self.fields['trabajador'].queryset = trabajador
         self.fields['area_cargo'].queryset = area_cargo
 
     class Meta:
