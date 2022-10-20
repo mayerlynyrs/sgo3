@@ -145,7 +145,7 @@ class Cliente(BaseModel):
     )
 
     def __str__(self):
-        return self.razon_social
+        return self.razon_social.title()
 
     def toJSON(self):
         item = model_to_dict(self)

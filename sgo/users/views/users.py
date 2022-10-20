@@ -173,14 +173,15 @@ def create_user(request):
         #profile_form = ProfileForm(data=request.POST, user=request.user)
 
         if user_form.is_valid():
-            print('4')
             user = user_form.save(commit=False)
             print(request.POST.getlist('group'))
             if request.POST.getlist('group') == ['1']:
                 user.is_superuser = True
                 user.is_staff = True
             # exit()
-            email = user.email
+            user.first_name = request.POST['first_name'].lower()
+            user.last_name = request.POST['last_name'].lower()
+            email = user.email.lower()
             now_date = datetime.now()
             user.username = email[:email.find('@')] + now_date.strftime("-%y%m%H%M%S")
             user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
@@ -245,7 +246,9 @@ def update_user(request, user_id):
         print('tambien user_form')
 
         if user_form.is_valid():
-            print('1')
+            user.first_name = request.POST['first_name'].lower()
+            user.last_name = request.POST['last_name'].lower()
+            user.email = user.email.lower()
             user.is_active = True
             user_form.save()
             #profile_form.save()
@@ -501,6 +504,9 @@ class UsersIdView(TemplateView):
             #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
 
             if user_form.is_valid():
+                user.first_name = request.POST['first_name'].lower()
+                user.last_name = request.POST['last_name'].lower()
+                user.email = request.POST['email'].lower()
                 user.is_active = True
                 user_form.save()
                 #profile_form.save()
@@ -870,6 +876,9 @@ def update_trabajador(request, trabajador_id):
         trabajador_form = EditarTrabajadorForm(request.POST or None, instance=user, user=request.user)
 
         if trabajador_form.is_valid():
+            user.first_name = request.POST['first_name'].lower()
+            user.last_name = request.POST['last_name'].lower()
+            user.email = request.POST['email'].lower()
             user.is_active = True
             trabajador_form.save()
 

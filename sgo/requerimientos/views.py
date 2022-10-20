@@ -140,6 +140,7 @@ def create_requerimiento(request):
 
         if requer_form.is_valid():
             requerimiento = requer_form.save(commit=False)
+            requerimiento.nombre = request.POST['nombre'].lower()
             requerimiento.status = True
             requerimiento.codigo = requerimiento.id
             requerimiento.fecha_adendum = request.POST['fecha_termino']
@@ -179,6 +180,7 @@ def update_requerimiento(request, requerimiento_id):
         form = RequerimientoCreateForm(request.POST or None, instance=requerimiento)
 
         if form.is_valid():
+            requerimiento.nombre = request.POST['nombre'].lower()
             requerimiento = form.save()
             messages.success(request, 'Requerimiento Actualizado Exitosamente')
             page = request.GET.get('page')

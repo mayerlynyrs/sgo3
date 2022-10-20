@@ -227,7 +227,7 @@ class ContratoForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    regimen = forms.ChoiceField(choices = REGIMEN_ESTADO, required=True, label="Regimen",
+    regimen = forms.ChoiceField(choices = REGIMEN_ESTADO, required=True, label="Régimen",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
