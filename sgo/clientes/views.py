@@ -249,6 +249,9 @@ def create_cliente(request):
 
         if cliente_form.is_valid():
             cliente = cliente_form.save(commit=False)
+            cliente.razon_social = request.POST['razon_social'].lower()
+            cliente.giro = request.POST['giro'].lower()
+            cliente.abreviatura = request.POST['abreviatura'].upper()
             cliente.status = True
             cliente.save()
             cliente = cliente_form.save()
@@ -292,7 +295,11 @@ def update_cliente(request, cliente_id):
         #profile_form = ProfileForm(request.POST or None, request.FILES, instance=profile)
 
         if cliente_form.is_valid():
-            cliente.is_active = True
+            cliente.razon_social = request.POST['razon_social'].lower()
+            cliente.giro = request.POST['giro'].lower()
+            cliente.abreviatura = request.POST['abreviatura'].upper()
+            cliente.email = request.POST['email'].lower()
+            cliente.status = True
             cliente_form.save()
             #profile_form.save()
 
@@ -413,7 +420,7 @@ class ClienteIdView(TemplateView):
                 planta.cod_uny_planta = request.POST['cod_uny_planta']
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
-                planta.email = request.POST['email']
+                planta.email = request.POST['email'].lower()
                 planta.region_id = request.POST['region']
                 planta.provincia_id = request.POST['provincia']
                 planta.ciudad_id = request.POST['ciudad']
@@ -450,7 +457,7 @@ class ClienteIdView(TemplateView):
                 planta.rut = request.POST['rut']
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
-                planta.email = request.POST['email']
+                planta.email = request.POST['email'].lower()
                 planta.region_id = request.POST['region']
                 planta.provincia_id = request.POST['provincia']
                 planta.ciudad_id = request.POST['ciudad']
@@ -477,12 +484,12 @@ class ClienteIdView(TemplateView):
                 archiv.save()
             elif action == 'cp_contacto_add':
                 user = User()
-                user.first_name = request.POST['nombres']
-                user.last_name = request.POST['apellidos'] 
+                user.first_name = request.POST['nombres'].lower()
+                user.last_name = request.POST['apellidos'].lower()
                 user.rut = request.POST['rut']
                 user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
                 user.telefono = request.POST['telefono']
-                user.email = request.POST['email']
+                user.email = request.POST['email'].lower()
                 user.set_password(user.first_name[0:2].lower()+user.last_name[0:2].lower()+user.rut[0:4])
                 user.is_superuser = False
                 user.is_staff = False
@@ -495,12 +502,12 @@ class ClienteIdView(TemplateView):
                 user.cliente.add(cliente_id)
                 user.planta.add(request.POST['planta_id'])
                 cp_contact = ContactoPlanta()
-                cp_contact.nombres = request.POST['nombres']
-                cp_contact.apellidos = request.POST['apellidos']
+                cp_contact.nombres = request.POST['nombres'].lower()
+                cp_contact.apellidos = request.POST['apellidos'].lower()
                 cp_contact.rut = request.POST['rut']
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
-                cp_contact.email = request.POST['email']
+                cp_contact.email = request.POST['email'].lower()
                 cp_contact.relacion = request.POST['relacion']
                 cp_contact.planta_id = request.POST['planta_id']
                 cp_contact.user_id = user.id
@@ -508,21 +515,21 @@ class ClienteIdView(TemplateView):
                 cp_contact.save()
             elif action == 'cp_contacto_edit':
                 user = User.objects.get(pk=request.POST['user_id'])
-                user.first_name = request.POST['nombres']
-                user.last_name = request.POST['apellidos'] 
+                user.first_name = request.POST['nombres'].lower()
+                user.last_name = request.POST['apellidos'].lower()
                 user.rut = request.POST['rut']
                 user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
                 user.telefono = request.POST['telefono']
-                user.email = request.POST['email']
+                user.email = request.POST['email'].lower()
                 user.save()
                 cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
-                cp_contact.nombres = request.POST['nombres']
-                cp_contact.apellidos = request.POST['apellidos']
+                cp_contact.nombres = request.POST['nombres'].lower()
+                cp_contact.apellidos = request.POST['apellidos'].lower()
                 cp_contact.rut = request.POST['rut']
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
                 cp_contact.relacion = request.POST['relacion']
-                cp_contact.email = request.POST['email']
+                cp_contact.email = request.POST['email'].lower()
                 cp_contact.save()
             elif action == 'cp_contacto_delete':
                 user = User.objects.get(pk=request.POST['user_id'])

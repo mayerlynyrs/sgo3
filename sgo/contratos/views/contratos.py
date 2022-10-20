@@ -318,7 +318,7 @@ def create(request):
     
     requrimientotrabajador = request.POST['requerimiento_trabajador_id']
     trabajador = get_object_or_404(Trabajador, pk=request.POST['trabajador_id'])
-    sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id ) 
+    
     contrato = Contrato()
     contrato.causal_id = request.POST['causal']
     contrato.motivo = request.POST['motivo']
@@ -330,6 +330,7 @@ def create(request):
         contrato.tipo_documento_id = request.POST['tipo_documento']
         contrato.sueldo_base = request.POST['sueldo_base']
     else:
+        sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id ) 
         contrato.sueldo_base = sueldomensual
         contrato.fecha_termino = request.POST['fecha_inicio']
         contrato.fecha_termino_ultimo_anexo = request.POST['fecha_inicio']
@@ -845,23 +846,22 @@ class ContratoIdView(TemplateView):
             anex = 'SI'
         # Finiquito
         contrato_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).exists()
-        
+        cantidadcontratos = 0
+        ultimo2 = 0
         if(contrato_diario == True):
             # La fecha de inicio y la fecha de termino es la misma en contrato diario
             cantidadcontratos = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).count()
             print('cuanta cantidad hay',cantidadcontratos)
             ultimo = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
+            ultimo2 = ultimo.tipo_documento.id
+            context['contador'] = cantidadcontratos
             inicio_termino = str(ultimo.fecha_termino)
             if (now.strftime("%Y-%m-%d") > inicio_termino):
                 finiquito = 'SI'
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
         largobonos = len(bonos)
-
-
-
-       
-
-        context['ultimo'] = ultimo.tipo_documento.id
+        
+        context['ultimo'] = ultimo2
         context['contador'] = cantidadcontratos
         context['anex'] = anex
         context['finiquito'] = finiquito
