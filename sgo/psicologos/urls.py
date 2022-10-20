@@ -24,9 +24,9 @@ urlpatterns = [
         name='list'
      ),
     path(
-        route='evaTerminadas',
+        route='evalu_terminadas',
         view=views.EvalTerminadasView.as_view(),
-        name='evaTerminadas'
+        name='evalu-terminadas'
      ),
     path(
         route='list_solicitudes',

@@ -160,14 +160,14 @@ class AgendaList(TemplateView):
 
 
 class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Psicologo List
+    """Evaluaciones Terminadas List
     Vista para listar todos los psicologo según el usuario y sus las plantas
     relacionadas.
     """
 
     model = Evaluacion
     template_name = 'psicologos/evaluacionesTerminadas.html'
-    permission_required = 'psicologos.view_evaluacionpsicologico'
+    permission_required = 'psicologos.view_psicologico'
     raise_exception = True
 
     @method_decorator(csrf_exempt)

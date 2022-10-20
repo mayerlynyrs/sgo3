@@ -302,7 +302,7 @@ class EvalTerminadasView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte Evaluaciones'
-        context['list_url'] = reverse_lazy('psicologos:evaTerminadas')
+        context['list_url'] = reverse_lazy('psicologos:evalu_terminadas')
         context['entity'] = 'Salud'
         context['form'] = ReportForm()
         return context

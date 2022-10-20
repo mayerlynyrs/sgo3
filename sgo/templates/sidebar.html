@@ -92,11 +92,13 @@
           <span>Psicólogos </span>
         </a>
         <ul class="sub-menu">
-          {% if perms.psicologos.view_evaluacionpsicologico %}
+          {% if perms.psicologos.add_psicologico %}
             <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
           {% endif %}
-            <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
-          {% if perms.psicologos.view_evaluacionpsicologico %}
+          {% if perms.psicologos.view_psicologico %}
+            <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evalu-terminadas' %}">Evaluaciones Realizadas</a></li>
+          {% endif %}
+          {% if perms.psicologos.add_psicologico %}
             <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
           {% endif %}
           </ul>
@@ -312,7 +314,7 @@
         {% if perms.users.add_user %}
         <li {% if menu_app == 'users' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
         {% endif %} -->
-        {% if perms.users.lista_negra %}
+        {% if perms.users.add_listanegra %}
         <li {% if menu_app == 'users.listanegra' and menu_page == 'lista_negra' %} class="active"{% endif %}><a href="{% url 'users:lista_negra' %}">Lista Negra</a></li>
         {% endif %}
         {% if perms.users.view_profesion %}
@@ -324,7 +326,6 @@
         </ul>
       </li>
       {% endif %}
-      {% if perms.utils.view_cliente %}
       <li class="has-sub {% if menu_app == 'utils' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -364,7 +365,6 @@
         {% endif %}
         </ul>
       </li>
-      {% endif %}
       {% if perms.consultas.view_consulta %}
       <li class="has-sub {% if menu_app == 'consultas' %}active{% endif %}">
         <a href="javascript:;">
