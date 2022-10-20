@@ -30,6 +30,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect, get_object_or_404
 from docxtpl import DocxTemplate
+from django.core.mail import send_mail
 from django.contrib.auth.forms import (
     AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
 )
@@ -460,6 +461,17 @@ def aprobacion_masiva(request, aprobacion):
         contrato.fecha_aprobacion  = datetime.now()
         contrato.estado_contrato = 'AP'
         contrato.save()
+        
+
+        fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
+        send_mail(
+                'Nueva Solicitud de contrato Prueba sgo3 ',
+                'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido aprobada'  ,
+                contrato.created_by.email,
+                ['soporte@empresasintegra.cl'],
+                fail_silently=False,
+        )
     messages.success(request, 'Contratos aprobados')
     return redirect('contratos:solicitud-contrato',)
 
@@ -592,6 +604,17 @@ def baja_contrato(request, contrato_id, template_name='contratos/baja_contrato.h
         baja.contrato_id = contrato_id
         baja.motivo_id = request.POST['motivo']
         baja.save()
+        
+
+        fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
+        send_mail(
+            'Nueva Solicitud de contrato Prueba sgo3 ',
+            'Estimado(a) se ha solicitado una nueva baja de contrato para el trabajador:  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre   ,
+            contrato.created_by.email,
+            ['soporte@empresasintegra.cl'],
+            fail_silently=False,
+                )
         messages.error(request, 'Contrato en proceso de baja')
         return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
 
@@ -694,6 +717,20 @@ def enviar_revision_contrato(request, contrato_id):
             url = str(rut_trabajador) + "_C_" +str(contrato_id) + ".pdf"
             contrato.archivo = url
             contrato.save()
+
+            nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
+            apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
+            fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+            nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
+            send_mail(
+                'Nueva Solicitud de contrato Prueba sgo3 ',
+                'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
+                'contratos@empresasintegra.cl',
+                ['soporte@empresasintegra.cl'],
+                fail_silently=False,
+            )
+            
             # Elimino el documento word.
             os.remove(path + str(rut_trabajador) + "_C_" +str(contrato_id) + '.docx')
             messages.success(request, 'Contrato enviado a revisión')
@@ -808,16 +845,24 @@ class ContratoIdView(TemplateView):
             anex = 'SI'
         # Finiquito
         contrato_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).exists()
+        
         if(contrato_diario == True):
             # La fecha de inicio y la fecha de termino es la misma en contrato diario
-            fecha_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
-            inicio_termino = str(fecha_diario.fecha_termino)
+            cantidadcontratos = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).count()
+            print('cuanta cantidad hay',cantidadcontratos)
+            ultimo = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
+            inicio_termino = str(ultimo.fecha_termino)
             if (now.strftime("%Y-%m-%d") > inicio_termino):
                 finiquito = 'SI'
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
         largobonos = len(bonos)
 
 
+
+       
+
+        context['ultimo'] = ultimo.tipo_documento.id
+        context['contador'] = cantidadcontratos
         context['anex'] = anex
         context['finiquito'] = finiquito
         context['largobonos'] = largobonos
@@ -931,6 +976,17 @@ class SolicitudContrato(TemplateView):
                 contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
+
+                fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
+                send_mail(
+                    'Nueva Solicitud de contrato Prueba sgo3 ',
+                    'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido aprobada'  ,
+                    contrato.created_by.email,
+                    ['soporte@empresasintegra.cl'],
+                    fail_silently=False,
+                )
+
             elif action == 'rechazar':
                 revision = Revision.objects.get(contrato_id=request.POST['id'])
                 revision.estado = 'RC'
@@ -938,10 +994,21 @@ class SolicitudContrato(TemplateView):
                 revision.save()
                 contrato = Contrato.objects.get(pk=request.POST['id'])
                 url = contrato.archivo
-                os.remove(str(url))
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                os.remove(path+ '\\' +str(url))
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
+                fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
+                send_mail(
+                    'Nueva Solicitud de contrato Prueba sgo3 ',
+                    'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido rechado por el motivo: ' + str(request.POST['obs'])  ,
+                    contrato.created_by.email,
+                    ['soporte@empresasintegra.cl'],
+                    fail_silently=False,
+                )
             elif action == 'aprobacion_masiva':
                 aprobacion =request.POST.getlist('check_aprobacion')
                 print("aprobacion id",aprobacion)
@@ -976,10 +1043,22 @@ class BajaContrato(TemplateView):
                 contrato.fecha_aprobacion_baja  = datetime.now()
                 contrato.estado_contrato = 'BJ'
                 url = contrato.archivo
-                os.remove(str(url))
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                os.remove(path+ '\\' +str(url))
                 contrato.archivo = None
                 contrato.status = False
                 contrato.save()
+                
+                fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
+                send_mail(
+                'Nueva Solicitud de contrato Prueba sgo3 ',
+                'Estimado(a) se ha aprobado la solicitado de baja de contrato para el trabajador:  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre   ,
+                contrato.created_by.email,
+                ['soporte@empresasintegra.cl'],
+                fail_silently=False,
+                    )
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

@@ -74,10 +74,10 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                         agendar.status = True
                         agendar.save()
                         send_mail(
-                            'Nueva Solicitud de Agenda ',
+                            'Nueva Solicitud de Agenda Prueba sgo3 ',
                             'Estimado(a) se a realizado un nueva solicitud de agendamiento psicologico para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
                             + agendar.fecha_ingreso_estimada  ,
-                            'soporte@empresasintegra.cl',
+                            'psicologos@empresasintegra.cl',
                             ['soporte@empresasintegra.cl'],
                             fail_silently=False,
                         )
@@ -100,10 +100,10 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                         agendar.status = True
                         agendar.save()
                         send_mail(
-                            'Nueva Solicitud de Agenda ',
+                            'Nueva Solicitud de Agenda Prueba sgo3 ',
                             'Estimado(a) se a realizado un nueva solicitud de agendamiento Examen General para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
                             + agendar.fecha_ingreso_estimada  ,
-                            'soporte@empresasintegra.cl',
+                            'jcruces@empresasintegra.cl',
                             ['soporte@empresasintegra.cl'],
                             fail_silently=False,
                         )
