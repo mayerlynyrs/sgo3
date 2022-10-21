@@ -395,7 +395,7 @@ def create(request):
                     'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato.id, status=True),    
                     'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
+                    'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True),
                     'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True))+' pesos',
                     'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato.id, status=True) ,
@@ -1235,7 +1235,7 @@ def enviar_revision_anexo(request, anexo_id):
             now = datetime.now()
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
          
-            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
                         'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True),
                         'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
