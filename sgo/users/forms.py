@@ -526,7 +526,7 @@ class EditarTrabajadorForm(forms.ModelForm):
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     domicilio = forms.EmailField(required=True,
-                             widget=forms.EmailInput(attrs={'class': "form-control"}))
+                             widget=forms.TextInput(attrs={'class': "form-control"}))
     
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))

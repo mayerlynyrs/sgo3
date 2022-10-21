@@ -375,7 +375,7 @@ def create(request):
         now = datetime.now()
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
     
-        context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
+        context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
                     'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato.id, status=True),
                     'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True),
@@ -637,26 +637,25 @@ def baja_contrato(request, contrato_id, template_name='contratos/baja_contrato.h
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def enviar_revision_contrato(request, contrato_id):
-
             contrato = get_object_or_404(Contrato, pk=contrato_id)
-            contrato.estado_contrato = 'PV'
-            contrato.fecha_solicitud = datetime.now()
-            try:
-                revision = Revision.objects.get(contrato_id=contrato_id)
-                revision.estado = 'PD'
-                revision.save()
-            except:  
-                revision = Revision()
-                revision.contrato_id = contrato.id
-                revision.save()
-
             # Trae el id de la planta del Requerimiento
             plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato_id, status=True)
             # Busca si la planta tiene plantilla 
             if not Plantilla.objects.filter(plantas=plant_template, tipo_id=1).exists():
                 messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
                 return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
+
             else:
+                contrato.estado_contrato = 'PV'
+                contrato.fecha_solicitud = datetime.now()
+                try:
+                    revision = Revision.objects.get(contrato_id=contrato_id)
+                    revision.estado = 'PD'
+                    revision.save()
+                except:  
+                    revision = Revision()
+                    revision.contrato_id = contrato.id
+                    revision.save()
                 # Trae la plantilla que tiene la planta
                 formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=1)
                 now = datetime.now()
