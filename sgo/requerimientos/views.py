@@ -774,7 +774,7 @@ def a_puesta_disposicion(request, requerimiento_id):
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requerimiento_id, status=True)
     # Busca si la planta tiene plantilla 
     if not Plantilla.objects.filter(plantas=plant_template, tipo_id=3).exists():
-        messages.error(request, 'La Planta no posee Plantilla ')
+        messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
         return redirect('requerimientos:list')
     else:
         # Trae la plantilla que tiene la planta 

@@ -393,8 +393,8 @@ def create(request):
                     'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato.id, status=True),
                     'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato.id, status=True),
                     'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato.id, status=True),    
-                    'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'region_planta': Contrato.objects.values_list('planta__region__nombre', flat=True).get(pk=contrato.id, status=True),
+                    'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
+                    'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
                     'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True),
                     'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True))+' pesos',
@@ -652,90 +652,95 @@ def enviar_revision_contrato(request, contrato_id):
 
             # Trae el id de la planta del Requerimiento
             plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato_id, status=True)
-            # Trae la plantilla que tiene la planta
-            formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=1)
-            now = datetime.now()
-            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-         
-            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                        'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
-                        'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
-                        'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
-                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
-                        'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                        'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
-                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                        'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
-                        'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
-                        'comuna_planta': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'region_planta': Contrato.objects.values_list('planta__region__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
-                        'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
-                        'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
-                        'detalle_bonos': 'okokok',
-                        'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
-                        'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
-                        'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
-                        'adicional_cumplimiento_horario_undecimo': 'okokok',
-                        'parrafo_decimo_tercero': 'okokok',
-                        'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                         'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
-                        }
-            rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
-            doc.render(context)
-            # exit()
-            # Obtengo el usuario
-            usuario = get_object_or_404(User, pk=1)
-            # Obtengo todas las negocios a las que pertenece el usuario.
-            plantas = usuario.planta.all()
-            # Obtengo el set de contrato de la primera negocio relacionada.
-            plantillas_attr = list()
-            plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
-            # Obtengo los atributos de cada plantilla
-            for p in plantillas:
-                plantillas_attr.extend(list(p.atributos))
-
-            # ruta_documentos donde guardara el documento
-            ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
-            path = os.path.join(ruta_documentos)
-            # path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-            doc.save(path + str(rut_trabajador) + "_C_" +str(contrato_id)  + '.docx')
-            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-            # convert("Contrato#1.docx")
-
-            convert(path + str(rut_trabajador) + "_C_" +str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_C_" + str(contrato_id) + ".pdf")
-            url = str(rut_trabajador) + "_C_" +str(contrato_id) + ".pdf"
-            contrato.archivo = url
-            contrato.save()
-
-            nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
-            apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
-            fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-            nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
-            send_mail(
-                'Nueva Solicitud de contrato Prueba sgo3 ',
-                'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
-                'contratos@empresasintegra.cl',
-                ['soporte@empresasintegra.cl'],
-                fail_silently=False,
-            )
+            # Busca si la planta tiene plantilla 
+            if not Plantilla.objects.filter(plantas=plant_template, tipo_id=1).exists():
+                messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
+                return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
+            else:
+                # Trae la plantilla que tiene la planta
+                formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=1)
+                now = datetime.now()
+                doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
             
-            # Elimino el documento word.
-            os.remove(path + str(rut_trabajador) + "_C_" +str(contrato_id) + '.docx')
-            messages.success(request, 'Contrato enviado a revisión')
-            return redirect('contratos:create_contrato' ,contrato.requerimiento_trabajador_id)
+                context = { 'comuna_planta': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                            'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
+                            'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
+                            'nacionalidad': Contrato.objects.values_list('trabajador_nacionalidad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
+                            'estado_civil': Contrato.objects.values_list('trabajador_estado_civil_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
+                            'comuna_trabajador': Contrato.objects.values_list('trabajador_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                            'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador_requerimiento_centro_costo', flat=True).get(pk=contrato_id, status=True),
+                            'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                            'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
+                            'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
+                            'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador_area_cargocargo_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                            'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                            'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
+                            'comuna_planta': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'region_planta': Contrato.objects.values_list('planta_region_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'descripcion_jornada': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
+                            'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
+                            'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
+                            'detalle_bonos': 'okokok',
+                            'nombre_banco': Contrato.objects.values_list('trabajador_banco_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
+                            'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
+                            'prevision_trabajador': Contrato.objects.values_list('trabajador_afp_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'salud_trabajador': Contrato.objects.values_list('trabajador_salud_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'adicional_cumplimiento_horario_undecimo': 'okokok',
+                            'parrafo_decimo_tercero': 'okokok',
+                            'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                            'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
+                            }
+                rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
+                doc.render(context)
+                # exit()
+                # Obtengo el usuario
+                usuario = get_object_or_404(User, pk=1)
+                # Obtengo todas las negocios a las que pertenece el usuario.
+                plantas = usuario.planta.all()
+                # Obtengo el set de contrato de la primera negocio relacionada.
+                plantillas_attr = list()
+                plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+                # Obtengo los atributos de cada plantilla
+                for p in plantillas:
+                    plantillas_attr.extend(list(p.atributos))
+
+                # ruta_documentos donde guardara el documento
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                # path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
+                doc.save(path + str(rut_trabajador) + "C" +str(contrato_id)  + '.docx')
+                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                # convert("Contrato#1.docx")
+
+                convert(path + str(rut_trabajador) + "C" +str(contrato_id) + ".docx", path +  str(rut_trabajador) + "C" + str(contrato_id) + ".pdf")
+                url = str(rut_trabajador) + "C" +str(contrato_id) + ".pdf"
+                contrato.archivo = url
+                contrato.save()
+
+                nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
+                apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
+                fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+                nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
+                send_mail(
+                    'Nueva Solicitud de contrato Prueba sgo3 ',
+                    'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
+                    'contratos@empresasintegra.cl',
+                    ['soporte@empresasintegra.cl'],
+                    fail_silently=False,
+                )
+                
+                # Elimino el documento word.
+                os.remove(path + str(rut_trabajador) + "C" +str(contrato_id) + '.docx')
+                messages.success(request, 'Contrato enviado a revisión')
+                return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
 
 
 class ContratoCompletaListView(ListView):
@@ -823,7 +828,7 @@ class ContratoIdView(TemplateView):
                 'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre', 'trabajador__fecha_nacimiento',
                 'trabajador__domicilio', 'trabajador__ciudad', 'trabajador__afp', 'trabajador__salud', 'trabajador__nivel_estudio', 'trabajador__telefono', 'trabajador__nacionalidad',
                 'requerimiento__nombre',  'referido','requerimiento__areacargo', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social', 'requerimiento__cliente__rut',
-                 'requerimiento__planta__nombre', 'requerimiento__planta__region', 'requerimiento__planta__ciudad', 'requerimiento__planta__direccion', 'requerimiento__planta__gratificacion',
+                 'requerimiento__planta__nombre', 'requerimiento__planta__region2', 'requerimiento__planta__ciudad2', 'requerimiento__planta__direccion', 'requerimiento__planta__gratificacion',
                  'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
         context = super().get_context_data(**kwargs)
         context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
@@ -832,8 +837,8 @@ class ContratoIdView(TemplateView):
                 'trabajador__nivel_estudio__nombre', 'trabajador__telefono', 'trabajador__nacionalidad__nombre', 'requerimiento__nombre',
                 'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre', 'requerimiento__planta',
-                'requerimiento__planta__region__nombre', 'requerimiento__planta__provincia__nombre','requerimiento__fecha_adendum','requerimiento__causal',
-                'requerimiento__planta__ciudad__nombre', 'requerimiento__planta__direccion','requerimiento__descripcion','requerimiento__fecha_inicio',
+                'requerimiento__planta__region2__nombre', 'requerimiento__planta__provincia2__nombre','requerimiento__fecha_adendum','requerimiento__causal',
+                'requerimiento__planta__ciudad2__nombre', 'requerimiento__planta__direccion','requerimiento__descripcion','requerimiento__fecha_inicio',
                 'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
         context['contratos'] = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True ).values( 'id', 'valores_diario__valor_diario',
                 'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
@@ -1248,8 +1253,8 @@ def enviar_revision_anexo(request, anexo_id):
                         'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=anexo.contrato_id, status=True),    
-                        'region_planta': Contrato.objects.values_list('planta__region__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True),
                         'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True))+' pesos',
                         'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=anexo.contrato_id, status=True) ,

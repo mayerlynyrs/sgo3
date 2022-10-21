@@ -421,9 +421,9 @@ class ClienteIdView(TemplateView):
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email'].lower()
-                planta.region_id = request.POST['region']
-                planta.provincia_id = request.POST['provincia']
-                planta.ciudad_id = request.POST['ciudad']
+                planta.region2_id = request.POST['region2']
+                planta.provincia2_id = request.POST['provincia2']
+                planta.ciudad2_id = request.POST['ciudad2']
                 planta.direccion = request.POST['direccion']
                 planta.nombre_gerente = request.POST['nombre_gerente'].lower()
                 planta.rut_gerente = request.POST['rut_gerente']
@@ -458,9 +458,9 @@ class ClienteIdView(TemplateView):
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email'].lower()
-                planta.region_id = request.POST['region']
-                planta.provincia_id = request.POST['provincia']
-                planta.ciudad_id = request.POST['ciudad']
+                planta.region2_id = request.POST['region2']
+                planta.provincia2_id = request.POST['provincia2']
+                planta.ciudad2_id = request.POST['ciudad2']
                 planta.direccion = request.POST['direccion']
                 planta.nombre_gerente = request.POST['nombre_gerente'].lower()
                 planta.rut_gerente = request.POST['rut_gerente']

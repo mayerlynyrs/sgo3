@@ -242,11 +242,11 @@ class Planta(models.Model):
 
     cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
 
-    region = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
+    region2 = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
 
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    provincia2 = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
 
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
+    ciudad2 = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
 
     direccion = models.CharField(
         max_length=200,
@@ -297,9 +297,9 @@ class Planta(models.Model):
         item['codigo'] = self.cod_uny_planta
         item['negocio'] = self.negocio.nombre.title()
         item['negocio_id'] = self.negocio.id
-        item['region_id'] = self.region.id
-        item['provincia_id'] = self.provincia.id
-        item['ciudad_id'] = self.ciudad.id
+        item['region_id'] = self.region2.id
+        item['provincia_id'] = self.provincia2.id
+        item['ciudad_id'] = self.ciudad2.id
         item['bono'] =  [t.toJSON() for t in self.bono.all()]
         return item
 

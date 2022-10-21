@@ -39,7 +39,7 @@ class NegocioSetResource(resources.ModelResource):
 
 class PlantaSetResource(resources.ModelResource):
 
-    ciudad = fields.Field(column_name='ciudad', attribute='ciudad', widget=ForeignKeyWidget(Ciudad, 'nombre'))
+    ciudad2 = fields.Field(column_name='ciudad2', attribute='ciudad2', widget=ForeignKeyWidget(Ciudad, 'nombre'))
     negocio = fields.Field(column_name='negocio', attribute='negocio', widget=ForeignKeyWidget(Negocio, 'nombre'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
     bateria = fields.Field(column_name='bateria', attribute='bateria', widget=ForeignKeyWidget(Bateria, 'nombre'))
@@ -47,7 +47,7 @@ class PlantaSetResource(resources.ModelResource):
 
     class Meta:
         model = Planta
-        fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region', 'provincia', 'ciudad', 'direccion_comercial', 'masso', 'psicologico', 'hal2', 'bateria')
+        fields = ('id', 'rut', 'nombre', 'cliente', 'rut_representante', 'representante_legal', 'region2', 'provincia2', 'ciudad2', 'direccion_comercial', 'masso', 'psicologico', 'hal2', 'bateria')
 
 
 class ContactoPlantaSetResource(resources.ModelResource):
@@ -104,8 +104,8 @@ class PlantaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """PlantaAdmin model admin."""
 
     resource_class = PlantaSetResource
-    fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region', 'provincia', 'ciudad', 'direccion', 'bono', 'masso', 'psicologico', 'hal2', 'bateria', 'status',)
-    list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad',)
+    fields = ('cliente', 'negocio', 'rut', 'nombre', 'rut_gerente', 'nombre_gerente', 'direccion_gerente', 'telefono', 'email', 'gratificacion', 'region2', 'provincia2', 'ciudad2', 'direccion', 'bono', 'masso', 'psicologico', 'hal2', 'bateria', 'status',)
+    list_display = ('id', 'nombre', 'cliente', 'negocio', 'nombre_gerente', 'ciudad2',)
     search_fields = ['nombre', ]
 
 
