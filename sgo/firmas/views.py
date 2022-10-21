@@ -42,7 +42,7 @@ class ContratoAprobadoList(TemplateView):
                 contrato = Contrato.objects.get(pk=request.POST['id'])
                 parametro_general = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1)
                 nombre_archivo = Contrato.objects.values_list('archivo', flat=True).get(pk=request.POST['id'])
-                ubicacion = parametro_general + nombre_archivo
+                ubicacion = parametro_general + 'contratos/' + nombre_archivo
                 with open(ubicacion, "rb") as pdf_file:
                     documento = base64.b64encode(pdf_file.read()).decode('utf-8')
                 document = f'{documento}'
@@ -60,7 +60,7 @@ class ContratoAprobadoList(TemplateView):
                             orden = orden + 1
                             nombre = str(i.archivo).split("\\")
                             nombre_pdf = nombre[-1]
-                            da_archivo = str(i.archivo)
+                            da_archivo = parametro_general + 'contratos/' + str(i.archivo)
                             with open(da_archivo, "rb") as pdf_file:
                                 documento_ad = base64.b64encode(pdf_file.read()).decode('utf-8')
                             doc_ad_base64 = f'{documento_ad}'

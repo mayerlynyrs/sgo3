@@ -8,6 +8,9 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.forms import model_to_dict
 from django.core.validators import FileExtensionValidator
+
+# Mailmerge
+from mailmerge import MailMerge
 # Models
 from users.models import Trabajador, ValoresDiario
 # Clientes
@@ -145,6 +148,9 @@ class Contrato(BaseModel):
     )
     def __str__(self):
         return str(self.trabajador.rut) + '-' + str(self.id).zfill(4)
+
+    def codigo(self):
+        return str(self.pk).zfill(4)
     
     def toJSON(self):
         item = model_to_dict(self) 
@@ -161,6 +167,12 @@ class Contrato(BaseModel):
         item['solicitante'] = self.created_by.first_name.title() + " " + self.created_by.last_name.title()
         item['estado_firma'] = self.estado_firma
         return item
+
+    @property
+    def atributos(self):
+        documento = MailMerge(self.archivo)
+        atributos = documento.get_merge_fields()
+        return atributos
 
 
 def contrato_directory_path(instance, filename):
