@@ -761,7 +761,7 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     Q(first_name__icontains=search) |
                     Q(last_name__icontains=search) |
                     Q(username__icontains=search)).exclude(
-                    groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo']).order_by(
+                    groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
                     'first_name', 'last_name').distinct('first_name', 'last_name')
             else:
                 # Es Trabajador y recibe parametro de busqueda
@@ -778,13 +778,14 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 if planta is None:
                     queryset = User.objects.filter(
                         planta__in=self.request.user.planta.all()).exclude(
-                        groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo', 'Fiscalizador DT', 'Fiscalizador Interno']).order_by(
+                        groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH',
+                        'Psicologo', 'Fiscalizador DT', 'Fiscalizador Interno']).order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
                 else:
                     # No es Trabajador y hay plantas seleccionadas
                     queryset = User.objects.filter(
                         planta__in=planta).exclude(
-                        groups__name__in=['Administrador', 'Administrador Contratos', 'Psicologo']).order_by(
+                        groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
                         'first_name', 'last_name').distinct('first_name', 'last_name')
 
             else:

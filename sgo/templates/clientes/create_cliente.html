@@ -4,32 +4,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %}Clientes{% endblock %}
-{% block styles %}
-.text-name {
-  margin-bottom: 0em;
-  font-weight: bold;
-  font-size: small;
-}
-.text-desc {
-  font-style: italic;
-  margin-top:-0.1em;
-  padding-left: 0.1em;
-  font-size: small;
-}
-.estado-fichero{
-  text-align: center;
-  vertical-align: middle;
-}
-.centrar{
-    align-items: center;
-    justify-content: center;
-}
-.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #153264!important;
-    border-color: #153264 !important;
-    color: #fff;
-}
-{% endblock %}
+
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'admin/assets/plugins/bootstrap-select/css/bootstrap-select.min.css' %}">
@@ -343,15 +318,15 @@
                                       <div class="row col-md-12">
                                         <div class="form-group col-md-4">
                                           <label for="email">Región</label>
-                                            {{ form3.region }}
+                                            {{ form3.region2 }}
                                         </div>
                                         <div class="form-group col-md-4">
                                           <label for="email">Provincia</label>
-                                            {{ form3.provincia }}
+                                            {{ form3.provincia2 }}
                                         </div>
                                         <div class="form-group col-md-4">
                                           <label for="email">Ciudad</label>
-                                          {{ form3.ciudad }}
+                                          {{ form3.ciudad2 }}
                                         </div>
                                       </div>
                                       <div class="row col-md-12">
@@ -390,6 +365,43 @@
                               </div>
                             </div>
                           </form>
+                          <script>
+                            $("#id_region2").change(function () {
+                              var url = $("#PlantaForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+                              var regionId = $(this).val();  // get the selected region ID from the HTML input
+                          
+                              $.ajax({                       // initialize an AJAX request
+                                url: "{% url 'clientes:ajax_load_provincias' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/)
+                                data: {
+                                  'region': regionId       // add the region id to the GET parameters
+                                },
+                                success: function (data) {   // `data` is the return of the `load_provincias` view function
+                                  $("#id_provincia2").html(data);  // replace the contents of the provincia input with the data that came from the server
+                                  
+                                }
+                              });
+                          
+                            });
+                            
+                            // this one is for fetching ciudad data
+                            $("#id_provincia2").change(function () { //django-model-form created this id
+                              var url = $("#PlantaForm").attr("data-provincias-url");  // get the url of the `load_provincias` view
+                              console.log("🚀 ~ file: create_cliente.html ~ line 706 ~ url", url)
+                              var provinciaId = $(this).val();  // get the selected region ID from the HTML input
+                              console.log("🚀 ~ file: create_cliente.html ~ line 708 ~ provinciaId", provinciaId)
+                          
+                              $.ajax({                       // initialize an AJAX request
+                                url: "{% url 'clientes:ajax_load_ciudades' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-provincias/) person_form.html template has this url var
+                                data: {
+                                  'provincia': provinciaId       // add the region id to the GET parameters
+                                },
+                                success: function (data) {   // `data` is the return of the `load_provincias` view function
+                                  $("#id_ciudad2").html(data);  // replace the contents of the provincia input with the data that came from the server
+                                }
+                              });
+                          
+                            });
+                            </script>
                         </div>
                       {% endblock %}
                       <div class="modal fade bd-example-modal-lg" id="myModalContactoPlanta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

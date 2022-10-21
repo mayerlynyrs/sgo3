@@ -145,6 +145,9 @@
           },
           success: function (data) {   // `data` is the return of the `load_provincias` view function
             $("#id_provincia").html(data);  // replace the contents of the provincia input with the data that came from the server
+            provinciaaa = $("#id_provincia").html(data);
+            console.log("🚀 ~ file: cliente_create.html ~ line 149 ~ provinciaaa", provinciaaa)
+            
           }
         });
   

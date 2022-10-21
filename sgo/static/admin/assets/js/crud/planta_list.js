@@ -67,9 +67,7 @@ $(function () {
         $('input[name="action"]').val('planta_add');
         modal_title.find('span').html('Planta <small style="font-size: 80%;">Nuevo</small>');
         console.log(modal_title.find('i'));
-        getData3();
         $('form')[2].reset();
-        
         modal_title.find('i').removeClass().addClass();
         $('form')[2].reset();
         var btn = document.getElementById("boton2");
@@ -93,9 +91,9 @@ $(function () {
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="email"]').val(data.email);
-        $('select[name="region"]').val(data.region_id).trigger("change");
-        $('select[name="provincia"]').val(data.provincia_id).trigger("change");
-        $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
+        $('select[name="region2"]').val(data.region_id).trigger("change");
+        $('select[name="provincia2"]').val(data.provincia_id).trigger("change");
+        $('select[name="ciudad2"]').val(data.ciudad_id).trigger("change");
         $('input[name="direccion"]').val(data.direccion);
         $('input:checkbox[name=masso]').attr('checked',data.masso);
         $('input:checkbox[name=hal2]').attr('checked',data.hal2);
@@ -134,9 +132,9 @@ $(function () {
         $('input[name="telefono"]').val(data.telefono);
         $('input[name="cod_uny_planta"]').val(data.codigo);
         $('input[name="email"]').val(data.email);
-        $('select[name="region"]').val(data.region_id).trigger("change");
-        $('select[name="provincia"]').val(data.provincia_id).trigger("change");
-        $('select[name="ciudad"]').val(data.ciudad_id).trigger("change");
+        $('select[name="region2"]').val(data.region_id).trigger("change");
+        $('select[name="provincia2"]').val(data.provincia_id).trigger("change");
+        $('select[name="ciudad2"]').val(data.ciudad_id).trigger("change");
         $('input[name="direccion"]').val(data.direccion);
         $('input:checkbox[name=masso]').attr('checked',data.masso);
         $('input:checkbox[name=hal2]').attr('checked',data.hal2);
