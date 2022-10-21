@@ -661,7 +661,7 @@ def enviar_revision_contrato(request, contrato_id):
                 now = datetime.now()
                 doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
             
-                context = { 'comuna_planta': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                context = { 'comuna_planta': Contrato.objects.values_list('planta_ciudad2_nombre', flat=True).get(pk=contrato_id, status=True),
                             'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
                             'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
                             'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
@@ -679,9 +679,9 @@ def enviar_revision_contrato(request, contrato_id):
                             'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
                             'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
                             'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
-                            'comuna_planta': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'comuna_planta': Contrato.objects.values_list('planta_ciudad2_nombre', flat=True).get(pk=contrato_id, status=True),
                             'region_planta': Contrato.objects.values_list('planta_region_nombre', flat=True).get(pk=contrato_id, status=True),
-                            'descripcion_jornada': Contrato.objects.values_list('planta_ciudad_nombre', flat=True).get(pk=contrato_id, status=True),
+                            'descripcion_jornada': Contrato.objects.values_list('planta_ciudad2_nombre', flat=True).get(pk=contrato_id, status=True),
                             'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
                             'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
                             'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
