@@ -424,28 +424,47 @@ def create(request):
         for p in plantillas:
             plantillas_attr.extend(list(p.atributos))
 
-        # ruta_documentos donde guardara el documento
+        # Contratos Parametros General, ruta_documentos donde guardara el documento
         ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
         path = os.path.join(ruta_documentos)
-        # path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id)  + '.docx')
-        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-        # convert("Contrato#1.docx")
+        # Si carpeta no existe, crea carpeta de contratos.
+        carpeta = 'contratos'
+        try:
+            os.mkdir(path + carpeta)
+            path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+            doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id)  + '.docx')
+            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+            # convert("Contrato#1.docx")
 
-        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
-        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + ".pdf"
-        contrato.archivo = url
-        # tipo_documento = []
-        # if formt['nombre'] == 'Carta de Término':
-        #     tipo_documento = 6
-        # if formt['nombre'] == 'Seguro de Vida':
-        #     tipo_documento = 5
-        doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
-        doc_contrato.tipo_documento_id = formt['tipo_id']
-        doc_contrato.save()
-        # Elimino el documento word.
-        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +str(contrato.id) + '.docx')
-        messages.success(request, 'Contrato Creado Exitosamente')
+            convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
+            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+            contrato.archivo = url
+            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+            doc_contrato.tipo_documento_id = formt['tipo_id']
+            doc_contrato.save()
+            # Elimino el documento word.
+            os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
+            messages.success(request, 'Contrato Creado Exitosamente')
+        except:
+            path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+            doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id)  + '.docx')
+            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+            # convert("Contrato#1.docx")
+
+            convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
+            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+            contrato.archivo = url
+            # tipo_documento = []
+            # if formt['nombre'] == 'Carta de Término':
+            #     tipo_documento = 6
+            # if formt['nombre'] == 'Seguro de Vida':
+            #     tipo_documento = 5
+            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+            doc_contrato.tipo_documento_id = formt['tipo_id']
+            doc_contrato.save()
+            # Elimino el documento word.
+            os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
+            messages.success(request, 'Contrato Creado Exitosamente')
     return redirect('contratos:create_contrato',requrimientotrabajador)
 
 
@@ -657,88 +676,121 @@ def enviar_revision_contrato(request, contrato_id):
                     revision.contrato_id = contrato.id
                     revision.save()
                 # Trae la plantilla que tiene la planta
-                formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=1)
-                now = datetime.now()
-                doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-            
-                context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                            'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
-                            'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
-                            'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
-                            'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
-                            'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                            'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
-                            'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                            'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
-                            'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
-                            'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
-                            'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
-                            'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
-                            'detalle_bonos': 'okokok',
-                            'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
-                            'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
-                            'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
-                            'adicional_cumplimiento_horario_undecimo': 'okokok',
-                            'parrafo_decimo_tercero': 'okokok',
-                            'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                            'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
-                            }
-                rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
-                doc.render(context)
-                # exit()
-                # Obtengo el usuario
-                usuario = get_object_or_404(User, pk=1)
-                # Obtengo todas las negocios a las que pertenece el usuario.
-                plantas = usuario.planta.all()
-                # Obtengo el set de contrato de la primera negocio relacionada.
-                plantillas_attr = list()
-                plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
-                # Obtengo los atributos de cada plantilla
-                for p in plantillas:
-                    plantillas_attr.extend(list(p.atributos))
-
-                # ruta_documentos donde guardara el documento
-                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
-                path = os.path.join(ruta_documentos)
-                # path = os.path.join(settings.MEDIA_ROOT + '/plantillas/')
-                doc.save(path + str(rut_trabajador) + "C" +str(contrato_id)  + '.docx')
-                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-                # convert("Contrato#1.docx")
-
-                convert(path + str(rut_trabajador) + "C" +str(contrato_id) + ".docx", path +  str(rut_trabajador) + "C" + str(contrato_id) + ".pdf")
-                url = str(rut_trabajador) + "C" +str(contrato_id) + ".pdf"
-                contrato.archivo = url
-                contrato.save()
-
-                nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
-                apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
-                fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-                nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
-                send_mail(
-                    'Nueva Solicitud de contrato Prueba sgo3 ',
-                    'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
-                    'contratos@empresasintegra.cl',
-                    ['soporte@empresasintegra.cl'],
-                    fail_silently=False,
-                )
+                formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=1)
+                for formt in formato:
+                    now = datetime.now()
+                    doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
                 
-                # Elimino el documento word.
-                os.remove(path + str(rut_trabajador) + "C" +str(contrato_id) + '.docx')
-                messages.success(request, 'Contrato enviado a revisión')
+                    context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                                'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
+                                'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
+                                'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
+                                'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
+                                'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                                'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
+                                'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                                'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
+                                'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
+                                'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
+                                'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
+                                'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
+                                'detalle_bonos': 'okokok',
+                                'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
+                                'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
+                                'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'adicional_cumplimiento_horario_undecimo': 'okokok',
+                                'parrafo_decimo_tercero': 'okokok',
+                                'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
+                                'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
+                                }
+                    rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
+                    doc.render(context)
+                    # exit()
+                    # Obtengo el usuario
+                    usuario = get_object_or_404(User, pk=1)
+                    # Obtengo todas las negocios a las que pertenece el usuario.
+                    plantas = usuario.planta.all()
+                    # Obtengo el set de contrato de la primera negocio relacionada.
+                    plantillas_attr = list()
+                    plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+                    # Obtengo los atributos de cada plantilla
+                    for p in plantillas:
+                        plantillas_attr.extend(list(p.atributos))
+
+                    # Contratos Parametros General, ruta_documentos donde guardara el documento
+                    ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                    path = os.path.join(ruta_documentos)
+                    # Si carpeta no existe, crea carpeta de contratos.
+                    carpeta = 'contratos'
+                    try:
+                        os.mkdir(path + carpeta)
+                        path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+                        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
+                        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                        # convert("Contrato#1.docx")
+
+                        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
+                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                        contrato.archivo = url
+                        contrato.save()
+
+                        nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
+                        apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
+                        fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+                        nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
+                        send_mail(
+                            'Nueva Solicitud de contrato Prueba sgo3 ',
+                            'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
+                            'contratos@empresasintegra.cl',
+                            ['soporte@empresasintegra.cl'],
+                            fail_silently=False,
+                        )
+                        
+                        # Elimino el documento word.
+                        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
+                        messages.success(request, 'Contrato enviado a revisión')
+                    except:
+                        path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+                        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
+                        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                        # convert("Contrato#1.docx")
+
+                        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
+                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                        contrato.archivo = url
+                        contrato.save()
+
+                        nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
+                        apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
+                        fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+                        nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
+                        send_mail(
+                            'Nueva Solicitud de contrato Prueba sgo3 ',
+                            'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
+                            'contratos@empresasintegra.cl',
+                            ['soporte@empresasintegra.cl'],
+                            fail_silently=False,
+                        )
+                        
+                        # Elimino el documento word.
+                        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
+                        messages.success(request, 'Contrato enviado a revisión')
+                
                 return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
 
 
@@ -1215,26 +1267,32 @@ def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def enviar_revision_anexo(request, anexo_id):
+    anexo = get_object_or_404(Anexo, pk=anexo_id)
+    # Trae el id de la planta del Requerimiento
+    plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=anexo.contrato_id, status=True)
+    # Busca si la planta tiene plantilla 
+    if not Plantilla.objects.filter(plantas=plant_template, tipo_id=5).exists():
+        messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
+        return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
 
-            anexo = get_object_or_404(Anexo, pk=anexo_id)
-            anexo.estado_anexo = 'PV'
-            anexo.fecha_solicitud = datetime.now()
-            try:
-                revision = Revision.objects.get(anexo_id=anexo_id)
-                revision.estado = 'PD'
-                revision.save()
-            except:  
-                revision = Revision()
-                revision.anexo_id = anexo.id
-                revision.save()
-
-            # Trae el id de la planta del Requerimiento
-            plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=anexo.contrato_id, status=True)
-            # Trae la plantilla que tiene la planta
-            formato = Plantilla.objects.values_list('archivo', flat=True).get(plantas=plant_template, tipo_id=5)
+    else:
+        anexo.estado_anexo = 'PV'
+        anexo.fecha_solicitud = datetime.now()
+        try:
+            revision = Revision.objects.get(anexo_id=anexo_id)
+            revision.estado = 'PD'
+            revision.save()
+        except:  
+            revision = Revision()
+            revision.anexo_id = anexo.id
+            revision.save()
+  
+        # Trae la plantilla que tiene la planta
+        formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=5)
+        for formt in formato:
             now = datetime.now()
-            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-         
+            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
+                
             context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
                         'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True),
@@ -1270,7 +1328,6 @@ def enviar_revision_anexo(request, anexo_id):
                         }
             rut_trabajador = Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True)
             doc.render(context)
-            # exit()
             # Obtengo el usuario
             usuario = get_object_or_404(User, pk=1)
             # Obtengo todas las negocios a las que pertenece el usuario.
@@ -1282,22 +1339,39 @@ def enviar_revision_anexo(request, anexo_id):
             for p in plantillas:
                 plantillas_attr.extend(list(p.atributos))
 
-            # ruta_documentos donde guardara el documento
+            # Contratos Parametros General, ruta_documentos donde guardara el documento
             ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
             path = os.path.join(ruta_documentos)
+            # Si carpeta no existe, crea carpeta de contratos.
+            carpeta = 'anexos'
+            try:
+                os.mkdir(path + carpeta)
+                path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
+                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
+                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     
 
-            doc.save(path + str(rut_trabajador) + "_A_" +str(anexo_id) +'.docx')
-            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     
+                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf")
+                        
+                url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf"
+                anexo.archivo = url
+                anexo.save()
+                # Elimino el documento word.
+                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
+                messages.success(request, 'Anexo enviado a revisión')
+            except:
+                path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
+                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
+                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     
 
-            convert(path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".docx", path + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf")
-            
-            url = 'anexo/' + str(rut_trabajador) + "_A_" +str(anexo_id) + ".pdf"
-            anexo.archivo = url
-            anexo.save()
-            # Elimino el documento word.
-            os.remove(path + str(rut_trabajador) + "_A_" +str(anexo_id) + '.docx')
-            messages.success(request, 'Anexo enviado a revisión')
-            return redirect('contratos:create_contrato' ,anexo.requerimiento_trabajador_id)
+                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf")
+                        
+                url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf"
+                anexo.archivo = url
+                anexo.save()
+                # Elimino el documento word.
+                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
+                messages.success(request, 'Anexo enviado a revisión')
+    return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
 
 
 @login_required
