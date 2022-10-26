@@ -23,6 +23,7 @@ function getData() {
                 return data;
             }},
             {"data": "solicitante"},
+            {"data": "cliente_planta"},
             {"data": "trabajador"},
             {"data": "plazos"},
             {"data": "contrato"},
