@@ -15,11 +15,12 @@ class RequerimientoCreateForm(forms.ModelForm):
     NORMAL = 'NOR'
     REGIMEN_PGP = 'PGP'
     URGENCIA = 'URG'
-
+    CONTINGENCIA = "CON"
     REGIMEN_ESTADO = (
         (NORMAL, 'Normal'),
         (REGIMEN_PGP, 'Régimen PGP'),
         (URGENCIA, 'Urgencia'),
+        (CONTINGENCIA, 'Contingencia'),
     )
 
     codigo = forms.CharField(required=False, label="Código",

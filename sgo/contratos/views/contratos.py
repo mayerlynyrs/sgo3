@@ -177,8 +177,8 @@ def exportar_excel_contrato(request):
 
     columns = ['RUT','APELLIDO PATERNO','APELLIDO MATERNO','PRIMER NOMBRE','SEGUNDO NOMBRE','TELEFONO', 'CELULAR', 'CORREO ELECTRONICO','PAIS (CODIGO)',  'CIUDAD (CODIGO)', 'COMUNA (CODIGO)', 'CALLE (CODIGO)', 'NRO_DIRECCION'
     , 'DETALLE_DIRECCION', 'NACIONALIDAD', 'SEXO (CODIGO)', 'ESTADO_CIVIL (CODIGO)', 'FECHA_NACIMIENTO', 'LUGAR_DE_NACIMIENTO', 'PANTALON', 'CHAQUETA', 'ZAPATO', 'SITUACION (CODIGO)',
-'PROFESION (CODIGO)', 'SINDICATO', 'BANCO (CODIGO)', 'CODIGO_OFICINA_PAGO','NRO_CUENTA', 'TIPO_DE_CUENTA_CODIGO', 'FECHA_INI_ACTIVIDAD', 'GRUPO_SANGRE', 'ESTATURA', 'PESO', 'AFP (CODIGO)', 'AFP PACTADO'
-'AFP_CONVENIO(CODIGO)', 'AHORRO AFP', 'MONTO JUBILACION', 'N_FUN', 'ISAPRE (CODIGO)', 'ISAPRE PACTADO', 'ISA_CONVENIO(CODIGO)', 'ISA_CONVENIO(CODIGO)','SERV_MEDICO_CARGA_NORMAL', 'SERV_MEDICO_CARGA_ESPECIAL', 'SERV_MEDICO_CARGA_DENTAL',
+'PROFESION (CODIGO)', 'SINDICATO', 'BANCO (CODIGO)', 'CODIGO_OFICINA_PAGO','NRO_CUENTA', 'TIPO_DE_CUENTA_CODIGO', 'FECHA_INI_ACTIVIDAD', 'GRUPO_SANGRE', 'ESTATURA', 'PESO', 'AFP (CODIGO)', 'AFP PACTADO',
+'AFP_CONVENIO(CODIGO)', 'AHORRO AFP', 'MONTO JUBILACION', 'N_FUN', 'ISAPRE (CODIGO)', 'ISAPRE PACTADO', 'ISA_CONVENIO(CODIGO)', 'SERV_MEDICO_CARGA_NORMAL', 'SERV_MEDICO_CARGA_ESPECIAL', 'SERV_MEDICO_CARGA_DENTAL',
  'SERV_MEDICO_ADICIONAL', 'SERVM_CONVENIO(CODIGO)', 'INST_APV (CODIGO)' , 'MONTO APV', 'APV_CONVENIO(CODIGO)', 'INST_SEGURO_CESANTIA (CODIGO)' , 'PRESENTADO_POR' , 'RUTA_CURRICULUM', 'OBSERVACIONES', 'RUTA_IMAGEN', 'NIC', 'FECHA_CONTRATO',
  'FECHA_INICIO', 'FECHA_TERMINO', 'CONSORCIO (CODIGO)', 'EMPRESA (CODIGO)', 'OBRA (CODIGO)', 'CENTRO_COSTO (CODIGO)' , 'CARGO (CODIGO)', 'SUELDO_BASE_MES', 'SUELDO_BASE_DIA', 'SUELDO_BASE_HORA', 'QUINCENA', 'LUGAR_PAGO (CODIGO)','DIA_PAGO',
  'LIQUIDO_PACTADO', 'TURNO (CODIGO)', 'CLASIFICACION_TRABAJADOR (CODIGO)', 'ID_PEDIDO', 'HITO (CODIGO)', 'SUPERVISOR', 'ID_TIPO_CONTRATO', 'NIVEL_EDUCACIONAL', 'CAUSAL_CONTRATACION', 'LETRA_CONTRATO', ' TIPO_CONTRATO', 'COLABORADOR_REFERIDO',
@@ -199,7 +199,7 @@ def exportar_excel_contrato(request):
     ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
     , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','planta__cliente__cod_uny_cliente', 'planta__cod_uny_planta'
     , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base', 'sueldo_base', 'sueldo_base', 'sueldo_base',"planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "horario__cod_uny_horario", "planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "created_by_id__rut", "trabajador__nivel_estudio__cod_uny_estudio"
-    , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "id", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "id", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
+    , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "regimen", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "trabajador__afp", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
 
     # print('variable row',rows)
 
@@ -271,7 +271,14 @@ def exportar_excel_contrato(request):
             elif(col_num == 76 ):
                 ws.write(row_num, col_num,'CTPF', font_style)
             elif(col_num == 80 ):
-                ws.write(row_num, col_num,'id 1', font_style)
+                if(row[col_num] == 'URG'):
+                    ws.write(row_num, col_num,'2', font_style)
+                elif(row[col_num] == 'NOR'):
+                    ws.write(row_num, col_num,'1', font_style)
+                elif(row[col_num] == 'CON'):
+                    ws.write(row_num, col_num,'3', font_style)
+                else:
+                    ws.write(row_num, col_num,'0', font_style)
             elif(col_num == 81 ):
                 if (row[col_num] == True):
                     ws.write(row_num, col_num,'1', font_style)
@@ -283,7 +290,10 @@ def exportar_excel_contrato(request):
                 else:
                     ws.write(row_num, col_num,'', font_style)
             elif(col_num == 86 ):
-                ws.write(row_num, col_num,'id 3', font_style)
+                if(row[col_num] == 9):
+                    ws.write(row_num, col_num,'4', font_style)
+                else:
+                    ws.write(row_num, col_num,'1', font_style)
             elif(col_num == 90):
                 if(row[col_num] is None):
                     ws.write(row_num, col_num,'', font_style)
@@ -735,6 +745,21 @@ def enviar_revision_contrato(request, contrato_id):
                     path = os.path.join(ruta_documentos)
                     # Si carpeta no existe, crea carpeta de contratos.
                     carpeta = 'contratos'
+                    sueldo_base = round(contrato.sueldo_base / 30)
+                    gratificacion = round(sueldo_base * 0.25)
+                    total_haberes_imponibles = sueldo_base + gratificacion
+                    feriado_proporcional = round((sueldo_base * 1.25) / 30)
+                    total_no_haberes_imponibles = feriado_proporcional
+                    total_haberes = total_haberes_imponibles + total_no_haberes_imponibles
+                    pago_liquido = contrato.valores_diario.valor_diario + feriado_proporcional 
+                    salud = round(total_haberes_imponibles * 0.07)
+                    afp = round(total_haberes_imponibles * (contrato.trabajador.afp.tasa / 100))
+                    total_descuento = salud + afp
+                    
+
+
+
+
                     try:
                         os.mkdir(path + carpeta)
                         path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
@@ -1032,6 +1057,17 @@ class SolicitudContrato(TemplateView):
                 contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
+                
+                sueldo_base = round(contrato.sueldo_base / 30)
+                gratificacion = round(sueldo_base * 0.25)
+                total_haberes_imponibles = sueldo_base + gratificacion
+                feriado_proporcional = round((sueldo_base * 1.25) / 30)
+                total_no_haberes_imponibles = feriado_proporcional
+                total_haberes = total_haberes_imponibles + total_no_haberes_imponibles
+                pago_liquido = contrato.valores_diario.valor_diario + feriado_proporcional 
+                salud = round(total_haberes_imponibles * 0.07)
+                afp = round(total_haberes_imponibles * (contrato.trabajador.afp.tasa / 100))
+                total_descuento = salud + afp
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(

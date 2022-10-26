@@ -810,7 +810,7 @@ def create_trabajador(request):
 
         if trabajador_form.is_valid():       
             user = User()
-            user.rut = request.POST['rut']
+            user.rut = request.POST['rut'].upper()
             user.first_name = request.POST['first_name'].lower()
             user.last_name = request.POST['last_name'].lower()
             user.fecha_nacimiento = request.POST['fecha_nacimiento']

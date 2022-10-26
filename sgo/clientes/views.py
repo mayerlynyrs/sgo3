@@ -255,6 +255,9 @@ def create_cliente(request):
             cliente.status = True
             cliente.save()
             cliente = cliente_form.save()
+            user = User.objects.get( pk = request.user.id)
+            user.cliente.add(cliente.id)
+            user.save()
             messages.success(request, 'Cliente Creado Exitosamente')
             return redirect('clientes:create_cliente', cliente_id=cliente.id)
         else:
@@ -416,7 +419,7 @@ class ClienteIdView(TemplateView):
                 planta.psicologico = estadopsico
                 planta.hal2 = estadohal2
                 planta.negocio_id = request.POST['negocio']
-                planta.rut = request.POST['rut']
+                planta.rut = request.POST['rut'].upper()
                 planta.cod_uny_planta = request.POST['cod_uny_planta']
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
@@ -426,12 +429,15 @@ class ClienteIdView(TemplateView):
                 planta.ciudad2_id = request.POST['ciudad2']
                 planta.direccion = request.POST['direccion']
                 planta.nombre_gerente = request.POST['nombre_gerente'].lower()
-                planta.rut_gerente = request.POST['rut_gerente']
+                planta.rut_gerente = request.POST['rut_gerente'].upper()
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
                 planta.bateria_id = request.POST['bateria']
                 planta.cliente_id = cliente_id
                 planta.save()
+                user = User.objects.get( pk = request.user.id)
+                user.planta.add(planta.id)
+                user.save()
                 for i in bono:
                     planta.bono.add(i)
             elif action == 'planta_edit':
@@ -454,7 +460,7 @@ class ClienteIdView(TemplateView):
                 planta.hal2 = estadohal2    
                 planta.cod_uny_planta = request.POST['cod_uny_planta']
                 planta.negocio_id = request.POST['negocio']
-                planta.rut = request.POST['rut']
+                planta.rut = request.POST['rut'].upper()
                 planta.nombre = request.POST['nombre'].lower()
                 planta.telefono = request.POST['telefono']
                 planta.email = request.POST['email'].lower()
@@ -463,7 +469,7 @@ class ClienteIdView(TemplateView):
                 planta.ciudad2_id = request.POST['ciudad2']
                 planta.direccion = request.POST['direccion']
                 planta.nombre_gerente = request.POST['nombre_gerente'].lower()
-                planta.rut_gerente = request.POST['rut_gerente']
+                planta.rut_gerente = request.POST['rut_gerente'].upper()
                 planta.direccion_gerente = request.POST['direccion_gerente']
                 planta.gratificacion_id = request.POST['gratificacion']
                 planta.bateria_id = request.POST['bateria']
@@ -486,7 +492,7 @@ class ClienteIdView(TemplateView):
                 user = User()
                 user.first_name = request.POST['nombres'].lower()
                 user.last_name = request.POST['apellidos'].lower()
-                user.rut = request.POST['rut']
+                user.rut = request.POST['rut'].upper()
                 user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
                 user.telefono = request.POST['telefono']
                 user.email = request.POST['email'].lower()
@@ -504,7 +510,7 @@ class ClienteIdView(TemplateView):
                 cp_contact = ContactoPlanta()
                 cp_contact.nombres = request.POST['nombres'].lower()
                 cp_contact.apellidos = request.POST['apellidos'].lower()
-                cp_contact.rut = request.POST['rut']
+                cp_contact.rut = request.POST['rut'].upper()
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
                 cp_contact.email = request.POST['email'].lower()
@@ -517,7 +523,7 @@ class ClienteIdView(TemplateView):
                 user = User.objects.get(pk=request.POST['user_id'])
                 user.first_name = request.POST['nombres'].lower()
                 user.last_name = request.POST['apellidos'].lower()
-                user.rut = request.POST['rut']
+                user.rut = request.POST['rut'].upper()
                 user.fecha_nacimiento = request.POST['fecha_nacimiento'] 
                 user.telefono = request.POST['telefono']
                 user.email = request.POST['email'].lower()
@@ -525,7 +531,7 @@ class ClienteIdView(TemplateView):
                 cp_contact = ContactoPlanta.objects.get(pk=request.POST['id'])
                 cp_contact.nombres = request.POST['nombres'].lower()
                 cp_contact.apellidos = request.POST['apellidos'].lower()
-                cp_contact.rut = request.POST['rut']
+                cp_contact.rut = request.POST['rut'].upper()
                 cp_contact.fecha_nacimiento = request.POST['fecha_nacimiento']
                 cp_contact.telefono = request.POST['telefono']
                 cp_contact.relacion = request.POST['relacion']
