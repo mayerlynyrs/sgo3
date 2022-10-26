@@ -299,7 +299,7 @@ class CrearTrabajadorForm(forms.ModelForm):
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     telefono2 = forms.CharField(required=True, label="Teléfono",
-                                widget=forms.TextInput(attrs={'class': "form-control"}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD-MM-AAAA','class': "form-control", 'autocomplete':'off' ,'id':"fecha"}))
     estado_civil = forms.ModelChoiceField(queryset=Civil.objects.filter(status=True), required=True, label="Estado Civil",
@@ -527,6 +527,8 @@ class EditarTrabajadorForm(forms.ModelForm):
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     domicilio = forms.EmailField(required=True,
                              widget=forms.TextInput(attrs={'class': "form-control"}))
+    telefono2 = forms.CharField(required=True, label="Teléfono",
+                                widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD/MM/AAAA','class': "form-control", 'autocomplete':'off', 'id':"fecha"}))
@@ -545,7 +547,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                                                               })
                                    )
     pacto_uf = forms.CharField(required=True, label="Pacto UF",
-                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -616,8 +618,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('telefono', css_class='form-group col-md-6 mb-0'),
-                Column('telefono2', css_class='form-group col-md-6 mb-0'),
+                Column('telefono2', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
