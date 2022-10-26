@@ -80,13 +80,15 @@ class Contrato(BaseModel):
     BAJADO = 'BJ'
 
     NORMAL = 'NOR'
-    PARADA_GENERAL_PLANTA = 'PGP'
+    REGIMEN_PGP = 'PGP'
     URGENCIA = 'URG'
+    CONTINGENCIA = "CON"
 
     REGIMEN_ESTADO = (
         (NORMAL, 'Normal'),
-        (PARADA_GENERAL_PLANTA, 'Parada Planta'),
+        (REGIMEN_PGP, 'Régimen PGP'),
         (URGENCIA, 'Urgencia'),
+        (CONTINGENCIA, 'Contingencia'),
     )
 
 
@@ -162,9 +164,10 @@ class Contrato(BaseModel):
         item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title()
         # item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title() + "<br> Solicitante: " + self.created_by.first_name.title() + " " + self.created_by.last_name.title()
         item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
-        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
-        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
         item['solicitante'] = self.created_by.first_name.title() + " " + self.created_by.last_name.title()
+        item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
+        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
+        item['plazos'] = "Fecha Inicio: " + str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
         item['estado_firma'] = self.estado_firma
         return item
 
@@ -301,9 +304,10 @@ class Anexo(BaseModel):
         item['contrato'] = "Tipo: " + self.contrato.tipo_documento.nombre.title() + "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.contrato.motivo + "<br> Jornada:  " + self.contrato.horario.nombre.title()
         # item['contrato'] = "Tipo: " + self.contrato.tipo_documento.nombre.title() + "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.contrato.horario.nombre.title() + "<br> Renta:  " + str(self.nueva_renta)
         item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + "<br>" + self.trabajador.rut + "<br>" + self.trabajador.email
-        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
-        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))    
         item['solicitante'] = self.created_by.first_name.title() + " " + self.created_by.last_name.title()
+        item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
+        item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
+        item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
         return item
 
 

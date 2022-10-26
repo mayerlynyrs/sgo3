@@ -141,8 +141,29 @@ class ContratoEnviadoList(TemplateView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    # "PushNotificationUrl": "https://putsreq.com/QatBxyrqPOlHoMOZhi3S",
+    # "PushNotificationFilter": ["Processed", "Sent", "Delivered", "Signed", "Rejected", "FullySigned", "Closed"]
+
 
     def post(self, request):
+
+        url = "https://totalsoft-test.ecertia.com/api/EviSign/Query?withUniqueIds=0183895c-349c-4068-8f1b-a32517dc9668&includeAttachmentsOnResult=true&includeAttachmentBlobsOnResult=true&includeEventsOnResult=true&includeAffidavitsOnResult=true&includeAffidavitBlobsOnResult=true"
+
+        payload = ""
+        headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+        'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        # resp = (response.text)
+        # print(response.text)
+
+
         data = {}
         try:
             action = request.POST['action']
@@ -154,6 +175,9 @@ class ContratoEnviadoList(TemplateView):
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
+        context = {'response': response.text, }
+        data = context,
+        request=request
         return JsonResponse(data, safe=False)
 
 
