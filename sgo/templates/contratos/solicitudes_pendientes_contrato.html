@@ -116,6 +116,8 @@
               var row = checkBoxes[i].parentNode.parentNode;
               var row2 = grid.getElementsByTagName("INPUT")[i].value
               message.push(row2);
+              console.log("🚀 ~ file: solicitudes_pendientes_contrato.html ~ line 119 ~ GetSelected ~ message", message)
+              
           }
       }
 
@@ -123,14 +125,13 @@
       var URL = '/contratos/'+message+'/aprobacion_masiva/';
       $.ajax({
             url: URL,
-            type: 'get',
+            type: 'GET',
             dataType: 'json',
             beforeSend: function () {
               iziToast.success({
                             message: 'los contratos fueron Aprobados con exito',
                             position: 'topRight',
               });
-              location.reload();
 
             },
           });

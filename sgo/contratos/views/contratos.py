@@ -59,6 +59,7 @@ from contratos.forms import TipoContratoForm, ContratoForm, ContratoEditarForm, 
 from requerimientos.forms import RequeriTrabajadorForm
 from requerimientos.numero_letras import numero_a_letras
 from requerimientos.fecha_a_palabras import fecha_a_letras
+from contratos.finiquito import finiquito
 now = datetime.now()
 
 
@@ -483,6 +484,7 @@ def create(request):
 def aprobacion_masiva(request, aprobacion):
   
     lista_aprobacion = aprobacion.split(',')
+    print('cuantos check trae esto', aprobacion)
     for i in lista_aprobacion:
         revision = Revision.objects.get(contrato_id=i)
         revision.estado = 'AP'
@@ -490,9 +492,8 @@ def aprobacion_masiva(request, aprobacion):
         contrato = Contrato.objects.get(pk=i)
         contrato.fecha_aprobacion  = datetime.now()
         contrato.estado_contrato = 'AP'
+        finiquito(contrato.id)
         contrato.save()
-        
-
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
                 'Nueva Solicitud de contrato Prueba sgo3 ',
@@ -502,8 +503,8 @@ def aprobacion_masiva(request, aprobacion):
                 ['soporte@empresasintegra.cl'],
                 fail_silently=False,
         )
-    messages.success(request, 'Contratos aprobados')
-    return redirect('contratos:solicitud-contrato',)
+        messages.success(request, 'Contratos aprobados')
+    return redirect('requerimientos:list')
 
 
 @login_required
@@ -1057,17 +1058,7 @@ class SolicitudContrato(TemplateView):
                 contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
-                
-                sueldo_base = round(contrato.sueldo_base / 30)
-                gratificacion = round(sueldo_base * 0.25)
-                total_haberes_imponibles = sueldo_base + gratificacion
-                feriado_proporcional = round((sueldo_base * 1.25) / 30)
-                total_no_haberes_imponibles = feriado_proporcional
-                total_haberes = total_haberes_imponibles + total_no_haberes_imponibles
-                pago_liquido = contrato.valores_diario.valor_diario + feriado_proporcional 
-                salud = round(total_haberes_imponibles * 0.07)
-                afp = round(total_haberes_imponibles * (contrato.trabajador.afp.tasa / 100))
-                total_descuento = salud + afp
+                finiquito(contrato.id)
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
