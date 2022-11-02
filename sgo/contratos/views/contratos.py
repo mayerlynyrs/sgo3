@@ -53,6 +53,7 @@ from contratos.models import TipoContrato, Contrato, DocumentosContrato, Contrat
 from requerimientos.models import RequerimientoTrabajador
 from contratos.models import Plantilla
 from users.models import User, Trabajador, ValoresDiarioAfp
+from clientes.models import Planta
 from utils.models import PuestaDisposicion
 # Form
 from contratos.forms import PuestaDisposicionForm, TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
@@ -553,7 +554,8 @@ def aprobacion_masiva(request, aprobacion):
                 fail_silently=False,
         )
         messages.success(request, 'Contratos aprobados')
-    return redirect('requerimientos:list')
+        data = True
+    return JsonResponse(data, safe=False)
 
 
 @login_required

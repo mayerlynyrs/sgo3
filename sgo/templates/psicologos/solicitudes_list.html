@@ -48,7 +48,11 @@
                 {{ obj.planta|title }}
               </td>
               <td style="width:10%">
-                {{ obj.hal2 }}
+                {% if  obj.hal2 == True %}
+                SI
+                {% else %}
+                NO
+                {% endif %}
               </td>
               <td class="estado-requerimiento" style="width:10%">
                 <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-rev-psicologicas" title="Evaluar">

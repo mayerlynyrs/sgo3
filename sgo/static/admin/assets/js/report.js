@@ -49,8 +49,8 @@ function generate_report() {
         columns: [
             {"data": "fecha_inicio"},
             {"data": "fecha_termino"},
-            {"data": "user_rut"},
-            {"data": "user"},
+            {"data": "trabajador_rut"},
+            {"data": "trabajador"},
             {"data": "planta_nombre"},
             {"data": "cargo_nombre"},
             {"data": "referido2"},
