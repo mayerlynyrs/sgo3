@@ -134,7 +134,7 @@ class RequeriTrabajadorForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    pension = forms.CharField(required=True, label="Pensión",
+    pension = forms.CharField(required=False, label="Pensión",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     area_cargo = forms.ModelChoiceField(queryset=AreaCargo.objects.none(), required=True, label="Área Cargo",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
