@@ -323,13 +323,6 @@ class CrearTrabajadorForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    ciudad = forms.ModelChoiceField(queryset=Ciudad.objects.filter(status=True), required=True, label="Ciudad",
-                                            widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     pacto_uf = forms.CharField(required=True, label="Pacto UF",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'type': 'number'}))
     afp = forms.ModelChoiceField(queryset=Afp.objects.filter(status=True), required=True, label="Sistema Prevision",
@@ -525,7 +518,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
-    domicilio = forms.EmailField(required=True,
+    domicilio = forms.CharField(required=True,
                              widget=forms.TextInput(attrs={'class': "form-control"}))
     telefono2 = forms.CharField(required=True, label="Teléfono",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))

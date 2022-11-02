@@ -144,13 +144,13 @@ class Evaluacion(models.Model):
     )
 
     archivo = models.FileField(
-        upload_to='evaluacionpsicologica/',
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])]
-    )
+        upload_to='evaluacionpsicologica/', 
+                           validators=[FileExtensionValidator( ['pdf'] ) ])
+    
 
     archivo2 = models.FileField(
         upload_to='evaluacionpsicologica/',
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpeg', 'jpg', ])],
+        validators=[FileExtensionValidator( ['pdf'] ) ],
         null=True, blank=True
     )
 
