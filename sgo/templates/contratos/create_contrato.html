@@ -199,11 +199,11 @@
                     </button>
                     {% endif %}
                     <!-- Solo los Contratos Diarios tiene Finiquito -->
-                    {% if finiquito == 'SI' %}
+                    <!-- {% if finiquito == 'SI' %}
                     <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-green btn-view-finiquito" title="Finiquito">
                       <i class="fas fa-file-invoice-dollar"></i>
                     </button>
-                    {% endif %}
+                    {% endif %} -->
                 </td>
                 </tr>
                 {% endif %}
@@ -323,8 +323,8 @@
           {% endfor %}
         </div>
         <input type="hidden" name="causal" class="form-control" value="{{ru.requerimiento__causal}}">
-        <input type="hidden"  id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
-        <input type="hidden"  id="f_inicio" class="form-control" value="{{ru.requerimiento__fecha_inicio|date:'Y-m-d'}}">
+        <input type="hidden" id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
+        <input type="hidden" id="f_inicio" class="form-control" value="{{ru.requerimiento__fecha_inicio|date:'Y-m-d'}}">
         <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
         <input type="hidden" name="gratificacion" class="form-control" value="{{ ru.requerimiento__planta__gratificacion }}">
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
@@ -388,7 +388,7 @@
           </div>
           <div class="form-group col-md-4">
             <label for="email">Fecha Término Anexo </label>
-            <input type="text" name="fechaTerminoAnexo" readonly id="fechaInicioAnexo" class="form-control" > 
+            <input type="text" name="fechaTerminoAnexo" id="fechaInicioAnexo" class="form-control" autocomplete="off" required onkeypress="return false;" /> 
           </div>
           <div class="form-group col-md-3">
             <label>Modificar datos </label>
@@ -450,15 +450,15 @@
 
 {% endblock %}
 {% block librerias %}
-    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
-    <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
-    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/additional-methods.min.js' %}"></script>
-    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
-    <!-- <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script> -->
-    <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
-    <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
-    <script src="{% static 'admin/assets/js/f_termino_contrato.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/jquery-validation/dist/additional-methods.min.js' %}"></script>
+  <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
+  <!-- <script src="{% static 'admin/assets/js/validacionFechaCausal.js' %}"></script> -->
+  <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
+  <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
+  <script src="{% static 'admin/assets/js/f_termino_contrato.js' %}"></script>
 
 {% endblock %}
 {% block scripts %}

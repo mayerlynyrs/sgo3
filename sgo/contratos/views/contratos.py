@@ -53,14 +53,63 @@ from contratos.models import TipoContrato, Contrato, DocumentosContrato, Contrat
 from requerimientos.models import RequerimientoTrabajador
 from contratos.models import Plantilla
 from users.models import User, Trabajador, ValoresDiarioAfp
-from clientes.models import Planta
+from utils.models import PuestaDisposicion
 # Form
-from contratos.forms import TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
+from contratos.forms import PuestaDisposicionForm, TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
 from requerimientos.forms import RequeriTrabajadorForm
 from requerimientos.numero_letras import numero_a_letras
 from requerimientos.fecha_a_palabras import fecha_a_letras
 from contratos.finiquito import finiquito
 now = datetime.now()
+
+
+class PuestaDisposicionView(TemplateView):
+    template_name = 'contratos/puesta_disposicion.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in PuestaDisposicion.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                fpd = PuestaDisposicion()
+                fpd.nombre = request.POST['nombre'].lower()
+                fpd.status = True
+                fpd.save()
+            elif action == 'edit':
+                fpd = PuestaDisposicion.objects.get(pk=request.POST['id'])
+                fpd.nombre = request.POST['nombre'].lower()
+                fpd.gratificacion = request.POST['gratificacion']
+                fpd.seguro_cesantia = request.POST['seguro_cesantia']
+                fpd.seguro_invalidez = request.POST['seguro_invalidez']
+                fpd.seguro_vida = request.POST['seguro_vida']
+                fpd.mutual = request.POST['mutual']
+                fpd.save()
+            elif action == 'delete':
+                fpd = PuestaDisposicion.objects.get(pk=request.POST['id'])
+                fpd.status = False
+                fpd.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Puesta a Disposición'
+        context['list_url'] = reverse_lazy('contratos:puesta_disposicion')
+        context['entity'] = 'PuestaDisposicion'
+        context['form'] = PuestaDisposicionForm()
+        return context
 
 
 class TipoContratosView(TemplateView):
@@ -385,10 +434,11 @@ def create(request):
         # print(yaml.dump(l, sort_keys=False, default_flow_style=False))
         now = datetime.now()
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
-    
+        # Variables de Doc. Adicionales
         context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
-                    'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato.id, status=True),
+                    'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato.id, status=True),
+                    'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato.id, status=True),
                     'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True),
                     'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato.id, status=True),
                     'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato.id, status=True)),
@@ -397,7 +447,6 @@ def create(request):
                     'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
                     'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato.id, status=True),
                     'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato.id, status=True),
-                    'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato.id, status=True),
                     'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato.id, status=True),
                     'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato.id, status=True),
                     'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato.id, status=True),
@@ -406,18 +455,18 @@ def create(request):
                     'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato.id, status=True),    
                     'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
                     'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True),
-                    'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True))+' pesos',
+                    'descripcion_jornada': Contrato.objects.values_list('horario__descripcion', flat=True).get(pk=contrato.id, status=True),
+                    'sueldo_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True),
+                    'sueldo_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True))+' pesos',
                     'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato.id, status=True) ,
-                    'detalle_bonos': 'okokok',
+                    'detalle_bonos': 'SIN INFORMACIÓN',
                     'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato.id, status=True),
                     'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato.id, status=True),
                     'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato.id, status=True),
                     'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato.id, status=True),
                     'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'adicional_cumplimiento_horario_undecimo': 'okokok',
-                    'parrafo_decimo_tercero': 'okokok',
+                    'adicional_cumplimiento_horario_undecimo': 'SIN INFORMACIÓN',
+                    'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
                     'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
                     'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)),
                             }
@@ -691,39 +740,37 @@ def enviar_revision_contrato(request, contrato_id):
                 for formt in formato:
                     now = datetime.now()
                     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
-                
-                    context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
+                    # Variables de Contrato
+                    context = { 'rut_planta': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                                'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),
+                                'descripcion_jornada': Contrato.objects.values_list('horario__descripcion', flat=True).get(pk=contrato_id, status=True),
+                                'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True),
                                 'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                                'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
                                 'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
+                                'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
+                                'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True),
                                 'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
                                 'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
                                 'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                                'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
-                                'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                                'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
-                                'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),    
-                                'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
-                                'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
-                                'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True) ,
-                                'detalle_bonos': 'okokok',
                                 'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
                                 'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
                                 'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'adicional_cumplimiento_horario_undecimo': 'okokok',
-                                'parrafo_decimo_tercero': 'okokok',
+                                'centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
+                                'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
+                                'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
+                                'sueldo_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True),
+                                'sueldo_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos',
+                                'detalle_bonos': 'SIN INFORMACIÓN',
+                                'adicional_cumplimiento_horario_undecimo': 'SIN INFORMACIÓN',
+                                'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
                                 'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
                                 'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
                                 }
@@ -1319,39 +1366,20 @@ def enviar_revision_anexo(request, anexo_id):
         for formt in formato:
             now = datetime.now()
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
-                
+            # Variables de Anexo
             context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'nombre_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'fecha_contrato_anterior':fecha_a_letras(Contrato.objects.values_list('fecha_termino_ultimo_anexo', flat=True).get(pk=anexo.contrato_id, status=True)),
+                        'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=anexo.contrato_id, status=True),
                         'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True),
                         'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=anexo.contrato_id, status=True)),
                         'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=anexo.contrato_id, status=True),
                         'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=anexo.contrato_id, status=True),    
-                        'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'descripcion_jornada': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'sueldo_base_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'sueldo_base_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=anexo.contrato_id, status=True))+' pesos',
-                        'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=anexo.contrato_id, status=True) ,
-                        'detalle_bonos': 'okokok',
-                        'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'adicional_cumplimiento_horario_undecimo': 'okokok',
-                        'parrafo_decimo_tercero': 'okokok',
-                        'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=anexo.contrato_id, status=True)),
-                        'fecha_contrato_anterior':fecha_a_letras(Contrato.objects.values_list('fecha_termino_ultimo_anexo', flat=True).get(pk=anexo.contrato_id, status=True)),
+                        'nuevo_parrafo': Anexo.objects.values_list('motivo', flat=True).get(pk=anexo_id, status=True),
+                        'nueva_renta': Contrato.objects.values_list('nueva_renta', flat=True).get(pk=anexo.contrato_id, status=True),
+                        
                         }
             rut_trabajador = Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True)
             doc.render(context)

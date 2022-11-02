@@ -120,6 +120,7 @@ class CrearClienteForm(forms.ModelForm):
                 'class': "form-control",
                 'type': "number",
                 'placeholder': 'Ingrese RUT sin puntos ni guión',
+                'maxlength': 12
                 }),
             'abreviatura': TextInput(attrs={
                 'class': "form-control",
@@ -294,6 +295,8 @@ class PlantaForm(forms.ModelForm):
                           ) 
     nombre = forms.CharField(required=True, label="Razón Social",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
+    telefono = forms.CharField(required=True, label="Teléfono",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     direccion = forms.CharField (required=True, label="Dirección",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     rut_gerente = forms.CharField(required=True, label="RUT Gerente",
@@ -306,8 +309,6 @@ class PlantaForm(forms.ModelForm):
     nombre_gerente = forms.CharField(required=True, label="Nombre Gerente",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     direccion_gerente = forms.CharField (required=True, label="direccion gerente",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    telefono = forms.CharField(required=True, label="Teléfono",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
@@ -456,7 +457,7 @@ class ContactoPlantaForm(forms.ModelForm):
     apellidos = forms.CharField(required=True, label="Apellidos",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
     telefono = forms.CharField(required=True, label="Teléfono",
-                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     email = forms.EmailField(required=True,
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",

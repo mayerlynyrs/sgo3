@@ -307,6 +307,16 @@ class PuestaDisposicion(models.Model):
     )
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['nombre'] = self.nombre.title()
+        item['gratificacion'] = self.gratificacion
+        item['seguro_cesantia'] = self.seguro_cesantia
+        item['seguro_invalidez'] = self.seguro_invalidez
+        item['seguro_vida'] = self.seguro_vida
+        item['mutual'] = self.mutual
+        return item
 
 
 class Abastecimiento(BaseModel):

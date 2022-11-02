@@ -517,7 +517,10 @@ class RequerimientoIdView(TemplateView):
                     trabaj.referido =  estado
                 trabaj.descripcion = request.POST['descripcion']
                 trabaj.tipo_id = request.POST['tipo']
-                trabaj.pension = request.POST['pension']
+                if request.POST['pension'] == '':
+                    trabaj.pension = 0
+                else:
+                    trabaj.pension = request.POST['pension']
                 trabaj.area_cargo_id = request.POST['area_cargo_id']
                 trabaj.trabajador_id = request.POST['trabajador']
                 trabaj.jefe_area_id = request.POST['jefe_area']
@@ -947,29 +950,29 @@ def a_puesta_disposicion(request, requerimiento_id):
 
         # Documento word a trabajar, segun el requerimiento
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formato))
-
+        # Variables de Anexo Puesta Disposición
         context = { 'codigo': codigo,
                     'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
-                    'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                    'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                    'razonSocial': razon_social,
-                    'razonSocialMayus': razon_social.upper(),
-                    'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
-                    'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                    'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                    'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
-                    'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                    'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
-                    'motivo': motivo,
-                    'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
-                    'totalDiasRequerimiento': duracion,
-                    'fechainicioreq': fechainicio_palabras,
-                    'fechaterminoreq': fecha_termino,
+                    'razon_social': razon_social,
+                    'razon_social_mayus': razon_social.upper(),
+                    'rut_planta': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
+                    'nombre_planta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'comuna_planta': Requerimiento.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'rut_gerente_planta': Requerimiento.objects.values_list('planta__rut_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                    'nombre_gerente_planta': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                    'direccion_gerente_planta': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                    'letra_causal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                    'descripcion_causal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                    'motivo': motivo, #descripcion de Requerimiento
+                    'articulo_quinto': 'SIN INFORMACIÓN',
+                    'total_dias_requerimiento': duracion,
+                    'fecha_inicio_req': fechainicio_palabras,
+                    'fecha_termino_req': fecha_termino,
                     'cargo': acreq,    
                     # 'numero': numero,
                     'valor': valortotal,
-                    'totalredondeado': total,
-                    'totalredondeadopalabras': totalpalabras,
+                    'total_redondeado': total,
+                    'total_redondeado_palabras': totalpalabras,
                     }
 
         doc.render(context)
@@ -1124,29 +1127,30 @@ def descargar_adendum(request, adendum_id):
     elif fecha_termino.month == 12:
         mes = 'Diciembre'
     fechatermino_palabras = str(fecha_termino.day) + ' de ' + mes + ' de ' + str(fecha_termino.year)
-
+    # Variables de Adendum
     context = { 'codigo': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True) + '-' + str(now.year)+'/AD'+ str(adendum_id),
                 'fechaHoy': Requerimiento.objects.values_list('fecha_solicitud', flat=True).get(pk=requerimiento_id, status=True),
-                'nombreCiudad': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'domicilioGerente': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                'razonSocial': razon_social,
-                'razonSocialMayus': razon_social.upper(),
-                'rut': Requerimiento.objects.values_list('cliente__rut', flat=True).get(pk=requerimiento_id, status=True),
-                'nombrePlanta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'nombreGerente': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
-                'rutGerente': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
-                'letraCausal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
-                'descripcionCausal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'razon_social': razon_social,
+                'razon_social_mayus': razon_social.upper(),
+                'rut_planta': Requerimiento.objects.values_list('planta__rut', flat=True).get(pk=requerimiento_id, status=True),
+                'nombre_planta': Requerimiento.objects.values_list('planta__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'comuna_planta': Requerimiento.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'rut_gerente_planta': Requerimiento.objects.values_list('planta__rut_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'nombre_gerente_planta': Requerimiento.objects.values_list('planta__nombre_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'direccion_gerente_planta': Requerimiento.objects.values_list('planta__direccion_gerente', flat=True).get(pk=requerimiento_id, status=True),
+                'letra_causal': Requerimiento.objects.values_list('causal__nombre', flat=True).get(pk=requerimiento_id, status=True),
+                'descripcion_causal': Requerimiento.objects.values_list('causal__descripcion', flat=True).get(pk=requerimiento_id, status=True),
+                'comuna_planta': Requerimiento.objects.values_list('planta__ciudad__nombre', flat=True).get(pk=requerimiento_id, status=True),
                 'motivo': Requerimiento.objects.values_list('descripcion', flat=True).get(pk=requerimiento_id, status=True),
-                'articuloQuinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
+                'articulo_quinto': Requerimiento.objects.values_list('codigo', flat=True).get(pk=requerimiento_id, status=True),
                 'totalDiasRequerimiento': duracion,
-                'fechainicioreq': fecha_inicio,
-                'fechaterminoreq': fecha_termino,
+                'fecha_inicio_req': fecha_inicio,
+                'fecha_termino_req': fecha_termino,
                 'cargo': acreq,    
                 # 'numero': numero,
                 'valor': valortotal,
-                'totalredondeado': total,
-                'totalredondeadopalabras': totalpalabras,
+                'total_redondeado': total,
+                'total_redondeado_palabras': totalpalabras,
                 }
 
     doc.render(context)

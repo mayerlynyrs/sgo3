@@ -28,6 +28,12 @@ urlpatterns = [
         view=views.delete_plantilla,
         name="delete-plantilla"
     ),
+    # Parámetros de Puesta a Disposición - Fórmula
+    path(
+        route='puesta_disposicion',
+        view=views.PuestaDisposicionView.as_view(),
+        name='puesta-disposicion'
+     ),
     # tipo de contratos
     path(
         route='tipo_contratos',

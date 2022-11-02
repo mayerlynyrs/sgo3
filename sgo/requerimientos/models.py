@@ -188,15 +188,16 @@ class RequerimientoTrabajador(BaseModel):
 
     pension = models.IntegerField(
         'Pensión',
+        default=0,
         blank=True,
         null=True
     )
 
-    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT, null=True, blank=True)
+    trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
 
-    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT, null=True, blank=True)
+    requerimiento = models.ForeignKey(Requerimiento, on_delete=models.PROTECT)
 
-    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT, null=True, blank=True)
+    area_cargo = models.ForeignKey(AreaCargo, verbose_name='Área Cargo', on_delete=models.PROTECT)
 
     # bateria = models.ForeignKey(Bateria, on_delete=models.PROTECT, null=True, blank=True)
 

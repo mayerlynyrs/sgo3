@@ -9,8 +9,39 @@ from django.forms import TextInput
 from contratos.models import Plantilla, TipoContrato, Contrato, TipoDocumento, Baja, MotivoBaja
 from clientes.models import Cliente, Planta
 from requerimientos.models import Causal
-from utils.models import Horario
+from utils.models import Horario, PuestaDisposicion
 from users.models import ValoresDiario
+
+class PuestaDisposicionForm(forms.ModelForm):
+    nombre = forms.CharField(required=True, label="Nombre",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'readonly': True}))
+    gratificacion = forms.IntegerField(required=True, label="Gratificación",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 10, 'min': 1, 'type': 'number'}))
+    seguro_cesantia = forms.CharField(required=True, label="Seguro de Cesantía",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 10}))
+    seguro_invalidez = forms.CharField(required=True, label="Seguro de Invalidez",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 10}))
+    seguro_vida = forms.CharField(required=True, label="Seguro de Vida",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 10}))
+    mutual = forms.FloatField(required=True, label="Mutual",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 10, 'min': 1, 'type': 'number'}))
+  
+
+    def __init__(self, *args, **kwargs):
+        super(PuestaDisposicionForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = PuestaDisposicion
+        fields = ("nombre", "gratificacion", "seguro_cesantia", "seguro_invalidez", "seguro_vida", "mutual")
+
+        widgets = {
+            'gratificacion': TextInput(attrs={
+                'class': "form-control",
+                'type': "number",
+                'maxlength': 10
+                }),
+        }
+
 
 class TipoContratoForm(forms.ModelForm):
     nombre = forms.CharField(required=True, label="Nombre",
