@@ -223,7 +223,7 @@ def update_user(request, user_id):
     """Update a user's profile view."""
 
     user = get_object_or_404(User, pk=user_id)
-
+    
     # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
     # Se valida que solo los administradores puedan editar el perfil de otro usuario.
     if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
@@ -480,7 +480,7 @@ class UsersIdView(TemplateView):
     def get_context_data(request, user_id, **kwargs):
 
         try:
-            user = get_object_or_404(User, pk=1)
+            user = get_object_or_404(User, pk=user_id)
             print("Hay registros!")
         except:
             print("No existen registros")
@@ -533,7 +533,7 @@ class UsersIdView(TemplateView):
                 initial={'group': current_group.pk, 'planta': list(plantas_usuario), },
                 user=request.user
             )
-
+        
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Contactos'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
@@ -581,6 +581,13 @@ class TrabajadoresIdView(TemplateView):
         print("No existen registros")
 
     def post(self, request, user_id, *args, **kwargs):
+
+        # Se obtiene el perfil y las plantas del usuario.
+        try:
+            plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
+            #plantas_usuario[::1]
+        except:
+            plantas_usuario = ''
         
         trabajador2 = Trabajador.objects.get(user_id=user_id, is_active=True)
         print('trabajador2', trabajador2)
@@ -696,21 +703,34 @@ class TrabajadoresIdView(TemplateView):
     def get_context_data(request, user_id, **kwargs):
 
         trabajador = get_object_or_404(Trabajador, user_id=user_id)
+        usuario_trabajador = get_object_or_404(Trabajador, user=user_id)
+        user = get_object_or_404(User, pk=user_id)
+
+        # Se obtiene las plantas del usuario trabajador.
+        try:
+            plantas_usuario = Planta.objects.values_list('id', flat=True).filter(user=user_id)
+            #plantas_usuario[::1]
+        except:
+            plantas_usuario = ''
 
         # trabajador2 = Trabajador.objects.get(user_id=user_id, is_active=True)
       
         
         trabajador_form = EditarTrabajadorForm(
             instance=trabajador,
-            trabajador=request.user
+            initial={'planta': list(plantas_usuario), },
+            trabajador=request.user,
+            user=request.user,
+            usuario_trabajador=usuario_trabajador.user.id
             )
       
 
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Contactos'
+        context['title'] = 'Listado de Trabajadores'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
         context['update_url'] = reverse_lazy('users:create_trabajador')
-        context['entity'] = 'Contactos'
+        context['entity'] = 'Trabajador'
+        context['usuario'] = user
         context['trabajador'] = trabajador
         context['trabajador_id'] = trabajador.id
         context['form'] = trabajador_form
@@ -810,11 +830,11 @@ def create_trabajador(request):
 
         if trabajador_form.is_valid():       
             user = User()
-            user.rut = request.POST['rut'].upper()
+            user.rut = request.POST['rut']
             user.first_name = request.POST['first_name'].lower()
             user.last_name = request.POST['last_name'].lower()
             user.fecha_nacimiento = request.POST['fecha_nacimiento']
-            user.telefono2 = request.POST['telefono2']
+            user.telefono = request.POST['telefono']
             user.email = request.POST['email'].lower()
             email = user.email
             now_date = datetime.now()
@@ -830,10 +850,6 @@ def create_trabajador(request):
             group = request.POST.getlist('group')
             for i in group:
                 user.groups.add(i)
-            # Cliente
-            client = request.POST.getlist('cliente')
-            for i in client:
-                user.cliente.add(i)
             # Planta
             plant = request.POST.getlist('planta')
             for i in plant:
@@ -865,6 +881,8 @@ def update_trabajador(request, trabajador_id):
     """Update a user's profile view."""
 
     user = get_object_or_404(Trabajador, pk=trabajador_id)
+
+    usuario = get_object_or_404(User, pk=user.user_id)
     pk = Trabajador.objects.values_list('user_id', flat=True).get(pk=trabajador_id)
 
     # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
@@ -882,7 +900,21 @@ def update_trabajador(request, trabajador_id):
             user.email = request.POST['email'].lower()
             user.is_active = True
             trabajador_form.save()
+            usuario.first_name = request.POST['first_name'].lower()
+            usuario.last_name = request.POST['last_name'].lower()
+            usuario.email = request.POST['email'].lower()
+            usuario.telefono = request.POST['telefono']
+            plantas = []
+            for d in usuario.planta.all():
+                plantas.append(d.id ) 
+            for a in plantas:
+                usuario.planta.remove(a)
+            plant = request.POST.getlist('planta')
+            for i in plant:
+                usuario.planta.add(i)
 
+
+            usuario.save()
             messages.success(request, ('Trabajador actualizado'))
 
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
