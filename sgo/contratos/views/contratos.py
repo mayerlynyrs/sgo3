@@ -50,7 +50,7 @@ from django.views.generic.edit import FormView
 # Models
 from ficheros.models import Fichero
 from contratos.models import TipoContrato, Contrato, DocumentosContrato, ContratosBono, Anexo, Revision, Baja, ContratosParametrosGen
-from requerimientos.models import RequerimientoTrabajador
+from requerimientos.models import Requerimiento, RequerimientoTrabajador
 from contratos.models import Plantilla
 from users.models import User, Trabajador, ValoresDiarioAfp
 from clientes.models import Planta
@@ -377,9 +377,24 @@ def exportar_excel_contrato(request):
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create(request):
     
-    requrimientotrabajador = request.POST['requerimiento_trabajador_id']
+    requerimientotrabajador = request.POST['requerimiento_trabajador_id']
+    print('requerimientotrabajador', requerimientotrabajador)
     trabajador = get_object_or_404(Trabajador, pk=request.POST['trabajador_id'])
-    
+    print('trabajador', trabajador)
+
+    # Trae el id del Requerimiento
+    requer = RequerimientoTrabajador.objects.values_list('requerimiento', flat=True).get(pk=requerimientotrabajador, status=True)
+    # Trae el id de la planta del Requerimiento
+    plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requer, status=True)
+    print('plant_template', plant_template)
+    # Busca si la planta tiene plantilla 
+    if not Plantilla.objects.filter(plantas=plant_template, tipo_id=9).exists():
+        # Trae las plantillas (formatos) que tiene la planta. tipo_id=9=Doc. Adicionales
+        formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=9)
+        print('formato', formato)
+        messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
+        return redirect('contratos:create_contrato', requerimientotrabajador)
+    # exit()
     contrato = Contrato()
     contrato.causal_id = request.POST['causal']
     contrato.motivo = request.POST['motivo']
@@ -425,10 +440,8 @@ def create(request):
     # Doc. Adicionales
     # Trae el id de la planta del Requerimiento
     plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato.id, status=True)
-    # print('plant_template', plant_template)
     # Trae las plantillas (formatos) que tiene la planta. tipo_id=9=Doc. Adicionales
     formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=9)
-    # print('formato', formato)
     for formt in formato:
         # print(formt['abreviatura'])
         # import yaml
@@ -526,7 +539,7 @@ def create(request):
             # Elimino el documento word.
             os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
             messages.success(request, 'Contrato Creado Exitosamente')
-    return redirect('contratos:create_contrato',requrimientotrabajador)
+    return redirect('contratos:create_contrato', requerimientotrabajador)
 
 
 @login_required
@@ -743,7 +756,8 @@ def enviar_revision_contrato(request, contrato_id):
                     now = datetime.now()
                     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
                     # Variables de Contrato
-                    context = { 'rut_planta': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
+                    context = { 'codigo_req': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__codigo', flat=True).get(pk=contrato_id, status=True),
+                                'rut_planta': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
                                 'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
                                 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
@@ -972,6 +986,16 @@ class ContratoIdView(TemplateView):
         context['anexos'] = Anexo.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).values( 'id', 'estado_anexo',
                 'requerimiento_trabajador', 'nueva_renta', 'contrato__tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
                  'fecha_termino' ).order_by('fecha_inicio')
+        try:
+            ultimo_anexo_contrato = Anexo.objects.values_list('estado_anexo', flat=True).filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).latest('id')
+            id_ultimo_anexo = Anexo.objects.values_list('id', flat=True).filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).latest('id')
+            print('id_ultimo_anexo', id_ultimo_anexo)
+            # Trae el último anexo del contrato
+            context['ultimo_anexo_contrato'] = ultimo_anexo_contrato
+            context['id_ultimo_anexo'] = id_ultimo_anexo
+        except Exception as e:
+            str(e)
+        
         ane = Anexo.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exists()
         if(ane == True):
             anex = 'SI'
@@ -1253,7 +1277,7 @@ class AnexoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def create_anexo(request):
-            requrimientotrabajador = request.POST['requerimiento_trabajador_id'] 
+            requerimientotrabajador = request.POST['requerimiento_trabajador_id'] 
             anexo = Anexo()
             anexo.trabajador_id = request.POST['trabajador_id']
             anexo.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id']
@@ -1271,7 +1295,7 @@ def create_anexo(request):
             contrato = Contrato.objects.get(pk=request.POST['id_contrato'])
             contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
             contrato.save()
-            return redirect('contratos:create_contrato',requrimientotrabajador)
+            return redirect('contratos:create_contrato',requerimientotrabajador)
 
 
 @login_required
@@ -1369,7 +1393,8 @@ def enviar_revision_anexo(request, anexo_id):
             now = datetime.now()
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
             # Variables de Anexo
-            context = { 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
+            context = { 'codigo_req': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__codigo', flat=True).get(pk=anexo.contrato_id, status=True),
+                        'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
                         'fecha_contrato_anterior':fecha_a_letras(Contrato.objects.values_list('fecha_termino_ultimo_anexo', flat=True).get(pk=anexo.contrato_id, status=True)),
                         'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
                         'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=anexo.contrato_id, status=True),
