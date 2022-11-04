@@ -178,10 +178,11 @@
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
       // plantas
+      id_planta.disabled = true;
       $("#id_cliente").change(function () {
         var url = $("#CrearRequeriForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
         var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
-  
+        id_planta.disabled = false;
         $.ajax({                       // initialize an AJAX request
           url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
           data: {

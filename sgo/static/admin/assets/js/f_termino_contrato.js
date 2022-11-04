@@ -1,5 +1,11 @@
 
 $(function () {
+    fecha_termino.disabled = true;
+
+    
+    var getDate = function (input) {
+        return new Date(input.date.valueOf());
+    }
 
     var fecha_maxima = document.getElementById("f_termino").value
     var fecha_minima = document.getElementById("f_inicio").value
@@ -32,10 +38,29 @@ $(function () {
         endDate: '+36d',
     });
     
+    $('#fecha_inicio').datepicker({
+        startDate: '+5d',
+        endDate: '+35d',
+    }).on('changeDate',
+        function (selected) {
+            fecha_termino.disabled = false;
+            var date = new Date($('#fecha_inicio').val());
+            var currentMonth = date.getMonth();
+            var currentDate = date.getDate();
+            var currentYear = date.getFullYear();
+            
+            if (date != "Invalid Date"){
+                $('#fecha_termino').datepicker('clearDates');
+                $('#fecha_termino').datepicker('setStartDate', getDate(selected));
+                $('#fecha_termino').datepicker('clearDates');
+                $('#fecha_termino').datepicker("setEndDate", new Date(sum_fecha_maxima))
+            }
+            
+            
+        });
+    
 
     $('#fecha_inicio').datepicker("setStartDate", new Date(sum_fecha_minima))
     $('#fecha_inicio').datepicker("setEndDate", new Date(sum_fecha_maxima))
-    $('#fecha_termino').datepicker("setStartDate", new Date(sum_fecha_minima))
-    $('#fecha_termino').datepicker("setEndDate", new Date(sum_fecha_maxima))
 });
 

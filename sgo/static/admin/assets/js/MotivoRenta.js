@@ -1,5 +1,11 @@
 
   function validar(obj){
+
+    
+    var getDate = function (input) {
+        return new Date(input.date.valueOf());
+    }
+  
     divC = document.getElementById("divmotivo");
     if(obj.checked==true){
         divC.style.display = "";
@@ -38,11 +44,26 @@
  
 }
 function ver_documento(){
-  var elemento = document.getElementById("id_tipo_documento").value
+
+var elemento = document.getElementById("id_tipo_documento").value
   if (elemento == ""){
     iziToast.error({
-      message: 'Debe Ingresar tipo contrato',
+      message: 'Debe ingresar Tipo Contrato',
       position: 'topRight',
     });
 }
+
+var btnCC = document.getElementById("boton");
+btnCC.style.borderColor= '#3BB7B7';
+btnCC.disabled = true;
+btnCC.style.backgroundColor= '#3BB7B7';
+btnCC.innerHTML = 'Procesando. . .';
+
+// var sueldo_base = document.getElementById("id_sueldo_base").value
+//   if (sueldo_base == ""){
+//     iziToast.error({
+//       message: 'Debe ingresar Sueldo Base',
+//       position: 'topRight',
+//     });
+// }
 }

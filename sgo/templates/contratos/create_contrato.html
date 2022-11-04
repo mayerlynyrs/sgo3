@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load contratos_tags %}
 {% block page_title %}Contratos{% endblock %}
 
 {% block css %}
@@ -141,6 +142,7 @@
                     <input name="action" type="hidden" value="requeri_trab_add">
                     <input name="id" id="id" type="hidden" value="0">
                     <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
+                    <input name="contadorcontratos" id="contadorcontratos" type="hidden" value="{{ contador }}">
                 
               </div>
               <div class="form-group row m-b-0">
@@ -151,13 +153,17 @@
                 </div>
               </div>
                 <div class="float-right">
+                  {% if ultimo == 8 %}
+                    <button type="button" class="btn btn-success "data-toggle="modal" id="contratosdiarios" data-target="#modalcontrato">Contrato</button>
+                  {% endif %}
                   {% for con in contratos %}
                  
-                {% if con.estado_contrato == 'AP' %}
-                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                {% if con.estado_contrato == 'AP' and ultimo_anexo_contrato == 'AP' and con.valores_diario__valor_diario is None %}
+                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Carta Término</button>
                 {% endif %}
                 {% empty %}
-                <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
+                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
                 {% endfor %}
               </div>
           </form>
@@ -168,20 +174,22 @@
             <thead>
               <tr>
                   <th>Tipo Archivo</th>
+                  <th>Estado</th>
                   <th>Causal</th>
                   <th>Motivo</th>
                   <th>Plazos</th>
                   <th>Jornada</th>
                   <th style="width:20%">Renta Imponible</th>
-                  <th  style="width:10%">Acciones</th>
+                  <th style="width:10%">Acciones</th>
               </tr>
               <tbody>
                 {% for con in contratos %}
                 <tr>
                   {% if con.tipo_documento__nombre != Null %}
                   <td>{{ con.tipo_documento__nombre }}</td>
+                  <td>{{ con.estado_contrato|estado_contrato|safe }}</td>
                   <td>{{ con.causal__nombre }}</td>
-                  <td >{{ con.motivo }}</td>
+                  <td >{{ con.motivo|truncatewords:20 }}</td>
                   <td>Inicio: {{ con.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ con.fecha_termino|date:'d-m-Y' }} </td>
                   <td >{{ con.horario__nombre }}</td>
                   <td>$ {% if con.valores_diario__valor_diario is None %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
@@ -212,8 +220,9 @@
                 <tr>
                   {% if ane.causal__nombre  != Null %}
                   <td>Anexo</td>
+                  <td>{{ ane.estado_anexo|estado_anexo|safe }}</td>
                   <td>{{ ane.causal__nombre }}</td>
-                  <td>{{ ane.motivo }}</td>
+                  <td>{{ ane.motivo|truncatewords:20 }}</td>
                   <td>Inicio: {{ ane.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ ane.fecha_termino|date:'d-m-Y' }} </td>
                   <td>{{ ane.horario__nombre }}</td>
                   <td >{% if ane.nueva_renta != None %}$ {{ ane.nueva_renta }} {% else %}       {% endif %}</td>
@@ -226,8 +235,8 @@
                     <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
-                    {% elif ane.estado_anexo == 'AP' %}
-                    <button data-id="{{ ane.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja-anexo" title="Dar de Baja">
+                    {% elif ane.estado_anexo == 'AP' and ane.id == id_ultimo_anexo %}
+                    <button data-id="{{ ane.id }}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja-anexo" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                     {% endif %}
@@ -322,6 +331,7 @@
           </div>
           {% endfor %}
         </div>
+        <input type="hidden" name="id_causal" id="id_causal" class="form-control" value="{{ ru.requerimiento__causal }}">
         <input type="hidden" name="causal" class="form-control" value="{{ru.requerimiento__causal}}">
         <input type="hidden" id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
         <input type="hidden" id="f_inicio" class="form-control" value="{{ru.requerimiento__fecha_inicio|date:'Y-m-d'}}">
@@ -332,7 +342,7 @@
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="submit" onclick="javascript:ver_documento();" class="btn btn-primary">Agregar</button>
+        <button type="submit" id="boton" onclick="javascript:ver_documento();" class="btn btn-primary">Agregar</button>
       </div>
     </form>
     </div>
@@ -459,6 +469,13 @@
   <script src="{% static 'admin/assets/js/validacionFechaCausalanexo.js' %}"></script>
   <script src="{% static 'admin/assets/js/MotivoRenta.js' %}"></script>
   <script src="{% static 'admin/assets/js/f_termino_contrato.js' %}"></script>
+  <script>
+    var contador = document.getElementById("contadorcontratos").value
+      if (contador >= 6 ) {
+      document.getElementById('contratosdiarios').style.visibility='hidden';
+      document.getElementById('modalanexo').style.visibility='hidden';
+      }
+  </script>
 
 {% endblock %}
 {% block scripts %}
