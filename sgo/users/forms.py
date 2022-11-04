@@ -298,7 +298,7 @@ class CrearTrabajadorForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control" }))
     last_name = forms.CharField(required=True, label="Apellidos",
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
-    telefono2 = forms.CharField(required=True, label="Teléfono",
+    telefono = forms.CharField(required=True, label="Teléfono",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
                                 widget=forms.TextInput(attrs={'placeholder': 'DD-MM-AAAA','class': "form-control", 'autocomplete':'off' ,'id':"fecha"}))
@@ -355,15 +355,6 @@ class CrearTrabajadorForm(forms.ModelForm):
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
-
-    cliente = forms.ModelChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
-                                            widget=forms.Select(
-                                                attrs={'class': 'show-tick form-control',
-                                                              'data-size': '5',
-                                                              'data-live-search': 'true',
-                                                              'data-live-search-normalize': 'true'
-                                                              })
-                                   )
     banco = forms.ModelChoiceField(queryset=Banco.objects.filter(status=True), required=True, label="Banco",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -379,9 +370,9 @@ class CrearTrabajadorForm(forms.ModelForm):
     #                                                    'data-live-search-normalize': 'true'
     #                                                    })
     #                                         )
-    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Plantas",
-                                            widget=forms.Select(
-                                                attrs={'class': 'show-tick form-control',
+    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Plantas",
+                                            widget=forms.SelectMultiple(
+                                                attrs={'class': 'selectpicker show-tick',
                                                        'data-size': '5',
                                                        'data-live-search': 'true',
                                                        'data-live-search-normalize': 'true'
@@ -414,7 +405,7 @@ class CrearTrabajadorForm(forms.ModelForm):
             ),
             Row(
                 # Column('telefono', css_class='form-group col-md-6 mb-0'),
-                Column('telefono2', css_class='form-group col-md-12 mb-0'),
+                Column('telefono', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -463,36 +454,24 @@ class CrearTrabajadorForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('cliente', css_class='form-group col-md-6 mb-0'),
+                
                 Column('planta', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             # 'check_me_out',
             # Submit('submit', 'Sign in')
         )
-        if not user.groups.filter(name='Administrador').exists():
-            # self.fields['group'].queryset = Group.objects.exclude(name__in=['Administrador', 'Administrador Contratos', 'Fiscalizador Interno', 'Fiscalizador DT', ])
-            self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
-            # self.fields['negocio'].queryset = Negocio.objects.filter(id__in=user.negocio.all())
-            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
-            cliente_id = self.data.get('cliente')
-            # self.fields['negocio'].queryset = negocio.objects.filter(cliente_id=cliente_id).order_by('nombre')
-        else:
-            # self.fields['group'].queryset = Group.objects.all()
-            self.fields['cliente'].queryset = Cliente.objects.all()
-            # self.fields['negocio'].queryset = Negocio.objects.all()
-            self.fields['planta'].queryset = Planta.objects.all()
 
 
     class Meta:
         model = Trabajador
-        fields = ("rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono2",
+        fields = ("rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono",
                   "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
                   "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen",
-                   "foto", "banco", "tipo_cuenta", "cuenta", "cliente", "planta", "is_active", )
+                   "foto", "banco", "tipo_cuenta", "cuenta", "planta", "is_active", )
         exclude = ('password1', 'password2')
         widgets = {
-            'telefono2': TextInput(attrs={
+            'telefono': TextInput(attrs={
                 'class': "form-control",
                 'type': "number",
                 'placeholder': '56912345678',
@@ -520,7 +499,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     domicilio = forms.CharField(required=True,
                              widget=forms.TextInput(attrs={'class': "form-control"}))
-    telefono2 = forms.CharField(required=True, label="Teléfono",
+    telefono = forms.CharField(required=True, label="Teléfono",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     
     fecha_nacimiento = forms.DateField(required=True, label="Fecha de Nacimiento",
@@ -558,16 +537,28 @@ class EditarTrabajadorForm(forms.ModelForm):
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     calzado = forms.CharField(required=True,
-                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
+                                widget=forms.TextInput(attrs={'class': "form-control", 'min': 20, 'type': 'number'}))
+    # cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
+    #                                widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',
+    #                                                           'data-size': '5',
+    #                                                           'data-live-search': 'true',
+    #                                                           'data-live-search-normalize': 'true'
+    #                                                           })
+    #                                )
+    planta = forms.ModelMultipleChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Plantas",
+                                            widget=forms.SelectMultiple(
+                                                attrs={'class': 'selectpicker show-tick',
+                                                       'data-size': '5',
+                                                       'data-live-search': 'true',
+                                                       'data-live-search-normalize': 'true'
+                                                       })
+                                            )
 
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        print('editar trabajador user')
-        print(user)
         trabajador = kwargs.pop('trabajador', None)
-        print('editar trabajador')
-        print(trabajador)
+        usuario_trabajador = kwargs.pop('usuario_trabajador', None)
         super(EditarTrabajadorForm, self).__init__(*args, **kwargs)
 
         self.fields['provincia'].queryset = Provincia.objects.none()
@@ -611,7 +602,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('telefono2', css_class='form-group col-md-12 mb-0'),
+                Column('telefono', css_class='form-group col-md-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -659,17 +650,30 @@ class EditarTrabajadorForm(forms.ModelForm):
                 Column('examen', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
+            Row(
+                # Column('cliente', css_class='form-group col-md-6 mb-0'),
+                Column('planta', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
 
         )
+
+        # if not user.groups.filter(name='Administrador').exists():
+        if not user.groups.filter(name='Administrador').exists():
+            # self.fields['cliente'].queryset = Cliente.objects.filter(id__in=user.cliente.all())
+            self.fields['planta'].queryset = Planta.objects.filter(id__in=user.planta.all())
+        else:
+            # self.fields['cliente'].queryset = Cliente.objects.all()
+            self.fields['planta'].queryset = Planta.objects.all()
 
 
  
     class Meta:
         model = Trabajador
-        fields = ( "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono", "telefono2",
+        fields = ( "rut", "pasaporte", "first_name", "last_name", "sexo", "email", "telefono",
                   "estado_civil", "fecha_nacimiento", "nacionalidad", "licencia_conducir", "talla_polera", "talla_pantalon", "calzado",
                   "nivel_estudio", "especialidad", "region", "provincia", "ciudad", "domicilio", "afp", "salud", "pacto_uf", "examen", 
-                   "foto", "banco", "tipo_cuenta", "cuenta", "is_active", )
+                   "foto", "banco", "tipo_cuenta", "cuenta", "is_active", "planta" )
         widgets = {
             'telefono': TextInput(attrs={
                 'class': "form-control",

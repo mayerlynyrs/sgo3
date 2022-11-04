@@ -113,7 +113,7 @@
 			  <div>
 					<!-- begin step-1 -->
 					<div id="step-1">
-            <form method="post" autocomplete="off" novalidate id="CrearTrabajadorForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+            <form method="post" autocomplete="off" novalidate id="CrearTrabajadorForm" >
 							<!-- begin fieldset -->
 							<fieldset>
 								<!-- begin row -->
@@ -184,22 +184,7 @@
         });
   
       });
-      // plantas
-      $("#id_cliente").change(function () {
-        var url = $("#CrearTrabajadorForm").attr("data-plantas-url");  // get the url of the `load_plantas` view
-        var clienteId = $(this).val();  // get the selected cliente ID from the HTML input
   
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'users:ajax_load_plantas' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-plantas/)
-          data: {
-            'cliente': clienteId       // add the cliente id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_plantas` view function
-            $("#id_planta").html(data);  // replace the contents of the planta input with the data that came from the server
-          }
-        });
-  
-      });
     </script>
   
   </div>
@@ -268,10 +253,6 @@
                     digits: true,
                     minlength: 4
                   },
-                  group: "required",
-                  negocio: {
-                    required: true 
-                  }
                 },
                 messages: {
                   first_name: "Ingresa los nombres.",
@@ -285,8 +266,6 @@
                     digits: "Ingrese un número de teléfono valido.",
                     minlength: "Ingrese un número de teléfono valido."
                   },
-                  negocio: "Selecciona al menos una negocio a la que pertenezca el usuario.",
-                  group: "Selecciona un perfil para el usuario.",
                   email: {
                     required: "Ingresa el email del usuario.",
                     email: "Ingresa un email valido. por ejemplo: name@domain.com"
