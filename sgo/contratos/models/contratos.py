@@ -23,23 +23,31 @@ from requerimientos.models import RequerimientoTrabajador, Causal, Requerimiento
 User = get_user_model()
 
 
-class Renuncia(BaseModel):
-    nombre = models.CharField(max_length=250)
+class FinRequerimiento(BaseModel):
+
+    CARTA_TERMINO = 'CT'
+    RENUNCIA = 'RE'
+
+    FIN_TIPO = (
+        (CARTA_TERMINO, 'Carta de Término'),
+        (RENUNCIA, 'Renuncia'),
+    )
+
+    tipo = models.CharField(max_length=2, choices=FIN_TIPO)
     archivo = models.FileField(
-        upload_to='renuncias/',
+        upload_to='termino/',
         validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', ])]
     )
-    fecha_termino = models.DateField(blank=True, null=True)
+    fecha_termino = models.DateField(verbose_name='Fecha Término', blank=True, null=True)
+    motivo = models.TextField(blank=True, null=True)
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
-    
-    
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el bono, deshabilite esta casilla.'
+        help_text='Para desactivar Carta de Término/Renuncia, deshabilite esta casilla.'
     )
     
     def __str__(self):
-        return self.nombre
+        return self.tipo
 
 
 class TipoContrato(BaseModel):
@@ -138,7 +146,7 @@ class Contrato(BaseModel):
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
     gratificacion = models.ForeignKey(Gratificacion, on_delete=models.PROTECT)
     horario = models.ForeignKey(Horario, on_delete=models.PROTECT)
-    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT, blank=True, null=True)
+    fin_requerimiento = models.ForeignKey(FinRequerimiento, on_delete=models.PROTECT, blank=True, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT)
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
@@ -146,7 +154,7 @@ class Contrato(BaseModel):
     valores_diario = models.ForeignKey(ValoresDiario, on_delete=models.PROTECT, blank=True, null=True)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el contrato , deshabilite esta casilla.'
+        help_text='Para desactivar el contrato, deshabilite esta casilla.'
     )
     def __str__(self):
         return str(self.trabajador.rut) + '-' + str(self.id).zfill(4)
@@ -258,9 +266,9 @@ class Anexo(BaseModel):
 
     ANEXO_ESTADO = (
         (CREADO, 'Creado'),
-        (PROCESO_VALIDACION, 'en Proceso de  Validacion'),
+        (PROCESO_VALIDACION, 'En Proceso de Validación'),
         (APROBADO, 'Aprobado'),
-        (PENDIENTE_BAJA,'en Proceso de baja'),
+        (PENDIENTE_BAJA,'En Proceso de Baja'),
         (BAJADO,'Bajado'),
     )
 
@@ -288,7 +296,7 @@ class Anexo(BaseModel):
     nueva_renta = models.IntegerField( blank=True, null=True)
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
     contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT)
-    renuncia = models.ForeignKey(Renuncia, on_delete=models.PROTECT, blank=True, null=True)
+    fin_requerimiento = models.ForeignKey(FinRequerimiento, on_delete=models.PROTECT, blank=True, null=True)
     planta = models.ForeignKey(Planta, on_delete=models.PROTECT) 
     requerimiento_trabajador = models.ForeignKey(RequerimientoTrabajador, on_delete=models.PROTECT)
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
@@ -334,7 +342,7 @@ class ContratosEquipo(BaseModel):
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
+        help_text='Para desactivar los equipos de este contrato, deshabilite esta casilla.'
     )
     
     def __str__(self):
@@ -359,7 +367,7 @@ class Revision(BaseModel):
     anexo = models.ForeignKey(Anexo, on_delete=models.CASCADE, null=True, blank=True)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
+        help_text='Para desactivar la revisión de este contrato, deshabilite esta casilla.'
     )
     def __str__(self):
         return self.obs
@@ -401,7 +409,7 @@ class Baja(BaseModel):
     anexo = models.ForeignKey(Anexo, on_delete=models.CASCADE, null=True, blank=True)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el los equipos de este contrato, deshabilite esta casilla.'
+        help_text='Para desactivar la baja de este contrato, deshabilite esta casilla.'
     )
     def __str__(self):
         return str(self.motivo)
@@ -464,7 +472,7 @@ class TemporalContratoDia(BaseModel):
     numero_proceso = models.IntegerField(default=0)
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el Motivo, deshabilite esta casilla.'
+        help_text='Para desactivar el Temporal Contrato Día, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
             default=timezone.now,
@@ -512,7 +520,7 @@ class ContratosParametrosGen(BaseModel):
 
     status = models.BooleanField(
         default=True,
-        help_text='Para desactivar el Motivo, deshabilite esta casilla.'
+        help_text='Para desactivar los Parámetro Generales del Contrato, deshabilite esta casilla.'
     )
     created_date = models.DateTimeField(
             default=timezone.now,

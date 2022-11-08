@@ -158,9 +158,9 @@
                   {% endif %}
                   {% for con in contratos %}
                  
-                {% if con.estado_contrato == 'AP' and ultimo_anexo_contrato == 'AP' and con.valores_diario__valor_diario is None %}
-                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Anexos</button>
-                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalanexo">Carta Término</button>
+                {% if con.estado_contrato == 'AP' and ultimo_anexo_contrato == 'AP' and con.valores_diario__valor_diario is None and fin_contrato == 'NO' %}
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalCT">Carta Término</button>
                 {% endif %}
                 {% empty %}
                   <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
@@ -201,7 +201,7 @@
                     <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
-                    {% elif con.estado_contrato == 'AP' and anex == 'NO' %}
+                    {% elif con.estado_contrato == 'AP' and anex == 'NO' and fin_contrato == 'NO' %}
                     <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
                     </button>
@@ -235,7 +235,7 @@
                     <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
-                    {% elif ane.estado_anexo == 'AP' and ane.id == id_ultimo_anexo %}
+                    {% elif ane.estado_anexo == 'AP' and ane.id == id_ultimo_anexo and fin_contrato == 'NO' %}
                     <button data-id="{{ ane.id }}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja-anexo" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
                     </button>
@@ -350,7 +350,7 @@
 </div>
 </div>
 
-
+<!-- Creando Anexo -->
 <div class="modal fade bd-example-modal-lg" id="modalanexo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -431,6 +431,37 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         <button type="submit" class="btn btn-primary">Agregar</button>
       </div>
+      </form>
+      {% endfor %}
+    </div>
+    
+  </div>
+</div>
+<!-- Generando Carta de término -->
+<div class="modal fade bd-example" id="myModalCT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        {% for con in contratos %}
+        <h5 class="modal-title" id="exampleModalLongTitle">Generar Carta de Término <small style="font-size: 80%;">{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}</small></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{% url 'contratos:carta-termino' %}"  enctype="multipart/form-data">
+        <div class="modal-body">
+          {% csrf_token %}
+            ¿Está seguro que desea realizar esta acción?
+            <br>
+          <input type="hidden" name="tipo" class="form-control" value="CT">
+          <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
+          <input type="hidden" name="fecha_termino" id="fecha_termino" class="form-control" value="{{ con.fecha_termino_ultimo_anexo|date:'Y-m-d' }}">
+          <input type="hidden" name="contrato_id" id="contrato_id" class="form-control" value="{{ con.id }}">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
       </form>
       {% endfor %}
     </div>

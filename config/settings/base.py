@@ -22,8 +22,7 @@ USE_TZ = False
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'sgo4',
-            # 'NAME': 'sgo',
+            'NAME': 'sgo',
             'USER': 'postgres',
             'PASSWORD': 'root',
             'HOST': 'localhost',

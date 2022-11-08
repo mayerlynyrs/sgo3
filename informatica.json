@@ -16436,37 +16436,57 @@
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
     }
-  },  
+  },
   {
     "model": "contratos.tipodocumento",
     "pk": 9,
+    "fields": {
+      "nombre": "Carta Término",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 10,
     "fields": {
       "nombre": "Doc. Adicionales",
       "status": true,
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
     }
-  },  
+  },
   {
     "model": "contratos.tipodocumento",
-    "pk": 10,
+    "pk": 11,
     "fields": {
       "nombre": "Finiquito",
       "status": true,
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
     }
-  },  
+  },
   {
     "model": "contratos.tipodocumento",
-    "pk": 10,
+    "pk": 12,
     "fields": {
-      "nombre": "Autorizacion Firma",
+      "nombre": "Términos y Condiciones",
       "status": true,
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03"
     }
   },
+  {
+    "model": "contratos.tipodocumento",
+    "pk": 13,
+    "fields": {
+      "nombre": "Carta Término diario",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03"
+    }
+  }, 
   {
     "model": "psicologos.psicologicotipo",
     "pk": 1,
