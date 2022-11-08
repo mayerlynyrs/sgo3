@@ -177,6 +177,12 @@ urlpatterns = [
         name="bajadas-anexo"
     ),
     path('anexo/buscarBajaAnexo', views.buscar_baja_anexo),
+    # Carta de Término
+    path(
+        route='carta_termino/',
+        view=views.carta_termino,
+        name="carta-termino"
+    ),
     path(
         route='<int:contrato_id>/generar_firma/',
         view=views.generar_firma_contrato,

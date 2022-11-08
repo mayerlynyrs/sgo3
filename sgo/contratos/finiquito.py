@@ -25,7 +25,7 @@ def finiquito(contrato2):
             total_descuento = salud + afp
 
             plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato.id, status=True)
-            formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=10)
+            formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=11)
             for formt in formato:
                 now = datetime.now()
                 doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))

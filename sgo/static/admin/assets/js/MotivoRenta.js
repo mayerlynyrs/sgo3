@@ -53,11 +53,6 @@ var elemento = document.getElementById("id_tipo_documento").value
     });
 }
 
-var btnCC = document.getElementById("boton");
-btnCC.style.borderColor= '#3BB7B7';
-btnCC.disabled = true;
-btnCC.style.backgroundColor= '#3BB7B7';
-btnCC.innerHTML = 'Procesando. . .';
 
 // var sueldo_base = document.getElementById("id_sueldo_base").value
 //   if (sueldo_base == ""){

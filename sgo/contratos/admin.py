@@ -8,18 +8,18 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 #Models
-from contratos.models import Plantilla, TipoContrato, Contrato, DocumentosContrato, TipoDocumento, Finiquito, ContratosBono, ContratosEquipo, Renuncia, Anexo, Revision, MotivoBaja
+from contratos.models import Plantilla, TipoContrato, Contrato, DocumentosContrato, TipoDocumento, Finiquito, ContratosBono, ContratosEquipo, FinRequerimiento, Anexo, Revision, MotivoBaja
 from requerimientos.models import RequerimientoTrabajador, Causal
 # Clientes
 from clientes.models import Planta
 from utils.models import Gratificacion, Horario, Bono, Equipo
 from users.models import User, ValoresDiario
 
-class RenunciaSetResource(resources.ModelResource):
+class FinRequerimientoSetResource(resources.ModelResource):
     requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
     class Meta:
-        model = Renuncia
-        fields = ('id', 'archivo','fecha_termino','status', )
+        model = FinRequerimiento
+        fields = ('id', 'tipo', 'archivo', 'fecha_termino', 'motivo', 'status',)
 
 class TipoContratoSetResource(resources.ModelResource):
 
@@ -33,7 +33,7 @@ class ContratoInLine(admin.TabularInline):
     tipo_documento = fields.Field(column_name='tipo_documento', attribute='tipo_documento', widget=ForeignKeyWidget(TipoDocumento, 'nombre'))
     gratificacion = fields.Field(column_name='gratificacion', attribute='gratificacion', widget=ForeignKeyWidget(Gratificacion, 'nombre'))
     horario = fields.Field(column_name='horario', attribute='horario', widget=ForeignKeyWidget(Horario, 'nombre'))
-    renuncia = fields.Field(column_name='renuncia', attribute='renuncia', widget=ForeignKeyWidget(Renuncia, 'nombre'))
+    fin_requerimiento = fields.Field(column_name='fin_requerimiento', attribute='fin_requerimiento', widget=ForeignKeyWidget(FinRequerimiento, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
     user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
     causal = fields.Field(column_name='causal', attribute='causal', widget=ForeignKeyWidget(Causal, 'nombre'))
@@ -49,7 +49,7 @@ class AnexoInLine(admin.TabularInline):
 
     requerimiento_trabajador = fields.Field(column_name='requerimiento_trabajador', attribute='requerimiento_trabajador', widget=ForeignKeyWidget(RequerimientoTrabajador, 'nombre'))
     horario = fields.Field(column_name='horario', attribute='horario', widget=ForeignKeyWidget(Horario, 'nombre'))
-    renuncia = fields.Field(column_name='renuncia', attribute='renuncia', widget=ForeignKeyWidget(Renuncia, 'nombre'))
+    fin_requerimiento = fields.Field(column_name='fin_requerimiento', attribute='fin_requerimiento', widget=ForeignKeyWidget(FinRequerimiento, 'nombre'))
     planta = fields.Field(column_name='planta', attribute='planta', widget=ForeignKeyWidget(Planta, 'nombre'))
     user = fields.Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'nombre'))
     causal = fields.Field(column_name='causal', attribute='causal', widget=ForeignKeyWidget(Causal, 'nombre'))
@@ -142,7 +142,7 @@ class ContratoAdmin(admin.ModelAdmin):
 
     fields = ('sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'archivo' ,'motivo', 'archivado',
         'tipo_documento','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
-        'fecha_aprobacion','fecha_aprobacion_baja','trabajador','gratificacion','horario','planta','causal','renuncia','requerimiento_trabajador','valores_diario','obs','status',)
+        'fecha_aprobacion','fecha_aprobacion_baja','trabajador','gratificacion','horario','planta','causal','fin_requerimiento','requerimiento_trabajador','valores_diario','obs','status',)
     list_display = ('id', 'sueldo_base','fecha_pago', 'fecha_inicio','fecha_termino' ,'fecha_termino_ultimo_anexo' , 'archivo' ,'motivo', 'archivado',
         'tipo_documento','seguro_vida','estado_firma','estado_contrato','fecha_solicitud','fecha_solicitud_baja',
         'fecha_aprobacion','fecha_aprobacion_baja',)
@@ -159,7 +159,7 @@ class AnexoAdmin(admin.ModelAdmin):
     """AnexoAdmin model Admin."""
 
     fields = ('archivo','motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' ,'estado_firma','estado_anexo',
-    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','trabajador','contrato','renuncia','requerimiento_trabajador','planta','status')
+    'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','trabajador','contrato','fin_requerimiento','requerimiento_trabajador','planta','status')
     list_display = ('id', 'motivo', 'fecha_inicio','fecha_termino_anexo_anterior' ,'fecha_termino' ,'estado_firma','estado_anexo',
     'fecha_solicitud','fecha_solicitud_baja','fecha_aprobacion','fecha_aprobacion_baja','status')
     # list_filter = ['user__planta', ]
@@ -218,14 +218,14 @@ class ContratosEquipoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('id', 'cantidad' , )
     search_fields = ['nombre', ]
 
-@admin.register(Renuncia)
-class RenunciaAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    """RenunciaAdmin model admin."""
+@admin.register(FinRequerimiento)
+class FinRequerimientoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """FinRequerimientoAdmin model admin."""
 
-    resource_class = RenunciaSetResource
-    fields = ('archivo','fecha_termino','status' ,'requerimiento_trabajador',  )
-    list_display = ('id', 'archivo', 'fecha_termino',)
-    search_fields = ['nombre', ]
+    resource_class = FinRequerimientoSetResource
+    fields = ('tipo', 'archivo','fecha_termino', 'requerimiento_trabajador', 'motivo', 'status')
+    list_display = ('id', 'tipo', 'archivo', 'fecha_termino', 'motivo')
+    search_fields = ['tipo', ]
 
 @admin.register(Revision)
 class RevisionAdmin(ImportExportModelAdmin, admin.ModelAdmin):

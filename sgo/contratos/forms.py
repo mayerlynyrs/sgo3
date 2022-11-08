@@ -251,7 +251,7 @@ class ContratoForm(forms.ModelForm):
                                    )
     sueldo_base = forms.CharField(required=False, label="sueldo",
                              widget=forms.TextInput(attrs={'class': "form-control"}))
-    tipo_documento = forms.ModelChoiceField(queryset=TipoDocumento.objects.filter(status=True, nombre__startswith='C'), required=True, label="Tipo Contrato",
+    tipo_documento = forms.ModelChoiceField(queryset=TipoDocumento.objects.filter(status=True, nombre__startswith=("Contrat")), required=True, label="Tipo Contrato",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',
