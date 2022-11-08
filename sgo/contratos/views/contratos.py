@@ -1001,6 +1001,32 @@ def buscar_contrato(request):
             context ['form'] = CompletasForm(instance=Contrato)
             return render(request, 'contratos/consulta_completas.html', context)
 
+def contrato_baja_completa(request, contrato_id, template_name='contratos/baja_contrato_completa.html'):
+    data = dict()
+    contrato = get_object_or_404(Contrato, pk=contrato_id)
+    if request.method == 'POST':
+        contrato.estado_contrato = 'PB'
+        contrato.fecha_solicitud_baja = datetime.now()
+        contrato.save()
+        baja = Baja()
+        baja.contrato_id = contrato_id
+        baja.motivo_id = request.POST['motivo']
+        baja.save()
+        return redirect('contratos:list-completa')
+    else:
+        context = {
+            'form10': MotivoBajaForm,
+            'contrato': contrato,
+            'contrato_id': contrato_id, 
+            }
+
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
 
 class ContratoBajaListView(ListView):
     model = Contrato

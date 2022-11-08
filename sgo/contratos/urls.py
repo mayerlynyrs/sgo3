@@ -193,6 +193,12 @@ urlpatterns = [
         view=views.ContratoFirmarView.as_view(),
         name='firmar'
     ),
+    #baja contrato de completas
+    path(
+        route='<int:contrato_id>/baja_contrato_completa/',
+        view=views.contrato_baja_completa,
+        name="contrato_baja_completa"
+    ),
     path(
         route='<slug:id>/generar_firma/firmarr/',
         view=auth_views.PasswordResetDoneView.as_view(),
