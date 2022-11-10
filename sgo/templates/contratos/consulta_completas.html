@@ -48,7 +48,7 @@ td {
       <h4 class="panel-title">Todos los contratos</h4>
     </div>
     <div class="panel-body">
-      <form action="buscarContrato" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+      <form action="buscarContrato" name="mi_formulario" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" >
         <fieldset>
           {% csrf_token %}
             <div class="row col-md-12 row align-items-center">
@@ -60,19 +60,22 @@ td {
                     <label for="email" name="mes" id="mes">Mes</label>
                     {{ form.mes }}
                 </div>
-                <div class="form-group col-md-4">
-                  <div>
-                    <input type="submit" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" disabled>
-                    <a href="{% url 'contratos:list-completa' %}" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
-                  </div>
+                <div class="form-group col-md-2">
+                    <input type="button" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" onclick="enviarPost( 'buscarContrato')" disabled>
+                  </form>
+                </div>
+                <div class="form-group col-md-2">
+                    <button type="button" id="exportar_excel" class="btn btn-success" onclick="enviarPost( 'exportar_excel')" disabled>Unysoft</button>
+                    <button type="button" id="exportar_excel_normal" class="btn btn-green" onclick="enviarPost( 'exportar_excel_normal')" disabled>Excel</button>
+                  </form>
                 </div>
                 </div>
             
         </fieldset>
-      </form>
+      
     </div>
     <div class="panel-body">
-        <table id="example" class="table table-striped table-bordered align-middle" style="width: 100%;">
+      <table id="data-table-default" class="table table-striped table-bordered align-middle" style="width: 100%;">
             <thead>
                 <tr>
                  
@@ -123,14 +126,26 @@ td {
     <script>
       // plantas
       mes.disabled = true;
+      exportar_excel.disabled = true;
+      exportar_excel_normal.disabled = true;
       $("#id_planta").change(function () {
         id_mes.disabled = false;
   
       });
       $("#id_mes").change(function () {
         buscar.disabled = false;
+        exportar_excel.disabled = false;
+        exportar_excel_normal.disabled= false;
   
       });
+
+      function enviarPost( url){
+      console.log("🚀 ~ file: consulta_completas.html ~ line 138 ~ enviarPost ~ url", url)
+
+      var formulario = document.mi_formulario;
+      formulario.action = url;
+      formulario.submit();
+}
     </script>
 
 {% endblock %}
@@ -140,7 +155,6 @@ td {
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/spanish.js' %}"></script>
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/daterangepicker.js' %}"></script>
 <script src="{% static 'admin/assets/js/report.js' %}"></script>
-<script src="{% static 'admin/assets/js/ExportarExcel.js' %}"></script>
 {% endblock %}
 {% block scripts %}
   $('.btn-view-enviar-baja').on('click', function(e){
