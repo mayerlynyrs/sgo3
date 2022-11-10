@@ -218,6 +218,9 @@ class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
 def exportar_excel_contrato(request):
+
+    planta = request.POST.get('planta')
+    mes = request.POST.get('mes')
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
     wb = xlwt.Workbook(encoding='utf-8')
@@ -243,7 +246,7 @@ def exportar_excel_contrato(request):
     font_style = xlwt.XFStyle()
 
 
-    rows = Contrato.objects.filter(estado_contrato='PV', status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
+    rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
     ,'trabajador__telefono', 'trabajador__email', 'trabajador__domicilio','trabajador__region__id', 'trabajador__ciudad__cod_uny_ciudad',  'trabajador__domicilio','requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'trabajador__domicilio', 'trabajador__nacionalidad__nombre', 'trabajador__sexo__nombre', 'trabajador__estado_civil__nombre',
     'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
     ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
@@ -369,6 +372,158 @@ def exportar_excel_contrato(request):
         
             else:
                 ws.write(row_num, col_num, row[col_num], font_style)
+    wb.save(response)
+    return response
+
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def exportar_excel_contrato_normal(request):
+
+    planta = request.POST.get('planta')
+    mes = request.POST.get('mes')
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('reporte')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Solicitante','Nombres Trabajador','Rut','correo','Nacionalidad','F. Nacimiento', 'E. Civil', 'Domicilio','Comuna',  'Cargo', 'Sueldo Base', 'Sueldo Base Palabras', 'AFP',
+                'Salud', 'UF pactada', 'Fecha Ingreso', 'Fecha Termino', 'Letra Causal', 'Motivo', 'Telefono', 'Turno', 'Referido', 'Centro de Costo',
+                'Codigo CC', 'Area de Trabajo', 'Nivel Educacional', 'Planta','nombre banco', 'tipo cuenta', 'cuenta banco', 'Nombre Req', 'Codigo Req', 'Fecha Solicitud Req', 'Fecha Inicio Req', 'Fecha Termino Req',
+ ]
+
+    for col_num in range(len(columns)):
+        
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    
+    font_style = xlwt.XFStyle()
+
+
+    rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('created_by__first_name','created_by__last_name','trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__email', 'trabajador__nacionalidad__nombre' ,
+    'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__area_cargo__cargo__nombre', 'sueldo_base', 'sueldo_base', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'trabajador__pacto_uf', 'fecha_inicio',
+     'fecha_termino' , 'causal__nombre' , 'motivo', 'trabajador__telefono' , 'horario__nombre', 'requerimiento_trabajador__referido', 'planta__nombre' , 'requerimiento_trabajador__requerimiento__centro_costo', 'requerimiento_trabajador__requerimiento__areacargo__area__nombre', 'trabajador__nivel_estudio__nombre',
+     'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
+     'requerimiento_trabajador__requerimiento__fecha_inicio', 'requerimiento_trabajador__requerimiento__fecha_termino' )
+
+    # print('variable row',rows)
+
+    for row in rows:
+        row_num += 1
+        
+        for col_num in range(len(row)):
+            if(col_num == 0):
+                ws.write(row_num, col_num, row[0] + ' ' + row[1] , font_style)
+            if(col_num == 1):
+                ws.write(row_num, col_num, row[2] + ' ' + row[3] , font_style)
+            if(col_num == 2):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 3):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 4):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 5):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            if(col_num == 6):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 7):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 8):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 9):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 10):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 11):
+                numero = col_num + 2
+                ws.write(row_num, col_num, numero_a_letras(row[numero]), font_style)
+            if(col_num == 12):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 13):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 14):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 15):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            if(col_num == 16):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            if(col_num == 17):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 18):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 19):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 20):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 21):
+                numero = col_num + 2
+                if (row[numero] ==  True):
+                    referido = 'SI'
+                else:
+                    referido = 'NO'
+                ws.write(row_num, col_num, referido, font_style)
+            if(col_num == 22):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 23):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 24):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 25):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 26):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 27):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 28):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 29):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 30):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 31):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 32):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            if(col_num == 33):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            if(col_num == 34):
+                numero = col_num + 2
+                ws.write(row_num, col_num, row[numero].strftime("%d %B %Y"), font_style)
+            # else:
+            #     ws.write(row_num, col_num, row[col_num], font_style)
     wb.save(response)
     return response
 
@@ -759,7 +914,11 @@ def enviar_revision_contrato(request, contrato_id):
                     revision.contrato_id = contrato.id
                     revision.save()
                 # Trae la plantilla que tiene la planta
-                formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=1)
+                if(contrato.horario.id == 1):
+                    formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=1)
+                else:
+                    formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(Q(tipo_id=1) |  Q(tipo_id=14), plantas=plant_template)
+                
                 for formt in formato:
                     now = datetime.now()
                     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
@@ -826,9 +985,17 @@ def enviar_revision_contrato(request, contrato_id):
                         # convert("Contrato#1.docx")
 
                         convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
-                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
-                        contrato.archivo = url
-                        contrato.save()
+                        if(formt['tipo_id'] == 1):
+                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                            contrato.archivo = url
+                            contrato.save()
+                        else:
+                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+                            contrato.archivo = url
+                            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+                            doc_contrato.tipo_documento_id = formt['tipo_id']
+                            doc_contrato.save()
+                           
 
                         nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
                         apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
@@ -853,9 +1020,16 @@ def enviar_revision_contrato(request, contrato_id):
                         # convert("Contrato#1.docx")
 
                         convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
-                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
-                        contrato.archivo = url
-                        contrato.save()
+                        if(formt['tipo_id'] == 1):
+                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                            contrato.archivo = url
+                            contrato.save()
+                        else:
+                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+                            contrato.archivo = url
+                            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+                            doc_contrato.tipo_documento_id = formt['tipo_id']
+                            doc_contrato.save()
 
                         nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
                         apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
@@ -1277,6 +1451,12 @@ class SolicitudContrato(TemplateView):
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
+                doc_contrato = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 14 )
+                url2 = doc_contrato.archivo
+                os.remove(path+ '\\' +str(url2))
+                doc_contrato.delete()
+
+
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
                     'Nueva Solicitud de contrato Prueba sgo3 ',
