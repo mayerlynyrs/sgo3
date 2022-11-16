@@ -12,12 +12,12 @@
 <!-- begin breadcrumb -->
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'contratos:list-plantilla' %}">Contratos</a></li>
-  <li class="breadcrumb-item active">{% if plantilla %}{{ plantilla.id }}{% else %}Nueva{% endif %}</li>
+  <li class="breadcrumb-item"><a href="{% url 'contratos:list' %}">Contratos</a></li>
+  <li class="breadcrumb-item active">{% if contrato %}{{ contrato.id }}{% else %}Nueva{% endif %}</li>
 </ol>
 <!-- end breadcrumb -->
 <!-- begin page-header -->
-<h1 class="page-header">Contrato <small>{% if plantilla %}Editar{% else %}Nuevo{% endif %}</small></h1>
+<h1 class="page-header">Contrato <small>{% if contrato %}Editar{% else %}Nuevo{% endif %}</small></h1>
 <!-- end page-header -->
 <!-- begin panel -->
 <div class="panel panel-inverse">
@@ -27,7 +27,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
     <h4 class="panel-title">
-      {% if plantilla %}{{ plantilla.nombre|upper }}{% else %}Contrato Nuevo{% endif %}</h4>
+      {% if contrato %}{{ contrato.trabajador__first_name|upper }}{% else %}Contrato Nuevo{% endif %}</h4>
   </div>
   <div class="panel-body">
 
@@ -147,24 +147,26 @@
               </div>
               <div class="form-group row m-b-0">
                 <div class="col-md-4 col-sm-4">
-                {% if plantilla and perms.ficheros.delete_fichero %}
+                <!-- {% if plantilla and perms.ficheros.delete_fichero %} 
                     <button type="button" id="btn-delete" class="btn btn-danger">Eliminar</button>
-                {% endif %}
+                {% endif %} -->
                 </div>
               </div>
                 <div class="float-right">
-                  {% if ultimo == 8 %}
-                    <button type="button" class="btn btn-success "data-toggle="modal" id="contratosdiarios" data-target="#modalcontrato">Contrato</button>
+                {% for con in contratos %}
+                  {% if con.estado_contrato == 'AP' and ultimo_anexo_contrato == 'AP' and con.valores_diario__valor_diario is None and fin_contrato == 'NO' %}
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalCT">Carta Término</button>
+                  {% elif con.estado_contrato == 'AP' and anexo == None and con.valores_diario__valor_diario is None and fin_contrato == 'NO' %}
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalanexo">Anexos</button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalCT">Carta Término</button>
                   {% endif %}
-                  {% for con in contratos %}
-                 
-                {% if con.estado_contrato == 'AP' and ultimo_anexo_contrato == 'AP' and con.valores_diario__valor_diario is None and fin_contrato == 'NO' %}
-                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalanexo">Anexos</button>
-                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalCT">Carta Término</button>
-                {% endif %}
-                {% empty %}
-                  <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
+                  {% empty %}
+                    <button type="button" class="btn btn-success "data-toggle="modal" data-target="#modalcontrato">Contrato</button>
                 {% endfor %}
+                  {% if ultimo == 8 and ultimo_contrato.estado_contrato == 'AP' %} 
+                  <button type="button" class="btn btn-success "data-toggle="modal" id="contratosdiarios" data-target="#myModalCDiario">Contrato</button>
+                  {% endif %}
               </div>
           </form>
           <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br><hr /></legend>
@@ -179,8 +181,8 @@
                   <th>Motivo</th>
                   <th>Plazos</th>
                   <th>Jornada</th>
-                  <th style="width:20%">Renta Imponible</th>
-                  <th style="width:10%">Acciones</th>
+                  <th style="width:10%">Renta Imponible</th>
+                  <th style="width:20%">Acciones</th>
               </tr>
               <tbody>
                 {% for con in contratos %}
@@ -195,14 +197,23 @@
                   <td>$ {% if con.valores_diario__valor_diario is None %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
                   <td >
                     {% if con.estado_contrato == 'CR' or con.estado_contrato == 'RC'   %}
-                    <button data-id="{{ con.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
+                    <button data-id="{{ con.id }}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-contrato" title="Editar Contrato">
                       <i class="fas fa-edit"></i>
                     </button> &nbsp
-                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
+                    {% if perms.contratos.delete %}
+                    <button data-id="{{ con.id }}" type="button" id="btn-eliminar2" class="btn btn-danger btn-xs btn-flat btn-eliminar2" title="Eliminar Contrato">
+                      <i class="fas fa-window-close"></i>
+                    </button> &nbsp
+                    {% endif %}
+                    <a  type="button" class="btn-xs btn btn-white" href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
-                    {% elif con.estado_contrato == 'AP' and anex == 'NO' and fin_contrato == 'NO' %}
-                    <button data-id="{{ con.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
+                    {% elif con.estado_contrato == 'AP' and anex == 'NO' and fin_contrato == 'NO' and ultimo != 8 %}
+                    <button data-id="{{ con.id }}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                    {% elif ultimo == 8 and con.estado_contrato == 'AP' and ultimo_contrato_diario_aprob == con.id %}
+                    <button data-id="{{ con.id }}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                     {% endif %}
@@ -228,11 +239,15 @@
                   <td >{% if ane.nueva_renta != None %}$ {{ ane.nueva_renta }} {% else %}       {% endif %}</td>
                   <td>
                     {% if ane.estado_anexo == 'CR' or ane.estado_anexo == 'RC'  %}
-                    <button data-id="{{ ane.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-anexo" title="Editar anexo">
+                    <button data-id="{{ ane.id}}" type="button"  class="btn btn-warning btn-xs btn-flat btn-view-editar-anexo" title="Editar Anexo">
                       <i class="fas fa-edit"></i>
-                    </button>
-                    &nbsp
-                    <a  type="button" class="btn-xs btn btn-default " href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
+                    </button> &nbsp
+                    {% if perms.anexos.delete_anexo %}
+                    <button data-id="{{ ane.id}}" type="button" id="btn-delete-anexo" class="btn btn-danger btn-xs btn-flat" title="Eliminar Anexo">
+                      <i class="fas fa-window-close"></i>
+                    </button> &nbsp
+                    {% endif %}
+                    <a  type="button" class="btn-xs btn btn-white" href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
                     {% elif ane.estado_anexo == 'AP' and ane.id == id_ultimo_anexo and fin_contrato == 'NO' %}
@@ -258,6 +273,7 @@
 </div>
 </div>
 
+<!-- Creando Contrato -->
 <div class="modal fade bd-example-modal-lg" id="modalcontrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -268,8 +284,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{% url 'contratos:create' %}"  enctype="multipart/form-data">
-        <h5>Información del contrato</h5>
+        <form method="post" id="CContratoForm" action="{% url 'contratos:create' %}"  enctype="multipart/form-data">
+        <h5>Información del Contrato</h5>
         {% csrf_token %}
         <div class="row col-md-12">
           <div class="form-group col-md-3">
@@ -340,14 +356,91 @@
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
         <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="submit" id="boton" onclick="javascript:ver_documento();" class="btn btn-primary">Agregar</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" id="boton" onclick="javascript:ver_documento();" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
       </div>
-    </form>
     </div>
   </div>
 </div>
+
+<!-- Creando Contrato Diariop -->
+<div class="modal fade bd-example-modal-lg" id="myModalCDiario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Agregar Documento Contractual</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="CContratoForm" action="{% url 'contratos:create' %}"  enctype="multipart/form-data">
+        <h5>Información del Contrato</h5>
+        {% csrf_token %}
+        <div class="row col-md-12">
+          <div class="form-group col-md-3">
+            <input type="radio" id="diario" value="diario" name="tipo" checked >
+            <label for="diario">Diario</label>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Régimen</label>
+            {{ form2.regimen }}
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-12">
+            <label for="email">Motivo</label>
+            <input type="text" name="motivo" class="form-control" value="{{ru.requerimiento__descripcion}}">
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Fecha Inicio</label>
+            <input type="text" name="fecha_inicio_diario" class="form-control" autocomplete="off" id="fecha_inicio_diario" readonly="true" required>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="form-group col-md-6">
+            <label for="email">Horario</label>
+            {{ form2.horario }}
+          </div>
+          <div class="form-group col-md-6" id="valores_diario">
+            <label for="email">Valores Diario</label>
+            {{ form2.valores_diario }}
+          </div>
+        </div>   
+        <h5>Bonos </h5>
+        <div class="row col-md-12">
+          {% for bo in bonos %}
+          <div class="form-group col-md-6">
+            <label for="email">{{ bo.requerimiento__planta__bono__nombre }}</label>
+            <input type="text" name="{{forloop.counter}}" class="form-control" value="0" >
+            <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bo.requerimiento__planta__bono}}">
+          </div>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="id_causal" id="id_causal" class="form-control" value="{{ ru.requerimiento__causal }}">
+        <input type="hidden" name="causal" class="form-control" value="{{ru.requerimiento__causal}}">
+        <input type="hidden" id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
+        <input type="hidden" id="f_inicio" class="form-control" value="{{fecha_restriccion|date:'Y-m-d'}}">
+        <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
+        <input type="hidden" name="gratificacion" class="form-control" value="{{ ru.requerimiento__planta__gratificacion }}">
+        <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
+        <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
+        <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" id="boton" onclick="javascript:ver_documento();" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Creando Anexo -->
@@ -474,10 +567,23 @@
     <div class="modal-content"></div>
   </div>
 </div>
+<!-- Eliminar Contrato -->
+<div class="modal fade" id="modal-contrato">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+</div>
+
 <div class="modal fade  bd-example-modal-lg" id="modal-editar_anexo">
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
   </div>
+</div>
+<!-- Eliminar Anexo -->
+<div class="modal fade" id="modal-anexo">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
 </div>
 <div class="modal fade  " id="modal-enviar_baja">
   <div class="modal-dialog ">
@@ -509,7 +615,10 @@
   </script>
 
 {% endblock %}
+
 {% block scripts %}
+//Submit form
+
 $('.btn-view-editar-contrato').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
@@ -527,6 +636,30 @@ $('.btn-view-editar-contrato').on('click', function(e){
   });
 });
 
+
+{% if contrato and perms.contratos.delete %}
+var eliminarURL = "{% url 'contratos:delete' contrato.id %}";
+$('.btn-eliminar2').on('click', function(e){
+    e.preventDefault();
+
+    console.log('click delete object');
+    console.log(eliminarURL);
+
+    $.ajax({
+      url: eliminarURL,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-contrato").modal("show");
+      },
+      success: function (data) {
+          $("#modal-contrato .modal-content").html(data.html_form);
+      }
+    });
+});
+{% endif %}
+
+
 $('.btn-view-enviar-baja').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
@@ -543,7 +676,6 @@ $('.btn-view-enviar-baja').on('click', function(e){
       }
   });
 });
-
 
 
 $('.btn-view-enviar-baja-anexo').on('click', function(e){
@@ -564,26 +696,6 @@ $('.btn-view-enviar-baja-anexo').on('click', function(e){
 });
 
 
-{% if messages %}
-  console.log('mensajes');
-  {% for mensaje in messages %}
-      console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
-      {% if mensaje.tags == 'success' %}
-        iziToast.success({
-            message: '{{ mensaje }}',
-            position: 'topRight',
-        });
-      {% elif mensaje.tags == 'error' %}
-        iziToast.error({
-            message: '{{ mensaje }}',
-            position: 'topRight',
-        });
-      {% endif %}
-  {% endfor %}
-
-{% endif %}
-
-
 $('.btn-view-editar-anexo').on('click', function(e){
   e.preventDefault();
   var id = $(this).data('id');
@@ -601,6 +713,7 @@ $('.btn-view-editar-anexo').on('click', function(e){
   });
 });
 
+
 {% if messages %}
   console.log('mensajes');
   {% for mensaje in messages %}
@@ -621,116 +734,112 @@ $('.btn-view-editar-anexo').on('click', function(e){
 {% endif %}
 
 
+var enviando = false;
+//Submit form
+$('#boton').on('click', function(e){
+  console.log('pashoooo.');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
 
-  var enviando = false;
-  //Submit form
-  $('#btn-guardar').on('click', function(e){
-      $(this).prop('disabled', true);
-      $(this).addClass('disabled');
+    e.preventDefault();
 
-      e.preventDefault();
+    var $form = $('#CContratoForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
 
-      var $form = $('#ContratoForm');
-      var validator = $form.validate({
-          ignore: "",
-          errorClass: "is-invalid",
-          validClass: "is-valid",
-          errorElement: 'div',
-          errorPlacement: function ( error, element ) {
-            error.addClass("invalid-feedback");
-
-            if(element.prop("type") === "checkbox") {
-              error.insertAfter(element.parent("label"));
-            }else{
-              error.insertAfter(element);
-            }
-
-            // Add the span element, if doesn't exists, and apply the icon classes to it.
-            if (!element.next("div")[0]) {
-              $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
-            }
-          },
-          wrapper: "",
-          rules: {
-                  sueldo_base: "required",
-                  horario: "required",
-                  planta: "required",
-                  tipo_documento: "required",
-                },
-                messages: {
-                  sueldo_base: "Ingresa el sueldo base del Contrato.",
-                  horario: "Selecciona un Horario.",
-                  planta: "Selecciona una planta.",
-                  tipo_documento: "Selecciona un tipo de documento"
-          },
-          showErrors: function(errorMap, errorList) {
-              console.log('show messages', errorList.length);
-              if(errorList.length){
-                  $('#msgbox').show('slow');
-                  $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
-
-                  this.defaultShowErrors();
-                  console.log('Errores', errorMap, errorList);
-              }
-        }
-      });
-
-      if(validator.form()){
-          if(!enviando){
-              enviando = true;
-              $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
-              $form.submit();
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
           }else{
-              console.log("El formulario ya se esta enviando...");
+            error.insertAfter(element);
           }
-      }else{
-          console.log('Error en el formulario.');
-          $(this).removeClass('disabled');
-          $(this).prop('disabled', false);
-      }
 
-  })
-
-{% if plantilla and perms.plantilla.delete_plantilla %}
-  var deleteURL = "{% url 'contratos:delete-plantilla' plantilla.id %}";
-
-  $('#btn-delete').on('click', function(e){
-      e.preventDefault();
-
-      console.log('click delete object');
-      console.log(deleteURL);
-
-      $.ajax({
-        url: deleteURL,
-        type: 'get',
-        dataType: 'json',
-        beforeSend: function () {
-          $("#modal-plantilla").modal("show");
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
         },
-        success: function (data) {
-            $("#modal-plantilla .modal-content").html(data.html_form);
+        wrapper: "",
+        rules: {
+                horario: "required",
+                id_tipo_documento: "required",
+              },
+              messages: {
+                horario: "Selecciona un Horario.",
+                id_tipo_documento: "Selecciona un tipo de documento"
+        },
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
+      }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
         }
-      });
-  });
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
+
+})
+
+
+{% if anexo and perms.anexos.delete %}
+var deleteURL = "{% url 'contratos:delete-anexo' anexo.id %}";
+$('#btn-delete-anexo').on('click', function(e){
+    e.preventDefault();
+
+    console.log('click delete object');
+    console.log(deleteURL);
+
+    $.ajax({
+      url: deleteURL,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-anexo").modal("show");
+      },
+      success: function (data) {
+          $("#modal-anexo .modal-content").html(data.html_form);
+      }
+    });
+});
 {% endif %}
 
+
 {% if messages %}
-      console.log('mensajes');
-      {% for mensaje in messages %}
-          console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
-          {% if mensaje.tags == 'success' %}
-            iziToast.success({
-                message: '{{ mensaje }}',
-                position: 'topRight',
-            });
-          {% elif mensaje.tags == 'error' %}
-            iziToast.error({
-                message: '{{ mensaje }}',
-                position: 'topRight',
-            });
-          {% endif %}
-      {% endfor %}
+  console.log('mensajes');
+  {% for mensaje in messages %}
+      console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+      {% if mensaje.tags == 'success' %}
+        iziToast.success({
+            message: '{{ mensaje }}',
+            position: 'topRight',
+        });
+      {% elif mensaje.tags == 'error' %}
+        iziToast.error({
+            message: '{{ mensaje }}',
+            position: 'topRight',
+        });
+      {% endif %}
+  {% endfor %}
 
-  {% endif %}
+{% endif %}
 {% endblock %}
-

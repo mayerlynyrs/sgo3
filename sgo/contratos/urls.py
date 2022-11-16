@@ -58,6 +58,16 @@ urlpatterns = [
         name="create"
     ),
     path(
+        route='<int:contrato_id>/update_contrato/',
+        view=views.update_contrato,
+        name="update_contrato"
+    ),
+    path(
+        route='<int:object_id>/delete/',
+        view=views.delete,
+        name="delete"
+    ),
+    path(
         'exportar_excel',
         view=views.exportar_excel_contrato,
         name="exportar_excel"
@@ -76,11 +86,6 @@ urlpatterns = [
         route='<str:aprobacion>/aprobacion_masiva_anexo/',
         view=views.aprobacion_masiva_anexo,
         name="aprobacion_masiva_anexo"
-    ),
-    path(
-        route='<int:contrato_id>/update_contrato/',
-        view=views.update_contrato,
-        name="update_contrato"
     ),
     path(
         route='solicitud-contrato/',
@@ -144,6 +149,11 @@ urlpatterns = [
         route='<int:anexo_id>/update_anexo/',
         view=views.update_anexo,
         name="update_anexo"
+    ),
+    path(
+        route='<int:object_id>/delete_anexo/',
+        view=views.delete_anexo,
+        name="delete-anexo"
     ),
     path(
         route='anexo/solicitud/',

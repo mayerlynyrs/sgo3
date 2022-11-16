@@ -73,60 +73,63 @@ img {
       <thead>
           <tr>
               <th class="text-center">Datos Trabajadores</th>
-              <th class="text-center">Clientes</th>
+              <!-- <th class="text-center">Clientes</th> -->
               <th class="text-center">Plantas</th>
-              <!-- <th class="text-center">Acciones</th> -->
+              <th class="text-center">Acciones</th>
           </tr>
       </thead>
       <tbody>
       {% block contenido %}
-      {% for usr in object_list  %}
-        {% if not usr.id == request.user.id %}
+      {% for employee in object_list  %}
+        {% if not employee.id == request.user.id %}
           <tr>
-            <td>
-                <a title="Editar" href="{% url 'users:create_trabajador' usr.id %}?page={{ request.GET.page }}">
+            <td class="text-left" style="width:40%">
+                <a title="Editar" href="{% url 'users:create_trabajador' employee.user.id %}?page={{ request.GET.page }}">
                   <div class="img-div">
-                    {{ usr.groups.first.name|image_profile|safe }}<br>
-                    {{ usr.is_active|tag_active|safe }}
+                    {{ employee.user.groups.first.name|image_profile|safe }}<br>
+                    {{ employee.is_active|tag_active|safe }}
                   </div>
                   <span class="text-name text-success">
-                    {{ usr.rut|upper }} 
-                    {{ usr.first_name|title }} {{ usr.last_name|title }} 
+                    {{ employee.rut|upper }} 
+                    {{ employee.first_name|title }} {{ employee.last_name|title }} 
                   </span>
                 </a>
                 <p class="text-desc">
-                  {{ usr.fecha_nacimiento|date:"SHORT_DATE_FORMAT" }}
+                  {{ employee.fecha_nacimiento|date:"SHORT_DATE_FORMAT" }}
                 </p>
                 <p class="text-desc">
                   <i class="fas fa-info fa-xs"></i>
-                  {{ usr.ciudad|title }} /
+                  {{ employee.ciudad|title }} /
                   <i class="fa-xs"></i>
-                  {{ usr.especialidad|title }}
+                  {{ employee.especialidad|title }}
                 </p>
             </td>
-            <td class="list-clientes">
+            <!-- <td class="list-clientes">
                 <ul>
-                  {% for p in usr.cliente.all %}
+                  {% for p in employee.user.cliente.all %}
                     <li>{{ p.razon_social }}</li>
                   {% empty %}
                     <li>Sin asignar</li>
                   {% endfor %}
                 </ul>
-            </td>
-            <td class="list-plantas">
+            </td> -->
+            <td class="list-plantas" style="width:30%">
                 <ul>
-                  {% for p in usr.planta.all %}
+                  {% for p in employee.user.planta.all %}
                     <li>{{ p.nombre }}</li>
                   {% empty %}
                     <li>Sin asignar</li>
                   {% endfor %}
                 </ul>
             </td>
-            <!-- <td>
-              <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp &nbsp
-              <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp &nbsp
-              <a title="Historial" href="{% url 'users:detail' usr.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a>
-            </td> -->
+            <td class="text-left" style="width:10%">
+              {% if employee.terminos_condiciones == False %}
+                <a title="Autorización Firma Electrónica" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
+              {% endif %}
+              <!-- <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp
+              <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp
+              <a title="Historial" href="{% url 'users:detail' employee.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-info btn-xs btn-flat"><i class="fas fa-folder-open"></i></a> -->
+            </td>
           </tr>
         
         {% endif %}
