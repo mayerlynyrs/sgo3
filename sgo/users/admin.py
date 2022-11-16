@@ -116,7 +116,7 @@ class TrabajadorSetResource(resources.ModelResource):
 
     class Meta:
         model = Trabajador
-        fields = ['id', 'rut', 'first_name', 'last_name', 'email', 'telefono', 'telefono2', ]
+        fields = ['id', 'rut', 'first_name', 'last_name', 'email', 'telefono', ]
 
 
 class ArchivoTrabajadorSetResource(resources.ModelResource):
@@ -312,13 +312,13 @@ class CustomTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     """Trabajador model admin."""
 
     resource_class = TrabajadorSetResource
-    fields = ('rut', 'first_name', 'last_name', 'pasaporte', 'sexo', 'estado_civil', 'fecha_nacimiento', 'telefono', 'telefono2', 'nacionalidad',
+    fields = ('rut', 'first_name', 'last_name', 'pasaporte', 'sexo', 'estado_civil', 'fecha_nacimiento', 'telefono', 'nacionalidad',
               'licencia_conducir', 'talla_polera', 'talla_pantalon', 'calzado', 'nivel_estudio', 'especialidad',
               'region', 'provincia', 'ciudad', 'domicilio', 'examen', 'foto', 'afp', 'salud', 'pacto_uf', 'banco',
-              'tipo_cuenta', 'cuenta', 'user')
-    list_display = ('id', 'rut', 'first_name', 'last_name', 'sexo', 'estado_civil')
+              'tipo_cuenta', 'cuenta', 'terminos_condiciones', 'user')
+    list_display = ('id', 'rut', 'first_name', 'last_name', 'telefono', 'nacionalidad')
     list_filter = ('rut', 'provincia', 'ciudad', 'created', 'modified')
-    search_fields = ('rut', 'last_name', 'rut', 'pasaporte', 'region__nombre', 'provincia__nombre', 'ciudad__nombre')
+    search_fields = ('rut', 'first_name', 'last_name', 'pasaporte', 'region__nombre', 'provincia__nombre', 'ciudad__nombre')
 
 
 @admin.register(ArchivoTrabajador)

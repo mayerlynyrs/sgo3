@@ -120,6 +120,7 @@ def update_plantilla(request, plantilla_id):
             'form': form
         })
 
+
 @login_required
 @permission_required('contratos.add_plantilla', raise_exception=True)
 def create_plantilla(request):

@@ -240,7 +240,7 @@ class ContratoForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_inicio", 'readonly' :'true'}))
-    fecha_termino = forms.CharField(required=True, label="Fecha Término",
+    fecha_termino = forms.CharField(required=False, label="Fecha Término",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino",'readonly' :'true' }))
     horario = forms.ModelChoiceField(queryset=Horario.objects.none(), required=True, label="Horario",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -251,7 +251,7 @@ class ContratoForm(forms.ModelForm):
                                    )
     sueldo_base = forms.CharField(required=False, label="sueldo",
                              widget=forms.TextInput(attrs={'class': "form-control"}))
-    tipo_documento = forms.ModelChoiceField(queryset=TipoDocumento.objects.filter(status=True, nombre__startswith=("Contrat")), required=True, label="Tipo Contrato",
+    tipo_documento = forms.ModelChoiceField(queryset=TipoDocumento.objects.filter(status=True, nombre__startswith=("Contrat")).exclude(nombre__startswith=("Contrato Diario")), required=False, label="Tipo Contrato",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',

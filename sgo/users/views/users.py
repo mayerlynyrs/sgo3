@@ -4,6 +4,11 @@
 import json
 # Djangoogit
 import os
+import pythoncom
+import win32com.client
+from docx2pdf import convert
+import base64
+import requests
 from subprocess import Popen
 from datetime import datetime
 from django.contrib import messages
@@ -26,15 +31,19 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
 from mailmerge import MailMerge
+from docxtpl import DocxTemplate
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.conf import settings
 # Models
 from users.models import User, Trabajador, Sexo, Profesion, ProfesionTrabajador, Especialidad, Contacto, ArchivoTrabajador, ListaNegra
 from clientes.models import Cliente, Negocio, Planta
 from utils.models import Region, Provincia, Ciudad
-from contratos.models import Plantilla, Contrato, DocumentosContrato
+from contratos.models import Plantilla, Contrato, DocumentosContrato, ContratosParametrosGen
 from examenes.models import Evaluacion
+from firmas.models import Firma
 # Forms
 from users.forms import EditarUsuarioForm, CrearUsuarioForm, CrearTrabajadorForm, EditarTrabajadorForm, ProfesionForm, EspecialidadForm, ProfesionTrabajadorForm, ParentescoCreateForm, ContactoForm, ArchivoTrabajadorForm, ListaNegraForm, EvaluacionAchivoForm
+from requerimientos.fecha_a_palabras import fecha_a_letras
 
 User = get_user_model()
 
@@ -760,8 +769,6 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
             context['plantas'] = institutions
             context['planta'] = self.kwargs.get('planta_id', None)
-            context['trabajador'] = Trabajador.objects.all()
-            # context['trabajador'] = Trabajador.objects.select_related('user').filter(
 
         return context
 
@@ -780,6 +787,7 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     Q(planta__in=self.request.user.planta.all()),
                     Q(first_name__icontains=search) |
                     Q(last_name__icontains=search) |
+                    Q(terminos_condiciones__icontains=search) |
                     Q(username__icontains=search)).exclude(
                     groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
                     'first_name', 'last_name').distinct('first_name', 'last_name')
@@ -796,17 +804,17 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             # Perfil no es Trabajador
             if not self.request.user.groups.filter(name__in=['Trabajador']).exists():
                 if planta is None:
-                    queryset = User.objects.filter(
-                        planta__in=self.request.user.planta.all()).exclude(
-                        groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH',
+                    queryset = Trabajador.objects.filter(
+                        user__planta__in=self.request.user.planta.all()).exclude(
+                        user__groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH',
                         'Psicologo', 'Fiscalizador DT', 'Fiscalizador Interno']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                        'user__first_name', 'user__last_name').distinct('user__first_name', 'user__last_name')
                 else:
                     # No es Trabajador y hay plantas seleccionadas
-                    queryset = User.objects.filter(
-                        planta__in=planta).exclude(
-                        groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
-                        'first_name', 'last_name').distinct('first_name', 'last_name')
+                    queryset = Trabajador.objects.filter(
+                        user__planta__in=planta).exclude(
+                        user__groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
+                        'user__first_name', 'user__last_name').distinct('user__first_name', 'user__last_name')
 
             else:
                 # Es administrador y no hay planta seleccionada.
@@ -857,10 +865,30 @@ def create_trabajador(request):
 
                     
             trabajador = trabajador_form.save(commit=False)
+            trabajador.first_name = request.POST['first_name'].lower()
+            trabajador.last_name = request.POST['last_name'].lower()
+            trabajador.email = request.POST['email'].lower()
             trabajador.is_active = True
             trabajador.user_id = user.id
             trabajador.save()
             trabajador = trabajador_form.save()
+
+            # Enviar correo con Términos y Condiciones al Trabajador (terminos_condiciones)
+            fecha_registro_palabras = fecha_a_letras(trabajador.created)
+            # subject, from_email, to = 'Creación de Trabajador en SGO3 | Términos y Condiciones', 'soporte@empresasintegra.cl', trabajador.email
+            # text_content = 'No responder este Mensaje.'
+            # html_content = 'Estimado(a) por medio del presente se le informa que al día ' + str(fecha_registro_palabras) + ' se ha creado como Trabajador del Sistema de Gestión de Operaciones (SGO3), por favor lea el documento adjunto y acepte los TÉRMINOS LEGALES Y CONDICIONES GENERALES DE USO DEL SITIO WEB </br></br><p><a href="http://192.168.0.201:8000/users/' + str(trabajador.id) + '/terminos_condiciones/" style="padding: 11px 20px; margin: 16px 0px 25px; font-size: 14px; color: #fff; background: #008a8a; border-radius: 5px; text-decoration:none; font-weight: bold;"> Aceptar Términos y Condiciones</a></p>'
+            # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            # msg.attach_alternative(html_content, "text/html")
+            # msg.send()
+            send_mail(
+                'Creación de Trabajador en SGO3',
+                'Estimado(a) ' + str(trabajador.first_name.title() + ' ' + trabajador.last_name.title()) + ' por '
+                'medio del presente se le informa que al día ' + str(fecha_registro_palabras) + ' usted se ha '
+                'creado como Trabajador en el Sistema de Gestión de Operaciones (SGO3)',
+                trabajador.created_by.email,
+                [trabajador.email, 'soporte@empresasintegra.cl'], fail_silently=False,
+            )
 
             messages.success(request, 'Trabajador Creado Exitosamente')
             return redirect('users:create_trabajador', user.id)
@@ -940,6 +968,148 @@ def update_trabajador(request, trabajador_id):
             'form': trabajador_form,
         }
     )
+
+
+@login_required
+@permission_required('users.add_user', raise_exception=True)
+def autorizacion_trabajador(request, trabajador_id):
+    """Autorización a Employee view."""
+
+    # Busca si existe la plantilla de Autorización Firma Electrónica (12)
+    if not Plantilla.objects.filter(tipo_id=12).exists():
+        messages.error(request, 'No existe la plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
+        return redirect('users:list_trabajador')
+    else:
+        employee = Trabajador.objects.get(user=trabajador_id, is_active=True)
+        employee.terminos_condiciones = True
+        employee.save()
+        # Trae la plantilla de Autorización Firma Electrónica (12)
+        formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(tipo_id=12)
+        now = datetime.now()
+        for formt in formato:
+            doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
+            # Variables de Autorización Firma Electrónica
+            context = { 'fecha_creacion': employee.created.strftime("%A,%d %B, %Y"),
+                        'rut_trabajador': employee.rut,
+                        'nombres_trabajador': employee.first_name.title(),
+                        'apellidos_trabajador': employee.last_name.title(),
+                        'correo_trabajador': employee.email,
+                        'telefono_trabajador': employee.telefono,
+                        }
+            rut_trabajador = employee.rut
+            doc.render(context)
+            # Contratos Parametros General, ruta_documentos donde guardara el documento
+            ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+            path = os.path.join(ruta_documentos)
+            # Si carpeta no existe, crea carpeta de contratos.
+            carpeta = 'autorizaciones'
+
+            try:
+                os.mkdir(path + carpeta)
+                path = os.path.join(settings.MEDIA_ROOT + '/autorizaciones/')
+                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id)  + '.docx')
+                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                # convert("Contrato#1.docx")
+
+                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(trabajador_id) + ".pdf")                
+                # Elimino el documento word.
+                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id) + '.docx')
+                # Inicio integración de la API
+                nombre_archivo = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(trabajador_id) + ".pdf"
+                ubicacion = path + nombre_archivo
+                with open(ubicacion, "rb") as pdf_file:
+                    documento = base64.b64encode(pdf_file.read()).decode('utf-8')
+                document = f'{documento}'
+                
+                url = "https://app.ecertia.com/api/EviSign/Submit"
+
+                payload = json.dumps({
+                "Subject": "Autorización Firma Electrónica Trabajador del SGO3",
+                "Document": document,
+                "SigningParties": {
+                    "Name": employee.first_name.title() + ' ' + employee.last_name.title(),
+                    "Address": employee.email,
+                    "SigningMethod": "Email Pin"
+                },
+                "Options": {
+                    "TimeToLive": 1200,
+                    "RequireCaptcha": False,
+                    "NotaryRetentionPeriod": 0,
+                    "OnlineRetentionPeriod": 1
+                },
+                "Issuer": "EVISA"
+                })
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+                            }
+
+                response = requests.request("POST", url, headers=headers, data=payload)
+
+                print('API', response.text)
+                api = Firma()
+                api.respuesta_api = response.text
+                api.rut_trabajador = rut_trabajador
+                api.estado_firma_id = 1
+                api.fecha_envio = now
+                api.status = True
+                api.save()
+                messages.success(request, 'Autorización de Firma Electrónica enviada Exitosamente')
+            except:
+                path = os.path.join(settings.MEDIA_ROOT + '/autorizaciones/')
+                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id)  + '.docx')
+                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+
+                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(trabajador_id) + ".pdf")                
+                # Elimino el documento word.
+                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(trabajador_id) + '.docx')
+                # Inicio integración de la API
+                nombre_archivo = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(trabajador_id) + ".pdf"
+                ubicacion = path + nombre_archivo
+                with open(ubicacion, "rb") as pdf_file:
+                    documento = base64.b64encode(pdf_file.read()).decode('utf-8')
+                document = f'{documento}'
+                
+                url = "https://app.ecertia.com/api/EviSign/Submit"
+
+                payload = json.dumps({
+                "Subject": "Autorización Firma Electrónica Trabajador del SGO3",
+                "Document": document,
+                "SigningParties": {
+                    "Name": employee.first_name.title() + ' ' + employee.last_name.title(),
+                    "Address": employee.email,
+                    "SigningMethod": "Email Pin"
+                },
+                "Options": {
+                    "TimeToLive": 1200,
+                    "RequireCaptcha": False,
+                    "NotaryRetentionPeriod": 0,
+                    "OnlineRetentionPeriod": 1
+                },
+                "Issuer": "EVISA"
+                })
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+                            }
+
+                response = requests.request("POST", url, headers=headers, data=payload)
+
+                print('API', response.text)
+                api = Firma()
+                api.respuesta_api = response.text
+                api.rut_trabajador = rut_trabajador
+                api.estado_firma_id = 1
+                api.fecha_envio = now
+                api.status = True
+                api.save()
+                messages.success(request, 'Autorización de Firma Electrónica enviada Exitosamente')
+        
+        return redirect('users:list_trabajador')
 
 
 class ContactoView(TemplateView):
@@ -1203,6 +1373,17 @@ class ListaNegraView(TemplateView):
         context['list_url'] = reverse_lazy('users:lista_negra')
         context['entity'] = 'ListaNegra'
         context['form'] = ListaNegraForm()
+        return context
+
+
+class TerminosCondicionView(TemplateView):
+    model = Trabajador
+    template_name = 'emails/terms_conditions_form.html'
+    context_object_name = "usuario"
+
+    def get_context_data(self, **kwargs):
+        context = super(TerminosCondicionView, self).get_context_data(**kwargs)
+
         return context
 
 

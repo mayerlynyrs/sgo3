@@ -393,11 +393,9 @@ class Trabajador(BaseModel):
     )
     first_name = models.CharField(
         max_length=120,
-        unique=True
     )
     last_name = models.CharField(
         max_length=120,
-        unique=True
     )
 
     pasaporte = models.CharField(
@@ -410,11 +408,11 @@ class Trabajador(BaseModel):
         }
     )
 
-    sexo = models.ForeignKey(Sexo, on_delete=models.PROTECT, null=True, blank=True)
+    sexo = models.ForeignKey(Sexo, on_delete=models.PROTECT)
 
-    estado_civil = models.ForeignKey(Civil, on_delete=models.PROTECT, null=True, blank=True)
+    estado_civil = models.ForeignKey(Civil, on_delete=models.PROTECT)
 
-    fecha_nacimiento = models.DateField(null=True, blank=True)
+    fecha_nacimiento = models.DateField()
 
     email = models.EmailField(
         'email address',
@@ -438,15 +436,9 @@ class Trabajador(BaseModel):
         null=False
     )
 
-    telefono2 = models.CharField(
-        'Teléfono',
-        validators=[telefono_regex, ],
-        max_length=15,
-        blank=True,
-        null=True
-    )
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.PROTECT)
 
-    licencia_conducir = models.CharField(max_length=2, choices=LICENCIA_ESTADO, default=NINGUNA)
+    licencia_conducir = models.CharField(max_length=2, choices=LICENCIA_ESTADO)
 
     talla_polera = models.CharField(
         max_length=3,
@@ -461,17 +453,15 @@ class Trabajador(BaseModel):
     )
     calzado = models.IntegerField(null=True, blank=True)
 
-    nivel_estudio = models.ForeignKey(NivelEstudio, on_delete=models.PROTECT, null=True, blank=True)
+    nivel_estudio = models.ForeignKey(NivelEstudio, on_delete=models.PROTECT)
 
-    especialidad = models.ForeignKey(Especialidad, on_delete=models.PROTECT, null=True, blank=True)
+    especialidad = models.ForeignKey(Especialidad, on_delete=models.PROTECT)
 
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.PROTECT, null=False, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
 
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    provincia = models.ForeignKey(Provincia, on_delete=models.PROTECT)
 
-    provincia = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True, blank=True)
-
-    ciudad = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
 
     domicilio = models.CharField(
         max_length=200,
@@ -480,29 +470,33 @@ class Trabajador(BaseModel):
     )
     examen = models.BooleanField(
         default=False,
-        help_text='Para solicitar examen psicológico al usuario, habilite esta casilla.'
+        help_text='Para solicitar examen psicológico al trabajador, habilite esta casilla.'
     )
     foto = models.ImageField(upload_to='usuarios', null=True, blank=True)
 
-    afp = models.ForeignKey(Afp, on_delete=models.PROTECT, null=True, blank=True)
+    afp = models.ForeignKey(Afp, on_delete=models.PROTECT)
 
-    salud = models.ForeignKey(Salud, on_delete=models.PROTECT, null=True, blank=True)
+    salud = models.ForeignKey(Salud, on_delete=models.PROTECT)
 
     pacto_uf = models.FloatField(null=True, blank=True)
 
-    banco = models.ForeignKey(Banco, on_delete=models.PROTECT, null=False, blank=False)
+    banco = models.ForeignKey(Banco, on_delete=models.PROTECT)
 
-    tipo_cuenta = models.ForeignKey(TipoCta, on_delete=models.PROTECT, null=False, blank=False)
+    tipo_cuenta = models.ForeignKey(TipoCta, on_delete=models.PROTECT)
 
     cuenta = models.CharField(
         'Número de cuenta',
         max_length=30,
-        blank=True,
         unique=True,
         null=True
     )
+    terminos_condiciones = models.BooleanField(
+        'Términos y Condiciones',
+        default=False,
+        help_text='Para indicar que el trabajador acepto los Términos y Condiciones, habilite esta casilla.'
+    )
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
     is_active = models.BooleanField(
         default=True,

@@ -1,6 +1,6 @@
 {% load user_tags %}
 <div class="modal-header">
-  <h4 class="modal-title">Visulizador de Anexos{{ contrato.nombre }}</h4>
+  <h4 class="modal-title">Visulizador de Anexos {{ contrato.trabajador }}</h4>
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 </div>
 <div class="modal-body">
@@ -8,7 +8,7 @@
     {{ contrato.archivo.url|show_type_fichero|safe }}
   </div>
   <p class="mt-1">
-    {{ contrato.desc }}
+    {{ contrato.motivo }}
   </p>
 </div>
 <div class="modal-footer">

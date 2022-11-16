@@ -23,7 +23,7 @@ $(function () {
         var formato_fmin = new Date(fecha_minima);
         var sum_fecha_minima = sumarDias(formato_fmin, 1);
     
-    $('#fecha_inicio, #fecha_solicitud , #fecha_termino').datepicker({
+    $('#fecha_inicio, #fecha_inicio_diario, #fecha_solicitud , #fecha_termino').datepicker({
         format: "yyyy-mm-dd",
         language: 'es'
     });
@@ -62,5 +62,9 @@ $(function () {
 
     $('#fecha_inicio').datepicker("setStartDate", new Date(sum_fecha_minima))
     $('#fecha_inicio').datepicker("setEndDate", new Date(sum_fecha_maxima))
+    
+
+    $('#fecha_inicio_diario').datepicker("setStartDate", new Date(sum_fecha_minima))
+    $('#fecha_inicio_diario').datepicker("setEndDate", new Date(sum_fecha_maxima))
 });
 
