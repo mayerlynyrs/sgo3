@@ -73,6 +73,11 @@ urlpatterns = [
         name="exportar_excel"
     ),
     path(
+        'exportar_excel_pendiente',
+        view=views.exportar_excel_contrato_pendiente,
+        name="exportar_excel_pendiente"
+    ),
+    path(
         'exportar_excel_normal',
         view=views.exportar_excel_contrato_normal,
         name="exportar_excel_normal"

@@ -378,7 +378,7 @@ class CrearTrabajadorForm(forms.ModelForm):
                                                        'data-live-search-normalize': 'true'
                                                        })
                                             )
-    calzado = forms.CharField(required=True,
+    calzado = forms.CharField(required=False,
                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
     
 
@@ -536,7 +536,7 @@ class EditarTrabajadorForm(forms.ModelForm):
                                    )
     cuenta = forms.CharField(required=True, label="Número de Cuenta",
                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 1, 'type': 'number'}))
-    calzado = forms.CharField(required=True,
+    calzado = forms.CharField(required=False,
                                 widget=forms.TextInput(attrs={'class': "form-control", 'min': 20, 'type': 'number'}))
     # cliente = forms.ModelMultipleChoiceField(queryset=Cliente.objects.filter(status=True), required=True, label="Cliente",
     #                                widget=forms.SelectMultiple(attrs={'class': 'selectpicker show-tick form-control',

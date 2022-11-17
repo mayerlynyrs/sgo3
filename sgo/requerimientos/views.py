@@ -550,23 +550,39 @@ class RequerimientoIdView(TemplateView):
                 trabaj.status = False
                 trabaj.save()
             elif action == 'exam_rev_add':
-                req_trab = RequerimientoTrabajador.objects.values_list('id', 'trabajador', 'requerimiento__planta', 'requerimiento__planta__bateria', 'requerimiento__planta__psicologico', 'requerimiento__planta__hal2').filter(requerimiento=requerimiento_id)
-                # print(req_trab)
-                for a in req_trab:
-                    exa_req = RequerimientoExam()
-                    # print('a',a[1])
-                    exa_req.estado = 'E'                            # Enviado
-                    exa_req.resultado = None
-                    exa_req.requerimiento_trabajador_id = a[0]      # a.id
-                    if a[3] != None:
-                        exa_req.bateria_id = a[3]
-                    if a[4] == True:
-                        exa_req.psicologico = a[4]
-                    if a[5] == True:
-                        exa_req.hal2 = a[5]
-                    exa_req.trabajador_id = a[1]                   # a.trabajador
-                    exa_req.planta_id = a[2]                       # a.requerimiento__planta
-                    exa_req.save()
+                req_trab = RequerimientoTrabajador.objects.values_list('id', 'trabajador', 'requerimiento__planta', 'requerimiento__planta__bateria', 'requerimiento__planta__psicologico', 'requerimiento__planta__hal2', 'requerimiento__planta__masso').filter(requerimiento=requerimiento_id)
+                for a in req_trab: 
+                    existe = RequerimientoExam.objects.filter(requerimiento_trabajador_id = a[0] , trabajador_id = a[1])
+                    if(bool(existe) == False):
+                        if(a[4] == True):
+                            exa_req = RequerimientoExam()
+                            exa_req.estado = 'E'
+                            exa_req.psicologico = True
+                            exa_req.resultado = None
+                            exa_req.requerimiento_trabajador_id = a[0]
+                            exa_req.trabajador_id = a[1]
+                            exa_req.planta_id = a[2]
+                            if a[5] == True:
+                                exa_req.hal2 = a[5]
+                            exa_req.save()
+                        if a[3] != None:
+                            exa_req2 = RequerimientoExam()
+                            exa_req2.estado = 'E'
+                            exa_req2.resultado = None
+                            exa_req2.requerimiento_trabajador_id = a[0]
+                            exa_req2.trabajador_id = a[1]
+                            exa_req2.planta_id = a[2]
+                            exa_req2.bateria_id = a[3]
+                            exa_req2.save()
+                        if a[6] == True:
+                            exa_req3 = RequerimientoExam()
+                            exa_req3.estado = 'E'
+                            exa_req3.resultado = None
+                            exa_req3.masso = True
+                            exa_req3.requerimiento_trabajador_id = a[0]
+                            exa_req3.trabajador_id = a[1]
+                            exa_req3.planta_id = a[2]
+                            exa_req3.save()
             elif action == 'epp_trab_add':
                 asignar = AsignacionTrabajador()
                 if "tipo_asignacion" in request.POST:
