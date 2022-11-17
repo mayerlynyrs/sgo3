@@ -236,7 +236,9 @@ class PsiSolicitudesList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                 # Si el usuario es administrador se despliegan todos los requerimientos
                 # segun el critero de busqueda.
                 queryset = super(PsiSolicitudesList, self).get_queryset().filter(
+                    Q(estado='E'),
                     Q(status=True),
+                    Q(psicologico=True),
                     Q(nombre__icontains=search)
                 ).distinct()
         else:
@@ -252,14 +254,20 @@ class PsiSolicitudesList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.
                 if planta is None:
-                    queryset = super(PsiSolicitudesList, self).get_queryset()
+                    queryset = super(PsiSolicitudesList, self).get_queryset().filter(
+                        Q(estado='E'),
+                        Q(status=True),
+                        Q(psicologico=True),
+                    ).distinct()
                 else:
                     # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
                     queryset = super(PsiSolicitudesList, self).get_queryset().filter(
+                        Q(estado='E'),
                         Q(status=True),
+                        Q(psicologico=True),
                         Q(planta=planta)
                     ).distinct()
-
+        print(queryset)
         return queryset
 
 

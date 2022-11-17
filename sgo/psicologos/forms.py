@@ -184,9 +184,9 @@ class EvaluacionPsicologica(forms.ModelForm):
     fecha_termino = forms.CharField(required=True, label="Fecha Termino",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_vigencia"}))
     resultado = forms.CharField (required=True, label="Resultado",
-                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+                                 widget=forms.Textarea(attrs={'class': "form-control" ,'accept' : "application/pdf"}))
     archivo = forms.FileField(required=True, label="Archivo",
-                                 widget=forms.FileInput(attrs={'class': "form-control"}))
+                                 widget=forms.FileInput(attrs={'class': "form-control" ,'accept' : "application/pdf"}))
     archivo2 = forms.FileField(required=False,label="Archivo",
                                  widget=forms.FileInput(attrs={'class': "form-control"}))                                 
     planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",

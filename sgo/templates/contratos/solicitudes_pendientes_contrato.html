@@ -18,7 +18,7 @@
     <h4 class="panel-title">Solicitudes pendientes</h4>
   </div>
   <div class="panel-body ">
-    <form method="post" id="form" action="{% url 'contratos:exportar_excel' %}" novalidate id="UserAgendar" enctype="multipart/form-data">
+    <form method="post" id="form" action="{% url 'contratos:exportar_excel_pendiente' %}" novalidate id="UserAgendar" enctype="multipart/form-data">
       <fieldset>
         {% csrf_token %}
           <div class="row col-md-12 row">

@@ -263,6 +263,12 @@ class Requerimiento(BaseModel):
         default=False,
         help_text='Si examen hal2 es requerido, habilite esta casilla.'                          
     )
+    
+    masso = models.BooleanField(
+        default=False,
+        help_text='Si examen hal2 es requerido, habilite esta casilla.'                          
+    )
+
 
     trabajador = models.ForeignKey(Trabajador, on_delete=models.PROTECT)
 
