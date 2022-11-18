@@ -458,6 +458,7 @@ class Baja(BaseModel):
             item['id_contrato'] =  self.contrato.id
         else:
             item['id_contrato'] =  self.anexo.id
+            item['anexo'] =  "Tipo: " + str(self.anexo.contrato.tipo_documento.nombre.title() )+  "<br> Causal : " + str(self.anexo.contrato.causal.nombre.title()) + "<br> Motivo:  " + str(self.anexo.contrato.motivo) + "<br> Jornada:  " + str(self.anexo.contrato.horario.nombre.title()) + "<br> Renta:  " + str(self.anexo.contrato.sueldo_base)
 
         return item
 

@@ -762,46 +762,29 @@ def create(request):
         fecha_nacimiento = Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato.id, status=True)
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
         # Variables de Doc. Adicionales
-        context = { 'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
+        context = { 'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
                     'nombres_trabajador': contrato.trabajador.first_name,
-                    'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato.id, status=True),
-                    'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True),
-                    'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato.id, status=True),
-                    'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'fono': Contrato.objects.values_list('trabajador__telefono', flat=True).get(pk=contrato.id, status=True),
+                    'apellidos_trabajador': contrato.trabajador.last_name,
+                    'rut_trabajador': contrato.trabajador.rut,
+                    'comuna_trabajador': contrato.trabajador.ciudad.nombre,
+                    'domicilio_trabajador': contrato.trabajador.domicilio,
+                    'nacionalidad': contrato.trabajador.nacionalidad.nombre,
+                    'fono': contrato.trabajador.telefono,
                     'dd': format(fecha_nacimiento.day),
                     'mm': format(fecha_nacimiento.month),
                     'aaaa': format(fecha_nacimiento.year),
-                    'sexo_trabajador': Contrato.objects.values_list('trabajador__sexo__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'rut_centro_costo': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato.id, status=True),
-                    # 'nombre_centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato.id, status=True),
-                    # 'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato.id, status=True),
-                    # 'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'centro_costo': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato.id, status=True),    
-                    # 'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'descripcion_jornada': Contrato.objects.values_list('horario__descripcion', flat=True).get(pk=contrato.id, status=True),
-                    # 'sueldo_numeros': Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True),
-                    # 'sueldo_palabras': numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato.id, status=True))+' pesos',
-                    # 'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato.id, status=True) ,
-                    # 'detalle_bonos': 'SIN INFORMACIÓN',
-                    # 'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato.id, status=True),
-                    # 'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato.id, status=True),
-                    # 'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato.id, status=True),
-                    'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato.id, status=True),
-                    'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato.id, status=True),
+                    'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
+                    'sexo_trabajador': contrato.trabajador.sexo.nombre,
+                    'estado_civil': contrato.trabajador.estado_civil.nombre,
+                    'prevision_trabajador': contrato.trabajador.afp.nombre,
+                    'salud_trabajador': contrato.trabajador.salud.nombre,
                     'adicional_cumplimiento_horario_undecimo': 'SIN INFORMACIÓN',
                     'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
-                    'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
-                    'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)),
+                    'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
+                    'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
                     'fecha_vigencia_contrato': 'SIN INFORMACIÓN',
         }
-        rut_trabajador = Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True)
+        rut_trabajador = contrato.trabajador.rut
         doc.render(context)
 
         # Obtengo el usuario
@@ -875,14 +858,14 @@ def aprobacion_masiva(request, aprobacion):
         contrato.save()
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
-                'Nueva Solicitud de contrato Prueba sgo3 ',
-                'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido aprobada'  ,
+                'Nueva Solicitud en SGO3 | Contrato',
+                'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido APROBADA',
                 contrato.created_by.email,
-                ['soporte@empresasintegra.cl'],
+                ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                 fail_silently=False,
         )
-        messages.success(request, 'Contratos aprobados')
+        messages.success(request, 'Contratos aprobados Exitosamente')
         data = True
     return JsonResponse(data, safe=False)
 
@@ -994,7 +977,7 @@ def delete(request, object_id, template_name='contratos/contrato_delete.html'):
                 os.remove(path + "contratos/" + str(e))
 
             object.delete()
-            messages.success(request, 'Contrato eliminado exitosamente')
+            messages.success(request, 'Contrato eliminado Exitosamente')
         except ProtectedError:
             messages.error(request, 'El contrato no se pudo eliminar.')
             return redirect('contratos:create_contrato', pk)
@@ -1027,7 +1010,7 @@ def solicitudes_pendientes(request, contrato_id, template_name='contratos/contra
 
 @login_required
 @permission_required('contratos.add_contrato', raise_exception=True)
-def solicitudes_pendientes_baja(request, contrato_id, template_name='contratos/modal_baja.html'):
+def solicitudes_pendientes_baja(request, contrato_id, template_name='contratos/modal_baja_anexo.html'):
     data = dict()
     contrato = get_object_or_404(Contrato, pk=contrato_id)
     baja = get_object_or_404(Baja, contrato_id=contrato_id)
@@ -1062,14 +1045,14 @@ def baja_contrato(request, contrato_id, template_name='contratos/baja_contrato.h
 
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
-            'Nueva Solicitud de contrato Prueba sgo3 ',
-            'Estimado(a) se ha solicitado una nueva baja de contrato para el trabajador:  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre   ,
+            'Nueva Solicitud en SGO3 | Contrato Baja',
+            'Estimado(a) se ha solicitado una baja de contrato para el trabajador: ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +' por el motivo ' + baja.motivo.nombre,
             contrato.created_by.email,
-            ['soporte@empresasintegra.cl'],
+            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
             fail_silently=False,
                 )
-        messages.error(request, 'Contrato en proceso de baja')
+        messages.success(request, 'Contrato enviado a proceso de baja Exitosamente')
         return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
 
     else:
@@ -1127,41 +1110,46 @@ def enviar_revision_contrato(request, contrato_id):
                     now = datetime.now()
                     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
                     # Variables de Contrato
-                    context = { 'codigo_req': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__codigo', flat=True).get(pk=contrato_id, status=True),
-                                'rut_planta': Contrato.objects.values_list('planta__rut', flat=True).get(pk=contrato_id, status=True),
-                                'nombre_planta': Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'region_planta': Contrato.objects.values_list('planta__region2__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'direccion_planta': Contrato.objects.values_list('planta__direccion', flat=True).get(pk=contrato_id, status=True),
-                                'descripcion_jornada': Contrato.objects.values_list('horario__descripcion', flat=True).get(pk=contrato_id, status=True),
-                                'gratificacion': Contrato.objects.values_list('gratificacion__descripcion', flat=True).get(pk=contrato_id, status=True),
-                                'fecha_ingreso_trabajador_palabras':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                                'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True),
-                                'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True),
-                                'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True),
-                                'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato_id, status=True)),
-                                'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=contrato_id, status=True),
-                                'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'nombre_banco': Contrato.objects.values_list('trabajador__banco__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'cuenta': Contrato.objects.values_list('trabajador__cuenta', flat=True).get(pk=contrato_id, status=True),
-                                'correo': Contrato.objects.values_list('trabajador__email', flat=True).get(pk=contrato_id, status=True),
-                                'prevision_trabajador': Contrato.objects.values_list('trabajador__afp__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'salud_trabajador': Contrato.objects.values_list('trabajador__salud__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'centro_costo': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__centro_costo', flat=True).get(pk=contrato_id, status=True),
-                                'descripcion_causal': Contrato.objects.values_list('causal__nombre', flat=True).get(pk=contrato_id, status=True),
-                                'motivo_req': Contrato.objects.values_list('motivo', flat=True).get(pk=contrato_id, status=True),
-                                'cargo_postulante': Contrato.objects.values_list('requerimiento_trabajador__area_cargo__cargo__nombre', flat=True).get(pk=contrato_id, status=True),
+                    print('fehca larga', Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True))
+                    print('fehca larga letra', fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)))
+                    print('fehca corta', contrato.fecha_termino)
+                    context = { 'codigo_req': contrato.requerimiento_trabajador.requerimiento.codigo,
+                                'rut_planta': contrato.planta.rut,
+                                'nombre_planta': contrato.planta.nombre,
+                                'region_planta': contrato.planta.region2.nombre,
+                                'comuna_planta': contrato.planta.ciudad2.nombre,
+                                'direccion_planta': contrato.planta.direccion,
+                                'descripcion_jornada': contrato.horario.descripcion,
+                                'gratificacion': contrato.gratificacion.descripcion,
+                                'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
+                                'rut_trabajador': contrato.trabajador.rut,
+                                'nombres_trabajador': contrato.trabajador.first_name,
+                                'apellidos_trabajador': contrato.trabajador.last_name,
+                                'nacionalidad': contrato.trabajador.nacionalidad.nombre,
+                                'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
+                                'estado_civil': contrato.trabajador.estado_civil.nombre,
+                                'domicilio_trabajador': contrato.trabajador.domicilio,
+                                'comuna_trabajador': contrato.trabajador.ciudad.nombre,
+                                'nombre_banco': contrato.trabajador.banco.nombre,
+                                'cuenta': contrato.trabajador.cuenta,
+                                'correo': contrato.trabajador.email,
+                                'prevision_trabajador': contrato.trabajador.afp.nombre,
+                                'salud_trabajador': contrato.trabajador.salud.nombre,
+                                'centro_costo': contrato.requerimiento_trabajador.requerimiento.centro_costo,
+                                'descripcion_causal': contrato.causal.descripcion,
+                                'motivo_req': contrato.motivo,
+                                'cargo_postulante': contrato.requerimiento_trabajador.area_cargo.cargo.nombre,
                                 'sueldo_base_numeros': valor_mensual,
                                 'sueldo_base_palabras':  valor_mensual_palabras,
                                 'detalle_bonos': 'SIN INFORMACIÓN',
                                 'adicional_cumplimiento_horario_undecimo': 'SIN INFORMACIÓN',
                                 'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
-                                'fecha_ingreso_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True)),
-                                'fecha_termino_trabajador':fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato_id, status=True)),
+                                'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
+                                'fecha_ingreso': contrato.fecha_inicio,
+                                'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
+                                'fecha_termino': contrato.fecha_termino,
                                 }
-                    rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato_id, status=True)
+                    rut_trabajador =  contrato.trabajador.rut
                     doc.render(context)
                     # exit()
                     # Obtengo el usuario
@@ -1207,17 +1195,17 @@ def enviar_revision_contrato(request, contrato_id):
                         fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
                         nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
                         send_mail(
-                            'Nueva Solicitud de contrato Prueba sgo3 ',
-                            'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
-                            'contratos@empresasintegra.cl',
-                            ['soporte@empresasintegra.cl'],
+                            'Nueva Solicitud en SGO3 | Contrato Revisión',
+                            'Estimado(a) se a realizado un solicitud de revisión de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta,
+                            contrato.created_by.email,
+                            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                             fail_silently=False,
                         )
                         
                         # Elimino el documento word.
                         os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
-                        messages.success(request, 'Contrato enviado a revisión')
+                        messages.success(request, 'Contrato enviado a revisión Exitosamente')
                     except:
                         path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
                         doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
@@ -1243,17 +1231,17 @@ def enviar_revision_contrato(request, contrato_id):
                         fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
                         nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
                         send_mail(
-                            'Nueva Solicitud de contrato Prueba sgo3 ',
-                            'Estimado(a) se a realizado un nueva solicitud de revision de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta  ,
-                            'contratos@empresasintegra.cl',
-                            ['soporte@empresasintegra.cl'],
+                            'Nueva Solicitud en SGO3 | Contrato Revisión',
+                            'Estimado(a) se a realizado un solicitud de revisión de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
+                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta,
+                            contrato.created_by.email,
+                            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                             fail_silently=False,
                         )
                         
                         # Elimino el documento word.
                         os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
-                        messages.success(request, 'Contrato enviado a revisión')
+                        messages.success(request, 'Contrato enviado a revisión Exitosamente')
                 
                 return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
 
@@ -1294,13 +1282,13 @@ def carta_termino(request):
             # Variables de Carta Término
             context = { 'fecha_vigencia_contrato': 'SIN INFORMACIÓN',
                         'fecha_ingreso_trabajador': fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
-                        'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato.id, status=True),
-                        'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato.id, status=True),
-                        'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True),
+                        'nombres_trabajador': contrato.trabajador.first_name,
+                        'apellidos_trabajador': contrato.trabajador.last_name,
+                        'rut_trabajador': contrato.trabajador.rut,
                         # 'fecha_pago': Contrato.objects.values_list('fecha_pago', flat=True).get(pk=contrato.id, status=True),
                         'fecha_termino_trabajador': fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)),
                                 }
-            rut_trabajador =  Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=contrato.id, status=True)
+            rut_trabajador =  contrato.trabajador.rut
             doc.render(context)
 
             # Obtengo el usuario
@@ -1473,8 +1461,8 @@ class ContratoIdView(TemplateView):
                 'referido', 'area_cargo__area__nombre', 'area_cargo__cargo__nombre', 'requerimiento__centro_costo', 'requerimiento__cliente__razon_social',
                 'requerimiento__cliente__rut', 'requerimiento__codigo', 'requerimiento__planta__nombre', 'requerimiento__planta',
                 'requerimiento__planta__region2__nombre', 'requerimiento__planta__provincia2__nombre','requerimiento__fecha_adendum','requerimiento__causal',
-                'requerimiento__planta__ciudad2__nombre', 'requerimiento__planta__direccion','requerimiento__descripcion','requerimiento__fecha_inicio',
-                'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
+                'requerimiento__planta__ciudad2__nombre', 'requerimiento__planta__direccion','requerimiento__descripcion', 'requerimiento__fecha_inicio',
+                'requerimiento__fecha_termino', 'requerimiento__planta__gratificacion__nombre','requerimiento__planta__gratificacion').order_by('trabajador__rut')
         context['contratos'] = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True ).values( 'id', 'valores_diario__valor_diario',
                 'requerimiento_trabajador', 'estado_contrato','sueldo_base', 'tipo_documento__nombre','causal__nombre' ,'causal', 'motivo', 'fecha_inicio',
                  'fecha_termino', 'horario__nombre' , 'fecha_termino_ultimo_anexo', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__domicilio', 'tipo_documento' )
@@ -1659,11 +1647,11 @@ class SolicitudContrato(TemplateView):
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
-                    'Nueva Solicitud de contrato Prueba sgo3 ',
-                    'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido aprobada'  ,
+                    'Nueva Solicitud en SGO3 | Contrato',
+                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido APROBADA',
                     contrato.created_by.email,
-                    ['soporte@empresasintegra.cl'],
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                     fail_silently=False,
                 )
 
@@ -1676,7 +1664,7 @@ class SolicitudContrato(TemplateView):
                 url = contrato.archivo
                 ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
                 path = os.path.join(ruta_documentos)
-                os.remove(path+ '\\' +str(url))
+                os.remove(path + str(url))
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
@@ -1688,11 +1676,11 @@ class SolicitudContrato(TemplateView):
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
-                    'Nueva Solicitud de contrato Prueba sgo3 ',
-                    'Estimado(a) la solicitud de contrato para el trabajador  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido rechado por el motivo: ' + str(request.POST['obs'])  ,
+                    'Nueva Solicitud en SGO3 | Contrato',
+                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido RECHAZADO por el motivo: ' + str(request.POST['obs']),
                     contrato.created_by.email,
-                    ['soporte@empresasintegra.cl'],
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                     fail_silently=False,
                 )
             elif action == 'aprobacion_masiva':
@@ -1737,11 +1725,11 @@ class BajaContrato(TemplateView):
                 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
-                'Nueva Solicitud de contrato Prueba sgo3 ',
-                'Estimado(a) se ha aprobado la solicitado de baja de contrato para el trabajador:  ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre   ,
+                'Nueva Solicitud en SGO3 | Contrato',
+                'Estimado(a) se ha APROBADO la solicitado de baja de contrato para el trabajador: ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
+                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre,
                 contrato.created_by.email,
-                ['soporte@empresasintegra.cl'],
+                ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                 fail_silently=False,
                     )
             else:
@@ -1840,7 +1828,7 @@ def aprobacion_masiva_anexo(request, aprobacion):
         anexo.fecha_aprobacion  = datetime.now()
         anexo.estado_anexo = 'AP'
         anexo.save()
-    messages.success(request, 'Anexos aprobados')
+    messages.success(request, 'Anexos aprobados Exitosamente')
     return redirect('contratos:solicitud-contrato',)
 
 
@@ -1897,13 +1885,18 @@ def update_anexo(request, anexo_id,template_name='contratos/anexo_update.html'):
 def delete_anexo(request, object_id, template_name='contratos/anexo_delete.html'):
     data = dict()
     object = get_object_or_404(Anexo, pk=object_id)
+    # Si tiene último anexo
+    # Sino, es el primer anexo
     pk = object.requerimiento_trabajador.id
-    ultimo_anexo = Anexo.objects.filter(requerimiento_trabajador_id=pk, estado_anexo = 'AP').latest('id')
 
     if request.method == 'POST':
         try:
+            if Anexo.objects.filter(requerimiento_trabajador_id=pk, estado_anexo = 'AP').latest('id') == True:
+                ultimo_anexo = Anexo.objects.filter(requerimiento_trabajador_id=pk, estado_anexo = 'AP').latest('id')
+            else:
+                ultimo_anexo = Anexo.objects.filter(requerimiento_trabajador_id=pk, estado_anexo = 'CR').latest('id')
             object.delete()
-            messages.success(request, 'Anexo eliminado exitosamente')
+            messages.success(request, 'Anexo eliminado Exitosamente')
             actualizar = Contrato.objects.get(pk=ultimo_anexo.contrato.id)
             actualizar.fecha_termino_ultimo_anexo = ultimo_anexo.fecha_termino
             actualizar.save()
@@ -1951,22 +1944,22 @@ def enviar_revision_anexo(request, anexo_id):
             now = datetime.now()
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
             # Variables de Anexo
-            context = { 'codigo_req': Contrato.objects.values_list('requerimiento_trabajador__requerimiento__codigo', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'comuna_planta': Contrato.objects.values_list('planta__ciudad2__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'fecha_contrato_anterior':fecha_a_letras(Contrato.objects.values_list('fecha_termino_ultimo_anexo', flat=True).get(pk=anexo.contrato_id, status=True)),
-                        'nombres_trabajador': Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'apellidos_trabajador': Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'rut_trabajador': Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'nacionalidad': Contrato.objects.values_list('trabajador__nacionalidad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'fecha_nacimiento': fecha_a_letras(Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=anexo.contrato_id, status=True)),
-                        'estado_civil': Contrato.objects.values_list('trabajador__estado_civil__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'domicilio_trabajador': Contrato.objects.values_list('trabajador__domicilio', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'comuna_trabajador': Contrato.objects.values_list('trabajador__ciudad__nombre', flat=True).get(pk=anexo.contrato_id, status=True),
-                        'nuevo_parrafo': Anexo.objects.values_list('motivo', flat=True).get(pk=anexo_id, status=True),
-                        'nueva_renta': Contrato.objects.values_list('nueva_renta', flat=True).get(pk=anexo.contrato_id, status=True),
+            context = { 'codigo_req': anexo.contrato.requerimiento_trabajador.requerimiento.codigo,
+                        'comuna_planta': anexo.contrato.planta.ciudad2.nombre,
+                        'fecha_contrato_anterior':fecha_a_letras(anexo.contrato.fecha_termino_ultimo_anexo),
+                        'nombres_trabajador': anexo.contrato.trabajador.first_name,
+                        'apellidos_trabajador': anexo.contrato.trabajador.last_name,
+                        'rut_trabajador': anexo.contrato.trabajador.rut,
+                        'nacionalidad': anexo.contrato.trabajador.nacionalidad.nombre,
+                        'fecha_nacimiento': fecha_a_letras(anexo.contrato.trabajador.fecha_nacimiento),
+                        'estado_civil': anexo.contrato.trabajador.estado_civil.nombre,
+                        'domicilio_trabajador': anexo.contrato.trabajador.domicilio,
+                        'comuna_trabajador': anexo.contrato.trabajador.ciudad.nombre,
+                        'nuevo_parrafo': anexo.motivo,
+                        'nueva_renta': anexo.contrato.nueva_renta,
                         
                         }
-            rut_trabajador = Contrato.objects.values_list('trabajador__rut', flat=True).get(pk=anexo.contrato_id, status=True)
+            rut_trabajador = anexo.contrato.trabajador.rut
             doc.render(context)
             # Obtengo el usuario
             usuario = get_object_or_404(User, pk=1)
@@ -1997,7 +1990,7 @@ def enviar_revision_anexo(request, anexo_id):
                 anexo.save()
                 # Elimino el documento word.
                 os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
-                messages.success(request, 'Anexo enviado a revisión')
+                messages.success(request, 'Anexo enviado a revisión Exitosamente')
             except:
                 path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
                 doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
@@ -2010,7 +2003,7 @@ def enviar_revision_anexo(request, anexo_id):
                 anexo.save()
                 # Elimino el documento word.
                 os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
-                messages.success(request, 'Anexo enviado a revisión')
+                messages.success(request, 'Anexo enviado a revisión Exitosamente')
     return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
 
 
@@ -2028,7 +2021,7 @@ def baja_contrato_anexo(request,anexo_id, template_name='contratos/baja_anexo.ht
         baja.anexo_id = anexo_id
         baja.motivo_id = request.POST['motivo']
         baja.save()
-        messages.error(request, 'Contrato en proceso de baja')
+        messages.success(request, 'Anexo enviado a proceso de baja Exitosamente')
         return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
 
     else:
@@ -2051,7 +2044,27 @@ def solicitudes_pendientes_anexo(request, anexo_id, template_name='contratos/ane
     data = dict()
     anexo = get_object_or_404(Anexo, pk=anexo_id)
 
-    context = {'contrato': anexo, }
+    context = {'anexo': anexo, }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@login_required
+@permission_required('contratos.add_anexo', raise_exception=True)
+def solicitudes_pendientes_anexo_baja(request, anexo_id, template_name='contratos/modal_baja_anexo.html'):
+    data = dict()
+    anexo = get_object_or_404(Anexo, pk=anexo_id)
+    baja = get_object_or_404(Baja, anexo_id=anexo_id)
+
+
+    context = {
+        'anexo': anexo,
+        'baja': baja
+         }
     data['html_form'] = render_to_string(
         template_name,
         context,

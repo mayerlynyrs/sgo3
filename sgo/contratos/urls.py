@@ -173,7 +173,12 @@ urlpatterns = [
     path(
         route='<int:anexo_id>/solicitudes-pendientes-anexo/',
         view=views.solicitudes_pendientes_anexo,
-        name="solicitudes-pendientes-anexo"
+        name="solicitudes_pendientes_anexo"
+    ),
+    path(
+        route='<int:anexo_id>/solicitudes-pendientes-anexo-baja/',
+        view=views.solicitudes_pendientes_anexo_baja,
+        name="solicitudes_pendientes_anexo_baja"
     ),
     path(
         route='anexo/list_completa',

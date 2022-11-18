@@ -33,7 +33,7 @@ function getData() {
 
                     var buttons = buttons = '<a href="#" rel="aprobar" title="Aprobar" class="btn btn-green btn-xs btn-flat btnEdit"><i class="fa fa-check-square"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     // buttons += '<a href="#" rel="rechazar" title="Rechazar" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<button   data-id="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
+                    buttons += '<button data-id="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
             },
@@ -86,7 +86,7 @@ $(function () {
     $('#data-table-default tbody').on('click', 'a[rel="aprobar"]', function (){
         var tr = tblSolicitud.cell($(this).closest('td, li')).index();
         var data = tblSolicitud.row(tr.row).data();
-        modal_title.find('span').html('Aprobar Contrato <small style="font-size: 80%;">'+data.nombre+'</small>');
+        modal_title.find('span').html('Aprobar Baja del Contrato <small style="font-size: 80%;">'+data.nombre+'</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         $('input[name="action"]').val('aprobar');
         $('input[name="id"]' ).val(data.id);
