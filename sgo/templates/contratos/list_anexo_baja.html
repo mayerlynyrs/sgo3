@@ -32,13 +32,13 @@
     </table>
   </div>
 </div>
-<div class="modal fade  bd-example-modal-lg" id="modal-contrato">
+<div class="modal fade  bd-example-modal-lg" id="modal-anexo">
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
   </div>
 </div>{% block javascript %}
 <!-- Modal -->
-<div class="modal fade" id="solicitudes_contrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="solicitudes_anexo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <form method="post" action="." enctype="multipart/form-data">
         <div class="modal-dialog" role="document">
@@ -56,6 +56,7 @@
                         <input name="action" type="hidden" value="">
                         <input name="id" id="id" type="hidden" value="">
                         <input name="contrato_id" contrato_id="id" type="hidden" value="">
+                        <input name="anexo_id" anexo_id="id" type="hidden" value="">
                         ¿Está seguro que desea realizar esta acción?
                         <div class="form-group col-md-12" style="display:none;" id="observacion">
                           <label for="email">Observaciones</label>
@@ -74,6 +75,6 @@
 {% endblock %}
 {% endblock %}
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/solicitudes_baja.js' %}"></script>
+<script src="{% static 'admin/assets/js/crud/solicitudes_baja_anexo.js' %}"></script>
 {% endblock %}
 

@@ -360,6 +360,9 @@ def create_adendum(request):
             ad.status = True
             ad.save()
             ad = adendum_form.save()
+            edit_req = Requerimiento.objects.get(pk=request.POST['requerimiento_id'])
+            edit_req.fecha_adendum = request.POST['fecha_termino']
+            edit_req.save()
 
             messages.success(request, 'Adendum Creado Exitosamente')
             return redirect('requerimientos:list')

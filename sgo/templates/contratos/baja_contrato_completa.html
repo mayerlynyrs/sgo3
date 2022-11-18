@@ -2,13 +2,13 @@
 {% block content %}
 <form method="post" action="{% url 'contratos:contrato_baja_completa' contrato_id %}" enctype="multipart/form-data">
     <div class="modal-header">
-        <h4 class="modal-title">Enviar a bbbbBaja</h4>
+        <h4 class="modal-title">Enviar a Baja</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     </div>
     <div class="modal-body">
         {% csrf_token %}
         <div class="form-group col-md-12" id="valores_diario">
-          <label for="email">Motivoooo</label>
+          <label for="email">Motivo</label>
           {{ form10.motivo }}
         </div>
     </div>

@@ -124,7 +124,7 @@ img {
             </td>
             <td class="text-left" style="width:10%">
               {% if employee.terminos_condiciones == False %}
-                <a title="Autorización Firma Electrónica" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
+                <a title="Autorización Firma Electrónica" id="boton" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
               {% endif %}
               <!-- <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp
               <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp
@@ -146,21 +146,89 @@ img {
 {% block scripts %}
 
   {% if messages %}
-        console.log('mensajes');
-        {% for mensaje in messages %}
-            console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
-            {% if mensaje.tags == 'success' %}
-              iziToast.success({
-                  message: '{{ mensaje }}',
-                  position: 'topRight',
-              });
-            {% elif mensaje.tags == 'error' %}
-              iziToast.error({
-                  message: '{{ mensaje }}',
-                  position: 'topRight',
-              });
-            {% endif %}
-        {% endfor %}
+      console.log('mensajes');
+      {% for mensaje in messages %}
+          console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+          {% if mensaje.tags == 'success' %}
+            iziToast.success({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% elif mensaje.tags == 'error' %}
+            iziToast.error({
+                message: '{{ mensaje }}',
+                position: 'topRight',
+            });
+          {% endif %}
+      {% endfor %}
 
-    {% endif %}
+  {% endif %}
+
+
+var enviando = false;
+// Botón de Autorización Firma Electrónica
+$('#boton').on('click', function(e){
+  console.log('pashoooo.');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
+
+    e.preventDefault();
+
+    var $form = $('#CContratoForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
+
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
+          }
+
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        rules: {
+                horario: "required",
+                id_tipo_documento: "required",
+              },
+              messages: {
+                horario: "Selecciona un Horario.",
+                id_tipo_documento: "Selecciona un tipo de documento"
+        },
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
+      }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
+
+})
+  
 {% endblock %}

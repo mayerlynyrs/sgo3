@@ -42,10 +42,10 @@
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
         <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
       </div>
-      <h4 class="panel-title">Todos los contratos</h4>
+      <h4 class="panel-title">Todos los anexos</h4>
     </div>
     <div class="panel-body">
-      <form action="buscarBajaContrato" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+      <form action="buscarBajaAnexo" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
         <fieldset>
           {% csrf_token %}
             <div class="row col-md-12 row align-items-center">

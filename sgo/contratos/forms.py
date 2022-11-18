@@ -58,7 +58,7 @@ class TipoContratoForm(forms.ModelForm):
 
 class MotivoBajaForm(forms.ModelForm):
 
-    motivo = forms.ModelChoiceField(queryset=MotivoBaja.objects.all(), required=False, label="Valores Diario",
+    motivo = forms.ModelChoiceField(queryset=MotivoBaja.objects.all(), required=True, label="Motivo",
                                    widget=forms.Select(attrs={'class': ' show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',

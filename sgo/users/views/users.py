@@ -1003,6 +1003,7 @@ def autorizacion_trabajador(request, trabajador_id):
             path = os.path.join(ruta_documentos)
             # Si carpeta no existe, crea carpeta de contratos.
             carpeta = 'autorizaciones'
+            exit()
 
             try:
                 os.mkdir(path + carpeta)

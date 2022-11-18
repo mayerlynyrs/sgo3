@@ -38,7 +38,7 @@ function getData() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="aprobar" title="Aprobar" class="btn btn-green btn-xs btn-flat btnEdit"><i class="fa fa-check-square"></i></a> &nbsp &nbsp';
                     buttons += '<a href="#" rel="rechazar" title="Rechazar" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp';
-                    buttons += '<button   data-id="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
+                    buttons += '<button data-id="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
             },
