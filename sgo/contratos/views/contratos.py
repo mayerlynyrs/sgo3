@@ -245,15 +245,24 @@ def exportar_excel_contrato(request):
     
     font_style = xlwt.XFStyle()
 
-
-    rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
-    ,'trabajador__telefono', 'trabajador__email', 'trabajador__domicilio','trabajador__region__id', 'trabajador__ciudad__cod_uny_ciudad',  'trabajador__domicilio','requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'trabajador__domicilio', 'trabajador__nacionalidad__nombre', 'trabajador__sexo__nombre', 'trabajador__estado_civil__nombre',
-    'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
-    ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
-    ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
-    , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','planta__cliente__cod_uny_cliente', 'planta__cod_uny_planta'
-    , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base', 'sueldo_base', 'sueldo_base', 'sueldo_base',"planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "horario__cod_uny_horario", "planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "created_by_id__rut", "trabajador__nivel_estudio__cod_uny_estudio"
-    , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "regimen", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "trabajador__afp", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
+    if(planta):
+        rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
+        ,'trabajador__telefono', 'trabajador__email', 'trabajador__domicilio','trabajador__region__id', 'trabajador__ciudad__cod_uny_ciudad',  'trabajador__domicilio','requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'trabajador__domicilio', 'trabajador__nacionalidad__nombre', 'trabajador__sexo__nombre', 'trabajador__estado_civil__nombre',
+        'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
+        ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
+        ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
+        , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','planta__cliente__cod_uny_cliente', 'planta__cod_uny_planta'
+        , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base', 'sueldo_base', 'sueldo_base', 'sueldo_base',"planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "horario__cod_uny_horario", "planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "created_by_id__rut", "trabajador__nivel_estudio__cod_uny_estudio"
+        , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "regimen", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "trabajador__afp", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
+    else:
+        rows = Contrato.objects.filter(estado_contrato='AP',  fecha_inicio__month=mes, status=True).values_list('trabajador__rut', 'trabajador__last_name',  'regimen', 'trabajador__first_name',   'trabajador__telefono', 'trabajador__telefono'
+        ,'trabajador__telefono', 'trabajador__email', 'trabajador__domicilio','trabajador__region__id', 'trabajador__ciudad__cod_uny_ciudad',  'trabajador__domicilio','requerimiento_trabajador__requerimiento__areacargo__cargo__nombre', 'trabajador__domicilio', 'trabajador__nacionalidad__nombre', 'trabajador__sexo__nombre', 'trabajador__estado_civil__nombre',
+        'trabajador__fecha_nacimiento','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut', 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'trabajador__banco__rut', 'trabajador__banco__rut', 'trabajador__banco__codigo','trabajador__cuenta','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp'
+        ,'trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__afp__cod_uny_afp','trabajador__salud__cod_uny_salud','trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__pacto_uf' ,'trabajador__salud__cod_uny_salud', 'trabajador__pacto_uf','trabajador__pacto_uf','trabajador__rut','trabajador__rut'
+        ,'trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut','trabajador__rut' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' ,'trabajador__afp__cod_uny_afp' , 'fecha_inicio' , 'fecha_inicio'
+        , 'fecha_inicio' , 'fecha_termino' , 'fecha_termino', 'fecha_termino','planta__cliente__cod_uny_cliente', 'planta__cod_uny_planta'
+        , 'requerimiento_trabajador__requerimiento__areacargo__cargo__cod_uny_cargo', 'sueldo_base', 'sueldo_base', 'sueldo_base', 'sueldo_base',"planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "horario__cod_uny_horario", "planta__cod_uny_planta", "planta__cod_uny_planta", "planta__cod_uny_planta", "created_by_id__rut", "trabajador__nivel_estudio__cod_uny_estudio"
+        , "trabajador__nivel_estudio__cod_uny_estudio", "causal__id", "causal__nombre", "regimen", "requerimiento_trabajador__referido", "requerimiento_trabajador__requerimiento__centro_costo", "requerimiento_trabajador__requerimiento__descripcion", "motivo", "trabajador__salud__id", "trabajador__afp", "motivo" , "motivo" , "motivo", "fecha_pago" , 'tipo_documento' , 'sueldo_base' , 'valores_diario__valor_diario' )
 
 
     for row in rows:
@@ -532,6 +541,10 @@ def exportar_excel_contrato_normal(request):
 
     planta = request.POST.get('planta')
     mes = request.POST.get('mes')
+    if(mes is None):
+        today = date.today()
+        mes = today.month
+        print('mes', mes)
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
     wb = xlwt.Workbook(encoding='utf-8')
@@ -551,12 +564,18 @@ def exportar_excel_contrato_normal(request):
     
     font_style = xlwt.XFStyle()
 
-
-    rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('created_by__first_name','created_by__last_name','trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__email', 'trabajador__nacionalidad__nombre' ,
-    'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__area_cargo__cargo__nombre', 'sueldo_base', 'sueldo_base', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'trabajador__pacto_uf', 'fecha_inicio',
-     'fecha_termino' , 'causal__nombre' , 'motivo', 'trabajador__telefono' , 'horario__nombre', 'requerimiento_trabajador__referido', 'planta__nombre' , 'requerimiento_trabajador__requerimiento__centro_costo', 'requerimiento_trabajador__requerimiento__areacargo__area__nombre', 'trabajador__nivel_estudio__nombre',
-     'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
-     'requerimiento_trabajador__requerimiento__fecha_inicio', 'requerimiento_trabajador__requerimiento__fecha_termino' )
+    if(planta):
+        rows = Contrato.objects.filter(estado_contrato='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('created_by__first_name','created_by__last_name','trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__email', 'trabajador__nacionalidad__nombre' ,
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__area_cargo__cargo__nombre', 'sueldo_base', 'sueldo_base', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'trabajador__pacto_uf', 'fecha_inicio',
+        'fecha_termino' , 'causal__nombre' , 'motivo', 'trabajador__telefono' , 'horario__nombre', 'requerimiento_trabajador__referido', 'planta__nombre' , 'requerimiento_trabajador__requerimiento__centro_costo', 'requerimiento_trabajador__requerimiento__areacargo__area__nombre', 'trabajador__nivel_estudio__nombre',
+        'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
+        'requerimiento_trabajador__requerimiento__fecha_inicio', 'requerimiento_trabajador__requerimiento__fecha_termino' )
+    else:
+        rows = Contrato.objects.filter(estado_contrato='AP', fecha_inicio__month=mes,status=True).values_list('created_by__first_name','created_by__last_name','trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__email', 'trabajador__nacionalidad__nombre' ,
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__area_cargo__cargo__nombre', 'sueldo_base', 'sueldo_base', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'trabajador__pacto_uf', 'fecha_inicio',
+        'fecha_termino' , 'causal__nombre' , 'motivo', 'trabajador__telefono' , 'horario__nombre', 'requerimiento_trabajador__referido', 'planta__nombre' , 'requerimiento_trabajador__requerimiento__centro_costo', 'requerimiento_trabajador__requerimiento__areacargo__area__nombre', 'trabajador__nivel_estudio__nombre',
+        'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
+        'requerimiento_trabajador__requerimiento__fecha_inicio', 'requerimiento_trabajador__requerimiento__fecha_termino' )
 
 
     for row in rows:
@@ -1813,6 +1832,178 @@ def create_anexo(request):
             contrato.fecha_termino_ultimo_anexo = request.POST['fechaTerminoAnexo']
             contrato.save()
             return redirect('contratos:create_contrato', requerimientotrabajador)
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def exportar_excel_anexo_pendiente(request):
+
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('reporte')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Nombres Trabajador','Rut','Nacionalidad','F. Nacimiento', 'E. Civil', 'Domicilio','Comuna',  'AFP', 'Salud',  'Fecha Ingreso', 'F. Termino Anexo', 'Causal',
+     'Telefono', 'Centro de Costo', 'Nombre Planta']
+
+    for col_num in range(len(columns)):
+        
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    
+    font_style = xlwt.XFStyle()
+
+
+    rows = Anexo.objects.filter(estado_anexo='PV', status=True).values_list('trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__nacionalidad__nombre' ,
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'fecha_inicio',
+        'fecha_termino' , 'causal__nombre' , 'trabajador__telefono' ,  'planta__nombre' , 'planta__cliente__razon_social')
+
+
+    for row in rows:
+        row_num += 1
+        
+        for col_num in range(len(row)):
+            if(col_num == 0):
+                ws.write(row_num, col_num, row[0] + ' ' + row[1] , font_style)
+            if(col_num == 1):
+                ws.write(row_num, col_num, row[2] , font_style)
+            if(col_num == 2):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 3):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 4):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 5):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 6):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 7):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 8):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 9):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 10):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 11):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 12):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 13):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 14):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+    wb.save(response)
+    return response
+
+
+@login_required
+@permission_required('contratos.add_contrato', raise_exception=True)
+def exportar_excel_anexo_normal(request):
+    planta = request.POST.get('planta')
+    mes = request.POST.get('mes')
+    if(mes is None):
+        today = date.today()
+        mes = today.month
+        print('mes', mes)
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Reporte.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('reporte')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Nombres Trabajador','Rut','Nacionalidad','F. Nacimiento', 'E. Civil', 'Domicilio','Comuna',  'AFP', 'Salud',  'Fecha Ingreso', 'F. Termino Anexo', 'Causal',
+     'Telefono', 'Centro de Costo', 'Nombre Planta']
+
+    for col_num in range(len(columns)):
+        
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    
+    font_style = xlwt.XFStyle()
+
+    if(planta):
+        rows = Anexo.objects.filter(estado_anexo='AP', planta_id=planta, fecha_inicio__month=mes, status=True).values_list('trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__nacionalidad__nombre' ,
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'fecha_inicio',
+        'fecha_termino' , 'causal__nombre' , 'trabajador__telefono' ,  'planta__nombre' , 'planta__cliente__razon_social')
+        print('if')
+    else:
+        print('else')
+        rows = Anexo.objects.filter(estado_anexo='AP', fecha_inicio__month=mes ,status=True).values_list('trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__nacionalidad__nombre' ,
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'fecha_inicio',
+        'fecha_termino' , 'causal__nombre' , 'trabajador__telefono' ,  'planta__nombre' , 'planta__cliente__razon_social')
+
+
+    for row in rows:
+        row_num += 1
+        
+        for col_num in range(len(row)):
+            if(col_num == 0):
+                ws.write(row_num, col_num, row[0] + ' ' + row[1] , font_style)
+            if(col_num == 1):
+                ws.write(row_num, col_num, row[2] , font_style)
+            if(col_num == 2):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 3):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 4):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 5):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 6):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 7):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 8):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 9):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 10):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero].strftime("%d-%m-%Y"), font_style)
+            if(col_num == 11):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 12):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 13):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+            if(col_num == 14):
+                numero = col_num + 1
+                ws.write(row_num, col_num, row[numero], font_style)
+    wb.save(response)
+    return response
+
+
+
 
 
 @login_required

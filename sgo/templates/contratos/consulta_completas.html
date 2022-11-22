@@ -52,11 +52,15 @@ td {
         <fieldset>
           {% csrf_token %}
             <div class="row col-md-12 row align-items-center">
+              <div class="form-check col-md-1">
+                <input class="form-check-input" type="checkbox" id="todos" name="todos">
+                <label>Todos</label>
+              </div>
                 <div class="form-group col-md-4">
                     <label for="email" name="planta">Planta</label>
                     {{ form.planta }}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="email" name="mes" id="mes">Mes</label>
                     {{ form.mes }}
                 </div>
@@ -145,7 +149,21 @@ td {
       var formulario = document.mi_formulario;
       formulario.action = url;
       formulario.submit();
+
 }
+    </script>
+    <script>
+            var todos = document.getElementById('todos');
+      todos.addEventListener("change",function(event){
+        if(event.target.checked){
+        exportar_excel.disabled = false;
+        exportar_excel_normal.disabled= false;
+        }else{
+          exportar_excel.disabled = true;
+        exportar_excel_normal.disabled= true;
+        }
+
+      }, true); 
     </script>
 
 {% endblock %}
