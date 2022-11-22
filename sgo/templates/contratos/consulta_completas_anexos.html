@@ -22,6 +22,9 @@
     align-items: center;
     justify-content: center;
 }
+td {
+  text-align: center;
+}
 {% endblock %}
 {% block content %}
 <!-- begin breadcrumb -->
@@ -45,80 +48,113 @@
       <h4 class="panel-title">Todos los anexos</h4>
     </div>
     <div class="panel-body">
-      <form action="buscarAnexo" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" data-plantas-url="{% url 'users:ajax_load_plantas' %}">
+      <form action="buscarContrato" name="mi_formulario" method="POST" autocomplete="off" novalidate id="consultaRequeriForm" >
         <fieldset>
           {% csrf_token %}
             <div class="row col-md-12 row align-items-center">
+              <div class="form-check col-md-1">
+                <input class="form-check-input" type="checkbox" id="todos" name="todos">
+                <label>Todos</label>
+              </div>
                 <div class="form-group col-md-4">
                     <label for="email" name="planta">Planta</label>
                     {{ form.planta }}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="email" name="mes" id="mes">Mes</label>
                     {{ form.mes }}
                 </div>
-                <div class="form-group col-md-4">
-                  <div>
-                    <input type="submit" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" disabled>
-                    <a href="{% url 'contratos:list-completa' %}" class="btn btn-danger btn-flat btnCancelar" style="color: white;">Cancelar</a>
-                  </div>
+                <div class="form-group col-md-2">
+                    <input type="button" class="btn btn-primary btn-flat btnBuscar" id="buscar" style="color: white;" value="Buscar" onclick="enviarPost( 'buscarContrato')" disabled>
+                  </form>
+                </div>
+                <div class="form-group col-md-2">
+                    <button type="button" id="exportar_excel_normal" class="btn btn-green" onclick="enviarPost( 'exportar_excel_normal_anexo')" disabled>Excel</button>
+                  </form>
                 </div>
                 </div>
             
         </fieldset>
-      </form>
+      
     </div>
     <div class="panel-body">
-        <table id="example" class="table table-striped table-bordered align-middle" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th width="1px">#</th>
-                    <th width="20px">Solicitante</th>
-                    <th width="20px">Clientes/Plantas</th>
-                    <th width="20px">Trabajador</th>
-                    <th width="20px">Plazos</th>
-                    <th width="20px">Contrato</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for obj in data %}
-                <tr>
-                    <td>{{ forloop.counter }}.</td>
-                    <td>{{ obj.created_by.first_name|title }} {{ obj.created_by.last_name|title }}</td>
-                    <td class="text-left">
-                      <ul>
-                        <li>Cliente: {{ obj.planta.cliente|title }}</li>
-                        <li>Planta: {{ obj.planta|title }}</li>
-                        
-                      </ul>
-                    </td>
-                    <td>{{ obj.trabajador|title }}</td>
-                    <td>Fecha Inicio: {{ obj.fecha_inicio|date:'d/m/Y' }}<br>
-                        Fecha Término: {{ obj.fecha_termino|date:'d/m/Y' }}</td>
-                    <td>Tipo: {{ obj.tipo_documento.nombre|title }}<br>
-                        Causal: {{ obj.causal.nombre|title }}<br>
-                        Motivo: {{ obj.motivo|title }}<br>
-                        Jornada: {{ obj.horario.nombre|title }}<br>
-                        Renta: {{ obj.sueldo_base }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+      <div class="panel-body">
+        <table id="data-table-default" class="table table-striped table-bordered align-middle" style="width: 100%;">
+              <thead>
+                  <tr>
+                      <th width="1px">#</th>
+                      <th width="20px">Solicitante</th>
+                      <th width="20px">Clientes/Plantas</th>
+                      <th width="20px">Trabajador</th>
+                      <th width="20px">Plazos</th>
+                      <th width="20px">Contrato</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for obj in data %}
+                  <tr>
+                      <td>{{ forloop.counter }}.</td>
+                      <td>{{ obj.created_by.first_name|title }} {{ obj.created_by.last_name|title }}</td>
+                      <td class="text-left">
+                        <ul>
+                          <li>Cliente: {{ obj.planta.cliente|title }}</li>
+                          <li>Planta: {{ obj.planta|title }}</li>
+                          
+                        </ul>
+                      </td>
+                      <td>{{ obj.trabajador|title }}</td>
+                      <td>Fecha Inicio: {{ obj.fecha_inicio|date:'d/m/Y' }}<br>
+                          Fecha Término: {{ obj.fecha_termino|date:'d/m/Y' }}</td>
+                      <td>Tipo: {{ obj.tipo_documento.nombre|title }}<br>
+                          Causal: {{ obj.causal.nombre|title }}<br>
+                          Motivo: {{ obj.motivo|title }}<br>
+                          Jornada: {{ obj.horario.nombre|title }}<br>
+                          Renta: {{ obj.sueldo_base }}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
     </div>
   </div>
-</div>
+  <div class="modal fade" id="modal-baja-contrato">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+  </div>
     <script src="{% static 'admin/assets/js/jquery-3.3.1.min.js' %}"></script>
     <script>
       // plantas
       mes.disabled = true;
+      exportar_excel_normal.disabled = true;
       $("#id_planta").change(function () {
         id_mes.disabled = false;
   
       });
       $("#id_mes").change(function () {
         buscar.disabled = false;
+        exportar_excel_normal.disabled= false;
   
       });
+
+      function enviarPost( url){
+      console.log("🚀 ~ file: consulta_completas.html ~ line 138 ~ enviarPost ~ url", url)
+
+      var formulario = document.mi_formulario;
+      formulario.action = url;
+      formulario.submit();
+
+}
+    </script>
+    <script>
+            var todos = document.getElementById('todos');
+      todos.addEventListener("change",function(event){
+        if(event.target.checked){
+        exportar_excel_normal.disabled= false;
+        }else{
+        exportar_excel_normal.disabled= true;
+        }
+
+      }, true); 
     </script>
 
 {% endblock %}
@@ -128,5 +164,26 @@
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/spanish.js' %}"></script>
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/daterangepicker.js' %}"></script>
 <script src="{% static 'admin/assets/js/report.js' %}"></script>
-<script src="{% static 'admin/assets/js/ExportarExcel.js' %}"></script>
 {% endblock %}
+{% block scripts %}
+  $('.btn-view-enviar-baja').on('click', function(e){
+      e.preventDefault();
+      var id = $(this).data('id');
+      <!-- console.log('requerimiento_id', id); -->
+      var URL = '/contratos/'+id+'/baja_contrato_completa/';
+
+      console.log('URL', URL);
+
+      $.ajax({
+          url: URL,
+          type: 'get',
+          dataType: 'json',
+          beforeSend: function () {
+              $("#modal-baja-contrato").modal("show");
+          },
+          success: function (data) {
+              $("#modal-baja-contrato .modal-content").html(data.html_form);
+          }
+      });
+  });
+  {% endblock %}

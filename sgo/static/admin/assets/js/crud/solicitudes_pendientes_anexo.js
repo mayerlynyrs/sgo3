@@ -104,7 +104,7 @@ $(function () {
     $('#solicitudes_contrato').on('shown.bs.modal', function () {
     });
 
-    $('form').on('submit', function (e) {
+    $("#myform").on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
         console.log(FormData);

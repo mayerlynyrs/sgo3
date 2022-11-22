@@ -171,6 +171,16 @@ urlpatterns = [
         name="enviar_revision_anexo"
     ),
     path(
+        'exportar_excel_pendiente_anexo',
+        view=views.exportar_excel_anexo_pendiente,
+        name="exportar_excel_pendiente_anexo"
+    ),
+    path(
+        route='anexo/exportar_excel_normal_anexo',
+        view=views.exportar_excel_anexo_normal,
+        name="exportar_excel_normal_anexo"
+    ),
+    path(
         route='<int:anexo_id>/solicitudes-pendientes-anexo/',
         view=views.solicitudes_pendientes_anexo,
         name="solicitudes_pendientes_anexo"
