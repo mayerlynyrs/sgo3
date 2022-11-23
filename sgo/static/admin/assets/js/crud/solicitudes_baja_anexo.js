@@ -102,7 +102,7 @@ $(function () {
     $('#data-table-default tbody').on('click', 'a[rel="rechazar"]', function (){
         var tr = tblSolicitudAnex.cell($(this).closest('td, li')).index();
         var data = tblSolicitudAnex.row(tr.row).data();
-        modal_title.find('span').html('Rechazar Contrato <small style="font-size: 80%;">'+data.nombre+'</small>');
+        modal_title.find('span').html('Rechazar Baja del Anexo <small style="font-size: 80%;">'+data.nombre+'</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         $('input[name="action"]').val('rechazar');
         $('input[name="id"]' ).val(data.id);

@@ -34,7 +34,7 @@ class Sexo(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
 
 class Civil(models.Model):
@@ -53,7 +53,7 @@ class Civil(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
 
 class Nacionalidad(models.Model):
@@ -72,7 +72,7 @@ class Nacionalidad(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
 
 class Salud(models.Model):
@@ -95,7 +95,7 @@ class Salud(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -125,7 +125,7 @@ class Afp(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -340,7 +340,7 @@ class User(BaseModel, AbstractUser):
 
     def __str__(self):
         """Return RUT."""
-        return self.first_name + " " + self.last_name + " - " + self.rut
+        return self.first_name.title() + " " + self.last_name.title() + " - " + self.rut
 
     def get_short_name(self):
         """Return RUT."""
@@ -505,7 +505,7 @@ class Trabajador(BaseModel):
 
     def __str__(self):
         """Return RUT."""
-        return self.first_name + " " + self.last_name + " - " + self.rut
+        return self.first_name.title() + " " + self.last_name.title() + " - " + self.rut
 
     def get_short_name(self):
         """Return RUT."""
@@ -536,7 +536,7 @@ class ArchivoTrabajador(models.Model):
     )
     
     def __str__(self):
-        return self.trabajador.first_name + '-' + self.tipo_archivo.nombre + '-' +str(self.archivo).zfill(0)
+        return self.trabajador.first_name.title() + '-' + self.tipo_archivo.nombre + '-' +str(self.archivo).zfill(0)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -568,7 +568,7 @@ class ListaNegra(BaseModel):
         
     def toJSON(self):
         item = model_to_dict(self)
-        item['trabajador'] = self.trabajador.first_name + " " + self.trabajador.last_name + " - " + self.trabajador.rut
+        item['trabajador'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title() + " - " + self.trabajador.rut
         item['trabajador_id'] = self.trabajador.id
         if(self.planta):
             item['planta'] = self.planta.nombre.title()
@@ -595,7 +595,7 @@ class Parentesco(models.Model):
     )
     
     def __str__(self):
-        return self.nombre
+        return self.nombre.title()
 
 
 class Contacto(models.Model):
@@ -631,7 +631,7 @@ class Contacto(models.Model):
     )
     
     def __str__(self):
-        return self.nombre + '-' + self.parentesco.nombre
+        return self.nombre.title() + '-' + self.parentesco.nombre.title()
 
     def toJSON(self):
         item = model_to_dict(self)

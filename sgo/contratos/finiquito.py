@@ -31,8 +31,8 @@ def finiquito(contrato2):
                 doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
             
                 context = { 'fecha_pago_contrato': fecha_a_letras(contrato.fecha_pago),
-                            'nombre_trabajador': contrato.trabajador.first_name + ' '+ contrato.trabajador.last_name,
-                            'cargo_postulante': contrato.requerimiento_trabajador.area_cargo.cargo.nombre,
+                            'nombre_trabajador': contrato.trabajador.first_name.title() + ' '+ contrato.trabajador.last_name.title(),
+                            'cargo_postulante': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
                             'fecha_inicio_contrato': fecha_a_letras(contrato.fecha_inicio),
                             'fecha_termino_contrato' : fecha_a_letras(contrato.fecha_termino),
                             'periodo_contrato': contrato.fecha_termino.strftime(" %b, %Y"),

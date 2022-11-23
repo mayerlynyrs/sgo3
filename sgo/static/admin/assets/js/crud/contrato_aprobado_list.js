@@ -19,7 +19,7 @@ function getData() {
             {"data": "id",
             "class": 'text-center',
             "render": function(data, type, row, meta){
-                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Ver Contrato" ></input>';
+                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Seleccionar" ></input>';
                 return data;
             }},
             

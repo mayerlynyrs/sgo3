@@ -19,7 +19,7 @@ function getData() {
             {"data": "id",
             "class": 'text-center',
             "render": function(data, type, row, meta){
-                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Enviar" ></input>';
+                data = '<input  data-id="'+data+'" class="form-check-input" value="'+data+'" name="check_aprobacion" type="checkbox" title="Seleccionar" ></input>';
                 return data;
             }},
             
@@ -46,7 +46,7 @@ function getData() {
                 render: function (data, type, row) {
                     var buttons = '<a href="#" rel="aprobar" title="Enviar a Firma" class="btn btn-outline-success btn-xs btn-flat btnEdit"><i class="fa fa-signature"></i></a> &nbsp &nbsp &nbsp &nbsp';
                     // buttons += '<a href="#" rel="rechazar" title="'+data+'" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-window-close"></i></a> &nbsp &nbsp &nbsp &nbsp';
-                    buttons += '<button data-id="'+data+'" name="estado" value="'+data+'" onclick="myFunction('+data+')"  id="btn-view-anexo" type="button" title="Ver Contrato" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
+                    buttons += '<button data-id="'+data+'" name="estado" value="'+data+'" onclick="myFunction('+data+')"  id="btn-view-anexo" type="button" title="Ver Anexo" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
             },
@@ -99,7 +99,7 @@ $(function () {
     $('#data-table-default tbody').on('click', 'a[rel="rechazar"]', function (){
         var tr = tblSolicitud.cell($(this).closest('td, li')).index();
         var data = tblSolicitud.row(tr.row).data();
-        modal_title.find('span').html('Rechazar Contrato <small style="font-size: 80%;">'+data.nombre+'</small>');
+        modal_title.find('span').html('Rechazar Anexo <small style="font-size: 80%;">'+data.nombre+'</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         $('input[name="action"]').val('rechazar');
         $('input[name="id"]' ).val(data.id);
