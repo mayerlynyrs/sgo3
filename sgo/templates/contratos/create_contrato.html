@@ -60,13 +60,13 @@
                     <!-- {{ datos }} -->
                     <div class="row col-md-12">
                       <div class="form-group col-md-4">
-                        <label for="email">Nombres &nbsp</label>{{ ru.trabajador__first_name }} {{ ru.trabajador__last_name }}
+                        <label for="email">Nombres &nbsp</label>{{ ru.trabajador__first_name|title }} {{ ru.trabajador__last_name|title }}
                       </div>
                       <div class="form-group col-md-4">
                         <label for="email">Rut &nbsp </label>{{ ru.trabajador__rut }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Estado Civil &nbsp </label>{{ ru.trabajador__estado_civil__nombre }}
+                        <label for="email">Estado Civil &nbsp </label>{{ ru.trabajador__estado_civil__nombre|title }}
                       </div>
                     </div>
                     <div class="row col-md-12">
@@ -74,21 +74,21 @@
                         <label for="email">Fecha Nacimiento &nbsp </label>{{ ru.trabajador__fecha_nacimiento }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Previsión &nbsp </label>{{ ru.trabajador__afp__nombre }}
+                        <label for="email">Previsión &nbsp </label>{{ ru.trabajador__afp__nombre|title }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Salud &nbsp  </label>{{ ru.trabajador__salud__nombre }}
+                        <label for="email">Salud &nbsp  </label>{{ ru.trabajador__salud__nombre|title }}
                       </div>
                     </div>
                     <div class="row col-md-12">
                       <div class="form-group col-md-4">
-                        <label for="email">Nivel Educacional &nbsp </label>{{ ru.trabajador__nivel_estudio__nombre }}
+                        <label for="email">Nivel Educacional &nbsp </label>{{ ru.trabajador__nivel_estudio__nombre|title }}
                       </div>
                       <div class="form-group col-md-4">
                         <label for="email">Teléfono &nbsp </label>{{ ru.trabajador__telefono }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Nacionalidad &nbsp </label>{{ ru.trabajador__nacionalidad__nombre }}
+                        <label for="email">Nacionalidad &nbsp </label>{{ ru.trabajador__nacionalidad__nombre|title }}
                       </div>
                     </div>
                     <div class="row col-md-12">
@@ -96,13 +96,13 @@
                         <label for="email">Domicilio &nbsp </label>{{ ru.trabajador__domicilio }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Ciudad &nbsp </label>{{ ru.trabajador__ciudad__nombre }}
+                        <label for="email">Ciudad &nbsp </label>{{ ru.trabajador__ciudad__nombre|title }}
                       </div>
                     </div>
                     <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos del Requerimiento<hr /></legend>
                     <div class="row col-md-12">
                       <div class="form-group col-md-8">
-                        <label for="email">Nombre &nbsp</label>{{ ru.requerimiento__nombre }}
+                        <label for="email">Nombre &nbsp</label>{{ ru.requerimiento__nombre|title }}
                       </div>
                       <div class="form-group col-md-4">
                         <label for="email">Centro de Costo &nbsp</label>{{ ru.requerimiento__centro_costo }}
@@ -113,10 +113,10 @@
                         <label for="email">Referido &nbsp</label>{% if ru.referido == True %} Si {% else %} No {% endif %}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Área &nbsp</label>{{ ru.area_cargo__area__nombre }}
+                        <label for="email">Área &nbsp</label>{{ ru.area_cargo__area__nombre|title }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Cargo &nbsp</label>{{ ru.area_cargo__cargo__nombre }}
+                        <label for="email">Cargo &nbsp</label>{{ ru.area_cargo__cargo__nombre|title }}
                       </div>
                     </div>
                     <div class="row col-md-12">
@@ -133,13 +133,13 @@
                     <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse"><br>Datos de la Empresa<hr /></legend>
                     <div class="row col-md-12">
                       <div class="form-group col-md-4">
-                        <label for="email">Razón Social &nbsp</label>{{ ru.requerimiento__cliente__razon_social }}
+                        <label for="email">Razón Social &nbsp</label>{{ ru.requerimiento__cliente__razon_social|title }}
                       </div>
                       <div class="form-group col-md-4">
                         <label for="email">Rut &nbsp</label> {{ ru.requerimiento__cliente__rut }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Gratificación &nbsp</label>{{ ru.requerimiento__planta__gratificacion__nombre }}
+                        <label for="email">Gratificación &nbsp</label>{{ ru.requerimiento__planta__gratificacion__nombre|title }}
                       </div>
                     </div>
                     <div class="row col-md-12">
@@ -147,7 +147,7 @@
                         <label for="email">Dirección &nbsp</label>{{ ru.requerimiento__planta__direccion }}
                       </div>
                       <div class="form-group col-md-4">
-                        <label for="email">Planta &nbsp</label>{{ ru.requerimiento__planta__nombre }}
+                        <label for="email">Planta &nbsp</label>{{ ru.requerimiento__planta__nombre|title }}
                       </div>
                     </div>
                     <input name="action" type="hidden" value="requeri_trab_add">
@@ -199,12 +199,12 @@
                 {% for con in contratos %}
                 <tr>
                   {% if con.tipo_documento__nombre != Null %}
-                  <td>{{ con.tipo_documento__nombre }}</td>
+                  <td>{{ con.tipo_documento__nombre|title }}</td>
                   <td>{{ con.estado_contrato|estado_contrato|safe }}</td>
-                  <td>{{ con.causal__nombre }}</td>
+                  <td>{{ con.causal__nombre|title }}</td>
                   <td >{{ con.motivo|truncatewords:20 }}</td>
                   <td>Inicio: {{ con.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ con.fecha_termino|date:'d-m-Y' }} </td>
-                  <td >{{ con.horario__nombre }}</td>
+                  <td >{{ con.horario__nombre|title }}</td>
                   <td>$ {% if con.valores_diario__valor_diario is None %} {{ con.sueldo_base }} {% else%} {{con.valores_diario__valor_diario}} {% endif %}</td>
                   <td >
                     {% if con.estado_contrato == 'CR' or con.estado_contrato == 'RC'   %}
@@ -243,10 +243,10 @@
                   {% if ane.causal__nombre  != Null %}
                   <td>Anexo</td>
                   <td>{{ ane.estado_anexo|estado_anexo|safe }}</td>
-                  <td>{{ ane.causal__nombre }}</td>
+                  <td>{{ ane.causal__nombre|title }}</td>
                   <td>{{ ane.motivo|truncatewords:20 }}</td>
                   <td>Inicio: {{ ane.fecha_inicio|date:'d-m-Y' }} <br>Término: {{ ane.fecha_termino|date:'d-m-Y' }} </td>
-                  <td>{{ ane.horario__nombre }}</td>
+                  <td>{{ ane.horario__nombre|title }}</td>
                   <td >{% if ane.nueva_renta != None %}$ {{ ane.nueva_renta }} {% else %}       {% endif %}</td>
                   <td>
                     {% if ane.estado_anexo == 'CR' or ane.estado_anexo == 'RC'  %}
@@ -352,7 +352,7 @@
         <div class="row col-md-12">
           {% for bo in bonos %}
           <div class="form-group col-md-6">
-            <label for="email">{{ bo.requerimiento__planta__bono__nombre }}</label>
+            <label for="email">{{ bo.requerimiento__planta__bono__nombre|title }}</label>
             <input type="text" name="{{forloop.counter}}" class="form-control" value="0" >
             <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bo.requerimiento__planta__bono}}">
           </div>
@@ -377,7 +377,7 @@
   </div>
 </div>
 
-<!-- Creando Contrato Diariop -->
+<!-- Creando Contrato Diario -->
 <div class="modal fade bd-example-modal-lg" id="myModalCDiario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -429,7 +429,7 @@
         <div class="row col-md-12">
           {% for bo in bonos %}
           <div class="form-group col-md-6">
-            <label for="email">{{ bo.requerimiento__planta__bono__nombre }}</label>
+            <label for="email">{{ bo.requerimiento__planta__bono__nombre|title }}</label>
             <input type="text" name="{{forloop.counter}}" class="form-control" value="0" >
             <input type="hidden" name="{{forloop.counter}}" class="form-control" value="{{bo.requerimiento__planta__bono}}">
           </div>
@@ -473,7 +473,7 @@
           <br>
         <div class="row col-md-12">
           <div class="form-group col-md-6">
-            <label for="email">Nombres &nbsp</label>{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}
+            <label for="email">Nombres &nbsp</label>{{ con.trabajador__first_name|title }} {{ con.trabajador__last_name|title }}
           </div>
           <div class="form-group col-md-6">
             <label for="email">Domicilio &nbsp </label>{{ con.trabajador__domicilio }}
@@ -547,12 +547,12 @@
     <div class="modal-content">
       <div class="modal-header">
         {% for con in contratos %}
-        <h5 class="modal-title" id="exampleModalLongTitle">Generar Carta de Término <small style="font-size: 80%;">{{ con.trabajador__first_name }} {{ con.trabajador__last_name }}</small></h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Generar Carta de Término <small style="font-size: 80%;">{{ con.trabajador__first_name|title }} {{ con.trabajador__last_name|title }}</small></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="post" action="{% url 'contratos:carta-termino' %}"  enctype="multipart/form-data">
+      <form method="post" action="{% url 'contratos:carta-termino' %}" id="CCTerminoForm" enctype="multipart/form-data">
         <div class="modal-body">
           {% csrf_token %}
             ¿Está seguro que desea realizar esta acción?
@@ -564,7 +564,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="submit" id="Carta_T" class="btn btn-primary">Enviar</button>
         </div>
       </form>
       {% endfor %}
@@ -832,6 +832,64 @@ $('#btn-delete-anexo').on('click', function(e){
     });
 });
 {% endif %}
+
+
+var enviando = false;
+//Submit form
+$('#Carta_T').on('click', function(e){
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
+
+    e.preventDefault();
+
+    var $form = $('#CCTerminoForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
+
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
+          }
+
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
+      }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
+
+})
 
 
 {% if messages %}

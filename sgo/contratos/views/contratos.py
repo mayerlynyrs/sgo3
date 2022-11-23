@@ -1,13 +1,5 @@
 """Contratos views."""
 
-from itertools import chain
-from asyncio.windows_events import NULL
-from cgi import print_form
-from multiprocessing import context
-from optparse import Values
-from queue import Empty
-from telnetlib import STATUS
-from tkinter import FLAT
 from datetime import date, datetime, timedelta
 from docx2pdf import convert
 from django.core.serializers import serialize
@@ -780,27 +772,28 @@ def create(request):
         now = datetime.now()
         fecha_nacimiento = Contrato.objects.values_list('trabajador__fecha_nacimiento', flat=True).get(pk=contrato.id, status=True)
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
+        c = Contrato.objects.get(pk=contrato.id, status=True)
         # Variables de Doc. Adicionales
-        context = { 'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
-                    'nombres_trabajador': contrato.trabajador.first_name,
-                    'apellidos_trabajador': contrato.trabajador.last_name,
+        context = { 'fecha_ingreso_trabajador_palabras': fecha_a_letras(c.fecha_inicio),
+                    'nombres_trabajador': contrato.trabajador.first_name.title(),
+                    'apellidos_trabajador': contrato.trabajador.last_name.title(),
                     'rut_trabajador': contrato.trabajador.rut,
-                    'comuna_trabajador': contrato.trabajador.ciudad.nombre,
+                    'comuna_trabajador': contrato.trabajador.ciudad.nombre.title(),
                     'domicilio_trabajador': contrato.trabajador.domicilio,
-                    'nacionalidad': contrato.trabajador.nacionalidad.nombre,
+                    'nacionalidad': contrato.trabajador.nacionalidad.nombre.title(),
                     'fono': contrato.trabajador.telefono,
                     'dd': format(fecha_nacimiento.day),
                     'mm': format(fecha_nacimiento.month),
                     'aaaa': format(fecha_nacimiento.year),
                     'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
-                    'sexo_trabajador': contrato.trabajador.sexo.nombre,
-                    'estado_civil': contrato.trabajador.estado_civil.nombre,
-                    'prevision_trabajador': contrato.trabajador.afp.nombre,
-                    'salud_trabajador': contrato.trabajador.salud.nombre,
+                    'sexo_trabajador': contrato.trabajador.sexo.nombre.title(),
+                    'estado_civil': contrato.trabajador.estado_civil.nombre.title(),
+                    'prevision_trabajador': contrato.trabajador.afp.nombre.title(),
+                    'salud_trabajador': contrato.trabajador.salud.nombre.title(),
                     'adicional_cumplimiento_horario_undecimo': 'SIN INFORMACIÓN',
                     'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
-                    'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
-                    'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
+                    'fecha_ingreso_trabajador': fecha_a_letras(c.fecha_inicio),
+                    'fecha_termino_trabajador': fecha_a_letras(c.fecha_termino),
                     'fecha_vigencia_contrato': 'SIN INFORMACIÓN',
         }
         rut_trabajador = contrato.trabajador.rut
@@ -877,12 +870,14 @@ def aprobacion_masiva(request, aprobacion):
         contrato.save()
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
-                'Nueva Solicitud en SGO3 | Contrato',
-                'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido APROBADA',
-                contrato.created_by.email,
-                ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
-                fail_silently=False,
+            'Nueva Solicitud en SGO3 | Contrato',
+            'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name.title())
+            + ' ' + str(contrato.trabajador.last_name.title())+' con fecha de ingreso: ' 
+            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + str(contrato.planta.nombre.title())
+            + ' ha sido APROBADA',
+            contrato.modified_by.email,
+            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
+            fail_silently=False,
         )
         messages.success(request, 'Contratos aprobados Exitosamente')
         data = True
@@ -1061,18 +1056,18 @@ def baja_contrato(request, contrato_id, template_name='contratos/baja_contrato.h
         baja.motivo_id = request.POST['motivo']
         baja.save()
         
-
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
             'Nueva Solicitud en SGO3 | Contrato Baja',
-            'Estimado(a) se ha solicitado una baja de contrato para el trabajador: ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +' por el motivo ' + baja.motivo.nombre,
+            'Estimado(a) se ha solicitado una baja de contrato para el trabajador: ' + str(contrato.trabajador.first_name.title())
+            + ' ' + str(contrato.trabajador.last_name.title()) + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras)
+            + ' para la planta: ' + str(contrato.planta.nombre.title()) + ' por el motivo: ' + baja.motivo.nombre,
             contrato.created_by.email,
             ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
             fail_silently=False,
-                )
+        )
         messages.success(request, 'Contrato enviado a proceso de baja Exitosamente')
-        return redirect('contratos:create_contrato',contrato.requerimiento_trabajador_id)
+        return redirect('contratos:create_contrato', contrato.requerimiento_trabajador.id)
 
     else:
     
@@ -1129,35 +1124,32 @@ def enviar_revision_contrato(request, contrato_id):
                     now = datetime.now()
                     doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
                     # Variables de Contrato
-                    print('fehca larga', Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True))
-                    print('fehca larga letra', fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)))
-                    print('fehca corta', contrato.fecha_termino)
                     context = { 'codigo_req': contrato.requerimiento_trabajador.requerimiento.codigo,
                                 'rut_planta': contrato.planta.rut,
-                                'nombre_planta': contrato.planta.nombre,
-                                'region_planta': contrato.planta.region2.nombre,
-                                'comuna_planta': contrato.planta.ciudad2.nombre,
+                                'nombre_planta': contrato.planta.nombre.title(),
+                                'region_planta': contrato.planta.region2.nombre.title(),
+                                'comuna_planta': contrato.planta.ciudad2.nombre.title(),
                                 'direccion_planta': contrato.planta.direccion,
                                 'descripcion_jornada': contrato.horario.descripcion,
                                 'gratificacion': contrato.gratificacion.descripcion,
                                 'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
                                 'rut_trabajador': contrato.trabajador.rut,
-                                'nombres_trabajador': contrato.trabajador.first_name,
-                                'apellidos_trabajador': contrato.trabajador.last_name,
-                                'nacionalidad': contrato.trabajador.nacionalidad.nombre,
+                                'nombres_trabajador': contrato.trabajador.first_name.title(),
+                                'apellidos_trabajador': contrato.trabajador.last_name.title(),
+                                'nacionalidad': contrato.trabajador.nacionalidad.nombre.title(),
                                 'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
-                                'estado_civil': contrato.trabajador.estado_civil.nombre,
+                                'estado_civil': contrato.trabajador.estado_civil.nombre.title(),
                                 'domicilio_trabajador': contrato.trabajador.domicilio,
-                                'comuna_trabajador': contrato.trabajador.ciudad.nombre,
-                                'nombre_banco': contrato.trabajador.banco.nombre,
+                                'comuna_trabajador': contrato.trabajador.ciudad.nombre.title(),
+                                'nombre_banco': contrato.trabajador.banco.nombre.title(),
                                 'cuenta': contrato.trabajador.cuenta,
                                 'correo': contrato.trabajador.email,
-                                'prevision_trabajador': contrato.trabajador.afp.nombre,
-                                'salud_trabajador': contrato.trabajador.salud.nombre,
+                                'prevision_trabajador': contrato.trabajador.afp.nombre.title(),
+                                'salud_trabajador': contrato.trabajador.salud.nombre.title(),
                                 'centro_costo': contrato.requerimiento_trabajador.requerimiento.centro_costo,
                                 'descripcion_causal': contrato.causal.descripcion,
                                 'motivo_req': contrato.motivo,
-                                'cargo_postulante': contrato.requerimiento_trabajador.area_cargo.cargo.nombre,
+                                'cargo_postulante': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
                                 'sueldo_base_numeros': valor_mensual,
                                 'sueldo_base_palabras':  valor_mensual_palabras,
                                 'detalle_bonos': 'SIN INFORMACIÓN',
@@ -1207,16 +1199,12 @@ def enviar_revision_contrato(request, contrato_id):
                             doc_contrato.tipo_documento_id = formt['tipo_id']
                             doc_contrato.save()
                          
-                           
-
-                        nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
-                        apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
                         fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-                        nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
                         send_mail(
                             'Nueva Solicitud en SGO3 | Contrato Revisión',
-                            'Estimado(a) se a realizado un solicitud de revisión de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta,
+                            'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
+                            + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title()) + ' con fecha de ingreso: ' 
+                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
                             contrato.created_by.email,
                             ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                             fail_silently=False,
@@ -1244,15 +1232,12 @@ def enviar_revision_contrato(request, contrato_id):
                             doc_contrato.tipo_documento_id = formt['tipo_id']
                             doc_contrato.save()
 
-
-                        nombre_trabajador = Contrato.objects.values_list('trabajador__first_name', flat=True).get(pk=contrato_id, status=True)
-                        apellido = Contrato.objects.values_list('trabajador__last_name', flat=True).get(pk=contrato_id, status=True)
                         fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-                        nombre_planta = Contrato.objects.values_list('planta__nombre', flat=True).get(pk=contrato_id, status=True)
                         send_mail(
                             'Nueva Solicitud en SGO3 | Contrato Revisión',
-                            'Estimado(a) se a realizado un solicitud de revisión de contrato para el trabajador ' + str(nombre_trabajador) +' '+str(apellido)+' con fecha de ingreso: ' 
-                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ nombre_planta,
+                            'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
+                            + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title())
+                            + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
                             contrato.created_by.email,
                             ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                             fail_silently=False,
@@ -1300,13 +1285,13 @@ def carta_termino(request):
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
             # Variables de Carta Término
             context = { 'fecha_vigencia_contrato': 'SIN INFORMACIÓN',
-                        'fecha_ingreso_trabajador': fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato.id, status=True)),
-                        'nombres_trabajador': contrato.trabajador.first_name,
-                        'apellidos_trabajador': contrato.trabajador.last_name,
+                        'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
+                        'nombres_trabajador': contrato.trabajador.first_name.title(),
+                        'apellidos_trabajador': contrato.trabajador.last_name.title(),
                         'rut_trabajador': contrato.trabajador.rut,
                         # 'fecha_pago': Contrato.objects.values_list('fecha_pago', flat=True).get(pk=contrato.id, status=True),
-                        'fecha_termino_trabajador': fecha_a_letras(Contrato.objects.values_list('fecha_termino', flat=True).get(pk=contrato.id, status=True)),
-                                }
+                        'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
+            }
             rut_trabajador =  contrato.trabajador.rut
             doc.render(context)
 
@@ -1457,6 +1442,11 @@ class ContratoIdView(TemplateView):
         # ultimo_anexo_contrato = 'NO'
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id, status= True)
         try:
+            # finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exclude(tipo_documento__nombre='Contrato Diario')
+            finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True)
+            if not finalizo_contrato == None:
+                fin_contrato = 'SI'
+
             contrato = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
             ahora = datetime.now().strftime("%Y-%m-%d")
             dias = contrato.fecha_termino_ultimo_anexo - ahora
@@ -1527,10 +1517,7 @@ class ContratoIdView(TemplateView):
             inicio_termino = str(ultimo.fecha_termino)
             if (now.strftime("%Y-%m-%d") > inicio_termino):
                 finiquito = 'SI'
-        # finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exclude(tipo_documento__nombre='Contrato Diario')
-        finalizo_contrato = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exclude(tipo_documento__nombre='Contrato Diario').values('fin_requerimiento')
-        if finalizo_contrato == None:
-            fin_contrato = 'SI'
+
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
         largobonos = len(bonos)
         fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
@@ -1543,7 +1530,6 @@ class ContratoIdView(TemplateView):
                 fecha_restriccion = inicio_contrato
         except:
             print('')
-        
 
         context['fecha_restriccion'] =  fecha_restriccion        
         context['ultimo'] = ultimo2
@@ -1667,9 +1653,10 @@ class SolicitudContrato(TemplateView):
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
                     'Nueva Solicitud en SGO3 | Contrato',
-                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido APROBADA',
-                    contrato.created_by.email,
+                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name.title())
+                    + ' ' + str(contrato.trabajador.last_name.title()) + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras)
+                    + ' para la planta: '+ str(contrato.planta.nombre.title())+' ha sido APROBADA',
+                    contrato.modified_by.email,
                     ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                     fail_silently=False,
                 )
@@ -1683,22 +1670,25 @@ class SolicitudContrato(TemplateView):
                 url = contrato.archivo
                 ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
                 path = os.path.join(ruta_documentos)
-                os.remove(path + str(url))
+                os.remove(path + '\\' + str(url))
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
-                doc_contrato = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 14 )
-                url2 = doc_contrato.archivo
-                os.remove(path+ 'contratos\\' +str(url2))
-                doc_contrato.delete()
-
+                try:
+                    doc_contrato = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 14 )
+                    ruta = doc_contrato.archivo
+                    os.remove(path + 'contratos\\' + str(ruta))
+                    doc_contrato.delete()
+                except:
+                    print()
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
                     'Nueva Solicitud en SGO3 | Contrato',
-                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                    + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre)+' ha sido RECHAZADO por el motivo: ' + str(request.POST['obs']),
-                    contrato.created_by.email,
+                    'Estimado(a) la solicitud de contrato para el trabajador ' + str(contrato.trabajador.first_name.title())
+                    + ' ' + str(contrato.trabajador.last_name.title()) +' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras)
+                    + ' para la planta: ' + str(contrato.planta.nombre.title())+' ha sido RECHAZADO por el motivo: ' + str(request.POST['obs']),
+                    contrato.modified_by.email,
                     ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
                     fail_silently=False,
                 )
@@ -1737,20 +1727,28 @@ class BajaContrato(TemplateView):
                 url = contrato.archivo
                 ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
                 path = os.path.join(ruta_documentos)
-                os.remove(path+ '\\' +str(url))
+                os.remove(path + '\\' + str(url))
                 contrato.archivo = None
                 contrato.status = False
                 contrato.save()
+                # Elimina los documento adicionales del contrato.
+                doc_contrato = DocumentosContrato.objects.values_list('archivo', flat=True).filter(contrato_id=contrato.id)
+                elimina_doc = DocumentosContrato.objects.filter(contrato_id=contrato.id)
+                for e in doc_contrato:
+                    os.remove(path + "contratos\\" + str(e))
+                elimina_doc.delete()
                 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
-                'Nueva Solicitud en SGO3 | Contrato',
-                'Estimado(a) se ha APROBADO la solicitado de baja de contrato para el trabajador: ' + str(contrato.trabajador.first_name) +' '+str(contrato.trabajador.last_name)+' con fecha de ingreso: ' 
-                + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '+ str(contrato.planta.nombre) +'por el motivo ' + baja.motivo.nombre,
-                contrato.created_by.email,
-                ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
-                fail_silently=False,
-                    )
+                    'Nueva Solicitud en SGO3 | Contrato Baja',
+                    'Estimado(a) se ha APROBADO la solicitado de baja del contrato para el trabajador: '
+                    + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title())
+                    + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras) + ' para la planta: '
+                    + str(contrato.planta.nombre.title()) + 'por el motivo: ' + baja.motivo.nombre,
+                    contrato.modified_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
+                    fail_silently=False,
+                )
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -2136,16 +2134,16 @@ def enviar_revision_anexo(request, anexo_id):
             doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
             # Variables de Anexo
             context = { 'codigo_req': anexo.contrato.requerimiento_trabajador.requerimiento.codigo,
-                        'comuna_planta': anexo.contrato.planta.ciudad2.nombre,
+                        'comuna_planta': anexo.contrato.planta.ciudad2.nombre.title(),
                         'fecha_contrato_anterior':fecha_a_letras(anexo.contrato.fecha_termino_ultimo_anexo),
-                        'nombres_trabajador': anexo.contrato.trabajador.first_name,
-                        'apellidos_trabajador': anexo.contrato.trabajador.last_name,
+                        'nombres_trabajador': anexo.contrato.trabajador.first_name.title(),
+                        'apellidos_trabajador': anexo.contrato.trabajador.last_name.title(),
                         'rut_trabajador': anexo.contrato.trabajador.rut,
-                        'nacionalidad': anexo.contrato.trabajador.nacionalidad.nombre,
+                        'nacionalidad': anexo.contrato.trabajador.nacionalidad.nombre.title(),
                         'fecha_nacimiento': fecha_a_letras(anexo.contrato.trabajador.fecha_nacimiento),
-                        'estado_civil': anexo.contrato.trabajador.estado_civil.nombre,
+                        'estado_civil': anexo.contrato.trabajador.estado_civil.nombre.title(),
                         'domicilio_trabajador': anexo.contrato.trabajador.domicilio,
-                        'comuna_trabajador': anexo.contrato.trabajador.ciudad.nombre,
+                        'comuna_trabajador': anexo.contrato.trabajador.ciudad.nombre.title(),
                         'nuevo_parrafo': anexo.motivo,
                         'nueva_renta': anexo.contrato.nueva_renta,
                         
@@ -2179,6 +2177,17 @@ def enviar_revision_anexo(request, anexo_id):
                 url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf"
                 anexo.archivo = 'anexos/' + url
                 anexo.save()
+                # Envia Correo de notificación
+                fecha_inicio_anexo_palabras = fecha_a_letras(Anexo.objects.values_list('fecha_inicio', flat=True).get(pk=anexo_id, status=True))
+                send_mail(
+                    'Nueva Solicitud en SGO3 | Anexo Revisión',
+                    'Estimado(a) se ha realizado una solicitud de revisión de anexo para el trabajador '
+                    + str(anexo.trabajador.first_name.title()) + ' ' + str(anexo.trabajador.last_name.title()) + ' con fecha de inicio: ' 
+                    + str(fecha_inicio_anexo_palabras) + ' para la planta: ' + anexo.planta.nombre.title(),
+                    anexo.created_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+                    fail_silently=False,
+                )
                 # Elimino el documento word.
                 os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
                 messages.success(request, 'Anexo enviado a revisión Exitosamente')
@@ -2192,10 +2201,21 @@ def enviar_revision_anexo(request, anexo_id):
                 url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + ".pdf"
                 anexo.archivo = 'anexos/' + url
                 anexo.save()
+                # Envia Correo de notificación
+                fecha_inicio_anexo_palabras = fecha_a_letras(Anexo.objects.values_list('fecha_inicio', flat=True).get(pk=anexo_id, status=True))
+                send_mail(
+                    'Nueva Solicitud en SGO3 | Anexo Revisión',
+                    'Estimado(a) se ha realizado una solicitud de revisión de anexo para el trabajador '
+                    + str(anexo.trabajador.first_name.title()) + ' ' + str(anexo.trabajador.last_name.title()) + ' con fecha de inicio: ' 
+                    + str(fecha_inicio_anexo_palabras) + ' para la planta: ' + anexo.planta.nombre.title(),
+                    anexo.created_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+                    fail_silently=False,
+                )
                 # Elimino el documento word.
                 os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) + '.docx')
                 messages.success(request, 'Anexo enviado a revisión Exitosamente')
-    return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
+    return redirect('contratos:create_contrato', anexo.requerimiento_trabajador.id)
 
 
 @login_required
@@ -2212,8 +2232,19 @@ def baja_contrato_anexo(request,anexo_id, template_name='contratos/baja_anexo.ht
         baja.anexo_id = anexo_id
         baja.motivo_id = request.POST['motivo']
         baja.save()
+        
+        fecha_inicio_anexo_palabras = fecha_a_letras(anexo.fecha_inicio)
+        send_mail(
+            'Nueva Solicitud en SGO3 | Anexo Baja',
+            'Estimado(a) se ha solicitado una baja de anexo para el trabajador: ' + str(anexo.trabajador.first_name.title())
+            + ' ' + str(anexo.trabajador.last_name.title()) + ' con fecha de inicio: ' + str(fecha_inicio_anexo_palabras)
+            + ' para la planta: ' + str(anexo.planta.nombre.title()) + ' por el motivo: ' + baja.motivo.nombre,
+            anexo.created_by.email,
+            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+            fail_silently=False,
+        )
         messages.success(request, 'Anexo enviado a proceso de baja Exitosamente')
-        return redirect('contratos:create_contrato', anexo.requerimiento_trabajador_id)
+        return redirect('contratos:create_contrato', anexo.requerimiento_trabajador.id)
 
     else:
     
@@ -2294,7 +2325,9 @@ class SolicitudAnexo(TemplateView):
                 revision.obs = request.POST['obs']
                 revision.save()
                 anexo = Anexo.objects.get(pk=request.POST['id'])
-                url = anexo.archivo
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                url = path  + '\\' + str(anexo.archivo)
                 os.remove(str(url))
                 anexo.archivo = None
                 anexo.estado_anexo = 'RC'
@@ -2358,14 +2391,28 @@ class BajaAnexo(TemplateView):
                 baja = Baja.objects.get(pk=request.POST['id'])
                 baja.estado = 'AP'
                 baja.save()
-                anexo = Anexo.objects.get(pk=request.POST['contrato_id'])
+                anexo = Anexo.objects.get(pk=baja.anexo.id)
                 anexo.fecha_aprobacion_baja  = datetime.now()
                 anexo.estado_anexo = 'BJ'
                 url = anexo.archivo
-                os.remove(str(url))
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                os.remove(path + '\\' + str(url))
                 anexo.archivo = None
                 anexo.status = False
                 anexo.save()
+                
+                fecha_inicio_anexo_palabras = fecha_a_letras(anexo.fecha_inicio)
+                send_mail(
+                    'Nueva Solicitud en SGO3 | Anexo Baja',
+                    'Estimado(a) se ha APROBADO la solicitado de baja del anexo para el trabajador: '
+                    + str(anexo.trabajador.first_name.title()) + ' ' + str(anexo.trabajador.last_name.title())
+                    + ' con fecha de inicio: ' + str(fecha_inicio_anexo_palabras) + ' para la planta: '
+                    + str(anexo.planta.nombre.title()) + 'por el motivo: ' + baja.motivo.nombre,
+                    anexo.modified_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+                    fail_silently=False,
+                )
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
