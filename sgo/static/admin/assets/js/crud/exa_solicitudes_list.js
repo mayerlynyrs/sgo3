@@ -39,10 +39,7 @@ function getData() {
                 render: function (data, type, row) {
                     var trabajador = 'trabajador';
                     var buttons = '<a href="#" data-toggle="modal" data-target="#myModalRevExam" rel="agg" title="Evaluar" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-fw fa-newspaper"></i></a>  &nbsp &nbsp';
-                    // var buttons = '<a href="#" rel="edit" title="Editar" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-edit"></i></a>  &nbsp &nbsp';
-                    // buttons += '<a href="#" rel="delete" title="Eliminar" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> &nbsp &nbsp';
-                    // buttons += '<a href="#" data-toggle="modal" data-target="#myModalEvaluacion" rel="agg" title="Evaluar" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-fw fa-newspaper"></i></a>';
-                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes '+trabajador+'" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
+                    // buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes '+trabajador+'" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
                     return buttons;
                 }
             },
@@ -70,15 +67,7 @@ $(function () {
         $('form')[0].reset();
         $('input[name="id"]' ).val(data.id);
         $('input[name="user_id"]').val(data.user_id);
-        $('select[name="planta"]').val(data.planta).trigger("change");
-        $('select[name="cargo"]').val(data.cargo).trigger("change");
-        $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('select[name="bateria"]').val(data.bateria).trigger("change");
-        $('select[name="centromedico"]').val(data.centro).trigger("change");
-        
-        $('input:checkbox[name=referido]').attr('checked',data.referido);
-        
-       
+    
         $('#myModalRevExam').modal('show');
     });
 

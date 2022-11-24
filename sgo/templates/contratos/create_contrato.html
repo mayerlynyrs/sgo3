@@ -216,7 +216,7 @@
                       <i class="fas fa-window-close"></i>
                     </button> &nbsp
                     {% endif %}
-                    <a  type="button" class="btn-xs btn btn-white" href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
+                    <a  type="button" id="revision" class="btn-xs btn btn-white" href="/contratos/{{con.id}}/enviar_revision_contrato/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
                     {% elif con.estado_contrato == 'AP' and anex == 'NO' and fin_contrato == 'NO' and ultimo != 8 %}
@@ -258,7 +258,7 @@
                       <i class="fas fa-window-close"></i>
                     </button> &nbsp
                     {% endif %}
-                    <a  type="button" class="btn-xs btn btn-white" href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
+                    <a  type="button" id="boton" class="btn-xs btn btn-white" href="/contratos/{{ane.id}}/enviar_revision_anexo/" title="Enviar a revisión">
                       <i class="fa fa-paper-plane"></i>
                     </a>
                     {% elif ane.estado_anexo == 'AP' and ane.id == id_ultimo_anexo and fin_contrato == 'NO' %}
@@ -367,9 +367,23 @@
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
         <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
+    
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          {% if exa_maso == 'SI' and exa_bate == 'SI' and exa_psico == 'SI'  %}
           <button type="submit" id="boton" onclick="javascript:ver_documento();" class="btn btn-primary">Guardar</button>
+          {% endif %}
+          {% if exa_maso == 'NO' %}
+          <label class="alert alert-danger fade show" for="revision"> No tiene Masso Aprobada</label>
+          {% endif %}
+          {% if exa_bate == 'NO' %}
+          <label class="alert alert-danger fade show" for="revision"> No tiene Batería Aprobada</label>
+          {% endif %}
+          {% if exa_psico == 'NO' %}
+          <label class="alert alert-danger fade show" for="revision"> No tiene Psicológico Aprobada</label>
+          {% endif %}
+
         </div>
       </form>
       </div>
@@ -625,10 +639,30 @@
       }
   </script>
 
+
 {% endblock %}
 
 {% block scripts %}
 //Submit form
+var enviando = false;
+// Botón de Autorización Firma Electrónica
+$('#boton').on('click', function(e){
+  console.log('pashoooo.');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
+
+    e.preventDefault();
+
+    var $form = $('#boton');
+      if(!enviando){
+          enviando = true;
+          $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+          $form.submit();
+      }else{
+          console.log("El formulario ya se esta enviando...");
+      }
+
+})
 
 $('.btn-view-editar-contrato').on('click', function(e){
   e.preventDefault();
