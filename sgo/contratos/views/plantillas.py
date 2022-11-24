@@ -97,7 +97,7 @@ def update_plantilla(request, plantilla_id):
             plantilla.abreviatura = request.POST['abreviatura'].upper()
             plantilla.save()
             plantilla = form.save()
-            messages.success(request, 'Plantilla actualizada exitosamente')
+            messages.success(request, 'Plantilla actualizada Exitosamente')
             page = request.GET.get('page')
             if page != '':
                 response = redirect('contratos:list-plantilla')

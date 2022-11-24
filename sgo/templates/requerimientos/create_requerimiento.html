@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load crispy_forms_tags %}
 {% load static %}
 {% load widget_tweaks %}
@@ -25,19 +24,13 @@
 <div class="panel panel-inverse">
   <div class="panel-heading">
     <div class="panel-heading-btn">
-      {% if usuario.last_login %}
-      <span class="panel-title" style="font-style: italic;">
-        Ultimo acceso el:
-        <strong>{{ usuario.last_login|date:'d/M/Y' }}</strong>
-      </span>
-      {% endif %}
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
     </div>
     <h4 class="panel-title">
-      {% if usuario %}{{ usuario.first_name|upper }} {{ usuario.last_name|upper }}{% else %}Nuevo Formulario{% endif %}</h4>
+      {% if requerimiento %}{{ requerimiento.codigo|upper }}{% else %}Requerimiento Nuevo{% endif %}</h4>
   </div>
   <div class="panel-body">
 

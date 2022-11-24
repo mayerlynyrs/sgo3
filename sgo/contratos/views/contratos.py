@@ -826,7 +826,7 @@ def create(request):
             convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
             url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
             contrato.archivo = 'contratos/' + url
-            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
             doc_contrato.tipo_documento_id = formt['tipo_id']
             doc_contrato.save()
             # Elimino el documento word.
@@ -846,7 +846,7 @@ def create(request):
             #     tipo_documento = 6
             # if formt['nombre'] == 'Seguro de Vida':
             #     tipo_documento = 5
-            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
             doc_contrato.tipo_documento_id = formt['tipo_id']
             doc_contrato.save()
             # Elimino el documento word.
@@ -867,7 +867,6 @@ def aprobacion_masiva(request, aprobacion):
         contrato = Contrato.objects.get(pk=i)
         contrato.fecha_aprobacion  = datetime.now()
         contrato.estado_contrato = 'AP'
-        finiquito(contrato.id)
         contrato.save()
         fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
         send_mail(
@@ -1013,8 +1012,20 @@ def delete(request, object_id, template_name='contratos/contrato_delete.html'):
 def solicitudes_pendientes(request, contrato_id, template_name='contratos/contrato_pdf.html'):
     data = dict()
     contrato = get_object_or_404(Contrato, pk=contrato_id)
+    finiquito = 'NO'
+    contrato_diario = ''
 
-    context = {'contrato': contrato, }
+    try:
+        if(contrato.tipo_documento_id == 8):
+            finiquito = 'SI'
+            contrato_diario = get_object_or_404(DocumentosContrato, tipo_documento=11, contrato=contrato_id)
+    except:
+        print()
+
+    context = {'contrato': contrato,
+               'contrato_diario_finiquito': contrato_diario,
+               'finiquito': finiquito,
+    }
     data['html_form'] = render_to_string(
         template_name,
         context,
@@ -1193,10 +1204,11 @@ def enviar_revision_contrato(request, contrato_id):
                             url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
                             contrato.save()
+                            finiquito(contrato.id)
                         else:
                             url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
-                            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+                            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
                             doc_contrato.tipo_documento_id = formt['tipo_id']
                             doc_contrato.save()
                          
@@ -1225,11 +1237,12 @@ def enviar_revision_contrato(request, contrato_id):
                             url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
                             contrato.save()
+                            finiquito(contrato.id)
     
                         else:
                             url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
-                            doc_contrato = DocumentosContrato(contrato=contrato, archivo=url)
+                            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
                             doc_contrato.tipo_documento_id = formt['tipo_id']
                             doc_contrato.save()
 
@@ -1549,6 +1562,8 @@ class ContratoIdView(TemplateView):
             try:
                 ultimo_cd_aprob = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, estado_contrato = 'AP').latest('id')
                 context['ultimo_contrato_diario_aprob'] = ultimo_cd_aprob.id
+                tiene_finiq = DocumentosContrato.objects.filter(tipo_documento=11, contrato=ultimo_cd_aprob)
+                context['contrato_diario_finiquito'] = tiene_finiq
             except:
                 print('')
 
@@ -1571,8 +1586,6 @@ class ContratoIdView(TemplateView):
                 fecha_restriccion = inicio_contrato
         except:
             print('')
-
- 
 
         context['exa_maso'] =  exa_maso   
         context['exa_bate'] =  exa_bate   
@@ -1695,7 +1708,6 @@ class SolicitudContrato(TemplateView):
                 contrato.fecha_aprobacion  = datetime.now()
                 contrato.estado_contrato = 'AP'
                 contrato.save()
-                finiquito(contrato.id)
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
@@ -2064,6 +2076,17 @@ def aprobacion_masiva_anexo(request, aprobacion):
         anexo.fecha_aprobacion  = datetime.now()
         anexo.estado_anexo = 'AP'
         anexo.save()
+        fecha_inicio_anexo_palabras = fecha_a_letras(anexo.fecha_inicio)
+        send_mail(
+            'Nueva Solicitud en SGO3 | Anexo',
+            'Estimado(a) la solicitud de anexo para el trabajador ' + str(anexo.trabajador.first_name.title())
+            + ' ' + str(anexo.trabajador.last_name.title())+' con fecha de inicio: ' 
+            + str(fecha_inicio_anexo_palabras) + ' para la planta: ' + str(anexo.planta.nombre.title())
+            + ' ha sido APROBADA',
+            anexo.modified_by.email,
+            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+            fail_silently=False,
+        )
     messages.success(request, 'Anexos aprobados Exitosamente')
     return redirect('contratos:solicitud-contrato',)
 
@@ -2366,6 +2389,17 @@ class SolicitudAnexo(TemplateView):
                 anexo.fecha_aprobacion  = datetime.now()
                 anexo.estado_anexo = 'AP'
                 anexo.save()
+
+                fecha_inicio_anexo_palabras = fecha_a_letras(anexo.fecha_inicio)
+                send_mail(
+                    'Nueva Solicitud en SGO3 | Anexo',
+                    'Estimado(a) la solicitud de anexo para el trabajador ' + str(anexo.trabajador.first_name.title())
+                    + ' ' + str(anexo.trabajador.last_name.title()) + ' con fecha de inicio: ' + str(fecha_inicio_anexo_palabras)
+                    + ' para la planta: '+ str(anexo.planta.nombre.title())+' ha sido APROBADA',
+                    anexo.modified_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+                    fail_silently=False,
+                )
             elif action == 'rechazar':
                 revision = Revision.objects.get(anexo_id=request.POST['id'])
                 revision.estado = 'RC'
@@ -2379,6 +2413,17 @@ class SolicitudAnexo(TemplateView):
                 anexo.archivo = None
                 anexo.estado_anexo = 'RC'
                 anexo.save()
+
+                fecha_inicio_anexo_palabras = fecha_a_letras(anexo.fecha_inicio)
+                send_mail(
+                    'Nueva Solicitud en SGO3 | Anexo',
+                    'Estimado(a) la solicitud de anexo para el trabajador ' + str(anexo.trabajador.first_name.title())
+                    + ' ' + str(anexo.trabajador.last_name.title()) +' con fecha de inicio: ' + str(fecha_inicio_anexo_palabras)
+                    + ' para la planta: ' + str(anexo.planta.nombre.title())+' ha sido RECHAZADO por el motivo: ' + str(request.POST['obs']),
+                    anexo.modified_by.email,
+                    ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', anexo.created_by.email],
+                    fail_silently=False,
+                )
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

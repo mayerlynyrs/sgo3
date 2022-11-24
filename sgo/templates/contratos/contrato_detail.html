@@ -72,10 +72,10 @@
             </li>
           {% endfor %}
           <li class="nav-item next-button" style=""><a href="javascript:;" data-click="next-tab" class="text-inverse nav-link"><i class="fa fa-arrow-right"></i></a></li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="#nav-tab2-10" data-toggle="tab" class="nav-link show">
               Firmar</a>
-          </li>
+          </li> -->
         </ul>
       </div>
       <!-- end nav-tabs -->
@@ -178,7 +178,7 @@
       </div>
       <!-- end tab-pane -->
       {% endfor %}
-      <div class="tab-pane fade" id="nav-tab2-10">
+      <!-- <div class="tab-pane fade" id="nav-tab2-10">
         <div class="row">
           <div class="col-lg-8">
             <h3 class="m-t-10">
@@ -227,7 +227,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
   </div>
 
 <div class="modal fade" id="modal-contrato">
@@ -241,8 +241,8 @@
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'admin/assets/plugins/bootstrap-select/js/i18n/defaults-es_CL.min.js' %}"></script>
     <!-- jquery validation -->
-    <script src="{% static "admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js" %}"></script>
-    <script src="{% static "admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js" %}"></script>
+    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'admin/assets/plugins/jquery-validation/dist/localization/messages_es_PE.min.js' %}"></script>
 {% endblock %}
 
 {% block scripts %}
@@ -300,7 +300,7 @@
 
               iziToast.success({
                   title: '',
-                  message: 'Contrato en proceso de firma exitosamente.',
+                  message: 'Contrato en proceso de firma Exitosamente.',
                   position: 'topRight',
               });
           }

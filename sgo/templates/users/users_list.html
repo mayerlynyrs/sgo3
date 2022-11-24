@@ -99,15 +99,15 @@ img {
                 </p>
                 <p class="text-desc">
                   <i class="fas fa-info fa-xs"></i>
-                  {{ usr.ciudad|title }} /
+                  {{ usr.telefono }} /
                   <i class="fa-xs"></i>
-                  {{ usr.especialidad|title }}
+                  {{ usr.email|lower }}
                 </p>
             </td>
             <td class="list-clientes">
                 <ul>
                   {% for p in usr.cliente.all %}
-                    <li>{{ p.razon_social }}</li>
+                    <li>{{ p.razon_social|title }}</li>
                   {% empty %}
                     <li>Sin asignar</li>
                   {% endfor %}
@@ -116,7 +116,7 @@ img {
             <td class="list-plantas">
                 <ul>
                   {% for p in usr.planta.all %}
-                    <li>{{ p.nombre }}</li>
+                    <li>{{ p.nombre|title }}</li>
                   {% empty %}
                     <li>Sin asignar</li>
                   {% endfor %}

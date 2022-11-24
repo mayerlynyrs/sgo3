@@ -650,7 +650,7 @@ class RequerimientoIdView(TemplateView):
         for i in areas_cargos:
             ac_req.append(i)
             context['a_c_trab'] = ac_req
-        # context['form5'] = ConvenioTrabajadorForm(instance=requerimiento, trabaj_conve=req_conv_trab)
+        context['requerimiento'] = requerimiento
         return context
 
 

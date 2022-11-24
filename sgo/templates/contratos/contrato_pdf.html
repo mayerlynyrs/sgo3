@@ -1,12 +1,19 @@
 {% load user_tags %}
 <div class="modal-header">
-  <h4 class="modal-title">Visulizador de Contratos {{ contrato.trabajador }}</h4>
+  <h5 class="modal-title">Visualizar Contrato de {{ contrato.trabajador }}</h5>
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 </div>
 <div class="modal-body">
-  <div class="text-center" style="min-height: 400px;">
+  <div class="text-center" style="min-height: 300px;">
     {{ contrato.archivo.url|show_type_fichero|safe }}
   </div>
+  {% if finiquito == 'SI'  %}
+  </br>
+  <h4 class="modal-title"><b>VER FINIQUITO</b></h4>
+  <div class="text-center" style="min-height: 300px;">
+    {{ contrato_diario_finiquito.archivo.url|show_type_fichero|safe }}
+  </div>
+  {% endif %}
   <p class="mt-1">
     {{ contrato.motivo }}
   </p>
