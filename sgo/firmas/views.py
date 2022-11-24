@@ -60,7 +60,7 @@ class ContratoAprobadoList(TemplateView):
                             orden = orden + 1
                             nombre = str(i.archivo).split("\\")
                             nombre_pdf = nombre[-1]
-                            da_archivo = parametro_general + 'contratos/' + str(i.archivo)
+                            da_archivo = parametro_general + str(i.archivo)
                             with open(da_archivo, "rb") as pdf_file:
                                 documento_ad = base64.b64encode(pdf_file.read()).decode('utf-8')
                             doc_ad_base64 = f'{documento_ad}'

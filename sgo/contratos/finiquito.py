@@ -1,14 +1,13 @@
-
-from datetime import datetime
-import pythoncom
-from contratos.models import Plantilla
-from requerimientos.fecha_a_palabras import fecha_a_letras
-from contratos.models import  Contrato, DocumentosContrato
-from docxtpl import DocxTemplate 
 import os
+import pythoncom
+from docxtpl import DocxTemplate 
 from docx2pdf import convert
 import win32com.client
 from django.conf import settings
+from datetime import datetime
+from requerimientos.fecha_a_palabras import fecha_a_letras
+from requerimientos.numero_letras import numero_a_letras
+from contratos.models import Plantilla, Contrato, DocumentosContrato
 
 def finiquito(contrato2):
     contrato = Contrato.objects.get(pk=contrato2)
@@ -44,6 +43,7 @@ def finiquito(contrato2):
                             'total_no_imponibles' : total_no_haberes_imponibles,
                             'total_haberes' : total_haberes,
                             'total_liquido' : pago_liquido,
+                            'total_liquido_palabras' : numero_a_letras(pago_liquido),
                             'fondo_pension' : afp,
                             'aporte_salud' : salud,
                             'total_leyes_sociales': total_descuento,
@@ -59,6 +59,6 @@ def finiquito(contrato2):
                 convert(path + str(contrato.trabajador.rut) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path +  str(contrato.trabajador.rut) + "_" + formt['abreviatura'] + "_" +  str(contrato.id) + ".pdf")
                 url = str(contrato.trabajador.rut) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
                 os.remove(path + str(contrato.trabajador.rut) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
-                doc_contrato = DocumentosContrato(contrato=contrato, archivo=url )
-                doc_contrato.tipo_documento_id = 10
+                doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url )
+                doc_contrato.tipo_documento_id = 11
                 doc_contrato.save()
