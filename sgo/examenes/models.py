@@ -296,6 +296,9 @@ class Requerimiento(BaseModel):
         if (self.bateria):
             item['bateria'] = self.bateria.nombre.title()
             item['examen'] = [t.toJSON() for t in self.bateria.examen.all()]
+        else:
+            item['bateria'] = 'MASSO'
+           
         item['requerimiento_trabajador_id'] = self.requerimiento_trabajador.id
         item['trabajador_id'] = self.trabajador.id
         item['trabajador'] = self.trabajador.first_name.title() +" "+self.trabajador.last_name.title()

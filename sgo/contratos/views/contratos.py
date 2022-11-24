@@ -47,6 +47,7 @@ from contratos.models import Plantilla
 from users.models import User, Trabajador, ValoresDiarioAfp
 from clientes.models import Planta
 from utils.models import PuestaDisposicion
+from examenes.models import  Requerimiento as RequerimientoExam
 # Form
 from contratos.forms import PuestaDisposicionForm, TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
 from requerimientos.forms import RequeriTrabajadorForm
@@ -1439,8 +1440,48 @@ class ContratoIdView(TemplateView):
         anex = 'NO'
         finiquito = 'NO'
         fin_contrato = 'NO'
+        crear_contrato = 'SI'
+
         # ultimo_anexo_contrato = 'NO'
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id, status= True)
+
+        
+        if(requer_trabajador.requerimiento.planta.masso == True):
+            try:
+                maso = RequerimientoExam.objects.get(masso = True, requerimiento_trabajador = requerimiento_trabajador_id)
+                if(maso.estado == 'A'):
+                  exa_maso = 'SI'
+                else:
+                  exa_maso = 'NO'      
+            except:
+                exa_maso = 'NO'
+        else:
+            exa_maso = 'SI'
+        if(bool(requer_trabajador.requerimiento.planta.bateria)== True):
+            try:
+                bate = RequerimientoExam.objects.get(bateria__isnull=False, requerimiento_trabajador = requerimiento_trabajador_id)
+                if(bate.estado == 'A'):
+                  exa_bate = 'SI'
+                else:
+                  exa_bate = 'NO'  
+            except:
+                exa_bate = 'NO'
+        else:
+            exa_bate = 'SI'
+        if( requer_trabajador.requerimiento.planta.psicologico == True ):
+            try:
+                psico = RequerimientoExam.objects.get(psicologico = True, requerimiento_trabajador = requerimiento_trabajador_id)
+                if(psico.estado == 'A'):
+                  exa_psico = 'SI'
+                else:
+                  exa_psico = 'NO'  
+            except:
+                exa_psico = 'NO'
+        else:
+            exa_psico = 'SI'
+            
+  
+
         try:
             # finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True).exclude(tipo_documento__nombre='Contrato Diario')
             finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True)
@@ -1530,6 +1571,12 @@ class ContratoIdView(TemplateView):
                 fecha_restriccion = inicio_contrato
         except:
             print('')
+
+ 
+
+        context['exa_maso'] =  exa_maso   
+        context['exa_bate'] =  exa_bate   
+        context['exa_psico'] =  exa_psico
 
         context['fecha_restriccion'] =  fecha_restriccion        
         context['ultimo'] = ultimo2
