@@ -1204,7 +1204,8 @@ def enviar_revision_contrato(request, contrato_id):
                             url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
                             contrato.save()
-                            finiquito(contrato.id)
+                            if(contrato.valores_diario != None):
+                                finiquito(contrato.id)
                         else:
                             url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
                             contrato.archivo = 'contratos/' + url
