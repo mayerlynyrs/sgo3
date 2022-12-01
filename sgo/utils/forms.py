@@ -59,13 +59,17 @@ class BonoForm(forms.ModelForm):
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
     descripcion = forms.CharField (required=True, label="Descripción", max_length=500,
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
+                           
+    imponible =forms.BooleanField(required=False,label='Imponible',
+                                 widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
+                                                              }))
 
     def __init__(self, *args, **kwargs):
         super(BonoForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Bono
-        fields = ("nombre", "alias", "descripcion",)
+        fields = ("nombre", "alias", "descripcion","imponible")
 
 
 class SaludForm(forms.ModelForm):

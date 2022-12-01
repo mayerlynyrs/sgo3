@@ -27,7 +27,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
     <h4 class="panel-title">
-      {% if contrato %}{{ contrato.trabajador__first_name|upper }}{% else %}Contrato Nuevo{% endif %}</h4>
+      {% if contrato %}{{ contrato.trabajador__first_name|upper }} {{ contrato.trabajador.last_name|upper }}{% else %}Contrato Nuevo{% endif %}</h4>
   </div>
   <div class="panel-body">
 

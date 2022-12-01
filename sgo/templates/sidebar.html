@@ -363,6 +363,9 @@
         {% if perms.utils.view_horario %}
         <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
         {% endif %}
+        {% if perms.utils.view_motivobaja %}
+          <li {% if menu_app == 'utils' and menu_page == motivobaja %} class="active"{% endif %}><a href="{% url 'utils:motivo-baja' %}">Motivo Baja</a></li>
+        {% endif %}
         </ul>
       </li>
       {% if perms.consultas.view_consulta %}

@@ -13,6 +13,11 @@ urlpatterns = [
         name='area'
     ),
     path(
+        route='motivo-baja',
+        view=views.MotivoBajaView.as_view(),
+        name='motivo-baja'
+    ),
+    path(
         route='cargo',
         view=views.CargoView.as_view(),
         name='cargo'

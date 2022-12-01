@@ -119,6 +119,7 @@ class Contrato(BaseModel):
     )
 
     sueldo_base = models.IntegerField(default=0)
+    feriado_proporcional = models.IntegerField(blank=True, null=True)
     fecha_pago = models.DateField(blank=True, null=True)
     fecha_inicio = models.DateField(blank=False, null=False)
     fecha_termino = models.DateField(blank=False, null=False)
@@ -152,6 +153,7 @@ class Contrato(BaseModel):
     causal = models.ForeignKey(Causal, on_delete=models.PROTECT)
     regimen = models.CharField(max_length=3, choices=REGIMEN_ESTADO, default=NORMAL)
     valores_diario = models.ForeignKey(ValoresDiario, on_delete=models.PROTECT, blank=True, null=True)
+
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar el contrato, deshabilite esta casilla.'
@@ -166,7 +168,7 @@ class Contrato(BaseModel):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0)
         if(self.valores_diario):
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.valores_diario.valor_diario)
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() 
         else:
             item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() +  "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.sueldo_base)  
         item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title()
@@ -177,6 +179,10 @@ class Contrato(BaseModel):
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: " + str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
         item['estado_firma'] = self.estado_firma
+        if(self.feriado_proporcional):
+            item['feriado'] = "Renta imp: $" + str(self.valores_diario.valor_diario) + "<br> Feriado: $" + str(self.feriado_proporcional) + "<br> Liquido: $" + str(self.valores_diario.valor_diario + self.feriado_proporcional)
+        else:
+            item['feriado'] = 'solo para valores diarios'
         return item
 
     @property
@@ -389,6 +395,13 @@ class MotivoBaja(BaseModel):
 
     def __str__(self):
         return self.nombre
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+   
+        item['nombre'] = self.nombre
+        return item
+      
 
 
 class Baja(BaseModel):
