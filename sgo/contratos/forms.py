@@ -378,7 +378,7 @@ class CompletasForm(forms.ModelForm):
         (NOVIEMBRE, 'Noviembre'),
         (DICIEMBRE, 'Diciembre'),
     )
-    planta = forms.ModelChoiceField(queryset=Planta.objects.all(), required=True, label="Planta",
+    planta = forms.ModelChoiceField(queryset=Planta.objects.all().order_by('nombre'), required=True, label="Planta",
                                    widget=forms.Select(attrs={'class': 'show-tick form-control',
                                                               'data-size': '5',
                                                               'data-live-search': 'true',

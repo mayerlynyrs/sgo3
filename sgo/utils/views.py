@@ -29,7 +29,7 @@ from django.db.models import Count
 from utils.models import Area, Cargo, Horario, Bono, Region
 from clientes.models import Cliente, Negocio, Planta
 from ficheros.models import Fichero
-from contratos.models import Contrato
+from contratos.models import Contrato, MotivoBaja
 from users.models import User, Salud, Afp, ValoresDiario, ValoresDiarioAfp
 
 
@@ -145,6 +145,51 @@ class AreaView(TemplateView):
         context['title'] = 'Listado de Areas'
         context['list_url'] = reverse_lazy('utils:area')
         context['entity'] = 'Areas'
+        context['form'] = AreaForm()
+        return context
+
+
+class MotivoBajaView(TemplateView):
+    template_name = 'utils/motivo_baja_list.html'
+
+    @method_decorator(csrf_exempt)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in MotivoBaja.objects.filter(status=True):
+                    data.append(i.toJSON())
+            elif action == 'add':
+                motivobaja = MotivoBaja()
+                motivobaja.nombre = request.POST['nombre'].lower()
+                motivobaja.status = True
+                # espec.created_date = request.POST['created_date']
+                motivobaja.save()
+            elif action == 'edit':
+                motivobaja = MotivoBaja.objects.get(pk=request.POST['id'])
+                motivobaja.nombre = request.POST['nombre'].lower()
+                motivobaja.save()
+            elif action == 'delete':
+                motivobaja = MotivoBaja.objects.get(pk=request.POST['id'])
+                motivobaja.status = False
+                motivobaja.save()
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Motivos'
+        context['list_url'] = reverse_lazy('utils:motivo-baja')
+        context['entity'] = 'Motivos Baja'
         context['form'] = AreaForm()
         return context
 
@@ -270,6 +315,10 @@ class BonoView(TemplateView):
                 bono.descripcion = request.POST['descripcion']
                 bono.nombre_alias = request.POST['nombre']+request.POST['alias']
                 bono.status = True
+                if "imponible" in request.POST:
+                    bono.imponible =  True
+                else:
+                    bono.imponible =  False
                 # espec.created_date = request.POST['created_date']
                 bono.save()
             elif action == 'edit':
@@ -278,6 +327,10 @@ class BonoView(TemplateView):
                 bono.alias = request.POST['alias'].lower()
                 bono.descripcion = request.POST['descripcion']
                 bono.nombre_alias = request.POST['nombre']+request.POST['alias']
+                if "imponible" in request.POST:
+                    bono.imponible =  True
+                else:
+                    bono.imponible =  False
                 bono.save()
             elif action == 'delete':
                 bono = Bono.objects.get(pk=request.POST['id'])

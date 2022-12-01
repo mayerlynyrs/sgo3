@@ -16,6 +16,8 @@ def finiquito(contrato2):
             gratificacion = round(sueldo_base * 0.25)
             total_haberes_imponibles = sueldo_base + gratificacion
             feriado_proporcional = round((sueldo_base * 1.25) / 30)
+            contrato.feriado_proporcional = feriado_proporcional
+            contrato.save()
             total_no_haberes_imponibles = feriado_proporcional
             total_haberes = total_haberes_imponibles + total_no_haberes_imponibles
             pago_liquido = contrato.valores_diario.valor_diario + feriado_proporcional 
@@ -36,6 +38,7 @@ def finiquito(contrato2):
                             'fecha_termino_contrato' : fecha_a_letras(contrato.fecha_termino),
                             'periodo_contrato': contrato.fecha_termino.strftime(" %b, %Y"),
                             'sueldo_base': sueldo_base,
+                            'comuna_planta' : contrato.planta.ciudad2.nombre,
                             'gratificacion_mensual': gratificacion,
                             'bono_gestion': '',
                             'total_imponibles': total_haberes_imponibles,
@@ -43,7 +46,7 @@ def finiquito(contrato2):
                             'total_no_imponibles' : total_no_haberes_imponibles,
                             'total_haberes' : total_haberes,
                             'total_liquido' : pago_liquido,
-                            'total_liquido_palabras' : numero_a_letras(pago_liquido),
+                            'liquido_en_palabras' : numero_a_letras(pago_liquido),
                             'fondo_pension' : afp,
                             'aporte_salud' : salud,
                             'total_leyes_sociales': total_descuento,

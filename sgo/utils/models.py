@@ -144,6 +144,10 @@ class Bono(models.Model):
         default=True,
         help_text='Para desactivar el bono, deshabilite esta casilla.'
     )
+    imponible = models.BooleanField(
+        default=True,
+        help_text='Para desactivar el bono, deshabilite esta casilla.'
+    )
     created_date = models.DateTimeField(
         default= timezone.now,
         null=True,
@@ -154,6 +158,10 @@ class Bono(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self)
+        if (self.imponible):
+            item['tipo'] = "Imponible"
+        else:
+            item['tipo'] = "No Imponible"
         item['nombre'] = self.nombre.title()
         item['alias'] = self.alias.title()
         return item

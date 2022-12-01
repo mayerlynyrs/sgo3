@@ -68,7 +68,8 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
-        $('textarea[name="descripcion"]').val(data.descripcion);
+        $('textarea[name="descripcion"]').val(data.descripcion); 
+        $('input:checkbox[name=imponible]').attr('checked',data.imponible);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#153264';
         btn.style.backgroundColor= '#153264';
@@ -86,7 +87,8 @@ $(function () {
         $('input[name="id"]').val(data.id);
         $('input[name="nombre"]').val(data.nombre);
         $('input[name="alias"]').val(data.alias);
-        $('textarea[name="descripcion"]').val(data.descripcion);
+        $('textarea[name="descripcion"]').val(data.descripcion); 
+        $('input:checkbox[name=imponible]').attr('checked',data.imponible);
         var btn = document.getElementById("boton");
         btn.style.borderColor= '#de555e';
         btn.style.backgroundColor= '#de555e';

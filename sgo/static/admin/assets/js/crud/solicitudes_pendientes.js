@@ -27,6 +27,7 @@ function getData() {
             {"data": "trabajador"},
             {"data": "plazos"},
             {"data": "contrato"},
+            {"data": "feriado"},
             {"data": "id"},
    
         ],
