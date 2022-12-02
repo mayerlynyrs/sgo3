@@ -84,7 +84,7 @@ img {
         {% if not employee.id == request.user.id %}
           <tr>
             <td class="text-left" style="width:40%">
-                <a title="Editar" href="{% url 'users:create_trabajador' employee.user.id %}?page={{ request.GET.page }}">
+                <a title="Editar" href="{% url 'users:create-trabajador' employee.user.id %}?page={{ request.GET.page }}">
                   <div class="img-div">
                     {{ employee.user.groups.first.name|image_profile|safe }}<br>
                     {{ employee.is_active|tag_active|safe }}
@@ -124,7 +124,7 @@ img {
             </td>
             <td class="text-left" style="width:10%">
               {% if employee.terminos_condiciones == False %}
-                <a title="Autorización Firma Electrónica" id="boton" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
+                <a title="Autorización Firma Electrónica" id="btn_autoriza" data-id="{{ employee.user.id }}" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" rel="delete" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
               {% endif %}
               <!-- <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp
               <a title="Lista Negra" href="#" rel="delete" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-user-times"></i></a> &nbsp &nbsp
@@ -167,17 +167,29 @@ img {
 
 var enviando = false;
 // Botón de Autorización Firma Electrónica
-$('#boton').on('click', function(e){
+$('#btn_autoriza').on('click', function(e){
+  var id = $(this).data('id');
+  var URL = '/users/'+id+'/autorizacion/';
+  $.ajax({
+      url: URL,
+      type: 'get',
+      dataType: 'json',
+  });
     $(this).prop('disabled', true);
     $(this).addClass('disabled');
 
     e.preventDefault();
 
-    var $form = $('#boton');
+    var $form = $('#btn_autoriza');
       if(!enviando){
           enviando = true;
           $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Enviando...');
           $form.submit();
+          iziToast.success({
+            message: 'Autorización de Firma Electrónica enviada Exitosamente',
+            position: 'topRight',
+          });
+          window.location.reload();
       }else{
           console.log("El formulario ya se esta enviando...");
       }

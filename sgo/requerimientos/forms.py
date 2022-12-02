@@ -16,6 +16,7 @@ class RequerimientoCreateForm(forms.ModelForm):
     REGIMEN_PGP = 'PGP'
     URGENCIA = 'URG'
     CONTINGENCIA = "CON"
+
     REGIMEN_ESTADO = (
         (NORMAL, 'Normal'),
         (REGIMEN_PGP, 'Régimen PGP'),

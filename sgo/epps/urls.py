@@ -10,9 +10,9 @@ from epps import views
 
 urlpatterns = [
     path(
-        route='tipo/list/',
+        route='',
         view=views.TipoListView.as_view(),
-        name="list-tipo"
+        name="list"
     ),
     path(
         route='insumo',

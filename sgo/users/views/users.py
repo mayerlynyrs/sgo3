@@ -737,7 +737,7 @@ class TrabajadoresIdView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Trabajadores'
         context['list_url'] = reverse_lazy('users:<int:user_id>/create')
-        context['update_url'] = reverse_lazy('users:create_trabajador')
+        context['update_url'] = reverse_lazy('users:create-trabajador')
         context['entity'] = 'Trabajador'
         context['usuario'] = user
         context['trabajador'] = trabajador
@@ -891,7 +891,7 @@ def create_trabajador(request):
             )
 
             messages.success(request, 'Trabajador Creado Exitosamente')
-            return redirect('users:create_trabajador', user.id)
+            return redirect('users:create-trabajador', user.id)
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
  
@@ -1003,7 +1003,6 @@ def autorizacion_trabajador(request, trabajador_id):
             path = os.path.join(ruta_documentos)
             # Si carpeta no existe, crea carpeta de contratos.
             carpeta = 'autorizaciones'
-            exit()
 
             try:
                 os.mkdir(path + carpeta)
@@ -1109,8 +1108,10 @@ def autorizacion_trabajador(request, trabajador_id):
                 api.status = True
                 api.save()
                 messages.success(request, 'Autorización de Firma Electrónica enviada Exitosamente')
+                data = True
         
-        return redirect('users:list_trabajador')
+        # return redirect('users:list_trabajador')
+        return JsonResponse(data, safe=False)
 
 
 class ContactoView(TemplateView):

@@ -40,13 +40,15 @@ class Requerimiento(BaseModel):
 
     """
     NORMAL = 'NOR'
-    PARADA_GENERAL_PLANTA = 'PGP'
+    REGIMEN_PGP = 'PGP'
     URGENCIA = 'URG'
+    CONTINGENCIA = "CON"
 
     REGIMEN_ESTADO = (
         (NORMAL, 'Normal'),
-        (PARADA_GENERAL_PLANTA, 'Parada Planta'),
+        (REGIMEN_PGP, 'Régimen PGP'),
         (URGENCIA, 'Urgencia'),
+        (CONTINGENCIA, 'Contingencia'),
     )
 
     codigo = models.CharField(

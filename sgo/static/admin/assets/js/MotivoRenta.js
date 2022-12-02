@@ -45,11 +45,11 @@
 }
 function ver_documento(){
 
-// var elemento = document.getElementById("id_tipo_documento").value
-//   if (elemento == ""){
-//     iziToast.error({
-//       message: 'Debe ingresar Tipo Contrato',
-//       position: 'topRight',
-//     });
-// }
+var elemento = document.getElementById("id_tipo_documento").value
+  if (elemento == ""){
+    iziToast.error({
+      message: 'Debe ingresar Tipo Contrato',
+      position: 'topRight',
+    });
+}
 }
