@@ -61,9 +61,9 @@ urlpatterns = [
     ),
     # Crea el trabajador
     path(
-        route='list-trabajador',
+        route='trabajador/list',
         view=views.TrabajadorListView.as_view(),
-        name='list_trabajador'
+        name='list-trabajador'
      ),
     path(
         route='<int:trabajador_id>/autorizacion/',
@@ -71,14 +71,14 @@ urlpatterns = [
         name="autorizacion"
     ),
     path(
-        route='create-trabajador',
+        route='trabajador/create',
         view=views.create_trabajador,
-        name="create_trabajador"
+        name="create-trabajador"
     ),
     path(
-        route='<int:user_id>/create_trabajador/', 
+        route='trabajador/<int:user_id>/create/', 
         view=views.TrabajadoresIdView.as_view(),
-        name='create_trabajador'
+        name='create-trabajador'
     ),
     path(
         route='<int:pk>/terminos_condiciones/',

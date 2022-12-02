@@ -25,7 +25,7 @@
             <i class="fab fa-dochub"></i>
             Mis Contratos <span class="badge pull-right">10</span></a></li>
           {% if request.user.is_staff %}
-            <li><a href="{% url "admin:index" %}" target="_blank">
+            <li><a href="{% url 'admin:index' %}" target="_blank">
               <i class="fa fa-wrench"></i> Administración</a>
             </li>
           {% endif %}
@@ -67,7 +67,7 @@
         </ul>
       </li>
       {% endif %}
-      {% if perms.agendamientos.view_agendamiento%}
+      {% if perms.agendamientos.view_agendamiento %}
       <li class="has-sub {% if menu_app == 'agendamientos' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -76,10 +76,10 @@
         </a>
         <ul class="sub-menu">
         {% if perms.agendamientos.add_agendamiento %}
-          <li {% if menu_app == 'agendamientos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'agendamientos:listAgenda' %}">Agendar </a></li>
+          <li {% if menu_app == 'agendamientos' and menu_page == 'listAgenda' %} class="active"{% endif %}><a href="{% url 'agendamientos:listAgenda' %}">Agendar </a></li>
         {% endif %}
-        {% if perms.agendamientos.add_agendamiento %}
-          <li {% if menu_app == 'agendamientos2' and menu_page == None %} class="active"{% endif %}><a href="{% url 'agendamientos:solicitudes' %}">Mis Solicitudes </a></li>
+        {% if perms.agendamientos.view_agendamiento %}
+          <li {% if menu_app == 'agendamientos' and menu_page == 'solicitudes' %} class="active"{% endif %}><a href="{% url 'agendamientos:solicitudes' %}">Mis Solicitudes </a></li>
         {% endif %}
         </ul>
       </li>
@@ -93,13 +93,13 @@
         </a>
         <ul class="sub-menu">
           {% if perms.psicologos.add_psicologico %}
-            <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
+            <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list' %}">Evaluaciones</a></li>
           {% endif %}
           {% if perms.psicologos.view_psicologico %}
-            <li {% if menu_app == 'psicologos' and menu_page == report %} class="active"{% endif %}><a href="{% url 'psicologos:evalu-terminadas' %}">Evaluaciones Realizadas</a></li>
+            <li {% if menu_app == 'psicologos' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'psicologos:evalu-terminadas' %}">Evaluaciones Realizadas</a></li>
           {% endif %}
           {% if perms.psicologos.add_psicologico %}
-            <li {% if menu_app == 'psicologos' and menu_page == None %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
+            <li {% if menu_app == 'psicologos' and menu_page == 'report' %} class="active"{% endif %}><a href="{% url 'psicologos:list-solicitudes' %}">Revisión de Solicitudes</a></li>
           {% endif %}
           </ul>
       </li>
@@ -112,7 +112,7 @@
           <span>Exámenes </span>
         </a>
         <ul class="sub-menu">
-          {% if perms.contratos.view_plantilla %}
+          {% if perms.examenes.add_examen %}
             <li class="has-sub {% if menu_module == 'examengeneral' %}expand{% else %}closed{% endif %}">
                   <a href="javascript:;">
                     <b class="caret"></b>
@@ -120,19 +120,19 @@
                   </a>
                   <ul class="sub-menu" style=>
                     <li {% if menu_module == 'examengeneral' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'examenes:listEvaluaciones' %}">Evaluaciones</a></li>
-                    {% if perms.contratos.add_plantilla %}
+                    {% if perms.examenes.change_examen %}
                     <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'examenes:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
                     {% endif %}
                     <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:list-solicitudes' %}">Revisión de Solicitudes </a></li>
                   </ul>
                 </li>
           {% endif %}
-          <li {% if menu_app == 'examenes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:examen' %}">Exámenes</a></li>
-        {% if perms.examenes.add_examen %}
-          <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:bateria' %}">Baterías</a></li>
+          <li {% if menu_app == 'examenes' and menu_page == 'examen' %} class="active"{% endif %}><a href="{% url 'examenes:examen' %}">Exámenes</a></li>
+        {% if perms.examenes.add_bateria %}
+          <li {% if menu_app == 'examenes' and menu_page == 'bateria' %} class="active"{% endif %}><a href="{% url 'examenes:bateria' %}">Baterías</a></li>
         {% endif %}
-        {% if perms.examenes.add_examen %}
-          <li {% if menu_app == 'examenes' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'examenes:centroMedico' %}">Centro Médico</a></li>
+        {% if perms.examenes.add_centromedico %}
+          <li {% if menu_app == 'examenes' and menu_page == 'centroMedico' %} class="active"{% endif %}><a href="{% url 'examenes:centroMedico' %}">Centro Médico</a></li>
         {% endif %}
         </ul>
       </li>
@@ -145,9 +145,9 @@
           <span>Clientes </span>
         </a>
         <ul class="sub-menu"> 
-          <li {% if menu_app == 'cliente' and menu_page == None %} class="active"{% endif %}><a href="{% url 'clientes:list_cliente' %}">Ver Clientes </a></li>
+          <li {% if menu_app == 'clientes' and menu_page == None %} class="active"{% endif %}><a href="{% url 'clientes:list' %}">Ver Clientes </a></li>
         {% if perms.clientes.add_cliente %}
-          <li {% if menu_app == 'cliente' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'clientes:create_cliente' %}">Crear Cliente</a></li>
+          <li {% if menu_app == 'clientes' and menu_page == 'create_cliente' %} class="active"{% endif %}><a href="{% url 'clientes:create_cliente' %}">Crear Cliente</a></li>
         {% endif %}
         </ul>
       </li>
@@ -160,11 +160,11 @@
           <span>Insumos/EPP </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'epp' and menu_page == None %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Tipos Insumos</a></li>
+          <li {% if menu_app == 'epps' and menu_page == None %} class="active"{% endif %}><a href="{% url 'epps:list' %}">Tipos Insumos</a></li>
         {% if perms.epps.add_insumo %}
-          <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:insumo' %}">Insumos</a></li>
-          <!-- <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Convenio</a></li>
-          <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list-tipo' %}">Convenio Detalle</a></li> -->
+          <li {% if menu_app == 'epps' and menu_page == 'insumo' %} class="active"{% endif %}><a href="{% url 'epps:insumo' %}">Insumos</a></li>
+          <!-- <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list' %}">Convenio</a></li>
+          <li {% if menu_app == 'epp' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'epps:list' %}">Convenio Detalle</a></li> -->
         {% endif %}
         </ul>
       </li>
@@ -192,43 +192,43 @@
 							</li>
         {% endif %}
         {% if perms.contratos.view_contrato %}
-          <li class="has-sub {% if menu_module == 'revision' %}expand{% else %}closed{% endif %}">
+          <li class="has-sub {% if menu_app == 'contratos' %}expand{% else %}closed{% endif %}">
 								<a href="javascript:;">
 									<b class="caret"></b>
 									Contratos
 								</a>
-								<ul class="sub-menu" style="{% if menu_module == 'revision' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:solicitud-contrato' %}">Pendientes</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:list-completa' %}">Completas</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:list-baja-contrato' %}">En proceso de baja</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:bajadas-contrato' %}">Bajadas</a></li>
+								<ul class="sub-menu" style="{% if menu_app == 'contratos' %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_app == 'contratos' and menu_page == 'solicitudes' %}class="active"{% endif %}><a href="{% url 'contratos:solicitudes-contrato' %}">Pendientes</a></li>
+									<li {% if menu_app == 'contratos' and menu_page == 'completas' %}class="active"{% endif %}><a href="{% url 'contratos:completas-contrato' %}">Completas</a></li>
+									<li {% if menu_app == 'contratos' and menu_page == 'bajas' %}class="active"{% endif %}><a href="{% url 'contratos:bajas-contrato' %}">En proceso de baja</a></li>
+									<li {% if menu_app == 'contratos' and menu_page == 'bajadas' %}class="active"{% endif %}><a href="{% url 'contratos:bajadas-contrato' %}">Bajadas</a></li>
 								</ul>
 							</li>
         {% endif %}
 
-        {% if perms.contratos.view_contrato %}
-          <li class="has-sub {% if menu_module == 'revision' %}expand{% else %}closed{% endif %}">
+        {% if perms.contratos.view_anexo %}
+          <li class="has-sub {% if menu_module == 'anexo' %}expand{% else %}closed{% endif %}">
 								<a href="javascript:;">
 									<b class="caret"></b>
 									Anexos
 								</a>
-								<ul class="sub-menu" style="{% if menu_module == 'revision' %}display: block;{% else %}display: none;{% endif %}">
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:solicitud-anexo' %}">Pendientes</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:list-completa-anexo' %}">Completas</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:list-baja-anexo' %}">En proceso de baja</a></li>
-									<li {% if menu_module == revision and menu_page == 'tipo-contratos' %}class="active"{% endif %}><a href="{% url 'contratos:bajadas-anexo' %}">Bajadas</a></li>
+								<ul class="sub-menu" style="{% if menu_module == 'anexo' %}display: block;{% else %}display: none;{% endif %}">
+									<li {% if menu_module == 'anexo' and menu_page == 'solicitud' %}class="active"{% endif %}><a href="{% url 'contratos:solicitud-anexo' %}">Pendientes</a></li>
+									<li {% if menu_module == 'anexo' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list-anexo' %}">Completas</a></li>
+									<li {% if menu_module == 'anexo' and menu_page == 'baja' %}class="active"{% endif %}><a href="{% url 'contratos:baja-anexo' %}">En proceso de baja</a></li>
+									<li {% if menu_module == 'anexo' and menu_page == 'bajada' %}class="active"{% endif %}><a href="{% url 'contratos:bajada-anexo' %}">Bajadas</a></li>
 								</ul>
 							</li>
         {% endif %}
         {% if perms.contratos.view_contrato %}
-          <li class="has-sub {% if menu_module == 'contrato' %}expand{% else %}closed{% endif %}">
+          <li class="has-sub {% if menu_module == 'contract' %}expand{% else %}closed{% endif %}">
 						<a href="javascript:;">
 							<b class="caret"></b>
 							Más contratos
 						</a>
-						<ul class="sub-menu" style="{% if menu_module == 'contrato' %}display: block;{% else %}display: none;{% endif %}">
-						  <li {% if menu_module == None and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
-						  <li {% if menu_module == contrato and menu_page == 'puesta-disposicion' %}class="active"{% endif %}><a href="{% url 'contratos:puesta-disposicion' %}">Parámetro P.D.</a></li>
+						<ul class="sub-menu" style="{% if menu_module == 'contract' %}display: block;{% else %}display: block;{% endif %}">
+						  <li {% if menu_module == 'contract' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'contratos:list' %}">Ver Contratos</a></li>
+						  <li {% if menu_module == 'contract' and menu_page == 'puesta' %}class="active"{% endif %}><a href="{% url 'contratos:puesta-disposicion' %}">Parámetro P.D.</a></li>
 						</ul>
 					</li>
         {% endif %}
@@ -251,11 +251,11 @@
         {% if perms.firmas.add_firma %}
           <li {% if menu_app == 'firmas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'firmas:list' %}">Ver Contratos </a></li>
         {% endif %}
-          <li {% if menu_app == 'firmas' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-contrato' %}">Contratos Enviados</a></li>
+          <li {% if menu_app == 'firmas' and menu_page == 'enviado' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-contrato' %}">Contratos Enviados</a></li>
         {% if perms.firmas.add_firma %}
-        <li {% if menu_app == 'firmas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'firmas:list-anexo' %}">Ver Anexos </a></li>
+          <li {% if menu_app == 'firmas' and menu_page == 'list-anexo' %} class="active"{% endif %}><a href="{% url 'firmas:list-anexo' %}">Ver Anexos </a></li>
         {% endif %}
-        <li {% if menu_app == 'firmas' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-anexo' %}">Anexos Enviados</a></li>
+          <li {% if menu_app == 'firmas' and menu_page == 'enviado-anexo' %} class="active"{% endif %}><a href="{% url 'firmas:enviado-anexo' %}">Anexos Enviados</a></li>
         </ul>
       </li>
       {% endif %}
@@ -289,23 +289,23 @@
                     Usuarios
                   </a>
                   <ul class="sub-menu" style="{% if menu_module == 'user' %}display: block;{% else %}display: none;{% endif %}">
-                    <li {% if menu_module == 'user' and menu_page == 'None' %}class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
+                    <li {% if menu_app == 'user' and menu_page == None %}class="active"{% endif %}><a href="{% url 'users:list' %}">Ver Usuarios</a></li>
                     {% if perms.users.add_user %}
-                    <li {% if menu_module == 'user' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
+                    <li {% if menu_app == 'user' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
                     {% endif %}
                   </ul>
                 </li>
           {% endif %}
           {% if perms.users.view_trabajador %}
-            <li class="has-sub {% if menu_module == 'user' %}expand{% else %}closed{% endif %}">
+            <li class="has-sub {% if menu_module == 'trabajador' %}expand{% else %}closed{% endif %}">
                   <a href="javascript:;">
                     <b class="caret"></b>
                     Trabajadores
                   </a>
-                  <ul class="sub-menu" style="{% if menu_module == 'user' %}display: block;{% else %}display: none;{% endif %}">
-                    <li {% if menu_module == 'user' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'users:list_trabajador' %}">Ver Trabajadores</a></li>
+                  <ul class="sub-menu" style="{% if menu_module == 'trabajador' %}display: block;{% else %}display: none;{% endif %}">
+                    <li {% if menu_module == 'trabajador' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'users:list-trabajador' %}">Ver Trabajadores</a></li>
                     {% if perms.users.add_trabajador %}
-                    <li {% if menu_module == 'user' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create_trabajador' %}">Crear Trabajador</a></li>
+                    <li {% if menu_module == 'trabajador' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'users:create-trabajador' %}">Crear Trabajador</a></li>
                     {% endif %}
                   </ul>
                 </li>
@@ -315,13 +315,13 @@
         <li {% if menu_app == 'users' and menu_page == 'create' %} class="active"{% endif %}><a href="{% url 'users:create' %}">Crear Usuario</a></li>
         {% endif %} -->
         {% if perms.users.add_listanegra %}
-        <li {% if menu_app == 'users.listanegra' and menu_page == 'lista_negra' %} class="active"{% endif %}><a href="{% url 'users:lista_negra' %}">Lista Negra</a></li>
+          <li {% if menu_app == 'users' and menu_page == 'lista_negra' %}class="active"{% endif %}><a href="{% url 'users:lista_negra' %}">Lista Negra</a></li>
         {% endif %}
-        {% if perms.users.view_profesion %}
-				<li {% if menu_module == 'users' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
+        {% if perms.users.add_profesion %}
+				  <li {% if menu_app == 'users' and menu_page == 'profesion' %}class="active"{% endif %}><a href="{% url 'users:profesion' %}">Profesiones</a></li>
         {% endif %}
-        {% if perms.users.view_especialidad %}
-        <li {% if menu_module == 'users' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
+        {% if perms.users.add_especialidad %}
+          <li {% if menu_app == 'users' and menu_page == 'especialidad' %}class="active"{% endif %}><a href="{% url 'users:especialidad' %}">Especialidades</a></li>
         {% endif %}
         </ul>
       </li>
@@ -334,41 +334,41 @@
         </a>
         <ul class="sub-menu">
         {% if perms.utils.view_area %}
-          <li {% if menu_app == 'utils' and menu_page == area %} class="active"{% endif %}><a href="{% url 'utils:area' %}">Áreas</a></li>
+          <li {% if menu_app == 'utils' and menu_page == 'area' %} class="active"{% endif %}><a href="{% url 'utils:area' %}">Áreas</a></li>
         {% endif %}
         {% if perms.utils.view_cargo %}
-        <li {% if menu_app == 'utils' and menu_page == cargo %} class="active"{% endif %}><a href="{% url 'utils:cargo' %}">Cargos</a></li>
+        <li {% if menu_app == 'utils' and menu_page == 'cargo' %} class="active"{% endif %}><a href="{% url 'utils:cargo' %}">Cargos</a></li>
         {% endif %}
         {% if perms.users.view_afp %}
-          <li class="has-sub {% if menu_module == 'afp' %}expand{% else %}closed{% endif %}">
+          <li class="has-sub {% if menu_module == 'utils' %}expand{% else %}closed{% endif %}">
 						<a href="javascript:;">
 							<b class="caret"></b>
 							AFP
 						</a>
-						<ul class="sub-menu" style="{% if menu_module == 'afp' %}display: block;{% else %}display: none;{% endif %}">
-							<li {% if menu_module == 'afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
+						<ul class="sub-menu" style="{% if menu_module == 'utils' %}display: block;{% else %}display: none;{% endif %}">
+							<li {% if menu_module == 'utils' and menu_page == 'afp' %}class="active"{% endif %}><a href="{% url 'utils:afp' %}">Crear Afp</a></li>
                 {% if perms.users.add_afp %}
-							<li {% if menu_module == 'valores_diarios' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
-							<li {% if menu_module == 'vdiarios_afp' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
+							<li {% if menu_module == 'utils' and menu_page == 'valores_diarios' %}class="active"{% endif %}><a href="{% url 'utils:valores_diarios' %}">Valores Diarios</a></li>
+							<li {% if menu_module == 'utils' and menu_page == 'vdiarios_afp' %}class="active"{% endif %}><a href="{% url 'utils:vdiarios_afp' %}">Valores Diarios <b>AFP</b></a></li>
                 {% endif %}
 						</ul>
 					</li>
         {% endif %}
         {% if perms.users.view_salud %}
-        <li {% if menu_module == 'users' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:salud' %}">Sistema de Salud</a></li>
+          <li {% if menu_app == 'utils' and menu_page == 'salud' %}class="active"{% endif %}><a href="{% url 'utils:salud' %}">Sistema de Salud</a></li>
         {% endif %}
         {% if perms.utils.view_bono %}
-        <li {% if menu_module == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Bonos</a></li>
+          <li {% if menu_app == 'utils' and menu_page == 'bono' %}class="active"{% endif %}><a href="{% url 'utils:bono' %}">Bonos</a></li>
         {% endif %}
         {% if perms.utils.view_horario %}
-        <li {% if menu_module == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
+          <li {% if menu_app == 'utils' and menu_page == 'horario' %}class="active"{% endif %}><a href="{% url 'utils:horario' %}">Horarios</a></li>
         {% endif %}
         {% if perms.utils.view_motivobaja %}
           <li {% if menu_app == 'utils' and menu_page == motivobaja %} class="active"{% endif %}><a href="{% url 'utils:motivo-baja' %}">Motivo Baja</a></li>
         {% endif %}
         </ul>
       </li>
-      {% if perms.consultas.view_consulta %}
+      {% if perms.requerimientos.view_requerimiento %}
       <li class="has-sub {% if menu_app == 'consultas' %}active{% endif %}">
         <a href="javascript:;">
           <b class="caret"></b>
@@ -376,18 +376,18 @@
           <span>Consultas </span>
         </a>
         <ul class="sub-menu">
-          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:consulta-requerimiento' %}">Consulta General Requerimientos </a></li>
-          {% if perms.contratos.view_plantilla %}
-            <li class="has-sub {% if menu_module == 'plantilla' %}expand{% else %}closed{% endif %}">
+          <li {% if menu_app == 'consultas' and menu_page == None %} class="active"{% endif %}><a href="{% url 'consultas:list' %}">Consulta General Requerimientos </a></li>
+          {% if perms.requerimientos.add_requerimiento %}
+            <li class="has-sub {% if menu_module == 'consultas' %}expand{% else %}closed{% endif %}">
                   <a href="javascript:;">
                     <b class="caret"></b>
                     EPPs
                   </a>
-                  <ul class="sub-menu" style="{% if menu_module == 'plantilla' %}display: block;{% else %}display: none;{% endif %}">
-                    <li {% if menu_module == 'consultas' and menu_page == 'None' %}class="active"{% endif %}><a href="{% url 'consultas:consulta-epps' %}">Consulta General EPPs</a></li>
-                    {% if perms.contratos.add_plantilla %}
-                    <li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'consultas:requerimiento-epps' %}">Epps/Trabajador(es)</a></li>
-                    <li {% if menu_module == 'plantilla' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'consultas:convenio-clientes' %}">Convenio/Cliente(s)</a></li>
+                  <ul class="sub-menu" style="{% if menu_module == 'consultas' %}display: block;{% else %}display: none;{% endif %}">
+                      <li {% if menu_module == 'consultas' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'consultas:create' %}">Convenio/Cliente(s)</a></li>
+                    {% if perms.epps.view_conveniorequerimiento %}
+                      <li {% if menu_module == 'epps' and menu_page == None %}class="active"{% endif %}><a href="{% url 'consultas:epps' %}">Consulta General EPPs</a></li>
+                      <li {% if menu_module == 'consultas' and menu_page == 'requerimiento' %}class="active"{% endif %}><a href="{% url 'consultas:requerimiento-epps' %}">Epps/Trabajador(es)</a></li>
                     {% endif %}
                   </ul>
                 </li>

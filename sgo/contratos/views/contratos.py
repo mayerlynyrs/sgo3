@@ -3,9 +3,11 @@
 from datetime import date, datetime, timedelta
 from docx2pdf import convert
 from django.core.serializers import serialize
-import base64
 # Django
 import os
+import base64
+import requests
+import json
 import xlwt
 from django.http import HttpResponse
 import pythoncom
@@ -48,6 +50,7 @@ from users.models import User, Trabajador, ValoresDiarioAfp
 from clientes.models import Planta
 from utils.models import PuestaDisposicion
 from examenes.models import  Requerimiento as RequerimientoExam
+from firmas.models import Firma
 # Form
 from contratos.forms import PuestaDisposicionForm, TipoContratoForm, ContratoForm, ContratoEditarForm, MotivoBajaForm, CompletasForm
 from requerimientos.forms import RequeriTrabajadorForm
@@ -1108,7 +1111,16 @@ def enviar_revision_contrato(request, contrato_id):
             contrato = get_object_or_404(Contrato, pk=contrato_id)
             # Trae el id de la planta del Requerimiento
             plant_template = Contrato.objects.values_list('planta', flat=True).get(pk=contrato_id, status=True)
-            # Busca si la planta tiene plantilla
+            # Busca si la planta tiene plantilla           
+            if not Plantilla.objects.filter(plantas=plant_template,  tipo_id=contrato.tipo_documento).exists():
+                messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
+                return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
+
+            else:
+                contrato.estado_contrato = 'PV'
+                contrato.fecha_solicitud = datetime.now()
+                contrato.save()
+            
             
             bonoimp = ContratosBono.objects.values('bono__nombre','valor', 'bono__imponible').filter(contrato_id=contrato_id, bono__imponible = True)
             bonosimponibles = []
@@ -1139,14 +1151,6 @@ def enviar_revision_contrato(request, contrato_id):
             else:
                 titulonoimponible = ''
                 bonosnoimponibles= ''
-           
-            if not Plantilla.objects.filter(plantas=plant_template,  tipo_id=contrato.tipo_documento).exists():
-                messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
-                return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
-
-            else:
-                contrato.estado_contrato = 'PV'
-                contrato.fecha_solicitud = datetime.now()
                 
                 try:
                     revision = Revision.objects.get(contrato_id=contrato_id)
@@ -1205,7 +1209,7 @@ def enviar_revision_contrato(request, contrato_id):
                                 'motivo_req': contrato.motivo,
                                 'cargo': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
                                 'sueldo_base_numeros': valor_mensual,
-                                'fecha_pago': fecha_pago ,
+                                'fecha_pago': fecha_pago,
                                 'sueldo_base_palabras':  valor_mensual_palabras,
                                 'tituloimponible' : tituloimponible,
                                 'titulonoimponible' : titulonoimponible,
@@ -1273,6 +1277,7 @@ def enviar_revision_contrato(request, contrato_id):
                         # Elimino el documento word.
                         os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
                         messages.success(request, 'Contrato enviado a revisión Exitosamente')
+                        data = True
                     except:
                         path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
                         doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
@@ -1307,8 +1312,10 @@ def enviar_revision_contrato(request, contrato_id):
                         # Elimino el documento word.
                         os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
                         messages.success(request, 'Contrato enviado a revisión Exitosamente')
+                        data = True
                 
-                return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
+                # return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
+                return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -1328,18 +1335,18 @@ def carta_termino(request):
         messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
         return redirect('contratos:create_contrato', requerimientotrabajador)
     else:
-        ct = FinRequerimiento()
-        ct.tipo = request.POST['tipo']
-        ct.archivo = 'Creando'
-        ct.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id']
-        ct.fecha_termino = request.POST['fecha_termino']
-        ct.save()
+        fin = FinRequerimiento()
+        fin.tipo = request.POST['tipo']
+        fin.archivo = 'Creando'
+        fin.requerimiento_trabajador_id = request.POST['requerimiento_trabajador_id']
+        fin.fecha_termino = request.POST['fecha_termino']
+        fin.save()
         # Se actualiza el campo fin_requerimiento_id de Contrato
         contrato = Contrato.objects.get(pk=request.POST['contrato_id'])
-        contrato.fin_requerimiento_id = ct.id
+        contrato.fin_requerimiento_id = fin.id
         contrato.save()
         # Se actualiza el campo fin_requerimiento_id de Anexo
-        anexo = Anexo.objects.filter(contrato=contrato.id).update(fin_requerimiento_id = ct.id)
+        anexo = Anexo.objects.filter(contrato=contrato.id).update(fin_requerimiento_id = fin.id)
 
         formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=9)
         for formt in formato:
@@ -1350,7 +1357,7 @@ def carta_termino(request):
                         'nombres_trabajador': contrato.trabajador.first_name.title(),
                         'apellidos_trabajador': contrato.trabajador.last_name.title(),
                         'rut_trabajador': contrato.trabajador.rut,
-                        # 'fecha_pago': Contrato.objects.values_list('fecha_pago', flat=True).get(pk=contrato.id, status=True),
+                        'fecha_pago_diario': contrato.fecha_pago,
                         'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
             }
             rut_trabajador =  contrato.trabajador.rut
@@ -1370,36 +1377,65 @@ def carta_termino(request):
             # Contratos Parametros General, ruta_documentos donde guardara el documento
             ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
             path = os.path.join(ruta_documentos)
-            # Si carpeta no existe, crea carpeta de contratos.
-            carpeta = 'contratos'
-            try:
-                os.mkdir(path + carpeta)
-                path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
-                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id)  + '.docx')
-                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-                # convert("Contrato#1.docx")
+            path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+            doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id)  + '.docx')
+            win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
 
-                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
-                url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
-                ct = FinRequerimiento.objects.get(pk=ct.id)
-                ct.archivo = 'contratos/' + url
-                ct.save()
-                # Elimino el documento word.
-                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
-                messages.success(request, 'Carta de Término Creada Exitosamente')
-            except:
-                path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
-                doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id)  + '.docx')
-                win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+            convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
+            # Elimino el documento word.
+            os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
+            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+            # La Carta de Término se condidera un Fin del Requerimiento, se guardan los valores en la tabla FinRequerimientor
+            fin = FinRequerimiento.objects.get(pk=fin.id)
+            fin.archivo = 'contratos/' + url
+            fin.save()
+            # Se guarda la Carta de Término en la tabla DocumentosContrato
+            doc_contrato = DocumentosContrato(contrato=contrato, archivo=fin.archivo)
+            doc_contrato.tipo_documento_id = 9
+            doc_contrato.save()
+            messages.success(request, 'Carta de Término Creada Exitosamente')
+            # Ubico el archivo
+            ubicacion = ruta_documentos + str(fin.archivo)
+            with open(ubicacion, "rb") as pdf_file:
+                documento = base64.b64encode(pdf_file.read()).decode('utf-8')
+            document = f'{documento}'
+            
+            url = "https://app.ecertia.com/api/EviSign/Submit"
 
-                convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".docx", path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf")
-                url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
-                ct = FinRequerimiento.objects.get(pk=ct.id)
-                ct.archivo = 'contratos/' + url
-                ct.save()
-                # Elimino el documento word.
-                os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + '.docx')
-                messages.success(request, 'Carta de Término Creada Exitosamente')
+            payload = json.dumps({
+            "Subject": "Prueba Firma Carta Término",
+            "Document": document,
+            "SigningParties": {
+                "Name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
+                "Address": contrato.trabajador.email,
+                "SigningMethod": "Email Pin"
+            },
+            "Options": {
+                "TimeToLive": 1200,
+                "RequireCaptcha": False,
+                "NotaryRetentionPeriod": 0,
+                "OnlineRetentionPeriod": 1
+            },
+            "Issuer": "EVISA"
+            })
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+                        }
+
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            print('API', response.text)
+            # Se guarda en la tabla de Firma
+            api = Firma()
+            api.respuesta_api = response.text
+            api.rut_trabajador = rut_trabajador
+            api.estado_firma_id = 1
+            api.status = True
+            api.save()
+            messages.success(request, 'Carta de Término Enviada Exitosamente')
     return redirect('contratos:create_contrato', requerimientotrabajador)
 
 
@@ -1445,7 +1481,7 @@ def contrato_baja_completa(request, contrato_id, template_name='contratos/baja_c
         baja.contrato_id = contrato_id
         baja.motivo_id = request.POST['motivo']
         baja.save()
-        return redirect('contratos:list-completa')
+        return redirect('contratos:completas-contrato')
     else:
         context = {
             'form10': MotivoBajaForm,
@@ -1781,10 +1817,16 @@ class SolicitudContrato(TemplateView):
                 contrato.estado_contrato = 'RC'
                 contrato.save()
                 try:
+                    # borrar Pacto de Horas Extras = 14
                     doc_contrato = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 14 )
                     ruta = doc_contrato.archivo
-                    os.remove(path + 'contratos\\' + str(ruta))
+                    os.remove(path + str(ruta))
                     doc_contrato.delete()
+                    # borrar Finiquito = 11
+                    finiquito = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 11 )
+                    ruta = finiquito.archivo
+                    os.remove(path + str(ruta))
+                    finiquito.delete()
                 except:
                     print()
 

@@ -11,16 +11,16 @@ from consultas import views
 urlpatterns = [
     # Management
     path(
-        route='consulta_requerimiento',
+        route='',
         view=views.ConsultaRequerimientoView.as_view(),
-        name='consulta-requerimiento'
+        name='list'
      ),
     path('ajax/load-plantas/', views.load_plantas, name='ajax_load_plantas'), # AJAX
     path('buscarRequerimiento', views.buscar_requerimiento),
     path(
-        route='consulta_epps',
+        route='epps',
         view=views.ConsultaEppView.as_view(),
-        name='consulta-epps'
+        name='epps'
      ),
     path('ajax/load-areas-cargos/', views.load_areas_cargos, name='ajax_load_areas_cargos'), # AJAX
     path('buscarRequerimientoAC', views.buscar_requerimiento_ac),
@@ -31,9 +31,9 @@ urlpatterns = [
      ),
     path('buscarRequerimientoEpp', views.buscar_epps_requerimiento),
     path(
-        route='convenio_clientes',
+        route='create',
         view=views.ConvenioClienteView.as_view(),
-        name='convenio-clientes'
+        name='create'
      ),
     path('buscarConvenioCliente', views.buscar_convenio_cliente),
       

@@ -93,20 +93,20 @@ urlpatterns = [
         name="aprobacion_masiva_anexo"
     ),
     path(
-        route='solicitud-contrato/',
+        route='solicitudes/',
         view=views.SolicitudContrato.as_view(),
-        name="solicitud-contrato"
+        name="solicitudes-contrato"
     ),
     path(
-        route='list_completa',
+        route='completas',
         view=views.ContratoCompletaListView.as_view(),
-        name="list-completa"
+        name="completas-contrato"
     ),
     path('buscarContrato', views.buscar_contrato),
     path(
-        route='list_baja_contrato/',
+        route='bajas/',
         view=views.BajaContrato.as_view(),
-        name="list-baja-contrato"
+        name="bajas-contrato"
     ),
     path(
         route='<int:contrato_id>/solicitudes-pendientes/',
@@ -124,7 +124,7 @@ urlpatterns = [
         name="baja_contrato"
     ),
     path(
-        route='list_baja',
+        route='bajadas',
         view=views.ContratoBajaListView.as_view(),
         name="bajadas-contrato"
     ),
@@ -191,15 +191,15 @@ urlpatterns = [
         name="solicitudes_pendientes_anexo_baja"
     ),
     path(
-        route='anexo/list_completa',
+        route='anexo/list',
         view=views.AnexoCompletaListView.as_view(),
-        name="list-completa-anexo"
+        name="list-anexo"
     ),
     path('anexo/buscarAnexo', views.buscar_anexo),
     path(
-        route='anexo/list-baja/',
+        route='anexo/baja/',
         view=views.BajaAnexo.as_view(),
-        name="list-baja-anexo"
+        name="baja-anexo"
     ),
     path(
         route='<int:anexo_id>/baja_contrato_anexo/',
@@ -207,9 +207,9 @@ urlpatterns = [
         name="baja_contrato_anexo"
     ),
     path(
-        route='anexo/list_baja',
+        route='anexo/bajada',
         view=views.AnexoBajaListView.as_view(),
-        name="bajadas-anexo"
+        name="bajada-anexo"
     ),
     path('anexo/buscarBajaAnexo', views.buscar_baja_anexo),
     # Carta de Término

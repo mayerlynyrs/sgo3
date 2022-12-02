@@ -286,7 +286,7 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    rut = forms.CharField(required=True, label="RUT",
+    rut = forms.CharField(required=True, label="RUT Planta",
                           widget=forms.TextInput(attrs={'class': "form-control",
                           'onkeypress': "return isNumber(event)",
                           'onblur': "checkRut(this)",
@@ -295,7 +295,7 @@ class PlantaForm(forms.ModelForm):
                           ) 
     nombre = forms.CharField(required=True, label="Razón Social",
                                  widget=forms.TextInput(attrs={'class': "form-control "}))
-    telefono = forms.CharField(required=True, label="Teléfono",
+    telefono = forms.CharField(required=True, label="Teléfono Planta",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'maxlength': 12}))
     direccion = forms.CharField (required=True, label="Dirección",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -308,9 +308,9 @@ class PlantaForm(forms.ModelForm):
                           )
     nombre_gerente = forms.CharField(required=True, label="Nombre Gerente",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    direccion_gerente = forms.CharField (required=True, label="direccion gerente",
+    direccion_gerente = forms.CharField (required=True, label="Dirección Gerente",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
-    email = forms.EmailField(required=True,
+    email = forms.EmailField(required=True, label="Correo Planta",
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     gratificacion = forms.ModelChoiceField(queryset=Gratificacion.objects.all(), required=True, label="Gratificación",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
@@ -319,7 +319,7 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    bono = forms.ModelMultipleChoiceField(queryset=Bono.objects.all(), label="Bonos",
+    bono = forms.ModelMultipleChoiceField(queryset=Bono.objects.all(), required=False, label="Bonos",
                                             widget=forms.SelectMultiple(
                                                 attrs={'class': 'selectpicker show-tick form-control',
                                                        'data-size': '5',
@@ -334,14 +334,14 @@ class PlantaForm(forms.ModelForm):
                                                               'data-live-search-normalize': 'true'
                                                               })
                                    )
-    masso =forms.BooleanField(required=False,label='Masso',
+    masso =forms.BooleanField(required=False, label='Masso',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
                                                                    }))
-    psicologico =forms.BooleanField(required=False,label='Psicológico',
+    psicologico =forms.BooleanField(required=False, label='Psicológico',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
                                                                     'onclick' :"javascript:validar(this)",
                                                                    }))
-    hal2 =forms.BooleanField(required=False,label='Hal2',
+    hal2 =forms.BooleanField(required=False, label='Hal2',
                                  widget=forms.CheckboxInput(attrs={'class': "form-control-lg",
                                                                    'disabled':'disabled',})) 
     cod_uny_planta = forms.CharField(required=True, label="Código Unysoft",
@@ -349,34 +349,11 @@ class PlantaForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        planta = kwargs.pop('planta2', None)
+        planta = kwargs.pop('planta', None)
         print('planta', planta)
         cliente_id = kwargs.pop('cliente_id', None)
         print('cliente_id', cliente_id)
         super(PlantaForm, self).__init__(*args, **kwargs)
-
-        self.fields['provincia2'].queryset = Provincia.objects.none()
-
-        if 'region' in self.data:
-            try:
-                region_id = int(self.data.get('region'))
-                self.fields['provincia2'].queryset = Provincia.objects.filter(region_id=region_id).order_by('nombre')
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
-        elif self.instance.pk:
-            self.fields['provincia2'].queryset = self.instance.region.provincia_set.order_by('nombre')
-
-        self.fields['ciudad2'].queryset = Provincia.objects.none()
-
-        if 'provincia' in self.data:
-            try:
-                provincia_id = int(self.data.get('provincia'))
-                self.fields['ciudad2'].queryset = Ciudad.objects.filter(provincia_id=provincia_id).order_by('nombre')
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty Provincia queryset
-        elif self.instance.pk:
-            # self.fields['ciudad'].queryset = self.instance.region.provincia.ciudad_set.order_by('nombre')
-            self.fields['ciudad2'].queryset = self.instance.provincia.ciudad_set.order_by('nombre')
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -395,27 +372,35 @@ class PlantaForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
+                Column('bono', css_class='form-group col-md-6 mb-0'),
+                Column('gratificacion', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('masso', css_class='form-group col-md-2 mb-0'),
+                Column('psicologico', css_class='form-group col-md-2 mb-0'),
+                Column('hal2', css_class='form-group col-md-2 mb-0'),
+                Column('bateria', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('region2', css_class='form-group col-md-4 mb-0'),
                 Column('provincia2', css_class='form-group col-md-4 mb-0'),
                 Column('ciudad2', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
              Row(
-                Column('direccion', css_class='form-group col-md-12 mb-0'),
+                Column('direccion', css_class='form-group col-md-6 mb-0'),
+                Column('cod_uny_planta', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('nombre_gerente', css_class='form-group col-md-6 mb-0'),
                 Column('rut_gerente', css_class='form-group col-md-6 mb-0'),
+                Column('nombre_gerente', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('direccion_gerente', css_class='form-group col-md-12 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('gratificacion', css_class='form-group col-md-6 mb-0'),
-                Column('bono', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),         
 

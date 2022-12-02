@@ -203,6 +203,7 @@ function guardar_planta() {
             submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
                 $('#myModalPlanta').modal('hide');
                 tblPlanta.ajax.reload();
+                $('#myModalPlanta')[0].reset();
             });
             enviando = True;   
         });  

@@ -193,6 +193,7 @@ class Planta(models.Model):
     )
 
     rut = models.CharField(
+        verbose_name="Rut Planta",
         max_length=12,
         # validators=[rut_regex, ],
 
@@ -200,7 +201,7 @@ class Planta(models.Model):
             'unique': 'Ya existe una planta con este RUT registrado.'
         }
     )
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(verbose_name="Razón Social", max_length=100)
 
     rut_gerente = models.CharField(
         verbose_name="Rut Gerente",
@@ -226,7 +227,7 @@ class Planta(models.Model):
         null=True
     )
     email = models.EmailField(
-        'email address',
+        'Correo Planta',
         null=True,
         blank=True,
         max_length=50,
@@ -234,21 +235,18 @@ class Planta(models.Model):
             'unique': 'Ya existe un negocio con este email registrado.'
         }
     )
-    cod_uny_planta = models.CharField(
-        max_length=240,
-        null=True,
-    )
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
     cliente = models.ForeignKey(Cliente, related_name='championed_by', on_delete=models.CASCADE)
 
     region2 = models.ForeignKey(Region, verbose_name="Región", on_delete=models.SET_NULL, null=True)
 
-    provincia2 = models.ForeignKey(Provincia, on_delete=models.SET_NULL, null=True)
+    provincia2 = models.ForeignKey(Provincia, verbose_name="Provincia", on_delete=models.SET_NULL, null=True)
 
-    ciudad2 = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True)
+    ciudad2 = models.ForeignKey(Ciudad, verbose_name="Ciudad", on_delete=models.SET_NULL, null=True)
 
     direccion = models.CharField(
+        'Dirección Planta',
         max_length=200,
     )
 
@@ -277,7 +275,11 @@ class Planta(models.Model):
     )
 
     bateria = models.ForeignKey("examenes.Bateria", verbose_name="Batería", on_delete=models.PROTECT, null=True, blank=True)
-
+    
+    cod_uny_planta = models.CharField(
+        max_length=240,
+        null=True,
+    )
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la planta, deshabilite esta casilla.'

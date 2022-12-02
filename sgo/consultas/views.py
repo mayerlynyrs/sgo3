@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 from itertools import chain
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import ListView
 from requerimientos.models import Requerimiento, AreaCargo
 from epps.models import Insumo, ConvenioRequerimiento, ConvenioRequerTrabajador
@@ -21,6 +22,9 @@ class ConsultaRequerimientoView(ListView):
     #model = Requerimiento
     form_class = ConsultaClienteForm
     template_name = 'consultas/consulta_requerimiento.html'
+
+    permission_required = 'requerimientos.view_requerimiento'
+    raise_exception = True
     
     
     def get_queryset(self):
@@ -32,6 +36,9 @@ class ConsultaRequerimientoView(ListView):
         context ['form'] = ConsultaClienteForm(instance=Cliente)
         return context
 
+
+@login_required
+@permission_required('requerimientos.view_requerimiento', raise_exception=True)
 def buscar_requerimiento(request):
     if request.method == 'POST':
         todo =  request.POST.get('todos')
@@ -66,6 +73,9 @@ class ConsultaEppView(ListView):
     #model = Convenio
     form_class = ConsultaEppRequForm
     template_name = 'consultas/consulta_epps.html'
+
+    permission_required = 'epps.view_conveniorequerimiento'
+    raise_exception = True
     
     
     def get_queryset(self):
@@ -77,6 +87,9 @@ class ConsultaEppView(ListView):
         context ['form'] = ConsultaEppRequForm(instance=ConvenioRequerimiento)
         return context
 
+
+@login_required
+@permission_required('requerimientos.view_requerimiento', raise_exception=True)
 def buscar_requerimiento_ac(request):
     if request.method == 'POST':
         # x = 1
@@ -106,6 +119,9 @@ def buscar_requerimiento_ac(request):
 class RequerimientoEppView(ListView):
     form_class = EppRequerimientoForm
     template_name = 'consultas/consulta_epps_requerimiento.html'
+
+    permission_required = 'epps.view_conveniorequerimiento'
+    raise_exception = True
     
     
     def get_queryset(self):
@@ -117,6 +133,9 @@ class RequerimientoEppView(ListView):
         context ['form'] = EppRequerimientoForm(instance=ConvenioRequerimiento)
         return context
 
+
+@login_required
+@permission_required('requerimientos.view_requerimiento', raise_exception=True)
 def buscar_epps_requerimiento(request):
     if request.method == 'POST':
         requerimiento = request.POST.get('requerimiento')
@@ -132,6 +151,9 @@ def buscar_epps_requerimiento(request):
 class ConvenioClienteView(ListView):
     form_class = ConvenioClienteForm
     template_name = 'consultas/consulta_convenio_cliente.html'
+
+    permission_required = 'requerimientos.view_requerimiento'
+    raise_exception = True
     
     
     def get_queryset(self):
@@ -143,6 +165,9 @@ class ConvenioClienteView(ListView):
         context ['form'] = ConvenioClienteForm(instance=Cliente)
         return context
 
+
+@login_required
+@permission_required('epps.view_conveniorequerimiento', raise_exception=True)
 def buscar_convenio_cliente(request):
     if request.method == 'POST':
         cliente = request.POST.get('cliente')
