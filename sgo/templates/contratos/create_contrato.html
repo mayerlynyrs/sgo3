@@ -743,63 +743,63 @@ $('.btn-view-editar-anexo').on('click', function(e){
 var enviando = false;
 //Submit form
 $('#boton').on('click', function(e){
-  $(this).prop('disabled', true);
-  $(this).addClass('disabled');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
 
-  e.preventDefault();
+    e.preventDefault();
 
-  var $form = $('#CContratoForm');
-  var validator = $form.validate({
-      ignore: "",
-      errorClass: "is-invalid",
-      validClass: "is-valid",
-      errorElement: 'div',
-      errorPlacement: function ( error, element ) {
-        error.addClass("invalid-feedback");
+    var $form = $('#CContratoForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
 
-        if(element.prop("type") === "checkbox") {
-          error.insertAfter(element.parent("label"));
-        }else{
-          error.insertAfter(element);
-        }
-
-        // Add the span element, if doesn't exists, and apply the icon classes to it.
-        if (!element.next("div")[0]) {
-          $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
-        }
-      },
-      wrapper: "",
-      rules: {
-              id_tipo_documento: "required",
-            },
-            messages: {
-              id_tipo_documento: "Selecciona un tipo de documento"
-      },
-      showErrors: function(errorMap, errorList) {
-          console.log('show messages', errorList.length);
-          if(errorList.length){
-              $('#msgbox').show('slow');
-              $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
-
-              this.defaultShowErrors();
-              console.log('Errores', errorMap, errorList);
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
           }
-    }
-  });
 
-  if(validator.form()){
-      if(!enviando){
-          enviando = true;
-          $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
-          $form.submit();
-      }else{
-          console.log("El formulario ya se esta enviando...");
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        rules: {
+                id_tipo_documento: "required",
+              },
+              messages: {
+                id_tipo_documento: "Selecciona un tipo de documento"
+        },
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
       }
-  }else{
-      console.log('Error en el formulario.');
-      $(this).removeClass('disabled');
-      $(this).prop('disabled', false);
-  }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
 
 })
 
@@ -807,57 +807,57 @@ $('#boton').on('click', function(e){
 var enviando = false;
 //Submit form
 $('#btn-contrato-diario').on('click', function(e){
-  $(this).prop('disabled', true);
-  $(this).addClass('disabled');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
 
-  e.preventDefault();
+    e.preventDefault();
 
-  var $form = $('#CDiarioForm');
-  var validator = $form.validate({
-      ignore: "",
-      errorClass: "is-invalid",
-      validClass: "is-valid",
-      errorElement: 'div',
-      errorPlacement: function ( error, element ) {
-        error.addClass("invalid-feedback");
+    var $form = $('#CDiarioForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
 
-        if(element.prop("type") === "checkbox") {
-          error.insertAfter(element.parent("label"));
-        }else{
-          error.insertAfter(element);
-        }
-
-        // Add the span element, if doesn't exists, and apply the icon classes to it.
-        if (!element.next("div")[0]) {
-          $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
-        }
-      },
-      wrapper: "",
-      showErrors: function(errorMap, errorList) {
-          console.log('show messages', errorList.length);
-          if(errorList.length){
-              $('#msgbox').show('slow');
-              $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
-
-              this.defaultShowErrors();
-              console.log('Errores', errorMap, errorList);
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
           }
-    }
-  });
 
-  if(validator.form()){
-      if(!enviando){
-          enviando = true;
-          $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
-          $form.submit();
-      }else{
-          console.log("El formulario ya se esta enviando...");
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
       }
-  }else{
-      console.log('Error en el formulario.');
-      $(this).removeClass('disabled');
-      $(this).prop('disabled', false);
-  }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
 
 })
 
@@ -865,22 +865,22 @@ $('#btn-contrato-diario').on('click', function(e){
 {% if anexo and perms.anexos.delete %}
 var deleteURL = "{% url 'contratos:delete-anexo' anexo.id %}";
 $('#btn-delete-anexo').on('click', function(e){
-  e.preventDefault();
+    e.preventDefault();
 
-  console.log('click delete object');
-  console.log(deleteURL);
+    console.log('click delete object');
+    console.log(deleteURL);
 
-  $.ajax({
-    url: deleteURL,
-    type: 'get',
-    dataType: 'json',
-    beforeSend: function () {
-      $("#modal-anexo").modal("show");
-    },
-    success: function (data) {
-        $("#modal-anexo .modal-content").html(data.html_form);
-    }
-  });
+    $.ajax({
+      url: deleteURL,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-anexo").modal("show");
+      },
+      success: function (data) {
+          $("#modal-anexo .modal-content").html(data.html_form);
+      }
+    });
 });
 {% endif %}
 
@@ -888,77 +888,77 @@ $('#btn-delete-anexo').on('click', function(e){
 var enviando = false;
 //Submit form
 $('#btn-carta-term').on('click', function(e){
-  $(this).prop('disabled', true);
-  $(this).addClass('disabled');
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
 
-  e.preventDefault();
+    e.preventDefault();
 
-  var $form = $('#CCTerminoForm');
-  var validator = $form.validate({
-      ignore: "",
-      errorClass: "is-invalid",
-      validClass: "is-valid",
-      errorElement: 'div',
-      errorPlacement: function ( error, element ) {
-        error.addClass("invalid-feedback");
+    var $form = $('#CCTerminoForm');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
 
-        if(element.prop("type") === "checkbox") {
-          error.insertAfter(element.parent("label"));
-        }else{
-          error.insertAfter(element);
-        }
-
-        // Add the span element, if doesn't exists, and apply the icon classes to it.
-        if (!element.next("div")[0]) {
-          $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
-        }
-      },
-      wrapper: "",
-      showErrors: function(errorMap, errorList) {
-          console.log('show messages', errorList.length);
-          if(errorList.length){
-              $('#msgbox').show('slow');
-              $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
-
-              this.defaultShowErrors();
-              console.log('Errores', errorMap, errorList);
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
           }
-    }
-  });
 
-  if(validator.form()){
-      if(!enviando){
-          enviando = true;
-          $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
-          $form.submit();
-      }else{
-          console.log("El formulario ya se esta enviando...");
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
       }
-  }else{
-      console.log('Error en el formulario.');
-      $(this).removeClass('disabled');
-      $(this).prop('disabled', false);
-  }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Guardando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
 
 })
 
 
 {% if messages %}
-console.log('mensajes');
-{% for mensaje in messages %}
-    console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
-    {% if mensaje.tags == 'success' %}
-      iziToast.success({
-          message: '{{ mensaje }}',
-          position: 'topRight',
-      });
-    {% elif mensaje.tags == 'error' %}
-      iziToast.error({
-          message: '{{ mensaje }}',
-          position: 'topRight',
-      });
-    {% endif %}
-{% endfor %}
+  console.log('mensajes');
+  {% for mensaje in messages %}
+      console.log("{{ mensaje.tags}}"+" "+"{{ mensaje }}");
+      {% if mensaje.tags == 'success' %}
+        iziToast.success({
+            message: '{{ mensaje }}',
+            position: 'topRight',
+        });
+      {% elif mensaje.tags == 'error' %}
+        iziToast.error({
+            message: '{{ mensaje }}',
+            position: 'topRight',
+        });
+      {% endif %}
+  {% endfor %}
 
 {% endif %}
 
@@ -966,31 +966,31 @@ console.log('mensajes');
 var enviando = false;
 // Botón de Enviar a revisión Contacto
 $('#revision').on('click', function(e){
-var id = $(this).data('id');
-var URL = '/contratos/'+id+'/enviar_revision_contrato/';
-$.ajax({
-    url: URL,
-    type: 'get',
-    dataType: 'json',
-});
-  $(this).prop('disabled', true);
-  $(this).addClass('disabled');
+  var id = $(this).data('id');
+  var URL = '/contratos/'+id+'/enviar_revision_contrato/';
+  $.ajax({
+      url: URL,
+      type: 'get',
+      dataType: 'json',
+  });
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
 
-  e.preventDefault();
+    e.preventDefault();
 
-  var $form = $('#revision');
-    if(!enviando){
-        enviando = true;
-        $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Enviando...');
-        $form.submit();
-        iziToast.success({
-          message: 'Contrato enviado a revisión Exitosamente',
-          position: 'topRight',
-        });
-        window.location.reload();
-    }else{
-        console.log("El formulario ya se esta enviando...");
-    }
+    var $form = $('#revision');
+      if(!enviando){
+          enviando = true;
+          $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Enviando...');
+          $form.submit();
+          iziToast.success({
+            message: 'Contrato enviado a revisión Exitosamente',
+            position: 'topRight',
+          });
+          window.location.reload();
+      }else{
+          console.log("El formulario ya se esta enviando...");
+      }
 
 })
 {% endblock %}

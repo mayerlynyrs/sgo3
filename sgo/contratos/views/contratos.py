@@ -1345,8 +1345,9 @@ def carta_termino(request):
         contrato = Contrato.objects.get(pk=request.POST['contrato_id'])
         contrato.fin_requerimiento_id = fin.id
         contrato.save()
+
         # Se actualiza el campo fin_requerimiento_id de Anexo
-        anexo = Anexo.objects.filter(contrato=contrato.id).update(fin_requerimiento_id = fin.id)
+        Anexo.objects.filter(contrato=contrato.id).update(fin_requerimiento_id = fin.id)
 
         formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=9)
         for formt in formato:

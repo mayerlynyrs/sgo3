@@ -4600,7 +4600,7 @@
     "pk": 1,
     "fields": {
       "nombre": "A",
-      "descripcion": "Artículo 183-Ñ, Letra A, del Código del Trabajo: esto es suspensión del contrato de trabajo o de la obligación de prestar servicios, según corresponda, de uno o mas trabajadores por licencias mÚdicas, descansos de maternidad o feriados",
+      "descripcion": "Articulo 183-Ñ, Letra A, del Código del Trabajo: esto es suspensión del contrato de trabajo o de la obligación de prestar servicios, según corresponda, de uno o mas trabajadores por licencias médicas, descansos de maternidad o feriados, específicamente:",
       "created_date": "2022-01-25T15:26:09.779Z"
     }
   },
@@ -4609,7 +4609,7 @@
     "pk": 2,
     "fields": {
       "nombre": "B",
-      "descripcion": "Artículo 183-Ñ, Letra B, del Código del Trabajo",
+      "descripcion": "Articulo 183-Ñ, Letra B, del Código del Trabajo: eventos extraordinarios, tales como la organización de congresos, conferencias, ferias, exposiciones u otros de similar naturaleza, específicamente:",
       "status": true,
       "created_date": "2022-01-25T15:26:21.035Z"
     }
@@ -4619,7 +4619,7 @@
     "pk": 3,
     "fields": {
       "nombre": "C",
-      "descripcion": "Artículo 183-Ñ, Letra C, del Código del Trabajo: proyectos nuevos y específicos de la usuaria, tales como la construcción de nuevas instalaciones, la ampliación de las ya existentes o expansión a nuevos mercados",
+      "descripcion": "Articulo 183-Ñ, Letra C, del Código del Trabajo: proyectos nuevos y específicos de la usuaria, tales como la construcción de nuevas instalaciones, la ampliación de las ya existentes o expansión a nuevos mercados, específicamente:",
       "status": true,
       "created_date": "2022-01-25T15:26:32.751Z"
     }
@@ -4629,7 +4629,7 @@
     "pk": 4,
     "fields": {
       "nombre": "D",
-      "descripcion": "Artículo 183-Ñ, Letra D, del Código del Trabajo",
+      "descripcion": "Articulo 183-Ñ, Letra D, del Código del Trabajo: período de inicio de actividades en empresas nuevas, específicamente:",
       "status": true,
       "created_date": "2022-01-25T15:26:44.016Z"
     }
@@ -4639,7 +4639,17 @@
     "pk": 5,
     "fields": {
       "nombre": "E",
-      "descripcion": "Artículo 183-Ñ, Letra E, del Código del Trabajo: aumentos ocasionales sean o no periódicos o extraordinarios de actividad en una determinada sección, faena o establecimientos de la usuaria",
+      "descripcion": "Articulo 183-Ñ, Letra E, del Código del Trabajo: aumentos ocasionales sean o no periódicos o extraordinarios de actividad en una determinada sección, faena o establecimientos de la usuaria, específicamente:",
+      "status": true,
+      "created_date": "2022-01-25T15:26:53.285Z"
+    }
+  },
+  {
+    "model": "requerimientos.causal",
+    "pk": 6,
+    "fields": {
+      "nombre": "F",
+      "descripcion": "Articulo 183-Ñ, Letra F, del Código del Trabajo: trabajos urgentes, precisos e impostergables que requieran una ejecución inmediata, tales como reparaciones en las instalaciones y servicios de la usuaria, específicamente:",
       "status": true,
       "created_date": "2022-01-25T15:26:53.285Z"
     }
