@@ -946,7 +946,7 @@ def update_trabajador(request, trabajador_id):
             messages.success(request, ('Trabajador actualizado'))
 
             if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
-                response = redirect('users:create_trabajador', pk)
+                response = redirect('users:create-trabajador', pk)
                 return response
             else:
                 return redirect('home')

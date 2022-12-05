@@ -301,7 +301,7 @@ class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
     )
     list_display = ('id', 'groups_list', 'rut', 'first_name', 'last_name', 'is_active')
     list_filter = ('planta', 'groups', 'is_staff', 'created', 'modified')
-    search_fields = ('first_name', 'last_name', 'email', 'rut', 'pasaporte', 'groups__name', 'cliente__razon_social', 'planta__nombre')
+    search_fields = ('first_name', 'last_name', 'email', 'rut', 'groups__name', 'cliente__razon_social', 'planta__nombre')
 
     def groups_list(self, obj):
         return u", ".join(o.name for o in obj.groups.all())
