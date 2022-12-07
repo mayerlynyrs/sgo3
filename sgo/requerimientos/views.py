@@ -181,6 +181,7 @@ def update_requerimiento(request, requerimiento_id):
 
         if form.is_valid():
             requerimiento.nombre = request.POST['nombre'].lower()
+            requerimiento.fecha_adendum = request.POST['fecha_termino']
             requerimiento = form.save()
             messages.success(request, 'Requerimiento Actualizado Exitosamente')
             page = request.GET.get('page')
@@ -623,12 +624,19 @@ class RequerimientoIdView(TemplateView):
         pk = requerimiento_id
         quantity = RequerimientoTrabajador.objects.filter(requerimiento_id=pk).count()
 
+        if (requerimiento.bloqueo == True):
+            bloqueo = 'SI'
+        else:
+            bloqueo = 'NO'
+
 
         listanegra = ListaNegra.objects.values_list('trabajador_id', flat=True).filter(status = True)
   
         trabajadores = Trabajador.objects.filter(is_active = True).exclude(id__in=listanegra)
 
         context = super().get_context_data(**kwargs)
+        
+        context['bloqueo'] = bloqueo
         context['list_url'] = reverse_lazy('users:<int:user_cliente>/create_cliente')
         context['update_url'] = reverse_lazy('requerimientos:update')
         context['entity'] = 'Requerimientos'

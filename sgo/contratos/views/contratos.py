@@ -1204,7 +1204,7 @@ def enviar_revision_contrato(request, contrato_id):
                                 'salud_trabajador': contrato.trabajador.salud.nombre.title(),
                                 'centro_costo': contrato.requerimiento_trabajador.requerimiento.centro_costo,
                                 'letra_causal' : contrato.causal.descripcion,
-                                'causal': str(contrato.causal.nombre) + ': ' + str(contrato.causal.descripcion),
+                                'causal': contrato.causal.descripcion,
                                 'descripcion_cargo': contrato.requerimiento_trabajador.area_cargo.cargo.descripcion,
                                 'motivo_req': contrato.motivo,
                                 'cargo': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
@@ -1660,16 +1660,18 @@ class ContratoIdView(TemplateView):
 
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
         largobonos = len(bonos)
-        fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
+        fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio + timedelta(days = 1)
         try:
             contrato_fecha = Contrato.objects.filter(trabajador_id=requer_trabajador.trabajador.id, status=True ).latest('id')
             inicio_contrato = contrato_fecha.fecha_termino_ultimo_anexo
             if (inicio_contrato < requer_trabajador.requerimiento.fecha_inicio):
-                fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
+                fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio + timedelta(days = 1)
             else: 
-                fecha_restriccion = inicio_contrato
+                fecha_restriccion = inicio_contrato + timedelta(days = 1)
         except:
-            print('')
+            print('no entro en el try')
+
+        
 
         context['exa_maso'] =  exa_maso   
         context['exa_bate'] =  exa_bate   

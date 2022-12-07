@@ -154,6 +154,7 @@
                     <input name="id" id="id" type="hidden" value="0">
                     <input name="requerimiento_id" id="requerimiento_id" type="hidden" value="{{ requerimiento_id }}">
                     <input name="contadorcontratos" id="contadorcontratos" type="hidden" value="{{ contador }}">
+                    <input type="hidden" id="f_inicio" class="form-control" value="{{fecha_restriccion|date:'Y-m-d'}}">
                 
               </div>
               <div class="form-group row m-b-0">
@@ -452,7 +453,7 @@
         <input type="hidden" name="id_causal" id="id_causal" class="form-control" value="{{ ru.requerimiento__causal }}">
         <input type="hidden" name="causal" class="form-control" value="{{ru.requerimiento__causal}}">
         <input type="hidden" id="f_termino" class="form-control" value="{{ru.requerimiento__fecha_adendum|date:'Y-m-d'}}">
-        <input type="hidden" id="f_inicio" class="form-control" value="{{fecha_restriccion|date:'Y-m-d'}}">
+        
         <input type="hidden" name="largobonos" class="form-control" value="{{largobonos}}">
         <input type="hidden" name="gratificacion" class="form-control" value="{{ ru.requerimiento__planta__gratificacion }}">
         <input type="hidden" name="planta" class="form-control" value="{{ ru.requerimiento__planta }}">
