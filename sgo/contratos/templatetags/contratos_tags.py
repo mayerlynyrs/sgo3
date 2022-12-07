@@ -16,6 +16,7 @@ def estado_firma(value):
         Contrato.FIRMADO_EMPLEADOR: '<span class="label label-purple">FIRMADO EMPLEADOR</span>',
         Contrato.FIRMADO: '<span class="label label-green">FIRMADO</span>',
         Contrato.OBJETADO: '<span class="label label-danger">OBJETADO</span>',
+        Contrato.EXPIRADO: '<span class="label label-dark">EXPIRADO</span>',
     }
 
     # return estado

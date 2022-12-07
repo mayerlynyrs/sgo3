@@ -1,0 +1,234 @@
+{% load contratos_tags %}
+<div class="modal-header">
+  <h5 class="modal-title">Visualizar estado del Contrato de {{ estado.contrato.trabajador }}</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+</div>
+<div class="modal-body">
+  <div class="text-center" style="min-height: 300px;">
+    
+    <div class="form-row form-row">
+      <div class="form-group col-md-6 mb-0">
+        <div id="div_id_asunto" class="form-group">
+          <label for="id_asunto" class=" requiredField">Asunto </label>
+          <div class="form-control">{{ results.subject }}</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_estado_firma" class="form-group">
+          <label for="id_estado_firma" class=" requiredField">Correo E. </label>
+          <div class="form-control">{{ signingParties.address }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row form-row">
+      <div class="form-group col-md-6 mb-0">
+        <div id="div_id_asunto" class="form-group">
+          <label for="id_asunto" class=" requiredField">Enviado </label>
+          <div class="form-control">{{ results.sentOn }}</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_estado_firma" class="form-group">
+          <label for="id_estado_firma" class=" requiredField">Estado de Firma </label>
+          <div class="form-control">
+            {% if results.state == 'Sent' %} 
+              <span class="label label-success">Enviado</span>
+            {% elif results.state == 'Closed' %} 
+              <span class="label label-green">Cerrado</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row form-row">
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_resultado" class="form-group">
+          <label for="id_resultado" class="">Resultado </label>
+          <div class="form-control">
+            {% if results.outcome == 'None' %}
+              Sin Resultado
+            {% elif results.outcome == 'Signed' %}
+              <span class="label label-green">Firmado</span>
+              {% elif results.outcome == 'Rejected' %}
+                <span class="label label-danger">Rechazado</span>
+            {% endif %}</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_resultado" class="form-group">
+          <label for="id_resultado" class="">Comentario </label>
+          <div class="form-control">
+            {% if signatures.signatureComments == Empty %}
+              Sin Comentario
+            {% else %}
+              {{ signatures.signatureComments }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div  class="form-row form-row" >
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_first_name" class="form-group">
+          <label for="id_first_name" class=" requiredField">Firmada </label>
+          <div class="form-control">
+            {% if signatures.signedOn == '0001-01-01T00:00:00.0000000' %}
+              Sin Firmar
+            {% else %}
+              {{ signatures.signedOn }}
+            {% endif %}</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_last_name" class="form-group">
+          <label for="id_last_name" class=" requiredField">Aceptada </label>
+          <div class="form-control">{% if signatures.accepted == False %} No {% elif signatures.accepted == True %} Si {% else %} --- {% endif %}</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row form-row">
+      <div class="form-group col-md-6 mb-0">
+        <div id="div_id_asunto" class="form-group">
+          <label for="id_asunto" class=" requiredField">Cerrado </label>
+          <div class="form-control">{{ results.closedOn }}</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6 mb-0" >
+        <div id="div_id_estado_firma" class="form-group">
+          <label for="id_estado_firma" class=" requiredField">Vencido el </label>
+          <div class="form-control">{{ results.expiredOn }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-lg-12 col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped m-b-0">
+            <tbody>
+              <tr class="text-center">
+                <th colspan="4">Más información Contrato</th>
+              </tr>
+                <tr>
+                  <td>
+                    <label>Identificación de evidencia: </label><br>
+                    {{ results.evidenceId }}
+                  </td>
+                  <td>
+                    <label>Asunto: </label><br>
+                    {{ results.subject }}
+                  </td>
+                  <td>
+                    <label>Estado de Firma: </label><br>
+                    {{ results.state }}
+                  </td>
+                  <td>
+                    <label>Resultado: </label><br>
+                    {{ results.outcome }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Identificación del partido: </label><br>
+                    {{ signatures.partyId }}
+                  </td>
+                  <td>
+                    <label>Firmada: </label><br>
+                    {{ signatures.signedOn }}
+                  </td>
+                  <td>
+                    <label>Aceptada: </label><br>
+                    {{ signatures.accepted }}
+                  </td>
+                  <td>
+                    <label>Comentario Firma: </label><br>
+                    {{ signatures.signatureComments }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Fecha de creación: </label><br>
+                    {{ results.creationDate }}
+                  </td>
+                  <td>
+                    <label>Última fecha de cambio de estado: </label><br>
+                    {{ results.lastStateChangeDate }}
+                  </td>
+                  <td>
+                    <label>Enviado el: </label><br>
+                    {{ results.submittedOn }}
+                  </td>
+                  <td>
+                    <label>Procesado el: </label><br>
+                    {{ results.processedOn }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Enviado: </label><br>
+                    {{ results.sentOn }}
+                  </td>
+                  <td>
+                    <label>Cerrado: </label><br>
+                    {{ results.closedOn }}
+                  </td>
+                  <td>
+                    <label>Vencido el: </label><br>
+                    {{ results.expiredOn }}
+                  </td>
+                  <td>
+                    <label>Emisor: </label><br>
+                    {{ results.issuer }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Nombre: </label><br>
+                    {{ signingParties.name }}
+                  </td>
+                  <td>
+                    <label>Dirección: </label><br>
+                    {{ signingParties.address }}
+                  </td>
+                  <td>
+                    <label>Método de Firma: </label><br>
+                    {{ signingParties.signingMethod }}
+                  </td>
+                  <td>
+                    <label>Rol: </label><br>
+                    {{ signingParties.role }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Tiempo de vida: </label><br>
+                    {{ results.timeToLive }}
+                  </td>
+                  <td>
+                    <label>Período de retención en línea: </label><br>
+                    {{ results.onlineRetentionPeriod }}
+                  </td>
+                  <td>
+                    <label>Período de retención del notario: </label><br>
+                    {{ results.notaryRetentionPeriod }}
+                  </td>
+                  <td>
+                    <label>Canal de origen: </label><br>
+                    {{ results.sourceChannel }}
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+    </div> -->
+    <br>
+    <!-- Estado
+    {{ estado }} -->
+  </div>
+  </br>
+  <p class="mt-1">
+    {{ estado.contrato.motivo }}
+  </p>
+</div>
+<div class="modal-footer">
+  <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Cerrar</a>
+</div>
