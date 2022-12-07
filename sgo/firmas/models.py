@@ -3,6 +3,7 @@ from django.forms import model_to_dict
 from django.db import models
 # Utilities
 from utils.models import BaseModel
+from contratos.models import Contrato, Anexo
 
 # Create your models here.
 
@@ -32,6 +33,8 @@ class Firma(BaseModel):
     estado_firma = models.ForeignKey(EstadoFirma, on_delete=models.PROTECT)
     fecha_envio = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     fecha_firma = models.DateTimeField(blank=True, null=True)
+    contrato = models.ForeignKey(Contrato, on_delete=models.PROTECT, blank=True, null=True)
+    anexo = models.ForeignKey(Anexo, on_delete=models.PROTECT, blank=True, null=True)
     status = models.BooleanField(
         default=True,
         help_text='Para desactivar la firma, deshabilite esta casilla.'
@@ -44,4 +47,6 @@ class Firma(BaseModel):
         item = model_to_dict(self)
         item['rut_trabajador'] = self.rut_trabajador
         item['estado_firma'] = self.estado_firma
+        item['contrato_id'] =  self.contrato.id
+        item['anexo_id'] =  self.anexo.id
         return item

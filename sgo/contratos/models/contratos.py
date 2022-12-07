@@ -79,6 +79,7 @@ class Contrato(BaseModel):
     FIRMADO_EMPLEADOR = 'FE'
     FIRMADO = 'FF'
     OBJETADO = 'OB'
+    EXPIRADO = 'EX'
 
     CREADO = 'CR'
     RECHAZADO ='RC'
@@ -107,6 +108,7 @@ class Contrato(BaseModel):
         (FIRMADO_EMPLEADOR, 'Firmado por Empleador'),
         (FIRMADO, 'Firmado'),
         (OBJETADO, 'Objetado'),
+        (EXPIRADO, 'Expirado'),
     )
 
     CONTRATO_ESTADO = (
@@ -254,6 +256,7 @@ class Anexo(BaseModel):
     FIRMADO_EMPLEADOR = 'FE'
     FIRMADO = 'FF'
     OBJETADO = 'OB'
+    EXPIRADO = 'EX'
 
     CREADO = 'CR'
     PROCESO_VALIDACION = 'PV'
@@ -268,6 +271,7 @@ class Anexo(BaseModel):
         (FIRMADO_EMPLEADOR, 'Firmado por Empleador'),
         (FIRMADO, 'Firmado'),
         (OBJETADO, 'Objetado'),
+        (EXPIRADO, 'Expirado'),
     )
 
     ANEXO_ESTADO = (

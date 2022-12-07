@@ -19,6 +19,11 @@ urlpatterns = [
         name='enviado-contrato'
      ),
     path(
+        route='<int:contrato_id>/estado/',
+        view=views.firma_estado,
+        name="estado"
+    ),
+    path(
         route='list_anexo',
         view=views.AnexoAprobadoList.as_view(),
         name='list-anexo'
