@@ -107,7 +107,12 @@ $(function () {
     $("#myform").on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
-        console.log(FormData);
+        console.log(FormData);       
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#3BB7B7';
+        btn.disabled = true;
+        btn.style.backgroundColor= '#3BB7B7';
+        btn.innerHTML = 'Procesando. . .';
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
             $('#solicitudes_contrato').modal('hide');
             tblSolicitud.ajax.reload();

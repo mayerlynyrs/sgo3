@@ -101,13 +101,28 @@
     var currentMonth = date.getMonth();
     var currentDate = date.getDate();
     var currentYear = date.getFullYear();
+
+    function sumarDias(fecha, dias){
+        fecha.setDate(fecha.getDate() + dias);
+        return fecha;
+      }
             
     if (date != "Invalid Date"){
         var fin = date.toISOString().slice(0, 10);
         console.log('fin', fin, 'FECHA Límite del Req.');
+
         var inicio = new Date($('#fi_ad').val());
         if (inicio == "Invalid Date"){
-            var inicio = new Date($('#ft_req').val());
+            var fecha_maxima = document.getElementById("ft_req").value
+            var formato_fmax = new Date(fecha_maxima);
+            var inicio = sumarDias(formato_fmax, 2);
+            console.log("🚀 ~ file: adendum_create.html ~ line 114 ~ inicio", inicio)
+
+        }else{
+            var fecha_maxima = document.getElementById("fi_ad").value
+            var formato_fmax = new Date(fecha_maxima);
+            var inicio = sumarDias(formato_fmax, 2);
+            console.log("🚀 ~ file: adendum_create.html ~ line 120 ~ inicio", inicio)
         }
         // console.log('inicio', inicio)
         $('#fecha_termino').datepicker('clearDates');
