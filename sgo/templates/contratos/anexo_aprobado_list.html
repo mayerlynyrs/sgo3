@@ -148,3 +148,62 @@
 </script>
 {% endblock %}
 
+{% block scripts %}
+var enviando = false;
+//Submit form
+$('#boton').on('click', function(e){
+    $(this).prop('disabled', true);
+    $(this).addClass('disabled');
+
+    e.preventDefault();
+
+    var $form = $('#myform');
+    var validator = $form.validate({
+        ignore: "",
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorElement: 'div',
+        errorPlacement: function ( error, element ) {
+          error.addClass("invalid-feedback");
+
+          if(element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+          }else{
+            error.insertAfter(element);
+          }
+
+          // Add the span element, if doesn't exists, and apply the icon classes to it.
+          if (!element.next("div")[0]) {
+            $( "<div class='glyphicon glyphicon-remove form-control-feedback'></div>" ).insertAfter( element );
+          }
+        },
+        wrapper: "",
+        showErrors: function(errorMap, errorList) {
+            console.log('show messages', errorList.length);
+            if(errorList.length){
+                $('#msgbox').show('slow');
+                $("#num-errors").html("Tienes "+ this.numberOfInvalids() + " errores.");
+
+                this.defaultShowErrors();
+                console.log('Errores', errorMap, errorList);
+            }
+      }
+    });
+
+    if(validator.form()){
+        if(!enviando){
+            enviando = true;
+            $(this).html('<i class="fa fa-spinner fa-pulse margin-r-5"></i> Enviando...');
+            $form.submit();
+        }else{
+            console.log("El formulario ya se esta enviando...");
+        }
+    }else{
+        console.log('Error en el formulario.');
+        $(this).removeClass('disabled');
+        $(this).prop('disabled', false);
+    }
+
+})
+
+{% endblock %}

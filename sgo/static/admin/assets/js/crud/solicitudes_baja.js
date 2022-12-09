@@ -20,6 +20,7 @@ function getData() {
             {"data": "trabajador"},
             {"data": "plazos"},
             {"data": "contrato"},
+            {"data": "estados"},
             {"data": "motivo"},
             {"data": "id_contrato"},
    

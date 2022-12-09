@@ -83,11 +83,12 @@ td {
             <thead>
                 <tr>
                  
-                    <th width="17px">Solicitante</th>
+                    <th width="10px">Solicitante</th>
                     <th width="17px">Clientes/Plantas</th>
                     <th width="17px">Trabajador</th>
                     <th width="17px">Plazos</th>
                     <th width="17px">Contrato</th>
+                    <th width="7px">Estado</th>
                     <th width="15px">Acciones</th>
                 </tr>
             </thead>
@@ -111,6 +112,9 @@ td {
                         Motivo: {{ obj.motivo|title }}<br>
                         Jornada: {{ obj.horario.nombre|title }}<br>
                         Renta: {{ obj.sueldo_base }}</td>
+                    <td>
+                      Contrato: {{ obj.estado_contrato|estado_contrato|safe }}<br>
+                      Firma: {{ obj.estado_firma|estado_firma|safe }}</td>
                     <td>
                       <button data-id="{{ obj.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
                       <i class="fas fa-trash-alt"></i>
@@ -174,6 +178,7 @@ td {
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/daterangepicker.js' %}"></script>
 <script src="{% static 'admin/assets/js/report.js' %}"></script>
 {% endblock %}
+
 {% block scripts %}
   $('.btn-view-enviar-baja').on('click', function(e){
       e.preventDefault();

@@ -180,6 +180,7 @@ class Contrato(BaseModel):
         item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: " + str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
+        item['estados'] = self.estado_contrato + " " + self.estado_firma
         item['estado_firma'] = self.estado_firma
         if(self.feriado_proporcional):
             item['feriado'] = "Renta imp: $" + str(self.valores_diario.valor_diario) + "<br> Feriado: $" + str(self.feriado_proporcional) + "<br> Liquido: $" + str(self.valores_diario.valor_diario + self.feriado_proporcional)
@@ -326,6 +327,7 @@ class Anexo(BaseModel):
         item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
+        item['estados'] = self.estado_anexo + " " + self.estado_firma
         return item
 
 
@@ -462,9 +464,14 @@ class Baja(BaseModel):
             item['nombre'] = self.anexo.trabajador.first_name.title() + " " + self.anexo.trabajador.last_name.title()
 
         if(self.contrato):
-            item['plazos'] = "Fecha Inicio: "+ str(self.contrato.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.contrato.fecha_termino.strftime('%d-%m-%Y'))
+            item['plazos'] = "Fecha Inicio: "+ str(self.contrato.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.contrato.fecha_termino.strftime('%d-%m-%Y'))
         else:
-            item['plazos'] = "Fecha Inicio: "+ str(self.anexo.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.anexo.fecha_termino.strftime('%d-%m-%Y'))
+            item['plazos'] = "Fecha Inicio: "+ str(self.anexo.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.anexo.fecha_termino.strftime('%d-%m-%Y'))
+
+        if(self.contrato):
+            item['estados'] = "Contrato: "+ self.contrato.estado_contrato + "<br> Firma:  " + self.contrato.estado_firma
+        else:
+            item['estados'] = "Anexo: "+ self.anexo.estado_anexo + "<br> Firma:  " + self.anexo.estado_firma
 
         if(self.contrato):    
             item['solicitante'] = self.contrato.created_by.first_name.title() + " " + self.contrato.created_by.last_name.title()

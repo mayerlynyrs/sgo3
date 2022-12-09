@@ -5,7 +5,7 @@
 {% block content %}
 <ol class="breadcrumb pull-right">
   <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-  <li class="breadcrumb-item"><a href="javascript:;">Firmas / Contratos</a></li>
+  <li class="breadcrumb-item"><a href="javascript:;">Firmas / Anexos</a></li>
   <li class="breadcrumb-item active">Listado</li>
 </ol>
 <h1 class="page-header">Gestión de Firma <small>Listado</small></h1>
@@ -15,7 +15,7 @@
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
       <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
     </div>
-    <h4 class="panel-title">Todos los contratos enviados</h4>
+    <h4 class="panel-title">Todos los anexos enviados</h4>
   </div>
   <!-- <div class="panel-body ">
     <fieldset>
@@ -37,13 +37,13 @@
       <table id="data-table-default" class="table table-striped table-bordered align-middle">
         <thead>
           <tr>
-              <!-- <th  width="5%"> </th> -->
-              <th  width="15%">Trabajador</th>
-              <th  width="20%">Requerimiento</th>
-              <th  width="20%">Plazos</th>
-              <th  width="20%">Contrato</th>
-              <th  width="5%">Oculto</th>
-              <th  width="15%">Acciones</th>
+              <!-- <th width="5%"> </th> -->
+              <th width="15%">Trabajador</th>
+              <th width="20%">Requerimiento</th>
+              <th width="20%">Plazos</th>
+              <th width="20%">Contrato</th>
+              <th width="5%">Oculto</th>
+              <th width="15%">Acciones</th>
           </tr>
 
         </thead>
@@ -53,21 +53,15 @@
     </table>
   </div>
 </div>
-<div class="modal fade  bd-example-modal-lg" id="modal-contrato">
+<div class="modal fade  bd-example-modal-lg" id="modal-anexo">
   <div class="modal-dialog modal-lg">
     <div class="modal-content"></div>
   </div>
 </div>
 
-<div class="modal fade " id="modal-baja">
-  <div class="modal-dialog ">
-    <div class="modal-content"></div>
-  </div>
-</div>
-
 {% block javascript %}
-<!-- Modal -->
-<div class="modal fade" id="solicitudes_contrato" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<!-- Modal Enviar Anexo a -->
+<div class="modal fade" id="enviar_anexo_firma" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <form id="myform" method="post" action="." enctype="multipart/form-data">
         <div class="modal-dialog" role="document">
@@ -102,7 +96,7 @@
 {% endblock %}
 {% endblock %}
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/contrato_enviado_list.js' %}"></script>
+<script src="{% static 'admin/assets/js/crud/anexo_enviado_list.js' %}"></script>
 <script type="text/javascript">
   function GetSelected() {
       //Reference the Table.

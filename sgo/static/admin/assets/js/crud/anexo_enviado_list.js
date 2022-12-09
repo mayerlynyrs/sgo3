@@ -45,7 +45,8 @@ function getData() {
                 orderable: false,
                 render: function (data, type, row) {
                     var buttons = '<button data-id="'+data+'" name="estado" value="'+data+'" onclick="myFunction('+data+')"  id="btn-view-contrato" type="button" title="Ver estado" class="btn btn-xs btn-outline-primary"><i class="fas fa-folder-open"></i></button> &nbsp &nbsp';
-                    // buttons += '<a href="#" rel="aprobar" title="Enviar a Firma" class="btn btn-outline-success btn-xs btn-flat btnEdit"><i class="fa fa-signature"></i></a> &nbsp &nbsp';
+                    // '<a href="#" rel="aprobar" title="Enviar a Firma" class="btn btn-outline-success btn-xs btn-flat btnEdit"><i class="fa fa-signature"></i></a> &nbsp &nbsp &nbsp &nbsp';
+                    // buttons += '<button data-id="'+data+'" name="estado" value="'+data+'" onclick="myFunction('+data+')"  id="btn-view-anexo" type="button" title="Ver Anexo" class="btn btn-xs btn-outline-primary"><i class="fas fa-eye"></i></button>';
                     return buttons;
                 }
             },
@@ -58,16 +59,16 @@ function getData() {
 
 function myFunction(data) {
       var id = data;
-      var URL = '/firmas/'+id+'/estado/';
+      var URL = '/firmas/'+id+'/estado_anexo/';
       $.ajax({
             url: URL,
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
-              $("#modal-contrato").modal("show");
+              $("#modal-anexo").modal("show");
             },
             success: function (data) {
-                $("#modal-contrato .modal-content").html(data.html_form);
+                $("#modal-anexo .modal-content").html(data.html_form);
             }
           });
   }
@@ -82,7 +83,7 @@ $(function () {
     $('#data-table-default tbody').on('click', 'a[rel="aprobar"]', function (){
         var tr = tblSolicitud.cell($(this).closest('td, li')).index();
         var data = tblSolicitud.row(tr.row).data();
-        modal_title.find('span').html('Enviar Contrato a <small style="font-size: 80%;">'+data.nombre+'</small>');
+        modal_title.find('span').html('Enviar Anexo a <small style="font-size: 80%;">'+data.nombre+'</small>');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         $('input[name="action"]').val('aprobar');
         $('input[name="id"]' ).val(data.id);
@@ -91,11 +92,26 @@ $(function () {
         btn.style.borderColor= '#32a932';
         btn.style.backgroundColor= '#32a932';
         btn.innerHTML = 'Enviar';
-        $('#solicitudes_contrato').modal('show');
+        $('#enviar_anexo_firma').modal('show');
 
     });
 
-    $('#solicitudes_contrato').on('shown.bs.modal', function () {
+    $('#data-table-default tbody').on('click', 'a[rel="rechazar"]', function (){
+        var tr = tblSolicitud.cell($(this).closest('td, li')).index();
+        var data = tblSolicitud.row(tr.row).data();
+        modal_title.find('span').html('Rechazar Anexo <small style="font-size: 80%;">'+data.nombre+'</small>');
+        modal_title.find('i').removeClass().addClass('fas fa-edit');
+        $('input[name="action"]').val('rechazar');
+        $('input[name="id"]' ).val(data.id);
+        document.getElementById('observacion').style.display = 'block';
+        var btn = document.getElementById("boton");
+        btn.style.borderColor= '#ff5b57';
+        btn.style.backgroundColor= '#ff5b57';
+        btn.innerHTML = 'Rechazar';
+        $('#enviar_anexo_firma').modal('show');
+    });
+
+    $('#enviar_anexo_firma').on('shown.bs.modal', function () {
     });
 
     $("#myform").on('submit', function (e) {
@@ -103,7 +119,7 @@ $(function () {
         var parameters = new FormData(this);
         console.log(FormData);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            $('#solicitudes_contrato').modal('hide');
+            $('#enviar_anexo_firma').modal('hide');
             tblSolicitud.ajax.reload();
         });   
     });

@@ -1,6 +1,6 @@
 {% load contratos_tags %}
 <div class="modal-header">
-  <h5 class="modal-title">Visualizar estado del Contrato de {{ estado.contrato.trabajador }}</h5>
+  <h5 class="modal-title">Estado del Contrato de <b>{{ estado.contrato.trabajador }}</b></h5>
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 </div>
 <div class="modal-body">
@@ -8,28 +8,28 @@
     
     <div class="form-row form-row">
       <div class="form-group col-md-6 mb-0">
-        <div id="div_id_asunto" class="form-group">
-          <label for="id_asunto" class=" requiredField">Asunto </label>
+        <div id="div_id_subject" class="form-group">
+          <label for="id_subject" class=" requiredField">Asunto </label>
           <div class="form-control">{{ results.subject }}</div>
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_estado_firma" class="form-group">
-          <label for="id_estado_firma" class=" requiredField">Correo E. </label>
+        <div id="div_id_address" class="form-group">
+          <label for="id_address" class=" requiredField">Correo E. </label>
           <div class="form-control">{{ signingParties.address }}</div>
         </div>
       </div>
     </div>
     <div class="form-row form-row">
       <div class="form-group col-md-6 mb-0">
-        <div id="div_id_asunto" class="form-group">
-          <label for="id_asunto" class=" requiredField">Enviado </label>
+        <div id="div_id_sentOn" class="form-group">
+          <label for="id_sentOn" class=" requiredField">Enviado </label>
           <div class="form-control">{{ results.sentOn }}</div>
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_estado_firma" class="form-group">
-          <label for="id_estado_firma" class=" requiredField">Estado de Firma </label>
+        <div id="div_id_state" class="form-group">
+          <label for="id_state" class=" requiredField">Estado de Firma </label>
           <div class="form-control">
             {% if results.state == 'Sent' %} 
               <span class="label label-success">Enviado</span>
@@ -42,21 +42,23 @@
     </div>
     <div class="form-row form-row">
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_resultado" class="form-group">
-          <label for="id_resultado" class="">Resultado </label>
+        <div id="div_id_outcome" class="form-group">
+          <label for="id_outcome" class="">Resultado </label>
           <div class="form-control">
             {% if results.outcome == 'None' %}
               Sin Resultado
             {% elif results.outcome == 'Signed' %}
               <span class="label label-green">Firmado</span>
-              {% elif results.outcome == 'Rejected' %}
-                <span class="label label-danger">Rechazado</span>
+            {% elif results.outcome == 'Rejected' %}
+              <span class="label label-danger">Rechazado</span>
+            {% elif results.outcome == 'Expired' %}
+              <span class="label label-danger">Expirado</span>
             {% endif %}</div>
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_resultado" class="form-group">
-          <label for="id_resultado" class="">Comentario </label>
+        <div id="div_id_signatureComments" class="form-group">
+          <label for="id_signatureComments" class="">Comentario </label>
           <div class="form-control">
             {% if signatures.signatureComments == Empty %}
               Sin Comentario
@@ -69,8 +71,8 @@
     </div>
     <div  class="form-row form-row" >
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_first_name" class="form-group">
-          <label for="id_first_name" class=" requiredField">Firmada </label>
+        <div id="div_id_signedOn" class="form-group">
+          <label for="id_signedOn" class=" requiredField">Firmada </label>
           <div class="form-control">
             {% if signatures.signedOn == '0001-01-01T00:00:00.0000000' %}
               Sin Firmar
@@ -80,22 +82,22 @@
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_last_name" class="form-group">
-          <label for="id_last_name" class=" requiredField">Aceptada </label>
+        <div id="div_id_accepted" class="form-group">
+          <label for="id_accepted" class=" requiredField">Aceptada </label>
           <div class="form-control">{% if signatures.accepted == False %} No {% elif signatures.accepted == True %} Si {% else %} --- {% endif %}</div>
         </div>
       </div>
     </div>
     <div class="form-row form-row">
       <div class="form-group col-md-6 mb-0">
-        <div id="div_id_asunto" class="form-group">
-          <label for="id_asunto" class=" requiredField">Cerrado </label>
+        <div id="div_id_closedOn" class="form-group">
+          <label for="id_closedOn" class=" requiredField">Cerrado </label>
           <div class="form-control">{{ results.closedOn }}</div>
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
-        <div id="div_id_estado_firma" class="form-group">
-          <label for="id_estado_firma" class=" requiredField">Vencido el </label>
+        <div id="div_id_expiredOn" class="form-group">
+          <label for="id_expiredOn" class=" requiredField">Vencido el </label>
           <div class="form-control">{{ results.expiredOn }}</div>
         </div>
       </div>

@@ -1471,6 +1471,7 @@ def buscar_contrato(request):
             context ['form'] = CompletasForm(instance=Contrato)
             return render(request, 'contratos/consulta_completas.html', context)
 
+
 def contrato_baja_completa(request, contrato_id, template_name='contratos/baja_contrato_completa.html'):
     data = dict()
     contrato = get_object_or_404(Contrato, pk=contrato_id)
@@ -1660,12 +1661,12 @@ class ContratoIdView(TemplateView):
 
         bonos = RequerimientoTrabajador.objects.values_list('requerimiento__planta__bono', flat=True).filter(pk=requerimiento_trabajador_id)
         largobonos = len(bonos)
-        fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio + timedelta(days = 1)
+        fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
         try:
             contrato_fecha = Contrato.objects.filter(trabajador_id=requer_trabajador.trabajador.id, status=True ).latest('id')
             inicio_contrato = contrato_fecha.fecha_termino_ultimo_anexo
             if (inicio_contrato < requer_trabajador.requerimiento.fecha_inicio):
-                fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio + timedelta(days = 1)
+                fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
             else: 
                 fecha_restriccion = inicio_contrato + timedelta(days = 1)
         except:
@@ -2559,6 +2560,33 @@ def buscar_anexo(request):
             context = {'data': data}
             context ['form'] = CompletasForm(instance=Anexo)
             return render(request, 'contratos/consulta_completas_anexos.html', context)
+
+
+def anexo_baja_completa(request, anexo_id, template_name='contratos/baja_anexo_completa.html'):
+    data = dict()
+    anexo = get_object_or_404(Anexo, pk=anexo_id)
+    if request.method == 'POST':
+        anexo.estado_anexo = 'PB'
+        anexo.fecha_solicitud_baja = datetime.now()
+        anexo.save()
+        baja = Baja()
+        baja.anexo_id = anexo_id
+        baja.motivo_id = request.POST['motivo']
+        baja.save()
+        return redirect('contratos:list-anexo')
+    else:
+        context = {
+            'form10': MotivoBajaForm,
+            'anexo': anexo,
+            'anexo_id': anexo_id, 
+            }
+
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
 
 
 class BajaAnexo(TemplateView):
