@@ -338,7 +338,7 @@ class AnexoAprobadoList(TemplateView):
 
 
 class AnexoEnviadoList(TemplateView):
-    template_name = 'contratos/anexo_aprobado_list.html'
+    template_name = 'contratos/anexo_enviado_list.html'
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -358,6 +358,85 @@ class AnexoEnviadoList(TemplateView):
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
+
+@login_required
+@permission_required('firmas.view_firma', raise_exception=True)
+def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
+    """Estado de firma view."""
+
+    firmado = get_object_or_404(Firma, anexo=anexo_id)
+    api = firmado.respuesta_api
+    uniqueid = api[13:-2]
+    # Consultando api
+    URL = "https://totalsoft-test.ecertia.com/api/EviSign/Query"
+    
+    # Definiendo los parámetros y asignación del valor
+    withUniqueIds = uniqueid
+    includeAttachmentsOnResult = True
+    includeAttachmentBlobsOnResult = True
+    includeEventsOnResult = True
+    includeAffidavitsOnResult = True
+    includeAffidavitBlobsOnResult = True
+
+    HEADERS = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+        'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
+        }
+    
+    #  Parámetros que se envian a la API
+    PARAMS = {'withUniqueIds':withUniqueIds,
+              'includeAttachmentsOnResult':includeAttachmentsOnResult,
+              'includeAttachmentBlobsOnResult':includeAttachmentBlobsOnResult,
+              'includeEventsOnResult':includeEventsOnResult,
+              'includeAffidavitsOnResult':includeAffidavitsOnResult,
+              'includeAffidavitBlobsOnResult':includeAffidavitBlobsOnResult
+              }
+    
+    # Enviando una solicitud de obtención y guardando la respuesta como objeto de respuesta
+    r = requests.get(url = URL, headers = HEADERS, params = PARAMS)
+    # print('URL: ', r.url)
+    # Extrayendo datos en formato json
+    data = r.json()
+    # print(r.content)
+    # print(r.text)
+
+    # Actualiza el estado de la firma en el Anexo de contratos
+    anex = Anexo.objects.get(pk=anexo_id)
+    if data['results'][0]['outcome'] == 'Signed':
+        anex.estado_firma = 'FT'
+    elif data['results'][0]['outcome'] == 'Rejected':
+        anex.estado_firma = 'OB'
+    elif data['results'][0]['outcome'] == 'Expired':
+        anex.estado_firma = 'EX'
+    anex.save()
+    # Actualiza el estado de la firma
+    api = Firma.objects.get(anexo=anexo_id)
+    if data['results'][0]['outcome'] == 'Signed':
+        api.estado_firma_id = 2
+    elif data['results'][0]['outcome'] == 'Rejected':
+        api.estado_firma_id = 3
+    elif data['results'][0]['outcome'] == 'Expired':
+        api.estado_firma_id = 4
+    api.save()
+
+
+    context = {'data': data,
+               'results': data['results'][0],
+               'signingParties': data['results'][0]['signingParties'][0],
+               'affidavits': data['results'][0]['affidavits'][0],
+               'signatures': data['results'][0]['signatures'][0],
+               'signingMethod': data['results'][0]['signingParties'][0]['signingMethod'],
+               'estado': firmado,
+    }
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
 
 
 class ContratoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):

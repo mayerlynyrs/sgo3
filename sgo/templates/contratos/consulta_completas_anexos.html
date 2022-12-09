@@ -82,18 +82,18 @@ td {
         <table id="data-table-default" class="table table-striped table-bordered align-middle" style="width: 100%;">
               <thead>
                   <tr>
-                      <th width="1px">#</th>
                       <th width="20px">Solicitante</th>
                       <th width="20px">Clientes/Plantas</th>
                       <th width="20px">Trabajador</th>
                       <th width="20px">Plazos</th>
                       <th width="20px">Contrato</th>
+                      <th width="7px">Estado</th>
+                      <th width="15px">Acciones</th>
                   </tr>
               </thead>
               <tbody>
                   {% for obj in data %}
                   <tr>
-                      <td>{{ forloop.counter }}.</td>
                       <td>{{ obj.created_by.first_name|title }} {{ obj.created_by.last_name|title }}</td>
                       <td class="text-left">
                         <ul>
@@ -110,13 +110,20 @@ td {
                           Motivo: {{ obj.motivo|title }}<br>
                           Jornada: {{ obj.horario.nombre|title }}<br>
                           Renta: {{ obj.sueldo_base }}</td>
+                      <td>
+                        Contrato: {{ obj.estado_anexo|estado_anexo|safe }}<br>
+                        Firma: {{ obj.estado_firma|estado_firma|safe }}</td>
+                      <td>
+                        <button data-id="{{ obj.id}}"  type="button" class="btn-xs btn btn-danger btn-view-enviar-baja" title="Dar de Baja">
+                        <i class="fas fa-trash-alt"></i>
+                      </td>
                   </tr>
                   {% endfor %}
               </tbody>
           </table>
     </div>
   </div>
-  <div class="modal fade" id="modal-baja-contrato">
+  <div class="modal fade" id="modal-baja-anexo">
     <div class="modal-dialog">
       <div class="modal-content"></div>
     </div>
@@ -165,12 +172,13 @@ td {
 <script src="{% static 'admin/assets/plugins/daterangepicker-3.1/daterangepicker.js' %}"></script>
 <script src="{% static 'admin/assets/js/report.js' %}"></script>
 {% endblock %}
+
 {% block scripts %}
   $('.btn-view-enviar-baja').on('click', function(e){
       e.preventDefault();
       var id = $(this).data('id');
       <!-- console.log('requerimiento_id', id); -->
-      var URL = '/contratos/'+id+'/baja_contrato_completa/';
+      var URL = '/contratos/'+id+'/baja_anexo_completa/';
 
       console.log('URL', URL);
 
@@ -179,10 +187,10 @@ td {
           type: 'get',
           dataType: 'json',
           beforeSend: function () {
-              $("#modal-baja-contrato").modal("show");
+              $("#modal-baja-anexo").modal("show");
           },
           success: function (data) {
-              $("#modal-baja-contrato .modal-content").html(data.html_form);
+              $("#modal-baja-anexo .modal-content").html(data.html_form);
           }
       });
   });

@@ -144,6 +144,12 @@ urlpatterns = [
         view=views.enviar_revision_contrato,
         name="enviar_revision_contrato"
     ),
+    # baja contrato de completas
+    path(
+        route='<int:contrato_id>/baja_contrato_completa/',
+        view=views.contrato_baja_completa,
+        name="contrato_baja_completa"
+    ),
     # Anexos
     path(
         route='anexo/create/',
@@ -212,6 +218,12 @@ urlpatterns = [
         name="bajada-anexo"
     ),
     path('anexo/buscarBajaAnexo', views.buscar_baja_anexo),
+    # baja anexo de completas
+    path(
+        route='<int:anexo_id>/baja_anexo_completa/',
+        view=views.anexo_baja_completa,
+        name="anexo_baja_completa"
+    ),
     # Carta de Término
     path(
         route='carta_termino/',
@@ -227,12 +239,6 @@ urlpatterns = [
         route='<int:id>/firmar/',
         view=views.ContratoFirmarView.as_view(),
         name='firmar'
-    ),
-    #baja contrato de completas
-    path(
-        route='<int:contrato_id>/baja_contrato_completa/',
-        view=views.contrato_baja_completa,
-        name="contrato_baja_completa"
     ),
     path(
         route='<slug:id>/generar_firma/firmarr/',

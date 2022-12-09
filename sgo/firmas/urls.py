@@ -33,6 +33,11 @@ urlpatterns = [
         view=views.AnexoEnviadoList.as_view(),
         name='enviado-anexo'
      ),
+    path(
+        route='<int:anexo_id>/estado_anexo/',
+        view=views.estado_anexo,
+        name="estado-anexo"
+    ),
     # path(
     #     route='<int:planta_id>/',
     #     view=views.FirmaListView.as_view(),
