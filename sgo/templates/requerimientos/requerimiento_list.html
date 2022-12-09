@@ -77,10 +77,10 @@
                   </ul>
                 </td>
                 <td class="estado-requerimiento" style="width:10%" >
-                  <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
+                  <button data-id="{{ obj.id }}" onclick="adendum('{{obj.id}}')" type="button" class="btn btn-xs btn-warning btn-view-adendum" title="Adendum">
                     <i class="fas fa-audio-description"></i>
                   </button> &nbsp &nbsp
-                  <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
+                  <button data-id="{{ obj.id }}"  type="button" class="btn btn-xs btn-primary" title="Puesta Disposición">
                     <a style="color:#FFFFFF;" href="{% url 'requerimientos:apd' obj.id %}"><i class="fas fa-download"></i></a>
                   </button>
                 </td>
@@ -102,17 +102,10 @@
     <div class="modal-content"></div>
   </div>
 </div>
-{% endblock %}
-<!-- end panel -->
-{% block scripts %}
-  $('.btn-view-adendum').on('click', function(e){
-      e.preventDefault();
-      var id = $(this).data('id');
-      <!-- console.log('requerimiento_id', id); -->
-      var URL = '/requerimientos/'+id+'/adendum/';
 
-      console.log('URL', URL);
-
+<script>
+  function adendum(id){
+    var URL = '/requerimientos/'+id+'/adendum/';
       $.ajax({
           url: URL,
           type: 'get',
@@ -124,7 +117,12 @@
               $("#modal-adendum .modal-content").html(data.html_form);
           }
       });
-  });
+  }
+</script>
+{% endblock %}
+<!-- end panel -->
+{% block scripts %}
+
 
   {% if messages %}
       console.log('mensajes');
