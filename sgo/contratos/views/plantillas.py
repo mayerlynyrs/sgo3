@@ -108,9 +108,8 @@ def update_plantilla(request, plantilla_id):
         else:
             messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
     else:
-        form = ActualizarPlantillaForm(instance=plantilla,
-                                       initial={'plantas': list(plantas_usuario), },
-                                       user=request.user)
+        form = ActualizarPlantillaForm(instance=plantilla
+                                       )
 
     return render(
         request=request,

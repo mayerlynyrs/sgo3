@@ -24,6 +24,11 @@ urlpatterns = [
         name='listEvaluaciones'
     ),
     path(
+        route='listEvaluacionesMasso',
+        view=views.AgendaListMasso.as_view(),
+        name='listEvaluacionesMasso'
+    ),
+    path(
         route='centroMedico',
         view=views.CentroMedicoView.as_view(),
         name='centroMedico'

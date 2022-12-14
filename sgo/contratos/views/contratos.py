@@ -1538,12 +1538,8 @@ class ContratoIdView(TemplateView):
         anex = 'NO'
         finiquito = 'NO'
         fin_contrato = 'NO'
-        crear_contrato = 'SI'
-
         # ultimo_anexo_contrato = 'NO'
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id, status= True)
-
-        
         if(requer_trabajador.requerimiento.planta.masso == True):
             try:
                 maso = RequerimientoExam.objects.get(masso = True, requerimiento_trabajador = requerimiento_trabajador_id)
@@ -1585,7 +1581,6 @@ class ContratoIdView(TemplateView):
             finalizo_contrato = Contrato.objects.values_list('fin_requerimiento', flat=True).get(requerimiento_trabajador_id=requerimiento_trabajador_id, status=True)
             if not finalizo_contrato == None:
                 fin_contrato = 'SI'
-
             contrato = Contrato.objects.get(requerimiento_trabajador_id=requerimiento_trabajador_id)
             ahora = datetime.now().strftime("%Y-%m-%d")
             dias = contrato.fecha_termino_ultimo_anexo - ahora
@@ -1599,9 +1594,7 @@ class ContratoIdView(TemplateView):
                  'requerimiento__planta__nombre', 'requerimiento__planta__region2', 'requerimiento__planta__ciudad2', 'requerimiento__planta__direccion', 'requerimiento__planta__gratificacion',
                  'trabajador__user__planta__nombre').order_by('trabajador__user__planta')
 
-
         context = super().get_context_data(**kwargs)
-
         context['datos'] = RequerimientoTrabajador.objects.filter(pk=requerimiento_trabajador_id).values(
                 'trabajador', 'trabajador__first_name', 'trabajador__last_name', 'trabajador__rut','trabajador__estado_civil__nombre',
                 'trabajador__fecha_nacimiento', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre',
@@ -1677,7 +1670,6 @@ class ContratoIdView(TemplateView):
         context['exa_maso'] =  exa_maso   
         context['exa_bate'] =  exa_bate   
         context['exa_psico'] =  exa_psico
-
         context['fecha_restriccion'] =  fecha_restriccion        
         context['ultimo'] = ultimo2
         context['contador'] = cantidadcontratos
