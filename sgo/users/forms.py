@@ -15,8 +15,8 @@ from django.contrib.auth import get_user_model
 from django.forms import TextInput
 # sgo Model
 from clientes.models import Cliente, Negocio, Planta
-from utils.models import Region, Provincia, Ciudad
-from examenes.models import Evaluacion , Examen
+from utils.models import Region, Provincia, Ciudad, Cargo
+from examenes.models import Evaluacion, Examen, Bateria, CentroMedico
 from users.models import Trabajador, Civil, Salud, Afp, Profesion, ProfesionTrabajador, Especialidad, NivelEstudio, TipoCta, Parentesco, Contacto, TipoArchivo, ArchivoTrabajador, ListaNegra, Banco , Nacionalidad, Ciudad
 
 User = get_user_model()
@@ -839,8 +839,50 @@ class EvaluacionAchivoForm(forms.ModelForm):
         (EVALUADO, 'Evaluado'),
     )
 
+    TECNICO = 'TEC'
+    SUPERVISOR = 'SUP'
+
+    TIPO_ESTADO = (
+        (TECNICO, 'Técnico'),
+        (SUPERVISOR, 'Supervisor'),
+    )
+
+    tipo = forms.ChoiceField(choices = TIPO_ESTADO, required=True,
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
     nombre = forms.CharField(required=True, label="Nombre",
                                  widget=forms.TextInput(attrs={'class': "form-control"}))
+    fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_inicio"}))
+
+    fecha_termino = forms.CharField(required=True, label="Fecha Término",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino"}))
+
+    bateria = forms.ModelChoiceField(queryset=Bateria.objects.filter(status=True), required=True, label="Batería",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    centro = forms.ModelChoiceField(queryset=CentroMedico.objects.filter(status=True), required=True, label="Centro Médico ",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    cargo = forms.ModelChoiceField(queryset=Cargo.objects.filter(status=True), required=True,
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
     fecha_examen = forms.CharField(required=True, label="Fecha Examen",
                                  widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_examen", }))
     fecha_vigencia = forms.CharField(required=True, label="Fecha Vigencia",
@@ -848,7 +890,7 @@ class EvaluacionAchivoForm(forms.ModelForm):
     descripcion = forms.CharField (required=True, label="Observaciones",
                                  widget=forms.Textarea(attrs={'class': "form-control"}))
     valor_examen = forms.CharField(required=True, label="Valor Examen",
-                                widget=forms.TextInput(attrs={'class': "form-control"}))                              
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
     resultado = forms.ChoiceField(choices = RESULTADOS_ESTADO, required=True, label="Resultado",
                                    widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
                                                               'data-size': '5',
@@ -880,4 +922,4 @@ class EvaluacionAchivoForm(forms.ModelForm):
 
     class Meta:
         model = Evaluacion
-        fields = ("nombre", "fecha_examen", "fecha_vigencia", "descripcion", "valor_examen", "resultado", "referido", "archivo", "examen" )
+        fields = ("tipo", "nombre", "fecha_examen", "fecha_vigencia", "descripcion", "valor_examen", "resultado", "referido", "archivo", "examen", "centro" )

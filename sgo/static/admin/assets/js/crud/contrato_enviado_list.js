@@ -27,12 +27,7 @@ function getData() {
             {"data": "requerimiento"},
             {"data": "plazos"},
             {"data": "contrato"},
-            {"data": "estado_firma",
-            "class": 'text-center d-none',
-            "render": function(data, type, row, meta){
-                data = '<input hidden data-id="'+data+'" value="'+data+'" name="estado" id="estado" ></input>';
-                return data;
-            }},
+            {"data": "estados"},
             {"data": "id"},
             
    

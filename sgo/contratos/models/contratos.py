@@ -170,8 +170,10 @@ class Contrato(BaseModel):
         item = model_to_dict(self) 
         item['archivo'] = str(self.archivo).zfill(0)
         if(self.valores_diario):
-            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() 
+            item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() + " <br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title()
+            item['feriado'] = "Renta imp: $" + str(self.valores_diario.valor_diario) + "<br> Feriado: $" + str(self.feriado_proporcional) + "<br> Liquido: $" + str(self.valores_diario.valor_diario + self.feriado_proporcional)
         else:
+            item['feriado'] = 'solo para valores diarios'
             item['contrato'] = "Tipo: " + self.tipo_documento.nombre.title() +  "<br> Causal: " + self.causal.nombre.title() + "<br> Motivo:  " + self.motivo + "<br> Jornada:  " + self.horario.nombre.title() + "<br> Renta:  " + str(self.sueldo_base)  
         item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title()
         # item['requerimiento'] = self.requerimiento_trabajador.requerimiento.nombre.title() + "<br> Planta : " + self.planta.nombre.title() + "<br> Solicitante: " + self.created_by.first_name.title() + " " + self.created_by.last_name.title()
@@ -180,12 +182,33 @@ class Contrato(BaseModel):
         item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: " + str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
-        item['estados'] = self.estado_contrato + " " + self.estado_firma
-        item['estado_firma'] = self.estado_firma
-        if(self.feriado_proporcional):
-            item['feriado'] = "Renta imp: $" + str(self.valores_diario.valor_diario) + "<br> Feriado: $" + str(self.feriado_proporcional) + "<br> Liquido: $" + str(self.valores_diario.valor_diario + self.feriado_proporcional)
-        else:
-            item['feriado'] = 'solo para valores diarios'
+        if (self.estado_firma == 'PF'):
+            firma = "Firma: <span class='label label-warning'>POR FIRMAR</span>"
+        elif (self.estado_firma == 'EF'):
+            firma = "Firma: <span class='label label-info'>ENVIADO FIRMAR</span>"
+        elif (self.estado_firma == 'FT'):
+            firma = "Firma: <span class='label label-success'>FIRMADO TRABAJADOR</span>"
+        elif (self.estado_firma == 'FE'):
+            firma = "Firma: <span class='label label-purple'>FIRMADO EMPLEADOR</span>"
+        elif (self.estado_firma == 'FF'):
+            firma = "Firma: <span class='label label-green'>FIRMADO</span>"
+        elif (self.estado_firma == 'OB'):
+            firma = "Firma: <span class='label label-danger'>OBJETADO</span>"
+        elif (self.estado_firma == 'EX'):
+            firma = "Firma: <span class='label label-dark'>EXPIRADO</span>"
+        if (self.estado_contrato == 'CR'):
+            contrato = "Contrato: <span class='label label-warning'>CREADO</span>"
+        elif (self.estado_contrato == 'RC'):
+            contrato = "Contrato: <span class='label label-danger'>RECHAZADO</span>"
+        elif (self.estado_contrato == 'PV'):
+            contrato = "Contrato: <span class='label label-success'>PROCESO VALIDACIÓN</span>"
+        elif (self.estado_contrato == 'AP'):
+            contrato = "Contrato: <span class='label label-green'>APROBADO</span>"
+        elif (self.estado_contrato == 'PB'):
+            contrato = "Contrato: <span class='label label-purple'>PENDIENTE BAJA</span>"
+        elif (self.estado_contrato == 'BJ'):
+            contrato = "Contrato: <span class='label label-yellow'>BAJADO</span>"
+        item['estados'] = contrato + "<br>" + firma
         return item
 
     @property
@@ -327,7 +350,33 @@ class Anexo(BaseModel):
         item['cliente_planta'] = "Cliente: " + self.planta.cliente.razon_social.title() + "<br> Planta: " + self.planta.nombre.title()
         item['nombre'] = self.trabajador.first_name.title() + " " + self.trabajador.last_name.title()
         item['plazos'] = "Fecha Inicio: "+ str(self.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Termino:  " + str(self.fecha_termino.strftime('%d-%m-%Y'))
-        item['estados'] = self.estado_anexo + " " + self.estado_firma
+        if (self.estado_firma == 'PF'):
+            firma = "Firma: <span class='label label-warning'>POR FIRMAR</span>"
+        elif (self.estado_firma == 'EF'):
+            firma = "Firma: <span class='label label-info'>ENVIADO FIRMAR</span>"
+        elif (self.estado_firma == 'FT'):
+            firma = "Firma: <span class='label label-success'>FIRMADO TRABAJADOR</span>"
+        elif (self.estado_firma == 'FE'):
+            firma = "Firma: <span class='label label-purple'>FIRMADO EMPLEADOR</span>"
+        elif (self.estado_firma == 'FF'):
+            firma = "Firma: <span class='label label-green'>FIRMADO</span>"
+        elif (self.estado_firma == 'OB'):
+            firma = "Firma: <span class='label label-danger'>OBJETADO</span>"
+        elif (self.estado_firma == 'EX'):
+            firma = "Firma: <span class='label label-dark'>EXPIRADO</span>"
+        if (self.estado_anexo == 'CR'):
+            anexo = "Anexo: <span class='label label-warning'>CREADO</span>"
+        elif (self.estado_anexo == 'RC'):
+            anexo = "Anexo: <span class='label label-danger'>RECHAZADO</span>"
+        elif (self.estado_anexo == 'PV'):
+            anexo = "Anexo: <span class='label label-success'>PROCESO<br>VALIDACIÓN</span>"
+        elif (self.estado_anexo == 'AP'):
+            anexo = "Anexo: <span class='label label-green'>APROBADO</span>"
+        elif (self.estado_anexo == 'PB'):
+            anexo = "Anexo: <span class='label label-purple'>PENDIENTE<br>BAJA</span>"
+        elif (self.estado_anexo == 'BJ'):
+            anexo = "Anexo: <span class='label label-yellow'>BAJADO</span>"
+        item['estados'] = anexo + " " + firma
         return item
 
 
@@ -469,9 +518,63 @@ class Baja(BaseModel):
             item['plazos'] = "Fecha Inicio: "+ str(self.anexo.fecha_inicio.strftime('%d-%m-%Y')) + "<br> Fecha Término:  " + str(self.anexo.fecha_termino.strftime('%d-%m-%Y'))
 
         if(self.contrato):
-            item['estados'] = "Contrato: "+ self.contrato.estado_contrato + "<br> Firma:  " + self.contrato.estado_firma
+            if (self.contrato.estado_firma == 'PF'):
+                firma = "Firma: <span class='label label-warning'>POR FIRMAR</span>"
+            elif (self.contrato.estado_firma == 'EF'):
+                firma = "Firma: <span class='label label-info'>ENVIADO FIRMAR</span>"
+            elif (self.contrato.estado_firma == 'FT'):
+                firma = "Firma: <span class='label label-success'>FIRMADO TRABAJADOR</span>"
+            elif (self.contrato.estado_firma == 'FE'):
+                firma = "Firma: <span class='label label-purple'>FIRMADO EMPLEADOR</span>"
+            elif (self.contrato.estado_firma == 'FF'):
+                firma = "Firma: <span class='label label-green'>FIRMADO</span>"
+            elif (self.contrato.estado_firma == 'OB'):
+                firma = "Firma: <span class='label label-danger'>OBJETADO</span>"
+            elif (self.contrato.estado_firma == 'EX'):
+                firma = "Firma: <span class='label label-dark'>EXPIRADO</span>"
+            if (self.contrato.estado_contrato == 'CR'):
+                contrato = "Contrato: <span class='label label-warning'>CREADO</span>"
+            elif (self.contrato.estado_contrato == 'RC'):
+                contrato = "Contrato: <span class='label label-danger'>RECHAZADO</span>"
+            elif (self.contrato.estado_contrato == 'PV'):
+                contrato = "Contrato: <span class='label label-success'>PROCESO VALIDACIÓN</span>"
+            elif (self.contrato.estado_contrato == 'AP'):
+                contrato = "Contrato: <span class='label label-green'>APROBADO</span>"
+            elif (self.contrato.estado_contrato == 'PB'):
+                contrato = "Contrato: <span class='label label-purple'>PENDIENTE BAJA</span>"
+            elif (self.contrato.estado_contrato == 'BJ'):
+                contrato = "Contrato: <span class='label label-yellow'>BAJADO</span>"
+            item['estados'] = contrato + "<br> " + firma
+            # item['estados'] = "Contrato: "+ self.contrato.estado_contrato + "<br> Firma:  " + self.contrato.estado_firma
         else:
-            item['estados'] = "Anexo: "+ self.anexo.estado_anexo + "<br> Firma:  " + self.anexo.estado_firma
+            if (self.anexo.estado_firma == 'PF'):
+                firma = "Firma: <span class='label label-warning'>POR FIRMAR</span>"
+            elif (self.anexo.estado_firma == 'EF'):
+                firma = "Firma: <span class='label label-info'>ENVIADO FIRMAR</span>"
+            elif (self.anexo.estado_firma == 'FT'):
+                firma = "Firma: <span class='label label-success'>FIRMADO TRABAJADOR</span>"
+            elif (self.anexo.estado_firma == 'FE'):
+                firma = "Firma: <span class='label label-purple'>FIRMADO EMPLEADOR</span>"
+            elif (self.anexo.estado_firma == 'FF'):
+                firma = "Firma: <span class='label label-green'>FIRMADO</span>"
+            elif (self.anexo.estado_firma == 'OB'):
+                firma = "Firma: <span class='label label-danger'>OBJETADO</span>"
+            elif (self.anexo.estado_firma == 'EX'):
+                firma = "Firma: <span class='label label-dark'>EXPIRADO</span>"
+            if (self.anexo.estado_anexo == 'CR'):
+                anexo = "Anexo: <span class='label label-warning'>CREADO</span>"
+            elif (self.anexo.estado_anexo == 'RC'):
+                anexo = "Anexo: <span class='label label-danger'>RECHAZADO</span>"
+            elif (self.anexo.estado_anexo == 'PV'):
+                anexo = "Anexo: <span class='label label-success'>PROCESO VALIDACIÓN</span>"
+            elif (self.anexo.estado_anexo == 'AP'):
+                anexo = "Anexo: <span class='label label-green'>APROBADO</span>"
+            elif (self.anexo.estado_anexo == 'PB'):
+                anexo = "Anexo: <span class='label label-purple'>PENDIENTE BAJA</span>"
+            elif (self.anexo.estado_anexo == 'BJ'):
+                anexo = "Anexo: <span class='label label-yellow'>BAJADO</span>"
+            item['estados'] = anexo + "<br>" + firma
+        # item['estados'] = "Anexo: "+ self.anexo.estado_anexo + "<br> Firma:  " + self.anexo.estado_firma
 
         if(self.contrato):    
             item['solicitante'] = self.contrato.created_by.first_name.title() + " " + self.contrato.created_by.last_name.title()

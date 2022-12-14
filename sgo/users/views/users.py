@@ -44,6 +44,7 @@ from firmas.models import Firma
 # Forms
 from users.forms import EditarUsuarioForm, CrearUsuarioForm, CrearTrabajadorForm, EditarTrabajadorForm, ProfesionForm, EspecialidadForm, ProfesionTrabajadorForm, ParentescoCreateForm, ContactoForm, ArchivoTrabajadorForm, ListaNegraForm, EvaluacionAchivoForm
 from requerimientos.fecha_a_palabras import fecha_a_letras
+from examenes.forms import EvaluacionGeneralForm
 
 User = get_user_model()
 
@@ -661,25 +662,74 @@ class TrabajadoresIdView(TemplateView):
                 archiv = ArchivoTrabajador.objects.get(pk=request.POST['id'])
                 archiv.status = False
                 archiv.save()
-            elif action == 'evaluacion_add':
-                evalu = Evaluacion()
-                evalu.fecha_examen = request.POST['fecha_examen']
-                evalu.fecha_vigencia = request.POST['fecha_vigencia']
-                evalu.descripcion = request.POST['descripcion']
+            # elif action == 'evaluacion_add':
+            #     evalu = Evaluacion()
+            #     evalu.fecha_examen = request.POST['fecha_examen']
+            #     evalu.fecha_vigencia = request.POST['fecha_vigencia']
+            #     evalu.descripcion = request.POST['descripcion']
+            #     if "referido" in request.POST:
+            #         estado = True
+            #         evalu.referido =  estado
+            #     else:
+            #         estado = False
+            #         evalu.referido =  estado
+            #     evalu.valor_examen = request.POST['valor_examen']
+            #     evalu.resultado = request.POST['resultado']
+            #     evalu.planta_id = request.POST['planta']
+            #     evalu.examen_id = request.POST['examen']
+            #     evalu.archivo = request.FILES['archivo']
+            #     evalu.trabajador_id = trabajador2.id
+            #     evalu.save()
+            # elif action == 'evaluacion_edit':
+            #     evalu = Evaluacion.objects.get(pk=request.POST['id'])
+            #     evalu.fecha_examen = request.POST['fecha_examen']
+            #     evalu.fecha_vigencia = request.POST['fecha_vigencia']
+            #     evalu.descripcion = request.POST['descripcion']
+            #     if "referido" in request.POST:
+            #         estado = True
+            #         evalu.referido =  estado
+            #     else:
+            #         estado = False
+            #         evalu.referido =  estado
+            #     evalu.valor_examen = request.POST['valor_examen']
+            #     evalu.resultado = request.POST['resultado']
+            #     evalu.planta_id = request.POST['planta']
+            #     evalu.examen_id = request.POST['examen']
+            #     evalu.archivo = request.FILES['archivo']
+            #     evalu.trabajador_id = trabajador2.id
+            #     evalu.save()
+            # elif action == 'evaluacion_delete':
+            #     evalu = Evaluacion.objects.get(pk=request.POST['id'])
+            #     evalu.status = False
+            #     evalu.save()
+            elif action == 'exam_add':
+                if "masso" in request.POST:
+                    tipo_masso = "MAS"
+                else:
+                    tipo_masso = "GEN"
                 if "referido" in request.POST:
                     estado = True
-                    evalu.referido =  estado
                 else:
                     estado = False
-                    evalu.referido =  estado
-                evalu.valor_examen = request.POST['valor_examen']
-                evalu.resultado = request.POST['resultado']
+                evalu = Evaluacion()
+                evalu.tipo_evaluacion =  tipo_masso
+                evalu.fecha_inicio = request.POST['fecha_inicio']
+                evalu.fecha_termino = request.POST['fecha_termino']
+                evalu.tipo = request.POST['tipo']
+                evalu.centro_id = request.POST['centro']
                 evalu.planta_id = request.POST['planta']
-                evalu.examen_id = request.POST['examen']
+                evalu.bateria_id = request.POST['bateria']
+                evalu.estado = request.POST['estado']
+                evalu.referido =  estado
+                evalu.resultado = request.POST['resultado']
+                evalu.valor = request.POST['valor']
+                evalu.trabajador_id = request.POST['trabajador_id']
+                evalu.cargo_id = request.POST['cargo']
                 evalu.archivo = request.FILES['archivo']
-                evalu.trabajador_id = trabajador2.id
+                if "archivo2" in request.FILES:
+                    evalu.archivo2 = request.FILES['archivo2']
                 evalu.save()
-            elif action == 'evaluacion_edit':
+            elif action == 'exam_edit':
                 evalu = Evaluacion.objects.get(pk=request.POST['id'])
                 evalu.fecha_examen = request.POST['fecha_examen']
                 evalu.fecha_vigencia = request.POST['fecha_vigencia']
@@ -690,14 +740,16 @@ class TrabajadoresIdView(TemplateView):
                 else:
                     estado = False
                     evalu.referido =  estado
-                evalu.valor_examen = request.POST['valor_examen']
+                evalu.valor = request.POST['valor']
                 evalu.resultado = request.POST['resultado']
                 evalu.planta_id = request.POST['planta']
-                evalu.examen_id = request.POST['examen']
+                evalu.bateria_id = request.POST['bateria']
+                evalu.cargo_id = request.POST['cargo']
+                evalu.centro_id = request.POST['centro']
                 evalu.archivo = request.FILES['archivo']
                 evalu.trabajador_id = trabajador2.id
                 evalu.save()
-            elif action == 'evaluacion_delete':
+            elif action == 'exam_delete':
                 evalu = Evaluacion.objects.get(pk=request.POST['id'])
                 evalu.status = False
                 evalu.save()
@@ -746,7 +798,7 @@ class TrabajadoresIdView(TemplateView):
         context['form2'] = ContactoForm()
         context['form3'] = ProfesionTrabajadorForm()
         context['form4'] = ArchivoTrabajadorForm()
-        context['form5'] = EvaluacionAchivoForm()
+        context['form5'] = EvaluacionGeneralForm()
         return context
 
 

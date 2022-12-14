@@ -30,7 +30,7 @@ def estado_contrato(value):
         Contrato.CREADO: '<span class="label label-warning">CREADO</span>',
         Contrato.PROCESO_VALIDACION: '<span class="label label-success">PROCESO<br>VALIDACIÓN</span>',
         Contrato.PENDIENTE_BAJA: '<span class="label label-purple">PENDIENTE<br>BAJA</span>',
-        Contrato.BAJADO: '<span class="label label-purple">BAJADO</span>',
+        Contrato.BAJADO: '<span class="label label-yellow">BAJADO</span>',
         Contrato.APROBADO: '<span class="label label-green">APROBADO</span>',
         Contrato.RECHAZADO: '<span class="label label-danger">RECHAZADO</span>',
     }
