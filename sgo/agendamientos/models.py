@@ -28,6 +28,7 @@ class Agendamiento(BaseModel):
     SUPERVISOR = 'SUP'
     PSICOLOGICA = 'PSI'
     GENERAL = 'GEN'
+    MASSO = 'MAS'
 
     TIPO_ESTADO = (
         (TECNICO, 'Técnico'),
@@ -43,7 +44,8 @@ class Agendamiento(BaseModel):
 
     TIPO_EV=(
         (PSICOLOGICA, 'Psicólogia'),
-        (GENERAL,'General')
+        (GENERAL,'General'),
+        (MASSO,'masso')
     )
     tipo = models.CharField(max_length=3, choices=TIPO_ESTADO, default=TECNICO)
     tipo_evaluacion = models.CharField(max_length=3, choices=TIPO_EV)
@@ -88,6 +90,8 @@ class Agendamiento(BaseModel):
             item['psicologo'] = "No Asignado"
         if (self.tipo_evaluacion == 'PSI'):
             tipoeva = 'Psicologico'
+        elif (self.tipo_evaluacion == 'MAS'):
+            tipoeva = 'Masso'
         else:
             tipoeva = 'General'
         if (self.centro):
