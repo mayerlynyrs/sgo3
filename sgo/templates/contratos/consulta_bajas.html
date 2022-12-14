@@ -72,17 +72,18 @@
       <table id="data-table-default" class="table table-striped table-bordered align-middle">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Solicitante</th>
-                    <th>Trabajador</th>
-                    <th>Plazos</th>
-                    <th>Contrato</th>
+                    <!-- <th>#</th> -->
+                    <th width="10%">Solicitante</th>
+                    <th width="10%">Trabajador</th>
+                    <th width="10%">Plazos</th>
+                    <th width="10%">Contrato</th>
+                    <th width="10%">Estados</th>
                 </tr>
             </thead>
             <tbody>
                 {% for obj in data %}
                 <tr>
-                    <td>{{ forloop.counter }}.</td>
+                    <!-- <td>{{ forloop.counter }}.</td> -->
                     <td>{{ obj.created_by.first_name|title }} {{ obj.created_by.last_name|title }}</td>
                     <td>{{ obj.trabajador|title }}</td>
                     <td>Fecha Inicio: {{ obj.fecha_inicio|date:'d/m/Y' }}<br>
@@ -92,6 +93,8 @@
                         Motivo: {{ obj.motivo|title }}<br>
                         Jornada: {{ obj.horario.nombre|title }}<br>
                         Renta: {{ obj.sueldo_base }}</td>
+                    <td>Contrato: {{ obj.estado_contrato|estado_contrato|safe }}<br>
+                        Firma: {{ obj.estado_firma|estado_firma|safe }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

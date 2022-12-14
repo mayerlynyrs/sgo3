@@ -106,10 +106,13 @@ class Evaluacion(models.Model):
     """
     RECOMENDABLE = 'R'
     NO_RECOMENDABLE = 'N'
+
     SUPERVISOR = 'SUP'
     TECNICO = 'TEC'
+
     PSICOLOGICA = 'PSI'
     GENERAL = 'GEN'
+    MASSO = 'MAS'
 
     ESTADOS = (
         (RECOMENDABLE, 'Recomendable'),
@@ -124,7 +127,8 @@ class Evaluacion(models.Model):
 
     TIPO_EV=(
         (PSICOLOGICA, 'Psicologia'),
-        (GENERAL,'General')
+        (GENERAL, 'General'),
+        (MASSO, 'Masso')
     )
 
     estado = models.CharField(max_length=1, choices=ESTADOS)
@@ -213,8 +217,10 @@ class Evaluacion(models.Model):
             item['centromedico'] = "No Asignado"
         if (self.psicologo):
             item['tipoexamen'] = "Psicologico"
-        else:
+        elif (self.tipo_evaluacion == "GEN"):
             item['tipoexamen'] = "Examen General"
+        elif (self.tipo_evaluacion == "MAS"):
+            item['tipoexamen'] = "Masso"
         
         item['resultado'] = resultado  
         item['tipo'] = tipo   
@@ -226,6 +232,7 @@ class Evaluacion(models.Model):
         item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
         item['planta_nombre'] = self.planta.nombre
         item['cargo_nombre'] = self.cargo.nombre
+        item['centro_nombre'] = self.centro.nombre
         item['archivo2'] = ''
         return item
 

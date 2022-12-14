@@ -173,7 +173,9 @@ class ContratoEnviadoList(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Contrato.objects.filter(estado_contrato='AP', estado_firma='EF', status=True):
+                # for i in Contrato.objects.filter(estado_contrato='AP', status=True):
+                for i in Contrato.objects.filter(status=True).exclude(estado_firma="PF"):
+
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -351,7 +353,8 @@ class AnexoEnviadoList(TemplateView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Anexo.objects.filter(estado_anexo='AP', estado_firma='EF', status=True):
+                # for i in Anexo.objects.filter(estado_anexo='AP', estado_firma='EF', status=True):
+                for i in Anexo.objects.filter(status=True).exclude(estado_firma="PF"):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'

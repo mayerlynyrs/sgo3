@@ -160,12 +160,13 @@ class EvaluacionGeneralForm(forms.ModelForm):
 
     RECOMENDABLE = 'R'
     NO_RECOMENDABLE = 'N'
-    SUPERVISOR = 'SUP'
+
     TECNICO = 'TEC'
+    SUPERVISOR = 'SUP'
 
     TIPO_ESTADO = (
-        (SUPERVISOR, 'Supervisor'),
         (TECNICO, 'Técnico'),
+        (SUPERVISOR, 'Supervisor'),
     )
 
     ESTADOS = (
