@@ -156,6 +156,69 @@ class AgendaGeneralForm(forms.ModelForm):
         fields = ( "tipo", "referido","fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta", "estado", "cargo", "centro", "bateria")
 
 
+class AgendaMassoForm(forms.ModelForm):
+
+    ESPERA_EVALUACION = 'E'
+    APROBADO = 'A'
+    RECHAZADO = 'R'
+    AGENDADO = 'AG'
+    SUPERVISOR = 'SUP'
+    TECNICO = 'TEC'
+
+    TIPO_ESTADO = (
+        (SUPERVISOR, 'Supervisor'),
+        (TECNICO, 'Técnico'),
+    )
+    ESTADOS = (
+        (APROBADO, 'Aprobado'),
+        (RECHAZADO, 'Rechazado'),
+        (ESPERA_EVALUACION, 'Espera evaluacion'),
+        (AGENDADO, 'Agendado'),
+    )
+
+                               
+    tipo = forms.ChoiceField(choices = TIPO_ESTADO, required=True, label="Tipo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    fecha_ingreso_estimada = forms.CharField(required=True, label="Fecha Estimada Ingreso",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_ingreso", }))
+                                 
+    fecha_agenda_evaluacion = forms.CharField(required=True, label="Fecha Evaluacion",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_evaluacion"}))
+    obs = forms.CharField (label="Observaciones",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    cargo = forms.ModelChoiceField(queryset=Cargo.objects.filter(status=True), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )                                
+    estado = forms.ChoiceField(choices = ESTADOS, required=True, label="Tipo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+
+
+    class Meta:
+        model = Agendamiento
+        fields = ( "tipo", "referido","fecha_ingreso_estimada", "fecha_agenda_evaluacion", "obs", "planta", "estado", "cargo", "centro", "bateria")
+
+
 class EvaluacionGeneralForm(forms.ModelForm):
 
     RECOMENDABLE = 'R'
@@ -232,6 +295,86 @@ class EvaluacionGeneralForm(forms.ModelForm):
     class Meta:
         model = Evaluacion
         fields = ("estado", "fecha_inicio", "fecha_termino", "resultado", "archivo", "archivo2", "planta","cargo", "referido","tipo", "valor", "centro", "bateria")
+
+
+class EvaluacionMassoForm(forms.ModelForm):
+
+    RECOMENDABLE = 'R'
+    NO_RECOMENDABLE = 'N'
+
+    TECNICO = 'TEC'
+    SUPERVISOR = 'SUP'
+
+    TIPO_ESTADO = (
+        (TECNICO, 'Técnico'),
+        (SUPERVISOR, 'Supervisor'),
+    )
+
+    ESTADOS = (
+        (RECOMENDABLE, 'Recomendable'),
+        (NO_RECOMENDABLE, 'No Recomendable'),
+
+    )
+                               
+    tipo = forms.ChoiceField(choices = TIPO_ESTADO, required=True, label="Tipo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )                   
+    estado = forms.ChoiceField(choices = ESTADOS, required=True, label="Tipo",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    fecha_inicio = forms.CharField(required=True, label="Fecha Inicio",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_ingreso", }))
+    fecha_termino = forms.CharField(required=True, label="Fecha Termino",
+                                 widget=forms.TextInput(attrs={'class': "form-control", 'autocomplete':'off', 'id':"fecha_termino"}))
+    resultado = forms.CharField (required=True, label="Resultado",
+                                 widget=forms.Textarea(attrs={'class': "form-control"}))
+    archivo = forms.FileField(required=True, label="Archivo",
+                                 widget=forms.FileInput(attrs={'class': "form-control"}))                               
+    planta = forms.ModelChoiceField(queryset=Planta.objects.filter(status=True), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    cargo = forms.ModelChoiceField(queryset=Cargo.objects.filter(status=True), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    bateria = forms.ModelChoiceField(queryset=Bateria.objects.filter(status=True), required=True, label="Planta",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   )
+    valor = forms.IntegerField(required=True, label="Valor",
+                                 widget=forms.TextInput(attrs={'class': "form-control"}))
+    centromedico = forms.ModelChoiceField(queryset=CentroMedico.objects.filter(status=True), required=True, label="Centro Medico",
+                                   widget=forms.Select(attrs={'class': 'selectpicker show-tick form-control',
+                                                              'data-size': '5',
+                                                              'data-live-search': 'true',
+                                                              'data-live-search-normalize': 'true'
+                                                              })
+                                   ) 
+                                     
+
+    class Meta:
+        model = Evaluacion
+        fields = ("estado", "fecha_inicio", "fecha_termino", "resultado", "archivo", "archivo2", "planta","cargo", "referido","tipo", "valor", "centro", "bateria")
+
+
 
 
 class ReportForm(Form):
