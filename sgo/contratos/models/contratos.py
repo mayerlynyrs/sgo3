@@ -376,7 +376,7 @@ class Anexo(BaseModel):
             anexo = "Anexo: <span class='label label-purple'>PENDIENTE<br>BAJA</span>"
         elif (self.estado_anexo == 'BJ'):
             anexo = "Anexo: <span class='label label-yellow'>BAJADO</span>"
-        item['estados'] = anexo + " " + firma
+        item['estados'] = anexo + "<br>" + firma
         return item
 
 
@@ -544,7 +544,7 @@ class Baja(BaseModel):
                 contrato = "Contrato: <span class='label label-purple'>PENDIENTE BAJA</span>"
             elif (self.contrato.estado_contrato == 'BJ'):
                 contrato = "Contrato: <span class='label label-yellow'>BAJADO</span>"
-            item['estados'] = contrato + "<br> " + firma
+            item['estados'] = contrato + "<br>" + firma
             # item['estados'] = "Contrato: "+ self.contrato.estado_contrato + "<br> Firma:  " + self.contrato.estado_firma
         else:
             if (self.anexo.estado_firma == 'PF'):
