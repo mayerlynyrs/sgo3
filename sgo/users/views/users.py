@@ -1073,28 +1073,46 @@ def autorizacion_trabajador(request, trabajador_id):
                     documento = base64.b64encode(pdf_file.read()).decode('utf-8')
                 document = f'{documento}'
                 
-                url = "https://app.ecertia.com/api/EviSign/Submit"
+                url = "https://empresasintegra.evicertia.com/api/EviSign/Submit"
 
                 payload = json.dumps({
                 "Subject": "Autorización Firma Electrónica Trabajador del SGO3",
                 "Document": document,
-                "SigningParties": {
-                    "Name": employee.first_name.title() + ' ' + employee.last_name.title(),
-                    "Address": employee.email,
-                    "SigningMethod": "Email Pin"
-                },
+                "signingParties": [
+                    {
+                        "name": employee.first_name.title() + ' ' + employee.last_name.title(),
+                        "address": employee.email,
+                        "signingMethod": "Email Pin",
+                        "role": "Signer",
+                        "signingOrder": 1,
+                        "legalName": "Trabajador"
+                    },
+                    {
+                        "name": "Empresas Integra Ltda.",
+                        "address": "firma@empresasintegra.cl",
+                        "signingMethod": "WebClick",
+                        "role": "Signer",
+                        "signingOrder": 2,
+                        "legalName": "Empleador"
+                    }
+                ],
                 "Options": {
-                    "TimeToLive": 1200,
+                    "timeToLive": 4320,
+                    "NumberOfReminders":3,
+                    "notaryRetentionPeriod": 0,
+                    "onlineRetentionPeriod": 2,
+                    "language": "es-ES",
+                    "EvidenceAccessControlMethod": "Public",
+                    "CertificationLevel": "Advanced",
+
                     "RequireCaptcha": False,
-                    "NotaryRetentionPeriod": 0,
-                    "OnlineRetentionPeriod": 1
                 },
                 "Issuer": "EVISA"
                 })
                 headers = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Authorization': 'Basic ZmlybWFAZW1wcmVzYXNpbnRlZ3JhLmNsOktGeFcwMkREMyM=',
                     'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
                             }
 
@@ -1124,28 +1142,46 @@ def autorizacion_trabajador(request, trabajador_id):
                     documento = base64.b64encode(pdf_file.read()).decode('utf-8')
                 document = f'{documento}'
                 
-                url = "https://app.ecertia.com/api/EviSign/Submit"
+                url = "https://empresasintegra.evicertia.com/api/EviSign/Submit"
 
                 payload = json.dumps({
                 "Subject": "Autorización Firma Electrónica Trabajador del SGO3",
                 "Document": document,
-                "SigningParties": {
-                    "Name": employee.first_name.title() + ' ' + employee.last_name.title(),
-                    "Address": employee.email,
-                    "SigningMethod": "Email Pin"
-                },
+                "signingParties": [
+                    {
+                        "name": employee.first_name.title() + ' ' + employee.last_name.title(),
+                        "address": employee.email,
+                        "signingMethod": "Email Pin",
+                        "role": "Signer",
+                        "signingOrder": 1,
+                        "legalName": "Trabajador"
+                    },
+                    {
+                        "name": "Empresas Integra Ltda.",
+                        "address": "firma@empresasintegra.cl",
+                        "signingMethod": "WebClick",
+                        "role": "Signer",
+                        "signingOrder": 2,
+                        "legalName": "Empleador"
+                    }
+                ],
                 "Options": {
-                    "TimeToLive": 1200,
+                    "timeToLive": 4320,
+                    "NumberOfReminders":3,
+                    "notaryRetentionPeriod": 0,
+                    "onlineRetentionPeriod": 2,
+                    "language": "es-ES",
+                    "EvidenceAccessControlMethod": "Public",
+                    "CertificationLevel": "Advanced",
+
                     "RequireCaptcha": False,
-                    "NotaryRetentionPeriod": 0,
-                    "OnlineRetentionPeriod": 1
                 },
                 "Issuer": "EVISA"
                 })
                 headers = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                    'Authorization': 'Basic ZmlybWFAZW1wcmVzYXNpbnRlZ3JhLmNsOktGeFcwMkREMyM=',
                     'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
                             }
 
