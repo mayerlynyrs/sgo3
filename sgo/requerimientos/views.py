@@ -98,7 +98,9 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.
                 if planta is None:
-                    queryset = super(RequerimientoListView, self).get_queryset()
+                    # queryset = super(RequerimientoListView, self).get_queryset()
+                    queryset = Requerimiento.objects.filter(status = True)
+                     
                 else:
                     # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
                     queryset = super(RequerimientoListView, self).get_queryset().filter(
