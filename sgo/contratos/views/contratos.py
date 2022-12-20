@@ -1539,6 +1539,7 @@ class ContratoIdView(TemplateView):
         finiquito = 'NO'
         fin_contrato = 'NO'
         # ultimo_anexo_contrato = 'NO'
+        mensaje = ''
         requer_trabajador = get_object_or_404(RequerimientoTrabajador, pk=requerimiento_trabajador_id, status= True)
         if(requer_trabajador.requerimiento.planta.masso == True):
             try:
@@ -1633,9 +1634,24 @@ class ContratoIdView(TemplateView):
         contrato_diario = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).exists()
         cantidadcontratos = 0
         ultimo2 = 0
+        contadordiario = 0
+        ultimoDiario = Contrato.objects.filter(trabajador = requer_trabajador.trabajador , status=True).latest('id')
         if(contrato_diario == True):
             # La fecha de inicio y la fecha de termino es la misma en contrato diario
             cantidadcontratos = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).count()
+            
+            for x in range(6):
+                fecha = ultimoDiario.fecha_termino_ultimo_anexo - timedelta(days=x)
+                if(Contrato.objects.filter(trabajador_id=ultimoDiario.trabajador, fecha_termino_ultimo_anexo = fecha , status=True ).exists()):
+                    contadordiario = contadordiario + 1
+                    print()
+                else:
+                    contadordiario = 0
+            print('contador de contratos', contadordiario)
+
+
+
+
             ultimo = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
             try:
                 ultimo_cd_aprob = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, estado_contrato = 'AP').latest('id')
@@ -1662,11 +1678,18 @@ class ContratoIdView(TemplateView):
                 fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
             else: 
                 fecha_restriccion = inicio_contrato + timedelta(days = 1)
+                mensaje = 'Restriccion por contrato anterior'
         except:
             print('no entro en el try')
 
-        
+        if (contadordiario <= 6):
+            if(fecha_restriccion > ultimoDiario.fecha_termino):
+                fecha_restriccion = ultimoDiario.fecha_termino + timedelta(days = 2)
+                mensaje = 'Restriccion por contratos seguidos'
+               
 
+        
+        context['mensaje'] = mensaje
         context['exa_maso'] =  exa_maso   
         context['exa_bate'] =  exa_bate   
         context['exa_psico'] =  exa_psico

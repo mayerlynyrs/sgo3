@@ -371,6 +371,9 @@
     
 
         <div class="modal-footer">
+          {% if mensaje != '' %}
+          <label class="alert alert-info fade show" for="revision"> {{mensaje}}</label>
+          {% endif %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           {% if exa_maso == 'SI' and exa_bate == 'SI' and exa_psico == 'SI'  %}
           <button type="submit" id="boton" class="btn btn-primary">Guardar</button>
@@ -460,6 +463,9 @@
         <input type="hidden" name="requerimiento_trabajador_id" class="form-control" value="{{ requerimiento_trabajador_id }}">
         <input type="hidden" name="trabajador_id" class="form-control" value="{{ ru.trabajador }}">
         <div class="modal-footer">
+          {% if mensaje != '' %}
+          <label class="alert alert-info fade show" for="revision"> {{mensaje}}</label>
+          {% endif %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           <button type="submit" id="btn-contrato-diario" class="btn btn-primary">Guardar</button>
         </div>
