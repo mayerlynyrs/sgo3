@@ -86,7 +86,7 @@ urlpatterns = [
         name='terminos_condiciones'
     ),
     path(
-        route='<int:trabajador_id>/update_trabajador/',
+        route='trabajador/<int:trabajador_id>/update_trabajador/',
         view=views.update_trabajador,
         name="update_trabajador"
     ),

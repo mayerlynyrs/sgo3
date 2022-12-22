@@ -960,7 +960,7 @@ def create_trabajador(request):
 
 
 @login_required
-@permission_required('users.add_user', raise_exception=True)
+@permission_required('users.change_trabajador', raise_exception=True)
 def update_trabajador(request, trabajador_id):
     """Update a user's profile view."""
 
@@ -971,7 +971,7 @@ def update_trabajador(request, trabajador_id):
 
     # Se valida que solo el administrador  pueda editar el perfil de otro usuario.
     # Se valida que solo los administradores puedan editar el perfil de otro usuario.
-    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+    if not request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Analista Operación', 'Jefe RRHH', 'Analista RRHH', ]).exists():
         if not user == request.user:
             raise Http404
 
@@ -1001,7 +1001,7 @@ def update_trabajador(request, trabajador_id):
             usuario.save()
             messages.success(request, ('Trabajador actualizado'))
 
-            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', ]).exists():
+            if request.user.groups.filter(name__in=['Administrador', 'Administrador Contratos', 'Analista Operación', 'Jefe RRHH', 'Analista RRHH', ]).exists():
                 response = redirect('users:create-trabajador', pk)
                 return response
             else:

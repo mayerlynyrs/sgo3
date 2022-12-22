@@ -991,7 +991,7 @@ def delete(request, object_id, template_name='contratos/contrato_delete.html'):
             path = os.path.join(ruta_documentos)
             # Elimina los documento adicionales del contrato.
             for e in doc_adicionales:
-                os.remove(path + "contratos/" + str(e))
+                os.remove(path + str(e))
 
             object.delete()
             messages.success(request, 'Contrato eliminado Exitosamente')
@@ -1146,14 +1146,14 @@ def enviar_revision_contrato(request, contrato_id):
                 titulonoimponible = ''
                 bonosnoimponibles= ''
                 
-                try:
-                    revision = Revision.objects.get(contrato_id=contrato_id)
-                    revision.estado = 'PD'
-                    revision.save()
-                except:  
-                    revision = Revision()
-                    revision.contrato_id = contrato.id
-                    revision.save()
+            try:
+                revision = Revision.objects.get(contrato_id=contrato_id)
+                revision.estado = 'PD'
+                revision.save()
+            except:  
+                revision = Revision()
+                revision.contrato_id = contrato.id
+                revision.save()
                 # Trae la plantilla que tiene la planta
                 if(contrato.horario.id == 1):
                     adicional_cumplimiento_horario_undecimo = ''
@@ -1657,7 +1657,7 @@ class ContratoIdView(TemplateView):
                 fecha_restriccion = requer_trabajador.requerimiento.fecha_inicio
             else: 
                 fecha_restriccion = inicio_contrato + timedelta(days = 1)
-                mensaje = 'Restriccion por contrato anterior'
+                mensaje = 'Restricción por contrato anterior'
         except:
             print('no entro en el try')
 
@@ -1677,10 +1677,10 @@ class ContratoIdView(TemplateView):
                         contadordiario = 0
                 print('contador de contratos', contadordiario)
 
-            if (contadordiario <= 6):
+            if (contadordiario >= 6):
                 if(fecha_restriccion > ultimoDiario.fecha_termino):
                     fecha_restriccion = ultimoDiario.fecha_termino + timedelta(days = 2)
-                    mensaje = 'Restriccion por contratos seguidos'
+                    mensaje = 'Restricción por contratos seguidos'
         except:
             print('')
                
