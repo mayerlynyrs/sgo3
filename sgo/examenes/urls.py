@@ -39,6 +39,11 @@ urlpatterns = [
         name='evaTerminadas'
      ),
     path(
+        route='evaTerminadasMasso',
+        view=views.EvalTerminadasMassoView.as_view(),
+        name='evaTerminadasMasso'
+     ),
+    path(
         route='list_solicitudes',
         view=views.ExaSolicitudesList.as_view(),
         name='list-solicitudes'

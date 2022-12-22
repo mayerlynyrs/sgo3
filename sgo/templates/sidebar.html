@@ -136,7 +136,8 @@
                   <ul class="sub-menu" style=>
                     <li {% if menu_module == 'examengeneral' and menu_page == 'list' %}class="active"{% endif %}><a href="{% url 'examenes:listEvaluacionesMasso' %}">Evaluaciones</a></li>
                     {% if perms.examenes.change_examen %}
-                    <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'examenes:evaTerminadas' %}">Evaluaciones Realizadas</a></li>
+                    
+                    <li {% if menu_module == 'examengeneral' and menu_page == 'create' %}class="active"{% endif %}><a href="{% url 'examenes:evaTerminadasMasso' %}">Evaluaciones Realizadas</a></li>
                     {% endif %}
                     <li {% if menu_app == 'examengeneral' and menu_page == None %} class="active"{% endif %}><a href="{% url 'examenes:list-solicitudes' %}">Revisión de Solicitudes </a></li>
                   </ul>

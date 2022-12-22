@@ -121,7 +121,7 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                                 estado = False
                             agendar.referido =  estado
                             agendar.obs = request.POST['obs']
-                            agendar.tipo_evaluacion = "MASSO"
+                            agendar.tipo_evaluacion = "MAS"
                             agendar.status = True
                             agendar.save()
                             send_mail(

@@ -708,13 +708,7 @@ def create(request):
     requer = RequerimientoTrabajador.objects.values_list('requerimiento', flat=True).get(pk=requerimientotrabajador, status=True)
     # Trae el id de la planta del Requerimiento
     plant_template = Requerimiento.objects.values_list('planta', flat=True).get(pk=requer, status=True)
-    # Busca si la planta tiene plantilla 
-    if not Plantilla.objects.filter(plantas=plant_template, tipo_id=10).exists():
-        # Trae las plantillas (formatos) que tiene la planta. tipo_id=10=Doc. Adicionales
-        formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=10)
-        messages.error(request, 'La Planta no posee Plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
-        return redirect('contratos:create_contrato', requerimientotrabajador)
-    # exit()
+
     if (request.POST['tipo'] == 'diario'):
         formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter( Q(tipo_id=10) |  Q(tipo_id=13), plantas=plant_template)
     else: 
@@ -1401,50 +1395,28 @@ def carta_termino(request):
                 documento = base64.b64encode(pdf_file.read()).decode('utf-8')
             document = f'{documento}'
             
-            # Inicio integración de la API
-            
             url = "https://app.ecertia.com/api/EviSign/Submit"
 
             payload = json.dumps({
             "Subject": "Prueba Firma Carta Término",
             "Document": document,
-            "signingParties": [
-                {
-                    "name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
-                    "address": contrato.trabajador.email,
-                    "signingMethod": "Email Pin",
-                    "role": "Signer",
-                    "signingOrder": 1,
-                    "legalName": "Trabajador"
-                },
-                {
-                    "name": "Empresas Integra Ltda.",
-                    "address": "firma@empresasintegra.cl",
-                    "signingMethod": "WebClick",
-                    "role": "Signer",
-                    "signingOrder": 2,
-                    "legalName": "Empleador"
-                }
-            ],
+            "SigningParties": {
+                "Name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
+                "Address": contrato.trabajador.email,
+                "SigningMethod": "Email Pin"
+            },
             "Options": {
-                "timeToLive": 4320,
-                "NumberOfReminders":3,
-                "notaryRetentionPeriod": 0,
-                "onlineRetentionPeriod": 2,
-                "language": "es-ES",
-                "EvidenceAccessControlMethod": "Public",
-                "CertificationLevel": "Advanced",
-
+                "TimeToLive": 1200,
                 "RequireCaptcha": False,
-                # "NotaryRetentionPeriod": 0,
-                # "OnlineRetentionPeriod": 1
+                "NotaryRetentionPeriod": 0,
+                "OnlineRetentionPeriod": 1
             },
             "Issuer": "EVISA"
             })
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Basic ZmlybWFAZW1wcmVzYXNpbnRlZ3JhLmNsOktGeFcwMkREMyM=',
+                'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
                 'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
                         }
 
@@ -1658,9 +1630,7 @@ class ContratoIdView(TemplateView):
         ultimo2 = 0
 
         if(contrato_diario == True):
-            # La fecha de inicio y la fecha de termino es la misma en contrato diario
-            cantidadcontratos = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).count()
-            
+
             ultimo = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id).latest('id')
             try:
                 ultimo_cd_aprob = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, estado_contrato = 'AP').latest('id')
@@ -1693,22 +1663,28 @@ class ContratoIdView(TemplateView):
 
         try:
             contadordiario = 0
-            ultimoDiario = Contrato.objects.filter(trabajador = requer_trabajador.trabajador , status=True).latest('id')    
-            for x in range(6):
-                fecha = ultimoDiario.fecha_termino_ultimo_anexo - timedelta(days=x)
-                if(Contrato.objects.filter(trabajador_id=ultimoDiario.trabajador, fecha_termino_ultimo_anexo = fecha , status=True ).exists()):
-                    contadordiario = contadordiario + 1
-                    print()
-                else:
-                    contadordiario = 0
-            print('contador de contratos', contadordiario)
+            ultimoDiario = Contrato.objects.filter(trabajador = requer_trabajador.trabajador , status=True).latest('id')
+            if(contrato_diario == True):
+                # La fecha de inicio y la fecha de termino es la misma en contrato diario
+                cantidadcontratos = Contrato.objects.filter(requerimiento_trabajador_id=requerimiento_trabajador_id, tipo_documento__nombre='Contrato Diario', status=True ).count()
+                
+                for x in range(6):
+                    fecha = ultimoDiario.fecha_termino_ultimo_anexo - timedelta(days=x)
+                    if(Contrato.objects.filter(trabajador_id=ultimoDiario.trabajador, fecha_termino_ultimo_anexo = fecha , status=True ).exists()):
+                        contadordiario = contadordiario + 1
+                        print()
+                    else:
+                        contadordiario = 0
+                print('contador de contratos', contadordiario)
 
-            if (contadordiario >= 6):
+            if (contadordiario <= 6):
                 if(fecha_restriccion > ultimoDiario.fecha_termino):
                     fecha_restriccion = ultimoDiario.fecha_termino + timedelta(days = 2)
                     mensaje = 'Restriccion por contratos seguidos'
         except:
             print('')
+               
+
         
         context['mensaje'] = mensaje
         context['exa_maso'] =  exa_maso   

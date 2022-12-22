@@ -922,6 +922,10 @@ def create_trabajador(request):
             trabajador.email = request.POST['email'].lower()
             trabajador.is_active = True
             trabajador.user_id = user.id
+            if request.POST['calzado'] == '':
+                trabajador.calzado = 0
+            else:
+                trabajador.calzado = request.POST['calzado']
             trabajador.save()
             trabajador = trabajador_form.save()
 

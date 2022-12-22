@@ -232,7 +232,6 @@ class Evaluacion(models.Model):
         item['fecha_termino'] = self.fecha_termino.strftime('%d-%m-%Y')
         item['planta_nombre'] = self.planta.nombre
         item['cargo_nombre'] = self.cargo.nombre
-        item['centro_nombre'] = self.centro.nombre
         item['archivo2'] = ''
         return item
 

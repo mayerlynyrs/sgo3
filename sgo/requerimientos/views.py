@@ -80,21 +80,28 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
                     Q(status=True),
                     Q(plantas__in=self.request.user.planta.all()),
                     Q(nombre__icontains=search)
-                ).distinct()
+                )
+               
             else:
                 # Si el usuario es administrador se despliegan todos los requerimientos
                 # segun el critero de busqueda.
                 queryset = super(RequerimientoListView, self).get_queryset().filter(
                     Q(nombre__icontains=search)
-                ).distinct()
+                )
+               
         else:
             # Si el usuario no es administrador, se despliegan los requerimientos en estado
             # status de las plantas a las que pertenece el usuario.
             if not self.request.user.groups.filter(name__in=['Administrador']).exists():
-                queryset = super(RequerimientoListView, self).get_queryset().filter(
+                # queryset = super(RequerimientoListView, self).get_queryset().filter(
+                #     Q(status=True),
+                #     Q(planta__in=self.request.user.planta.all())
+                # )
+                queryset = Requerimiento.objects.filter(
                     Q(status=True),
                     Q(planta__in=self.request.user.planta.all())
-                ).distinct()
+                )
+                
             else:
                 # Si el usuario es administrador, se despliegan todos los requerimientos.
                 if planta is None:
@@ -105,7 +112,7 @@ class RequerimientoListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
                     # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
                     queryset = super(RequerimientoListView, self).get_queryset().filter(
                         Q(plantas=planta)
-                    ).distinct()
+                    )
 
         return queryset
 
