@@ -1154,160 +1154,161 @@ def enviar_revision_contrato(request, contrato_id):
                 revision = Revision()
                 revision.contrato_id = contrato.id
                 revision.save()
+             
                 # Trae la plantilla que tiene la planta
-                if(contrato.horario.id == 1):
-                    adicional_cumplimiento_horario_undecimo = ''
-                    formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=contrato.tipo_documento)
-                else:
-                    formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(Q(tipo_id=contrato.tipo_documento) |  Q(tipo_id=14), plantas=plant_template)
-                    adicional_cumplimiento_horario_undecimo = 'Cumplir con el horario de ingreso y salida establecido en la Usuaria, y no registrar atrasos.'
-                if(contrato.valores_diario != None):
-                    valor_mensual=Contrato.objects.values_list('valores_diario__valor_diario', flat=True).get(pk=contrato_id, status=True)
-                    valor_mensual_palabras = numero_a_letras(Contrato.objects.values_list('valores_diario__valor_diario', flat=True).get(pk=contrato_id, status=True))+' pesos'
-                    fecha_pago = contrato.fecha_pago
-                else:
-                    valor_mensual=Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True)
-                    valor_mensual_palabras = numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos'
-                    fecha_pago = ''
-                  
-                for formt in formato:
-                    now = datetime.now()
-                    doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
-                    # Variables de Contrato
-                    context = { 'codigo_req': contrato.requerimiento_trabajador.requerimiento.codigo,
-                                'rut_planta': contrato.planta.rut,
-                                'nombre_planta': contrato.planta.nombre.title(),
-                                'region_planta': contrato.planta.region2.nombre.title(),
-                                'comuna_planta': contrato.planta.ciudad2.nombre.title(),
-                                'direccion_planta': contrato.planta.direccion,
-                                'descripcion_jornada': contrato.horario.descripcion,
-                                'gratificacion': contrato.gratificacion.descripcion,
-                                'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
-                                'rut_trabajador': contrato.trabajador.rut,
-                                'nombres_trabajador': contrato.trabajador.first_name.title(),
-                                'apellidos_trabajador': contrato.trabajador.last_name.title(),
-                                'nacionalidad': contrato.trabajador.nacionalidad.nombre.title(),
-                                'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
-                                'estado_civil': contrato.trabajador.estado_civil.nombre.title(),
-                                'domicilio_trabajador': contrato.trabajador.domicilio,
-                                'comuna_trabajador': contrato.trabajador.ciudad.nombre.title(),
-                                'nombre_banco': contrato.trabajador.banco.nombre.title(),
-                                'cuenta': contrato.trabajador.cuenta,
-                                'correo': contrato.trabajador.email,
-                                'prevision_trabajador': contrato.trabajador.afp.nombre.title(),
-                                'salud_trabajador': contrato.trabajador.salud.nombre.title(),
-                                'centro_costo': contrato.requerimiento_trabajador.requerimiento.centro_costo,
-                                'letra_causal' : contrato.causal.descripcion,
-                                'causal': contrato.causal.descripcion,
-                                'descripcion_cargo': contrato.requerimiento_trabajador.area_cargo.cargo.descripcion,
-                                'motivo_req': contrato.motivo,
-                                'cargo': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
-                                'sueldo_base_numeros': valor_mensual,
-                                'fecha_pago': fecha_pago,
-                                'sueldo_base_palabras':  valor_mensual_palabras,
-                                'tituloimponible' : tituloimponible,
-                                'titulonoimponible' : titulonoimponible,
-                                'bono': bonosimponibles,
-                                'bononoimp' : bonosnoimponibles,
-                                'adicional_cumplimiento_horario_undecimo': adicional_cumplimiento_horario_undecimo,
-                                'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
-                                'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
-                                'fecha_ingreso': contrato.fecha_inicio,
-                                'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
-                                'fecha_termino': contrato.fecha_termino,
-                                }
-                    rut_trabajador =  contrato.trabajador.rut
-                    doc.render(context)
-                    # exit()
-                    # Obtengo el usuario
-                    usuario = get_object_or_404(User, pk=1)
-                    # Obtengo todas las negocios a las que pertenece el usuario.
-                    plantas = usuario.planta.all()
-                    # Obtengo el set de contrato de la primera negocio relacionada.
-                    plantillas_attr = list()
-                    plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
-                    # Obtengo los atributos de cada plantilla
-                    for p in plantillas:
-                        plantillas_attr.extend(list(p.atributos))
-
-                    # Contratos Parametros General, ruta_documentos donde guardara el documento
-                    ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
-                    path = os.path.join(ruta_documentos)
-                    # Si carpeta no existe, crea carpeta de contratos.
-                    carpeta = 'contratos'
-
-                    try:
-                        os.mkdir(path + carpeta)
-                        path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
-                        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
-                        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-                        # convert("Contrato#1.docx")
-
-                        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
-                        if(formt['tipo_id'] == contrato.tipo_documento.id):
-                            url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
-                            contrato.archivo = 'contratos/' + url
-                            contrato.save()
-                            if(contrato.valores_diario != None):
-                                finiquito(contrato.id)
-                        else:
-                            url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
-                            contrato.archivo = 'contratos/' + url
-                            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
-                            doc_contrato.tipo_documento_id = formt['tipo_id']
-                            doc_contrato.save()
-                         
-                        fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-                        send_mail(
-                            'Nueva Solicitud en SGO3 | Contrato Revisión',
-                            'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
-                            + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title()) + ' con fecha de ingreso: ' 
-                            + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
-                            contrato.created_by.email,
-                            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
-                            fail_silently=False,
-                        )
-                        
-                        # Elimino el documento word.
-                        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
-                        messages.success(request, 'Contrato enviado a revisión Exitosamente')
-                        data = True
-                    except:
-                        path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
-                        doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
-                        win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
-                        # convert("Contrato#1.docx")
-
-                        convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
-                        if(formt['tipo_id'] == contrato.tipo_documento.id):
-                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
-                            contrato.archivo = 'contratos/' + url
-                            contrato.save()
-                            finiquito(contrato.id)
-    
-                        else:
-                            url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
-                            contrato.archivo = 'contratos/' + url
-                            doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
-                            doc_contrato.tipo_documento_id = formt['tipo_id']
-                            doc_contrato.save()
-
-                        fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
-                        send_mail(
-                            'Nueva Solicitud en SGO3 | Contrato Revisión',
-                            'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
-                            + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title())
-                            + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
-                            contrato.created_by.email,
-                            ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
-                            fail_silently=False,
-                        )
-                        
-                        # Elimino el documento word.
-                        os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
-                        messages.success(request, 'Contrato enviado a revisión Exitosamente')
-                        data = True
+            if(contrato.horario.id == 1):
+                adicional_cumplimiento_horario_undecimo = ''
+                formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(plantas=plant_template, tipo_id=contrato.tipo_documento)
+            else:
+                formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(Q(tipo_id=contrato.tipo_documento) |  Q(tipo_id=14), plantas=plant_template)
+                adicional_cumplimiento_horario_undecimo = 'Cumplir con el horario de ingreso y salida establecido en la Usuaria, y no registrar atrasos.'
+            if(contrato.valores_diario != None):
+                valor_mensual=Contrato.objects.values_list('valores_diario__valor_diario', flat=True).get(pk=contrato_id, status=True)
+                valor_mensual_palabras = numero_a_letras(Contrato.objects.values_list('valores_diario__valor_diario', flat=True).get(pk=contrato_id, status=True))+' pesos'
+                fecha_pago = contrato.fecha_pago
+            else:
+                valor_mensual=Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True)
+                valor_mensual_palabras = numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos'
+                fecha_pago = ''
                 
+            for formt in formato:
+                now = datetime.now()
+                doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
+                # Variables de Contrato
+                context = { 'codigo_req': contrato.requerimiento_trabajador.requerimiento.codigo,
+                            'rut_planta': contrato.planta.rut,
+                            'nombre_planta': contrato.planta.nombre.title(),
+                            'region_planta': contrato.planta.region2.nombre.title(),
+                            'comuna_planta': contrato.planta.ciudad2.nombre.title(),
+                            'direccion_planta': contrato.planta.direccion,
+                            'descripcion_jornada': contrato.horario.descripcion,
+                            'gratificacion': contrato.gratificacion.descripcion,
+                            'fecha_ingreso_trabajador_palabras': fecha_a_letras(contrato.fecha_inicio),
+                            'rut_trabajador': contrato.trabajador.rut,
+                            'nombres_trabajador': contrato.trabajador.first_name.title(),
+                            'apellidos_trabajador': contrato.trabajador.last_name.title(),
+                            'nacionalidad': contrato.trabajador.nacionalidad.nombre.title(),
+                            'fecha_nacimiento': fecha_a_letras(contrato.trabajador.fecha_nacimiento),
+                            'estado_civil': contrato.trabajador.estado_civil.nombre.title(),
+                            'domicilio_trabajador': contrato.trabajador.domicilio,
+                            'comuna_trabajador': contrato.trabajador.ciudad.nombre.title(),
+                            'nombre_banco': contrato.trabajador.banco.nombre.title(),
+                            'cuenta': contrato.trabajador.cuenta,
+                            'correo': contrato.trabajador.email,
+                            'prevision_trabajador': contrato.trabajador.afp.nombre.title(),
+                            'salud_trabajador': contrato.trabajador.salud.nombre.title(),
+                            'centro_costo': contrato.requerimiento_trabajador.requerimiento.centro_costo,
+                            'letra_causal' : contrato.causal.descripcion,
+                            'causal': contrato.causal.descripcion,
+                            'descripcion_cargo': contrato.requerimiento_trabajador.area_cargo.cargo.descripcion,
+                            'motivo_req': contrato.motivo,
+                            'cargo': contrato.requerimiento_trabajador.area_cargo.cargo.nombre.title(),
+                            'sueldo_base_numeros': valor_mensual,
+                            'fecha_pago': fecha_pago,
+                            'sueldo_base_palabras':  valor_mensual_palabras,
+                            'tituloimponible' : tituloimponible,
+                            'titulonoimponible' : titulonoimponible,
+                            'bono': bonosimponibles,
+                            'bononoimp' : bonosnoimponibles,
+                            'adicional_cumplimiento_horario_undecimo': adicional_cumplimiento_horario_undecimo,
+                            'parrafo_decimo_tercero': 'SIN INFORMACIÓN',
+                            'fecha_ingreso_trabajador': fecha_a_letras(contrato.fecha_inicio),
+                            'fecha_ingreso': contrato.fecha_inicio,
+                            'fecha_termino_trabajador': fecha_a_letras(contrato.fecha_termino),
+                            'fecha_termino': contrato.fecha_termino,
+                            }
+                rut_trabajador =  contrato.trabajador.rut
+                doc.render(context)
+                # exit()
+                # Obtengo el usuario
+                usuario = get_object_or_404(User, pk=1)
+                # Obtengo todas las negocios a las que pertenece el usuario.
+                plantas = usuario.planta.all()
+                # Obtengo el set de contrato de la primera negocio relacionada.
+                plantillas_attr = list()
+                plantillas = Plantilla.objects.filter(activo=True, plantas=plantas[0].id)
+                # Obtengo los atributos de cada plantilla
+                for p in plantillas:
+                    plantillas_attr.extend(list(p.atributos))
+
+                # Contratos Parametros General, ruta_documentos donde guardara el documento
+                ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
+                path = os.path.join(ruta_documentos)
+                # Si carpeta no existe, crea carpeta de contratos.
+                carpeta = 'contratos'
+
+                try:
+                    os.mkdir(path + carpeta)
+                    path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+                    doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
+                    win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                    # convert("Contrato#1.docx")
+
+                    convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
+                    if(formt['tipo_id'] == contrato.tipo_documento.id):
+                        url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                        contrato.archivo = 'contratos/' + url
+                        contrato.save()
+                        if(contrato.valores_diario != None):
+                            finiquito(contrato.id)
+                    else:
+                        url = str(rut_trabajador) + "_new_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+                        contrato.archivo = 'contratos/' + url
+                        doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
+                        doc_contrato.tipo_documento_id = formt['tipo_id']
+                        doc_contrato.save()
+                        
+                    fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+                    send_mail(
+                        'Nueva Solicitud en SGO3 | Contrato Revisión',
+                        'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
+                        + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title()) + ' con fecha de ingreso: ' 
+                        + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
+                        contrato.created_by.email,
+                        ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
+                        fail_silently=False,
+                    )
+                    
+                    # Elimino el documento word.
+                    os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
+                    messages.success(request, 'Contrato enviado a revisión Exitosamente')
+                    data = True
+                except:
+                    path = os.path.join(settings.MEDIA_ROOT + '/contratos/')
+                    doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id)  + '.docx')
+                    win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())
+                    # convert("Contrato#1.docx")
+
+                    convert(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".docx", path +  str(rut_trabajador) + "_" + formt['abreviatura'] + "_" +  str(contrato_id) + ".pdf")
+                    if(formt['tipo_id'] == contrato.tipo_documento.id):
+                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + ".pdf"
+                        contrato.archivo = 'contratos/' + url
+                        contrato.save()
+                        finiquito(contrato.id)
+
+                    else:
+                        url = str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato.id) + ".pdf"
+                        contrato.archivo = 'contratos/' + url
+                        doc_contrato = DocumentosContrato(contrato=contrato, archivo='contratos/' + url)
+                        doc_contrato.tipo_documento_id = formt['tipo_id']
+                        doc_contrato.save()
+
+                    fecha_ingreso_trabajador_palabras = fecha_a_letras(Contrato.objects.values_list('fecha_inicio', flat=True).get(pk=contrato_id, status=True))
+                    send_mail(
+                        'Nueva Solicitud en SGO3 | Contrato Revisión',
+                        'Estimado(a) se ha realizado una solicitud de revisión de contrato para el trabajador '
+                        + str(contrato.trabajador.first_name.title()) + ' ' + str(contrato.trabajador.last_name.title())
+                        + ' con fecha de ingreso: ' + str(fecha_ingreso_trabajador_palabras) + ' para la planta: ' + contrato.planta.nombre.title(),
+                        contrato.created_by.email,
+                        ['contratos@empresasintegra.cl', 'soporte@empresasintegra.cl', contrato.created_by.email],
+                        fail_silently=False,
+                    )
+                    
+                    # Elimino el documento word.
+                    os.remove(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(contrato_id) + '.docx')
+                    messages.success(request, 'Contrato enviado a revisión Exitosamente')
+                    data = True
+            
                 # return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
                 return JsonResponse(data, safe=False)
 
