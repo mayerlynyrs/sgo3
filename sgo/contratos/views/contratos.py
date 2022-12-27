@@ -1396,30 +1396,53 @@ def carta_termino(request):
                 documento = base64.b64encode(pdf_file.read()).decode('utf-8')
             document = f'{documento}'
             
-            url = "https://app.ecertia.com/api/EviSign/Submit"
+            # Inicio integración de la API
+            
+            # url = "https://app.ecertia.com/api/EviSign/Submit"
+            url = "https://empresasintegra.evicertia.com/api/EviSign/Query"
 
             payload = json.dumps({
             "Subject": "Prueba Firma Carta Término",
             "Document": document,
-            "SigningParties": {
-                "Name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
-                "Address": contrato.trabajador.email,
-                "SigningMethod": "Email Pin"
-            },
+            "signingParties": [
+                {
+                    "name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
+                    "address": contrato.trabajador.email,
+                    "signingMethod": "Email Pin",
+                    "role": "Signer",
+                    "signingOrder": 1,
+                    "legalName": "Trabajador"
+                },
+                {
+                    "name": "Empresas Integra Ltda.",
+                    "address": "firma@empresasintegra.cl",
+                    "signingMethod": "WebClick",
+                    "role": "Signer",
+                    "signingOrder": 2,
+                    "legalName": "Empleador"
+                }
+            ],
             "Options": {
-                "TimeToLive": 1200,
+                "TimeToLive": 4320,
+                "NumberOfReminders": 3,
+                "notaryRetentionPeriod": 0,
+                "onlineRetentionPeriod": 2,
+                "language": "es-ES",
+                "EvidenceAccessControlMethod": "Public",
+                "CertificationLevel": "Advanced",
+
                 "RequireCaptcha": False,
-                "NotaryRetentionPeriod": 0,
-                "OnlineRetentionPeriod": 1
+                # "NotaryRetentionPeriod": 0,
+                # "OnlineRetentionPeriod": 1
             },
             "Issuer": "EVISA"
             })
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Basic bWF5ZXJseW4ucm9kcmlndWV6QGVtcHJlc2FzaW50ZWdyYS5jbDppbnRlZ3JhNzYyNQ==',
+                'Authorization': 'Basic ZmlybWFAZW1wcmVzYXNpbnRlZ3JhLmNsOktGeFcwMkREMyM=',
                 'Cookie': 'X-UAId=1237; ss-id=kEDBUDCvtQL/m68MmIoY; ss-pid=fogDX+U1tusPTqHrA4eF'
-                        }
+            }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 

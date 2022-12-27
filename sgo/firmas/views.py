@@ -90,10 +90,10 @@ class ContratoAprobadoList(TemplateView):
                                 "attributes": [
                                     {
                                         "Key": "RequireContentCommitment", "Value": False
-                                    },
-                                    {
-                                        "Key": "RequireContentCommitmentOrder", "Value": orden
                                     }
+                                    # {
+                                    #     "Key": "RequireContentCommitmentOrder", "Value": orden
+                                    # }
                                 ]
                             })
                 except Exception as e:
@@ -104,7 +104,7 @@ class ContratoAprobadoList(TemplateView):
                 "Document": document,
                 "Attachments": 
                     doc_contrato,
-                "signingParties": [
+                "SigningParties": [
                     {
                         "name": contrato.trabajador.first_name + ' ' + contrato.trabajador.last_name,
                         "address": contrato.trabajador.email,
@@ -123,7 +123,7 @@ class ContratoAprobadoList(TemplateView):
                     }
                 ],
                 "Options": {
-                    "timeToLive": 4320,
+                    "TimeToLive": 4320,
                     "NumberOfReminders":3,
                     "notaryRetentionPeriod": 0,
                     "onlineRetentionPeriod": 2,
@@ -131,10 +131,7 @@ class ContratoAprobadoList(TemplateView):
                     "EvidenceAccessControlMethod": "Public",
                     "CertificationLevel": "Advanced",
 
-                    # "TimeToLive": 1200,
-                    "RequireCaptcha": False,
-                    # "NotaryRetentionPeriod": 0,
-                    # "OnlineRetentionPeriod": 1
+                    "RequireCaptcha": False
                 },
                 "Issuer": "EVISA"
                 })
@@ -289,51 +286,73 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
 
         # Actualiza el estado de la firma en Contratos
         contrato = Contrato.objects.get(pk=contrato_id)
-        if data['results'][0]['outcome'] == 'Signed':
+        if data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Processed':
+            # ENVIADO_FIRMAR
+            contrato.estado_firma = 'EF'
+
+        elif data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Sent':
+            # FIRMADO_TRABAJADOR
             contrato.estado_firma = 'FT'
+
+        elif data['results'][0]['outcome'] == 'Signed':
+            # FIRMADO
+            contrato.estado_firma = 'FF'
+
+            # Actualiza el documento firmado (Contratos)
+            docum = Contrato.objects.get(pk=contrato_id)
+            # Elimino el documento sin firma.
+            path = os.path.join(settings.MEDIA_ROOT)
+            archivo = docum.archivo
+            print('archivo', archivo)
+            ruta = path + '/' + str(archivo)
+            os.remove(ruta)
+            print('se elimino archivo')
+            # Definir la cadena Base64 del archivo PDF
+            b64 = data['results'][0]['affidavits'][6]['bytes']
+            # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
+            bytes = b64decode(b64, validate=True)
+            # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
+            if bytes[0:4] != b'%PDF':
+                raise ValueError('Falta la firma del archivo PDF')
+            # Escribir el contenido del PDF en un archivo local
+            f = open(ruta, 'wb')
+            f.write(bytes)
+            f.close()
+            # Se guarda el documento firmado
+            doc_contrato = DocumentosContrato()
+            doc_contrato.contrato_id = contrato_id
+            doc_contrato.archivo = archivo
+            doc_contrato.tipo_documento_id = 1
+            doc_contrato.save()
+
         elif data['results'][0]['outcome'] == 'Rejected':
+            # OBJETADO
             contrato.estado_firma = 'OB'
+
         elif data['results'][0]['outcome'] == 'Expired':
+            # EXPIRADO
             contrato.estado_firma = 'EX'
+
         contrato.save()
+
         # Actualiza el estado de la firma
         api = Firma.objects.get(contrato=contrato_id)
-        if data['results'][0]['outcome'] == 'Signed':
+        if data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Processed':
+            # ENVIADO PENDIENTE
+            api.estado_firma_id = 1
+        elif data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Sent':
+            # FIRMADO TRABAJADOR
             api.estado_firma_id = 2
-        elif data['results'][0]['outcome'] == 'Rejected':
+        elif data['results'][0]['outcome'] == 'Signed':
+            # FIRMADO
             api.estado_firma_id = 3
-        elif data['results'][0]['outcome'] == 'Expired':
+        elif data['results'][0]['outcome'] == 'Rejected':
+            # OBJETADO
             api.estado_firma_id = 4
+        elif data['results'][0]['outcome'] == 'Expired':
+            # EXPIRADO
+            api.estado_firma_id = 5
         api.save()
-
-        # Actualiza el documento firmado (Contratos)
-        docum = Contrato.objects.get(pk=contrato_id)
-        # Elimino el documento sin firma.
-        path = os.path.join(settings.MEDIA_ROOT)
-        archivo = docum.archivo
-        print('archivo', archivo)
-        ruta = path + '/' + str(archivo)
-        os.remove(ruta)
-        print('se elimino archivo')
-        # Definir la cadena Base64 del archivo PDF
-        b64 = data['results'][0]['affidavits'][3]['bytes']
-        # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
-        bytes = b64decode(b64, validate=True)
-        # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
-        if bytes[0:4] != b'%PDF':
-            raise ValueError('Falta la firma del archivo PDF')
-        # Escribir el contenido del PDF en un archivo local
-        f = open(ruta, 'wb')
-        f.write(bytes)
-        f.close()
-        # Se guarda el documento firmado
-        doc_contrato = DocumentosContrato()
-        doc_contrato.contrato_id = contrato_id
-        doc_contrato.archivo = archivo
-        doc_contrato.tipo_documento_id = 1
-        doc_contrato.save()
-
-
 
         # if data['results'][0]['affidavits'][3]['bytes'] == None:
         #     base64 = data['results'][0]['affidavits'][3]['bytes']
