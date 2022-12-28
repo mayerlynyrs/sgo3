@@ -130,84 +130,8 @@
 
 
 {% block javascript %}
-    <!-- Modal -->
+   
     <div class="modal fade bd-example-modal-lg" id="myModalAgenda" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <!-- <form method="post" action="." enctype="multipart/form-data">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">
-                <b><i class="fas fa-search"></i> <span></span></b>
-            </h5>
-              <button type="button" align="right" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            {% csrf_token %}
-            <div class="modal-body">
-              <div class="container-fluid">
-                  <div class="row col-md-12">
-                    <div class="form-group col-md-6">
-                      <label > Estado</label>
-                        {{ form.estado }}
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="email">Tipo</label>
-                        {{ form.tipo }}
-                    </div>
-                  </div>
-                  <div class="row col-md-12">
-                    <div class="form-group col-md-6">
-                      <label for="email"> Fecha Ingreso</label>
-                        {{ form.fecha_ingreso_estimada }}
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="email">Fecha Evaluación</label>
-                        {{ form.fecha_agenda_evaluacion }}
-                    </div>
-                  </div>
-                  <div class="row col-md-12">
-                    <div class="form-group col-md-6">
-                      <label for="email"> Planta</label>
-                        {{ form.planta }}
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="email"> Cargo</label>
-                        {{ form.cargo }}
-                    </div>
-                  </div>
-                  <div class="row col-md-12">
-                    <div class="form-group col-md-6">
-                      <label for="email"> Evaluador</label>
-                        {{ form.psico }}
-                    </div>
-                    <div class="form-group col-md-3">
-                      <label for="email"> Hal2</label>
-                        {{ form.hal2 }}
-                    </div>
-                    <div class="form-group col-md-3">
-                      <label for="email">Referido</label>
-                        {{ form.referido }}
-                    </div>
-                  </div>
-
-                  <div class="row col-md-12">
-                      <div class="form-group col-md-12">
-                        <label for="email">Observaciones</label>
-                          {{ form.obs }}
-                      </div>
-                  <input name="id" id="id" type="hidden" value="0">
-                  <input name="action" type="hidden" value="add">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="submit"  id="btn-guardar" class="btn btn-primary">Guardar</button>
-              </div>
-            </form>
-            </div>
-          </div>
-        </div>
-      </form> -->
     </div>
 
     <div class="modal fade bd-example-modal-lg" id="modal-revision">
