@@ -39,7 +39,7 @@ function getData() {
                 render: function (data, type, row) {
                     var trabajador = 'trabajador';
                     var buttons = '<a href="#" data-toggle="modal" data-target="#myModalRevExam" rel="agg" title="Evaluar" class="btn btn-primary btn-xs btn-flat btnAgg"><i class="fas fa-fw fa-newspaper"></i></a>  &nbsp &nbsp';
-                    // buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes '+trabajador+'" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
+                    buttons += '<a href="'+data+'" data-toggle="modal" data-target="#myModalExaTraba" rel="ver" title="Ver Examénes '+trabajador+'" class="btn btn-lime btn-xs btn-flat btnAgg"><i class="fas fa-book-medical"></i></a>';
                     return buttons;
                 }
             },

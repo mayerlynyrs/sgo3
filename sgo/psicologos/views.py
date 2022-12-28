@@ -311,11 +311,9 @@ def examenes_trabajador(request, trabajador_id, template_name='psicologos/examen
     data = dict()
     evaluacion = Evaluacion.objects.filter(trabajador=trabajador_id)
     # evaluacion = get_object_or_404(Evaluacion, trabajador=trabajador_id)
-    evalua = Evaluacion.objects.filter(trabajador=trabajador_id)
-    trabajador = Evaluacion.objects.values_list('trabajador', flat=True).filter(trabajador=trabajador_id)
-    print('evaluacion', evaluacion)
-    print('evalua', evalua)
-    print('trabajador', trabajador)
+    evalua = Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="PSI")
+    trabajador = Evaluacion.objects.values_list('trabajador', flat=True).filter(trabajador=trabajador_id,tipo_evaluacion ="PSI")
+    print('examenes',evalua )
 
     context={
         'evaluacion': evaluacion,
@@ -328,6 +326,7 @@ def examenes_trabajador(request, trabajador_id, template_name='psicologos/examen
         context,
         request=request,
     )
+
     return JsonResponse(data)
 
 

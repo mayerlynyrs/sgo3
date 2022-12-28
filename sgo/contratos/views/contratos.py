@@ -728,6 +728,7 @@ def create(request):
     else:
         sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id ) 
         contrato.sueldo_base = sueldomensual
+        contrato.feriado_proporcional = round((sueldomensual * 1.25) / 30)
         try:
             contrato.fecha_inicio = request.POST['fecha_inicio']
             contrato.fecha_termino = request.POST['fecha_inicio']
@@ -916,6 +917,8 @@ def update_contrato(request, contrato_id, template_name='contratos/contrato_upda
                 else:
                     sueldomensual = ValoresDiarioAfp.objects.values_list('valor', flat=True).get(valor_diario_id =request.POST['valores_diario'], status=True, afp_id = trabajador.afp.id )
                     contrato.sueldo_base = sueldomensual
+                    contrato.sueldo_base = sueldomensual
+                    contrato.feriado_proporcional = round((sueldomensual * 1.25) / 30)
                     try:
                         contrato.fecha_inicio = request.POST['fecha_inicio']
                         contrato.fecha_termino = request.POST['fecha_inicio']
@@ -2340,7 +2343,9 @@ def enviar_revision_anexo(request, anexo_id):
             # Variables de Anexo
             context = { 'codigo_req': anexo.contrato.requerimiento_trabajador.requerimiento.codigo,
                         'comuna_planta': anexo.contrato.planta.ciudad2.nombre.title(),
-                        'fecha_contrato_anterior':fecha_a_letras(anexo.contrato.fecha_termino_ultimo_anexo),
+                        'fecha_contrato_anterior':fecha_a_letras(anexo.fecha_inicio),
+                        'fecha_ingreso_trabajador':fecha_a_letras(anexo.contrato.fecha_inicio),
+                        'fecha_termino_trabajador':fecha_a_letras(anexo.fecha_termino),
                         'nombres_trabajador': anexo.contrato.trabajador.first_name.title(),
                         'apellidos_trabajador': anexo.contrato.trabajador.last_name.title(),
                         'rut_trabajador': anexo.contrato.trabajador.rut,
