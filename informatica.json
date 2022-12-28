@@ -16758,7 +16758,55 @@
     "model": "firmas.estadofirma",
     "pk": 1,
     "fields": {
-      "nombre": "Pendiente de Firma",
+      "nombre": "Processed",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03",
+      "created_by": 1,
+      "modified_by": 1
+    }
+  },
+  {
+    "model": "firmas.estadofirma",
+    "pk": 2,
+    "fields": {
+      "nombre": "Sent",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03",
+      "created_by": 1,
+      "modified_by": 1
+    }
+  },
+  {
+    "model": "firmas.estadofirma",
+    "pk": 3,
+    "fields": {
+      "nombre": "Signed",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03",
+      "created_by": 1,
+      "modified_by": 1
+    }
+  },
+  {
+    "model": "firmas.estadofirma",
+    "pk": 4,
+    "fields": {
+      "nombre": "Rejected",
+      "status": true,
+      "created": "2022-01-06 09:53:38.023091-03",
+      "modified": "2022-01-06 09:53:38.023091-03",
+      "created_by": 1,
+      "modified_by": 1
+    }
+  },
+  {
+    "model": "firmas.estadofirma",
+    "pk": 5,
+    "fields": {
+      "nombre": "Expired",
       "status": true,
       "created": "2022-01-06 09:53:38.023091-03",
       "modified": "2022-01-06 09:53:38.023091-03",
