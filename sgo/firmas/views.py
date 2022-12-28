@@ -286,11 +286,11 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
 
         # Actualiza el estado de la firma en Contratos
         contrato = Contrato.objects.get(pk=contrato_id)
-        if data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Processed':
+        if data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Processed':
             # ENVIADO_FIRMAR
             contrato.estado_firma = 'EF'
 
-        elif data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Sent':
+        elif data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Sent':
             # FIRMADO_TRABAJADOR
             contrato.estado_firma = 'FT'
 
@@ -324,6 +324,7 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
             doc_contrato.archivo = archivo
             doc_contrato.tipo_documento_id = 1
             doc_contrato.save()
+            context = {'base64contrato': b64}
 
         elif data['results'][0]['outcome'] == 'Rejected':
             # OBJETADO
@@ -332,15 +333,14 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
         elif data['results'][0]['outcome'] == 'Expired':
             # EXPIRADO
             contrato.estado_firma = 'EX'
-
         contrato.save()
 
         # Actualiza el estado de la firma
         api = Firma.objects.get(contrato=contrato_id)
-        if data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Processed':
+        if data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Processed':
             # ENVIADO PENDIENTE
             api.estado_firma_id = 1
-        elif data['results'][0]['outcome'] == None and data['results'][0]['state'] == 'Sent':
+        elif data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Sent':
             # FIRMADO TRABAJADOR
             api.estado_firma_id = 2
         elif data['results'][0]['outcome'] == 'Signed':
@@ -373,12 +373,12 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
 
         context = {'data': data,
                 'results': data['results'][0],
-                'signingPartiesT': data['results'][0]['signingParties'][1],
                 'signingPartiesE': data['results'][0]['signingParties'][0],
+                'signingPartiesT': data['results'][0]['signingParties'][1],
                 'affidavits': data['results'][0]['affidavits'][0],
-                'base64contrato': b64,
                 'attachments': data['results'][0]['attachments'][0],
-                'signatures': data['results'][0]['signatures'][0],
+                'signaturesE': data['results'][0]['signatures'][0],
+                'signaturesT': data['results'][0]['signatures'][1],
                 'signingMethod': data['results'][0]['signingParties'][0]['signingMethod'],
                 'estado': firmado,
         }
@@ -588,8 +588,17 @@ def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
 
         # Actualiza el estado de la firma en el Anexo de contratos
         anex = Anexo.objects.get(pk=anexo_id)
-        if data['results'][0]['outcome'] == 'Signed':
+        if data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Processed':
+            # ENVIADO_FIRMAR
+            anex.estado_firma = 'EF'
+
+        elif data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Sent':
+            # FIRMADO_TRABAJADOR
             anex.estado_firma = 'FT'
+
+        elif data['results'][0]['outcome'] == 'Signed':
+            # FIRMADO
+            anex.estado_firma = 'FF'
 
             # Actualiza el documento firmado (Anexo)
             docum = Anexo.objects.get(pk=anexo_id)
@@ -617,33 +626,45 @@ def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
             doc_contrato.archivo = archivo
             doc_contrato.tipo_documento_id = 5
             doc_contrato.save()
-
-            context = {
-                'base64contrato': b64,
-        }
+            context = {'base64contrato': b64}
 
         elif data['results'][0]['outcome'] == 'Rejected':
+            # OBJETADO
             anex.estado_firma = 'OB'
+
         elif data['results'][0]['outcome'] == 'Expired':
+            # EXPIRADO
             anex.estado_firma = 'EX'
         anex.save()
+
         # Actualiza el estado de la firma
         api = Firma.objects.get(anexo=anexo_id)
-        if data['results'][0]['outcome'] == 'Signed':
+        if data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Processed':
+            # ENVIADO PENDIENTE
+            api.estado_firma_id = 1
+        elif data['results'][0]['outcome'] == 'None' and data['results'][0]['state'] == 'Sent':
+            # FIRMADO TRABAJADOR
             api.estado_firma_id = 2
-        elif data['results'][0]['outcome'] == 'Rejected':
+        elif data['results'][0]['outcome'] == 'Signed':
+            # FIRMADO
             api.estado_firma_id = 3
-        elif data['results'][0]['outcome'] == 'Expired':
+            api.fecha_firma = data['results'][0]['signedOn']
+        elif data['results'][0]['outcome'] == 'Rejected':
+            # OBJETADO
             api.estado_firma_id = 4
+        elif data['results'][0]['outcome'] == 'Expired':
+            # EXPIRADO
+            api.estado_firma_id = 5
         api.save()
 
 
         context = {'data': data,
                 'results': data['results'][0],
-                'signingPartiesT': data['results'][0]['signingParties'][1],
                 'signingPartiesE': data['results'][0]['signingParties'][0],
+                'signingPartiesT': data['results'][0]['signingParties'][1],
                 'affidavits': data['results'][0]['affidavits'][0],
-                'signatures': data['results'][0]['signatures'][0],
+                'signaturesE': data['results'][0]['signatures'][0],
+                'signaturesT': data['results'][0]['signatures'][1],
                 'signingMethod': data['results'][0]['signingParties'][0]['signingMethod'],
                 'estado': firmado,
         }

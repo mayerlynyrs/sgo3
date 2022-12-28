@@ -16,7 +16,7 @@
       <div class="form-group col-md-6 mb-0">
         <div id="div_id_sentOn" class="form-group">
           <label for="id_sentOn" class=" requiredField">Enviado </label>
-          <div class="form-control">{{ results.sentOn }}</div>
+          <div class="form-control">{{ results.submittedOn }}</div>
         </div>
       </div>
     </div>
@@ -25,8 +25,10 @@
         <div id="div_id_outcome" class="form-group">
           <label for="id_outcome" class="">Resultado </label>
           <div class="form-control">
-            {% if results.outcome == 'None' %}
+            {% if results.outcome == 'None' and results.state == 'Processed' %}
               Sin Resultado
+            {% elif results.outcome == 'None' and results.state == 'Sent' %}
+              <span class="label label-success">Firmado Trabajador</span>
             {% elif results.outcome == 'Signed' %}
               <span class="label label-green">Firmado</span>
             {% elif results.outcome == 'Rejected' %}
@@ -41,23 +43,11 @@
           <label for="id_state" class=" requiredField">Estado de Firma </label>
           <div class="form-control">
             {% if results.state == 'Sent' %} 
-              <span class="label label-success">Enviado</span>
+              <span class="label label-info">Enviado Empleador</span>
+            {% elif results.state == 'Processed' %} 
+              <span class="label label-info">Enviado</span>
             {% elif results.state == 'Closed' %} 
               <span class="label label-green">Cerrado</span>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-row form-row">
-      <div class="form-group col-md-12 mb-0" >
-        <div id="div_id_signatureComments" class="form-group">
-          <label for="id_signatureComments" class="">Comentario </label>
-          <div class="form-control">
-            {% if signatures.signatureComments == Empty %}
-              Sin Comentario
-            {% else %}
-              {{ signatures.signatureComments }}
             {% endif %}
           </div>
         </div>
@@ -67,13 +57,28 @@
       <div class="form-group col-md-6 mb-0">
         <div id="div_id_subject" class="form-group">
           <label for="id_subject" class=" requiredField">Nombre Trabajador </label>
-          <div class="form-control">{{ signingPartiesT.name }}</div>
+          <div class="form-control">{{ signingPartiesT.name|title }}</div>
         </div>
       </div>
       <div class="form-group col-md-6 mb-0" >
         <div id="div_id_address" class="form-group">
           <label for="id_address" class=" requiredField">Correo Trabajador </label>
           <div class="form-control">{{ signingPartiesT.address }}</div>
+          <!-- <div class="form-control">{{ signingPartiesT.signatureComments }}</div> -->
+        </div>
+      </div>
+    </div>
+    <div class="form-row form-row">
+      <div class="form-group col-md-12 mb-0" >
+        <div id="div_id_signatureComments" class="form-group">
+          <label for="id_signatureComments" class="">Comentario Trabajador</label>
+          <div class="form-control">
+            {% if signaturesT.signatureComments == Empty %}
+              Sin Comentario
+            {% else %}
+              {{ signaturesT.signatureComments }}
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +93,20 @@
         <div id="div_id_address" class="form-group">
           <label for="id_address" class=" requiredField">Correo Empleador </label>
           <div class="form-control">{{ signingPartiesE.address }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row form-row">
+      <div class="form-group col-md-12 mb-0" >
+        <div id="div_id_signatureComments" class="form-group">
+          <label for="id_signatureComments" class="">Comentario Empleador </label>
+          <div class="form-control">
+            {% if signaturesE.signatureComments == Empty %}
+              Sin Comentario
+            {% else %}
+              {{ signaturesE.signatureComments }}
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>

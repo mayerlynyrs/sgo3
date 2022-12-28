@@ -938,10 +938,26 @@ def create_trabajador(request):
             # msg.attach_alternative(html_content, "text/html")
             # msg.send()
             send_mail(
-                'Creación de Trabajador en SGO3',
-                'Estimado(a) ' + str(trabajador.first_name.title() + ' ' + trabajador.last_name.title()) + ' por '
-                'medio del presente se le informa que al día ' + str(fecha_registro_palabras) + ' usted se ha '
-                'creado como Trabajador en el Sistema de Gestión de Operaciones (SGO3)',
+                'Bienvenida',
+                """Estimado(a) """ + str(trabajador.first_name.title() + ' ' + trabajador.last_name.title()) + """, a nombre de EST Integra Ltda., nos complace darles una cordial bienvenida a este sistema Firmatec, cuyo propósito es ofrecer a usted y a todos los trabajadores de la empresa, un efectivo canal de comunicación laboral, proporcionales la posibilidad de firmar electrónicamente toda la documentación legal necesaria respecto a los Contratos de Trabajo y de otra documentación relevante en este proceso, de una forma segura, oportuna y eficiente.
+                En este portal usted podrá disponer y en algunos casos firmar en forma electrónica, entre otras, la siguiente documentación:
+                ·	Contrato de Trabajo
+                ·	Anexos a Contratos de Trabajo
+                ·	Pacto de Horas Extras
+                ·	Solicitudes Permisos (con o sin descuento)
+                ·	Permisos legales (nacimiento, fallecimiento, matrimonio)
+                ·	Vacaciones
+                ·	Días Compensados
+                ·	Recepción y Capacitación de Reglamento Interno, Orden, Higiene y Seguridad.
+                ·	Recepción Derecho a Saber
+                ·	Declaración Beneficiarios de Seguro de Vida
+                ·	Solicitud de Forma de Pago de Remuneraciones
+                ·	Liquidaciones de Sueldo
+
+                Esto le permitirá tener en el dispositivo que usted disponga, computador, Tablet o Teléfono Móvil, toda la documentación laboral para que la firme digitalmente y la reciba del mismo modo, en una forma totalmente segura.
+                Le invitamos desde ya a visitarnos, conocernos y a sentirse con plena confianza de hacernos llegar sus consultas, sugerencias y aportes técnicos los cuales se canalizarán a través de la Unidad de gestión de FIRMATEC, las cuales responderemos de la forma más eficaz, precisa y oportuna posible.
+                Bienvenido a nuestro portal!
+                """,
                 trabajador.created_by.email,
                 [trabajador.email, 'soporte@empresasintegra.cl'], fail_silently=False,
             )
@@ -1034,10 +1050,10 @@ def autorizacion_trabajador(request, trabajador_id):
     # Busca si existe la plantilla de Autorización Firma Electrónica (12)
     if not Plantilla.objects.filter(tipo_id=12).exists():
         messages.error(request, 'No existe la plantilla asociada. Por favor gestionar con el Dpto. de Contratos')
-        return redirect('users:list_trabajador')
+        return redirect('users:list-trabajador')
     else:
         employee = Trabajador.objects.get(user=trabajador_id, is_active=True)
-        employee.terminos_condiciones = True
+        employee.terminos_condiciones = False
         employee.save()
         # Trae la plantilla de Autorización Firma Electrónica (12)
         formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(tipo_id=12)
@@ -1200,10 +1216,8 @@ def autorizacion_trabajador(request, trabajador_id):
                 api.status = True
                 api.save()
                 messages.success(request, 'Autorización de Firma Electrónica enviada Exitosamente')
-                data = True
         
-        # return redirect('users:list_trabajador')
-        return JsonResponse(data, safe=False)
+        return redirect('users:list-trabajador')
 
 
 class ContactoView(TemplateView):
