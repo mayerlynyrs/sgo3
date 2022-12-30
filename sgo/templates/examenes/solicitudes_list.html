@@ -37,152 +37,104 @@
           <th>Acciones</th>
         </tr>
       </thead>
-        {% block rows %}
-
-        {% endblock %}
+          {% for obj in object_list  %}
+            <tr>
+              <td style="width:20%">{{ obj.trabajador|title }}</td>
+              <td style="width:20%"> {{ obj.requerimiento_trabajador.requerimiento|title }} </td>
+              <td style="width:15%"> {{ obj.planta|title }}</td>
+              <td style="width:15%">{{ obj.planta.bateria }}</td>
+              <td style="width:15%">
+                  {% for exam in obj.planta.bateria.examen.all  %}
+                  {{ exam}} <br>
+                  {% endfor %}
+              </td>
+              <td style="width:15%">
+                  <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-rev-examenes" title="Evaluar">
+                    <i class="fas fa-fw fa-newspaper"></i>
+                  </button> &nbsp &nbsp
+                  <button data-id="{{ obj.trabajador.id }}" type="button" class="btn btn-xs btn-lime btn-examenes" title="Ver Examénes">
+                    <i class="fas fa-book-medical"></i>
+                  </button>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td style="width:10%">
+              <div class="text-center">No hay solicitudes psicólogicas pendiente.</div>
+            </td>
+          </tr>
+          {% endfor %}
     </table>
   </div>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="myModalRevExam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="myModalEvaluacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <form method="post" action="." enctype="multipart/form-data">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            <b><i class="fas fa-search"></i> <span></span></b>
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <fieldset>
-            <div class="row">
-              {% csrf_token %}
-              <div class="row col-md-12">
-                <div class="form-group col-md-12">
-                  <label for="email">Estado:</label>
-                    {{ form.estado }}
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <b><i class="fas fa-search"></i> <span></span></b>
+      </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <fieldset>
+          <div class="row">
+                {% csrf_token %}
+                <div class="row col-md-12">
+                  <div class="form-group col-md-12">
+                    <label for="email">Estado:</label>
+                    {{ form1.estado }}
+                  </div>
                 </div>
-              </div>
-              <div class="row col-md-12">
-                <div class="form-group col-md-12">
-                  <label for="email">Observaciones:</label>
-                    {{ form.obs }}
+                <div class="row col-md-12">
+                  <div class="form-group col-md-12">
+                    <label for="email">Observaciones:</label>
+                    {{ form1.obs }}
+                  </div>
                 </div>
-              </div>
-              <input name="action" type="hidden" value="">
-              <input name="user_id" id="user_id" type="hidden" value="">
-              <input name="psicologo" id="psicologo" type="hidden" value="0">
-              <input name="id" id="id" type="hidden" value="0">
-            </div>
-          </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit"  class="btn btn-info btn-flat btnAdd4"> Guardar</button>
-        </div>
+                <input name="action" type="hidden" value="">
+                <input name="user_id" id="user_id" type="hidden" value="">
+                <input name="psicologo" id="psicologo" type="hidden" value="0">
+                <input name="id" id="id" type="hidden" value="0">
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit"  class="btn btn-info btn-flat btnAdd4"> Guardar</button>
       </div>
     </div>
-  </form>
+  </div>
+</form>
 </div>
 {% endblock %}
 
 
 {% block javascript %}
-<!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="myModalExaTraba" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <b><i class="fas fa-search"></i> <span></span></b>
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      {% csrf_token %}
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="table-responsive">
-            <table id="data-table-default" class="table table-striped table-bordered table-td-valign-middle">
-              <input name="id" id="id" type="" value="0">
-              <input name="trabajador" id="trabajador" type="" value="0">
-              <thead>
-                <tr>
-                  <th class="text-center">ID</th>
-                  <th class="text-center">TRAB.</th>
-                  <th class="text-center">Fecha Inicio</th>
-                  <th class="text-center">Fecha Término</th>
-                  <th class="text-center">Batería</th>
-                  <th class="text-center">Estado</th>
-                  <th class="text-center"></i>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for obj in exa_eval  %}
-                <tr>
-                  <td>
-                    {{ obj.id }}
-                  </td>
-                  <td>
-                    {{ obj.trabajador.id }}
-                  </td>
-                  <td>
-                    {{ obj.fecha_inicio }}
-                  </td>
-                  <td>
-                    {{ obj.fecha_termino }}
-                  </td>
-                  <td>
-                    {{ obj.bateria }}
-                  </td>
-                  <td>
-                    {{ obj.estado|tag_estado_evaluacion|safe }}
-                  </td>
-                  <td class="estado-requerimiento">
-                    <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-outline-primary btn-rev-examenes" title="Visualizar">
-                      <i class="fas fa-eye"></i>
-                    </button> &nbsp &nbsp
-                    <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary" title="Descargar">
-                      <a style="color:#FFFFFF;" href="{% url 'requerimientos:descargar_adendum' obj.id %}"><i class="fas fa-download"></i></a>
-                    </button>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="5">
-                    <div class="text-center">No hay examen(es) creados.</div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <input name="id" id="id" type="hidden" value="0">
-          <input name="action" type="hidden" value="add">
-          <!-- inicia modal -->
-            <div class="modal-footer" id="modal-rev-examenes">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content "></div>
-              </div>
-            </div>
-          <!-- fin -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
+   
+    <div class="modal fade bd-example-modal-lg" id="myModalAgenda" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modal-revision">
+      <div class="modal-dialog  modal-lg">
+        <div class="modal-content"></div>
       </div>
     </div>
-  </div>
-</div>
+
+    <div class="modal fade bd-example-modal-lg" id="modal-examenes">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content"></div>
+      </div>
+    </div>
 {% endblock %}
 
 <!-- end panel -->
 {% block librerias %}
-<script src="{% static 'admin/assets/js/crud/exa_solicitudes_list.js' %}"></script>
+<!-- <script src="{% static 'admin/assets/js/crud/exa_solicitudes_list.js' %}"></script> -->
 <script src="{% static 'admin/assets/js/fecha_hora.js' %}"></script>
 
 {% endblock %}
@@ -192,7 +144,7 @@
         e.preventDefault();
         var id = $(this).data('id');
         console.log('evaluacion_id', 'id');
-        var URL = '/examenes/'+id+'/detail/';
+        var URL = '/examenes/'+id+'/revision/';
 
         console.log('URL', URL);
 
@@ -201,12 +153,32 @@
               type: 'get',
               dataType: 'json',
               beforeSend: function () {
-                $("#modal-rev-examenes").modal("show");
+                $("#modal-revision").modal("show");
               },
               success: function (data) {
-                  $("#modal-rev-examenes .modal-content").html(data.html_form);
+                  $("#modal-revision .modal-content").html(data.html_form);
               }
             });
+    });
+    $('.btn-examenes').on('click', function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        console.log('ID', id);
+        var URL = '/examenes/'+id+'/detail/';
+
+        console.log('URL', URL);
+
+        $.ajax({
+            url: URL,
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#modal-examenes").modal("show");
+            },
+            success: function (data) {
+                $("#modal-examenes .modal-content").html(data.html_form);
+            }
+        });
     });
 
   {% if messages %}

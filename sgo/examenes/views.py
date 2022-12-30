@@ -22,8 +22,10 @@ from django.views.generic import TemplateView
 from clientes.models import Planta
 from examenes.models import Examen, Bateria, CentroMedico, Evaluacion, Requerimiento as RequerimientoExam
 from agendamientos.models import Agendamiento
+from users.models import Trabajador
 # Form
 from examenes.forms import ExamenForm, BateriaForm, AgendaGeneralForm, CentroForm, EvaluacionGeneralForm, ReportForm, RevExamenForm, EvaluacionMassoForm, AgendaMassoForm
+from psicologos.forms import RevisionForm
 
 class ExamenView(TemplateView):
     template_name = 'examenes/examen_list.html'
@@ -427,50 +429,131 @@ class EvalTerminadasMassoView(LoginRequiredMixin, PermissionRequiredMixin, ListV
         return context
 
 
-class ExaSolicitudesList(TemplateView):
-    template_name = 'examenes/solicitudes_list.html'
+class ExaSolicitudesList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Psicólogos Pendientes Solicitudes List
+    Vista para listar todas las solicitudes pendientes de los psicologos
+    .
+    """
+    model = RequerimientoExam
+    # RequerimientoExam.objects.filter(Q(estado='E') & Q(psicologico=True) & Q(status=True)):
+    template_name = "examenes/solicitudes_list.html"
 
-    @method_decorator(csrf_exempt)
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    permission_required = 'psicologos.view_psicologico'
+    raise_exception = True
 
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'searchdata':
-                data = []
-                for i in RequerimientoExam.objects.filter(Q(estado='E')  & Q(status=True) & Q(bateria_id__isnull=False) | Q(masso=True) & Q(estado='E') ):
-                    data.append(i.toJSON())
-            elif action == 'evaluacion_add':
-                req_exa = RequerimientoExam.objects.get(pk=request.POST['id'])
-                req_exa.estado = request.POST['estado']
-                req_exa.obs = request.POST['obs']
-                req_exa.save()
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        planta = self.kwargs.get('planta_id', None)
+
+        if planta == '':
+            planta = None
+
+        if search:
+            # Si el usuario no se administrador se despliegan los requerimientos en estado status
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = super(ExaSolicitudesList, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(bateria_id__isnull=False),
+                    Q(status=True),
+                    Q(planta__in=self.request.user.planta.all()),
+                    Q(nombre__icontains=search)
+                ).distinct()
             else:
-                data['error'] = 'Ha ocurrido un error'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
+                # Si el usuario es administrador se despliegan todos los requerimientos
+                # segun el critero de busqueda.
+                queryset = super(ExaSolicitudesList, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(status=True),
+                    Q(bateria_id__isnull=False),
+                    Q(nombre__icontains=search)
+                ).distinct()
+        else:
+            # Si el usuario no es administrador, se despliegan los requerimientos en estado
+            # status de las plantas a las que pertenece el usuario.
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                queryset = super(ExaSolicitudesList, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(bateria_id__isnull=False),
+                    Q(status=True),
+                    Q(planta__in=self.request.user.planta.all())
+                ).distinct()
+            else:
+                # Si el usuario es administrador, se despliegan todos los requerimientos.
+                if planta is None:
+                    queryset = super(ExaSolicitudesList, self).get_queryset().filter(
+                        Q(estado='E'),
+                        Q(status=True),
+                        Q(bateria_id__isnull=False),
+                    ).distinct()
+                else:
+                    # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
+                    queryset = super(ExaSolicitudesList, self).get_queryset().filter(
+                        Q(estado='E'),
+                        Q(status=True),
+                        Q(bateria_id__isnull=False),
+                        Q(planta=planta)
+                    ).distinct()
+        print(queryset)
+        return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Evaluaciones'
-        context['list_url'] = reverse_lazy('examenes:listAgenda')
-        context['entity'] = 'Examenes'
-        context['form'] = RevExamenForm()
-        context['exa_eval'] = Evaluacion.objects.all()
-        return context
 
 
 @login_required
 @permission_required('examenes.view_examen', raise_exception=True)
-def detail_solicitud(request, evaluacion_id, template_name='examenes/solicitudes_detail.html'):
+def detail_solicitud(request, trabajador_id, template_name='examenes/solicitudes_detail.html'):
     data = dict()
-    evalua = get_object_or_404(Evaluacion, pk=evaluacion_id)
+    evaluacion = Evaluacion.objects.filter(trabajador=trabajador_id)
+    # evaluacion = get_object_or_404(Evaluacion, trabajador=trabajador_id)
+    evalua = Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="PSI")
+    trabajador = Evaluacion.objects.values_list('trabajador', flat=True).filter(trabajador=trabajador_id,tipo_evaluacion ="PSI")
+    print('examenes',evalua )
 
-    context = {'evalua': evalua, }
+    context={
+        'evaluacion': evaluacion,
+        'evalua': Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="GEN"),
+        'trabajador': Trabajador.objects.get(id=trabajador_id),
+    }
+    
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+
+def revision_solicitudes(request, requerimiento_id, template_name='examenes/revision_estado.html'):
+    data = dict()
+    requerimiento = get_object_or_404(RequerimientoExam, pk=requerimiento_id)
+
+    if request.method == 'POST':
+
+        form = RevisionForm(request.POST or None, instance=requerimiento)
+
+        if form.is_valid():
+            requerimiento = form.save()
+            messages.success(request, 'Solicitud actualizada Exitosamente')
+            page = request.GET.get('page')
+            if page != '':
+                response = redirect('examenes:list-solicitudes')
+                # response['Location'] += '?page=' + str(page)
+                return response
+            else:
+                return redirect('examenes:list-solicitudes')
+        else:
+            messages.error(request, 'Por favor revise el formulario e intentelo de nuevo.')
+    else:
+        form = RevisionForm(instance=requerimiento,)
+
+    context={
+        'requerimiento': requerimiento,
+        'form': RevisionForm
+    }
+    
     data['html_form'] = render_to_string(
         template_name,
         context,

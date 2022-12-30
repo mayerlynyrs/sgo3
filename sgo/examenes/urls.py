@@ -49,8 +49,14 @@ urlpatterns = [
         name='list-solicitudes'
     ),
     path(
-        route='<int:evaluacion_id>/detail/',
+        route='<int:trabajador_id>/detail/',
         view=views.detail_solicitud,
         name="detail"
     ),
+    path(
+        route='<int:requerimiento_id>/revision/',
+        view=views.revision_solicitudes,
+        name="revision"
+    ),
+    
 ]
