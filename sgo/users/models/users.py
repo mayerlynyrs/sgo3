@@ -384,6 +384,18 @@ class Trabajador(BaseModel):
         (CLASE_F, 'Clase F'),
     )
 
+    ENVIADO_FIRMAR = 'EF'
+    FIRMADO = 'FF'
+    RECHAZADO ='RC'
+    EXPIRADO = 'EX'
+
+    AUTORIZ = (
+        (ENVIADO_FIRMAR, 'Enviado a Firmar'),
+        (FIRMADO, 'Firmado'),
+        (RECHAZADO, 'Rechazado'),
+        (EXPIRADO, 'Expirado'),
+    )
+
     rut = models.CharField(
         max_length=12,
         unique=True,
@@ -490,11 +502,13 @@ class Trabajador(BaseModel):
         unique=True,
         null=True
     )
-    terminos_condiciones = models.BooleanField(
-        'Términos y Condiciones',
-        default=False,
-        help_text='Para indicar que el trabajador acepto los Términos y Condiciones, habilite esta casilla.'
+    archivo = models.FileField(
+        upload_to='autorizaciones/',
+        validators=[FileExtensionValidator(allowed_extensions=['doc', 'docx', 'pdf', ])],
+        blank=True,
+        null=True
     )
+    autorizacion = models.CharField(max_length=2, choices=AUTORIZ, blank=True, null=True)
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 

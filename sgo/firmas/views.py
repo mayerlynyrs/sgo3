@@ -152,11 +152,12 @@ class ContratoAprobadoList(TemplateView):
                     contrato.obs = response.text
                     contrato.save()
                     api = Firma()
-                    api.respuesta_api = response.text
                     # request.POST['nombre'].lower()
+                    api.respuesta_api = response.text
                     api.rut_trabajador = contrato.trabajador.rut
                     api.estado_firma_id = 1
                     api.contrato_id = contrato.id
+                    api.tipo_documento_id = 1
                     api.status = True
                     api.save()
                     # contrato = Firma.objects.get(pk=request.POST['id'])
@@ -180,7 +181,7 @@ class ContratoAprobadoList(TemplateView):
                     print('status_code 500')
                     messages.error(request, 'Error del Servidor.')
                 else:
-                    print('=( algo malo paso')
+                    print('=( algo malo paso', response.status_code)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -302,29 +303,36 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
             docum = Contrato.objects.get(pk=contrato_id)
             # Elimino el documento sin firma.
             path = os.path.join(settings.MEDIA_ROOT)
-            archivo = docum.archivo
-            print('archivo', archivo)
-            ruta = path + '/' + str(archivo)
-            os.remove(ruta)
-            print('se elimino archivo')
+            nombre_doc = docum.archivo
             # Definir la cadena Base64 del archivo PDF
             b64 = data['results'][0]['affidavits'][6]['bytes']
-            # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
-            bytes = b64decode(b64, validate=True)
-            # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
-            if bytes[0:4] != b'%PDF':
-                raise ValueError('Falta la firma del archivo PDF')
-            # Escribir el contenido del PDF en un archivo local
-            f = open(ruta, 'wb')
-            f.write(bytes)
-            f.close()
-            # Se guarda el documento firmado
-            doc_contrato = DocumentosContrato()
-            doc_contrato.contrato_id = contrato_id
-            doc_contrato.archivo = archivo
-            doc_contrato.tipo_documento_id = 1
-            doc_contrato.save()
-            context = {'base64contrato': b64}
+            try:
+                print('Ya existe el archivo')
+                # Busca si ya el documento existe
+                doc_contrato = DocumentosContrato.objects.get(archivo=nombre_doc)
+                context = {'base64contrato': b64}
+            except:
+                print('No existe el archivo')
+                ruta = path + '/' + str(nombre_doc)
+                os.remove(ruta)
+                print('se elimino archivo')
+                # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
+                bytes = b64decode(b64, validate=True)
+                # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
+                if bytes[0:4] != b'%PDF':
+                    raise ValueError('Falta la firma del archivo PDF')
+                # Escribir el contenido del PDF en un archivo local
+                f = open(ruta, 'wb')
+                f.write(bytes)
+                f.close()
+                # Se guarda el documento firmado
+                doc_contrato = DocumentosContrato()
+                doc_contrato.contrato_id = contrato_id
+                doc_contrato.archivo = nombre_doc
+                doc_contrato.tipo_documento_id = 1
+                doc_contrato.save()
+                context = {'base64contrato': b64}
+
 
         elif data['results'][0]['outcome'] == 'Rejected':
             # OBJETADO
@@ -346,6 +354,7 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
         elif data['results'][0]['outcome'] == 'Signed':
             # FIRMADO
             api.estado_firma_id = 3
+            api.fecha_firma = data['results'][0]['signedOn']
         elif data['results'][0]['outcome'] == 'Rejected':
             # OBJETADO
             api.estado_firma_id = 4
@@ -381,6 +390,7 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
                 'signaturesT': data['results'][0]['signatures'][1],
                 'signingMethod': data['results'][0]['signingParties'][0]['signingMethod'],
                 'estado': firmado,
+                'contrato': contrato,
         }
         
         print('status_code 200')
@@ -398,7 +408,7 @@ def firma_estado(request, contrato_id, template_name='firmas/estado_api.html'):
         print('status_code 500')
         messages.error(request, 'Error del Servidor.')
     else:
-        print('=( algo malo paso')
+        print('=( algo malo paso', response.status_code)
     data['html_form'] = render_to_string(
         template_name,
         context,
@@ -489,6 +499,7 @@ class AnexoAprobadoList(TemplateView):
                     api.rut_trabajador = anexo.trabajador.rut
                     api.estado_firma_id = 1
                     api.anexo_id = anexo.id
+                    api.tipo_documento_id = 5
                     api.status = True
                     api.save()
                     print('status_code 200')
@@ -543,7 +554,7 @@ class AnexoEnviadoList(TemplateView):
 def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
     """Estado de firma view."""
 
-    firmado = get_object_or_404(Firma, anexo=anexo_id)
+    firmado = get_object_or_404(Firma, contrato=anexo_id)
     api = firmado.respuesta_api
     uniqueid = api[13:-2]
                 
@@ -604,29 +615,34 @@ def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
             docum = Anexo.objects.get(pk=anexo_id)
             # Elimino el documento sin firma.
             path = os.path.join(settings.MEDIA_ROOT)
-            archivo = docum.archivo
-            print('archivo', archivo)
-            ruta = path + '/' + str(archivo)
-            os.remove(ruta)
-            print('se elimino archivo')
+            nombre_doc = docum.archivo
             # Definir la cadena Base64 del archivo PDF
             b64 = data['results'][0]['affidavits'][6]['bytes']
-            # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
-            bytes = b64decode(b64, validate=True)
-            # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
-            if bytes[0:4] != b'%PDF':
-                raise ValueError('Falta la firma del archivo PDF')
-            # Escribir el contenido del PDF en un archivo local
-            f = open(ruta, 'wb')
-            f.write(bytes)
-            f.close()
-            # Se guarda el documento firmado
-            doc_contrato = DocumentosContrato()
-            doc_contrato.contrato_id = anex.contrato_id
-            doc_contrato.archivo = archivo
-            doc_contrato.tipo_documento_id = 5
-            doc_contrato.save()
-            context = {'base64contrato': b64}
+            try:
+                # Busca si ya el documento existe
+                doc_contrato = DocumentosContrato.objects.get(archivo=nombre_doc)
+                context = {'base64contrato': b64}
+            except:
+                print('nombre_doc', nombre_doc)
+                ruta = path + '/' + str(nombre_doc)
+                os.remove(ruta)
+                print('se elimino archivo')
+                # Decodifica la cadena Base64, asegurándote de que solo contenga caracteres válidos
+                bytes = b64decode(b64, validate=True)
+                # Realice una validación básica para asegurarse de que el resultado sea un archivo PDF válido
+                if bytes[0:4] != b'%PDF':
+                    raise ValueError('Falta la firma del archivo PDF')
+                # Escribir el contenido del PDF en un archivo local
+                f = open(ruta, 'wb')
+                f.write(bytes)
+                f.close()
+                # Se guarda el documento firmado
+                doc_contrato = DocumentosContrato()
+                doc_contrato.contrato_id = anex.contrato_id
+                doc_contrato.archivo = nombre_doc
+                doc_contrato.tipo_documento_id = 5
+                doc_contrato.save()
+                context = {'base64contrato': b64}
 
         elif data['results'][0]['outcome'] == 'Rejected':
             # OBJETADO
@@ -667,6 +683,7 @@ def estado_anexo(request, anexo_id, template_name='firmas/estado_api.html'):
                 'signaturesT': data['results'][0]['signatures'][1],
                 'signingMethod': data['results'][0]['signingParties'][0]['signingMethod'],
                 'estado': firmado,
+                'anexo': anex,
         }
         print('status_code 200')
         messages.success(request, 'Enviado a Firma')

@@ -123,7 +123,7 @@ img {
                 </ul>
             </td>
             <td class="text-left" style="width:10%">
-              {% if employee.terminos_condiciones == False %}
+              {% if employee.terminos_condiciones == EX %}
                 <a title="Autorización Firma Electrónica" id="btn_autoriza" data-id="{{ employee.user.id }}" href="{% url 'users:autorizacion' employee.user.id %}?page={{ request.GET.page }}" class="btn btn-green btn-xs btn-flat"><i class="fas fa-share"></i></a>  &nbsp &nbsp
               {% endif %}
               <!-- <a title="Requerimiento" href="#" rel="edit" class="btn btn-warning btn-xs btn-flat btnEdit"><i class="fas fa-flag"></i></a> &nbsp &nbsp

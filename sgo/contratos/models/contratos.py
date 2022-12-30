@@ -226,7 +226,11 @@ def contrato_directory_path(instance, filename):
 class DocumentosContrato(BaseModel):
     archivo = models.FileField(upload_to=contrato_directory_path,
                                validators=[
-                                   FileExtensionValidator(allowed_extensions=['pdf', ])])
+                                   FileExtensionValidator(allowed_extensions=['pdf', ])],
+                                unique=True,
+                                error_messages={
+                                    'unique': 'Ya existe un rut firmante con este RUT registrado.'
+                                })
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.CASCADE)
     status = models.BooleanField(

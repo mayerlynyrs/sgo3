@@ -1,6 +1,6 @@
 {% load contratos_tags %}
 <div class="modal-header">
-  <h5 class="modal-title">Estado del {% if estado.contrato == None %} Anexo de {{ estado.anexo.trabajador }} {% else %} Contrato de {{ estado.trabajador  }} {% endif %}</h5>
+  <h5 class="modal-title">Estado del {% if contrato == None %} Anexo de {{ anexo.trabajador|title }} {% elif anexo == None %} Contrato de {{ contrato.trabajador|title }} {% endif %}</h5>
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 </div>
 <div class="modal-body">

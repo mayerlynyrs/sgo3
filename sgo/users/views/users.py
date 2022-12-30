@@ -839,7 +839,7 @@ class TrabajadorListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     Q(planta__in=self.request.user.planta.all()),
                     Q(first_name__icontains=search) |
                     Q(last_name__icontains=search) |
-                    Q(terminos_condiciones__icontains=search) |
+                    Q(autorizacion__icontains=search) |
                     Q(username__icontains=search)).exclude(
                     groups__name__in=['Administrador', 'Administrador Contratos', 'Jefe RRHH', 'Analista Operación', 'Analista RRHH', 'Psicologo']).order_by(
                     'first_name', 'last_name').distinct('first_name', 'last_name')
@@ -1053,7 +1053,7 @@ def autorizacion_trabajador(request, trabajador_id):
         return redirect('users:list-trabajador')
     else:
         employee = Trabajador.objects.get(user=trabajador_id, is_active=True)
-        employee.terminos_condiciones = False
+        employee.autorizacion = 1
         employee.save()
         # Trae la plantilla de Autorización Firma Electrónica (12)
         formato = Plantilla.objects.values('archivo', 'abreviatura', 'tipo_id').filter(tipo_id=12)

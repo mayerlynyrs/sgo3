@@ -315,7 +315,7 @@ class CustomTrabajadorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fields = ('rut', 'first_name', 'last_name', 'pasaporte', 'sexo', 'estado_civil', 'fecha_nacimiento', 'telefono', 'nacionalidad',
               'licencia_conducir', 'talla_polera', 'talla_pantalon', 'calzado', 'nivel_estudio', 'especialidad',
               'region', 'provincia', 'ciudad', 'domicilio', 'examen', 'foto', 'afp', 'salud', 'pacto_uf', 'banco',
-              'tipo_cuenta', 'cuenta', 'terminos_condiciones', 'user')
+              'tipo_cuenta', 'cuenta', 'archivo', 'autorizacion', 'user')
     list_display = ('id', 'rut', 'first_name', 'last_name', 'telefono', 'nacionalidad')
     list_filter = ('rut', 'provincia', 'ciudad', 'created', 'modified')
     search_fields = ('rut', 'first_name', 'last_name', 'pasaporte', 'region__nombre', 'provincia__nombre', 'ciudad__nombre')
