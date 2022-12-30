@@ -312,12 +312,11 @@ def examenes_trabajador(request, trabajador_id, template_name='psicologos/examen
     evaluacion = Evaluacion.objects.filter(trabajador=trabajador_id)
     # evaluacion = get_object_or_404(Evaluacion, trabajador=trabajador_id)
     evalua = Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="PSI")
-    trabajador = Evaluacion.objects.values_list('trabajador', flat=True).filter(trabajador=trabajador_id,tipo_evaluacion ="PSI")
     print('examenes',evalua )
 
     context={
         'evaluacion': evaluacion,
-        'evalua': Evaluacion.objects.filter(trabajador=trabajador_id),
+        'evalua': Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="PSI"),
         'trabajador': Trabajador.objects.get(id=trabajador_id),
     }
     
