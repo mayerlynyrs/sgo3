@@ -1176,8 +1176,10 @@ def enviar_revision_contrato(request, contrato_id):
                 valor_mensual=Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True)
                 valor_mensual_palabras = numero_a_letras(Contrato.objects.values_list('sueldo_base', flat=True).get(pk=contrato_id, status=True))+' pesos'
                 fecha_pago = ''
-                
+            contador = 0
             for formt in formato:
+                contador =+ 1
+                print('contador', contador)
                 now = datetime.now()
                 doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT + '/' + formt['archivo']))
                 # Variables de Contrato
@@ -1316,7 +1318,7 @@ def enviar_revision_contrato(request, contrato_id):
                     data = True
             
                 # return redirect('contratos:create_contrato', contrato.requerimiento_trabajador_id)
-                return JsonResponse(data, safe=False)
+            return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -1858,23 +1860,29 @@ class SolicitudContrato(TemplateView):
                 url = contrato.archivo
                 ruta_documentos = ContratosParametrosGen.objects.values_list('ruta_documentos', flat=True).get(pk=1, status=True)
                 path = os.path.join(ruta_documentos)
-                os.remove(path + '\\' + str(url))
+                os.remove(path +'\\'+ str(url))
                 contrato.archivo = None
                 contrato.estado_contrato = 'RC'
                 contrato.save()
+
                 try:
-                    # borrar Pacto de Horas Extras = 14
+                # borrar Pacto de Horas Extras = 14
                     doc_contrato = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 14 )
+                    print('tare el documento', doc_contrato)
                     ruta = doc_contrato.archivo
-                    os.remove(path + str(ruta))
+                    print('tare la ruta', ruta)
+                    os.remove(path+'\\'+ str(ruta))
                     doc_contrato.delete()
+                except:
+                    print('except finiquito')
+                try:
                     # borrar Finiquito = 11
                     finiquito = DocumentosContrato.objects.get(contrato_id=request.POST['id'], tipo_documento_id = 11 )
                     ruta = finiquito.archivo
-                    os.remove(path + str(ruta))
+                    os.remove(path +'\\'+ str(ruta))
                     finiquito.delete()
                 except:
-                    print()
+                    print('except finiquito')
 
                 fecha_ingreso_trabajador_palabras = fecha_a_letras(contrato.fecha_inicio)
                 send_mail(
