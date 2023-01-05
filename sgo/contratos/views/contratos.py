@@ -396,7 +396,7 @@ def exportar_excel_contrato_pendiente(request):
 
     columns = ['Solicitante','Nombres Trabajador','Rut','Nacionalidad','F. Nacimiento', 'E. Civil', 'Domicilio','Comuna',  'Cargo', 'Sueldo Base', 'Sueldo Base Palabras', 'AFP',
                 'Salud', 'UF pactada', 'Fecha Ingreso', 'Fecha Termino', 'Letra Causal', 'Motivo', 'Telefono', 'Turno', 'Referido', 'Centro de Costo',
-                'Codigo CC', 'Area de Trabajo', 'Nivel Educacional', 'Planta','nombre banco', 'tipo cuenta', 'cuenta banco', 'Nombre Req', 'Codigo Req', 'Fecha Solicitud Req', 'Fecha Inicio Req', 'Fecha Termino Req','Fecha de Pago','correo',
+                'Codigo CC', 'Area de Trabajo', 'Nivel Educacional', 'Planta','nombre banco', 'Cod. Unysoft','tipo cuenta', 'cuenta banco', 'Nombre Req', 'Codigo Req', 'Fecha Solicitud Req', 'Fecha Inicio Req', 'Fecha Termino Req','Fecha de Pago','correo',
  ]
 
     for col_num in range(len(columns)):
@@ -409,7 +409,7 @@ def exportar_excel_contrato_pendiente(request):
     rows = Contrato.objects.filter(estado_contrato='PV', status=True).values_list('created_by__first_name','created_by__last_name','trabajador__first_name',  'trabajador__last_name',  'trabajador__rut',  'trabajador__nacionalidad__nombre' ,
     'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'requerimiento_trabajador__area_cargo__cargo__nombre', 'sueldo_base', 'sueldo_base', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'trabajador__pacto_uf', 'fecha_inicio',
      'fecha_termino' , 'causal__nombre' , 'motivo', 'trabajador__telefono' , 'horario__nombre', 'requerimiento_trabajador__referido', 'planta__nombre' , 'requerimiento_trabajador__requerimiento__centro_costo', 'requerimiento_trabajador__requerimiento__areacargo__area__nombre', 'trabajador__nivel_estudio__nombre',
-     'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
+     'planta__cliente__razon_social', 'trabajador__banco__nombre', 'trabajador__banco__codigo', 'trabajador__tipo_cuenta__nombre', 'trabajador__cuenta', 'requerimiento_trabajador__requerimiento__nombre' , 'requerimiento_trabajador__requerimiento__codigo', 'requerimiento_trabajador__requerimiento__fecha_solicitud' ,
      'fecha_inicio', 'fecha_termino','fecha_pago', 'trabajador__email', )
 
 
@@ -514,7 +514,7 @@ def exportar_excel_contrato_pendiente(request):
                 ws.write(row_num, col_num, row[numero], font_style)
             if(col_num == 31):
                 numero = col_num + 2
-                ws.write(row_num, col_num, fecha_a_letras(row[numero]), font_style)
+                ws.write(row_num, col_num, row[numero], font_style)
             if(col_num == 32):
                 numero = col_num + 2
                 ws.write(row_num, col_num, fecha_a_letras(row[numero]), font_style)
@@ -523,11 +523,14 @@ def exportar_excel_contrato_pendiente(request):
                 ws.write(row_num, col_num, fecha_a_letras(row[numero]), font_style)
             if(col_num == 34):
                 numero = col_num + 2
+                ws.write(row_num, col_num, fecha_a_letras(row[numero]), font_style)
+            if(col_num == 35):
+                numero = col_num + 2
                 if(row[numero]):
                     ws.write(row_num, col_num, fecha_a_letras(row[numero]), font_style)
                 else:
                     ws.write(row_num, col_num, row[numero], font_style)
-            if(col_num == 35):
+            if(col_num == 36):
                 numero = col_num + 2
                 ws.write(row_num, col_num, row[numero], font_style)
             # else:
@@ -2061,7 +2064,7 @@ def exportar_excel_anexo_pendiente(request):
 
 
     rows = Anexo.objects.filter(estado_anexo='PV', status=True).values_list('trabajador__first_name',  'trabajador__last_name',  'trabajador__rut', 'trabajador__nacionalidad__nombre' ,
-        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'fecha_inicio',
+        'trabajador__fecha_nacimiento', 'trabajador__estado_civil__nombre', 'trabajador__domicilio', 'trabajador__ciudad__nombre', 'trabajador__afp__nombre', 'trabajador__salud__nombre', 'contrato__fecha_inicio',
         'fecha_termino' , 'causal__nombre' , 'trabajador__telefono' ,  'planta__nombre' , 'planta__cliente__razon_social')
 
 
