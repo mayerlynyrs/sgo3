@@ -32,8 +32,6 @@
           <th>Trabajador</th>
           <th>Requerimiento</th>
           <th>Planta</th>
-          <th>Batería</th>
-          <th>Examen(es)</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -42,12 +40,6 @@
               <td style="width:20%">{{ obj.trabajador|title }}</td>
               <td style="width:20%"> {{ obj.requerimiento_trabajador.requerimiento|title }} </td>
               <td style="width:15%"> {{ obj.planta|title }}</td>
-              <td style="width:15%">{{ obj.planta.bateria }}</td>
-              <td style="width:15%">
-                  {% for exam in obj.planta.bateria.examen.all  %}
-                  {{ exam}} <br>
-                  {% endfor %}
-              </td>
               <td style="width:15%">
                   <button data-id="{{ obj.id }}" type="button" class="btn btn-xs btn-primary btn-rev-examenes" title="Evaluar">
                     <i class="fas fa-fw fa-newspaper"></i>
@@ -164,10 +156,9 @@
         e.preventDefault();
         var id = $(this).data('id');
         console.log('ID', id);
-        var URL = '/examenes/'+id+'/detail/';
+        var URL = '/examenes/'+id+'/detail-masso/';
 
         console.log('URL', URL);
-        console.log('aaqui');
 
         $.ajax({
             url: URL,

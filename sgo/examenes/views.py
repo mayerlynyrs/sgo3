@@ -497,6 +497,74 @@ class ExaSolicitudesList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
                     ).distinct()
         print(queryset)
         return queryset
+class ExaSolicitudesListMasso(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Psicólogos Pendientes Solicitudes List
+    Vista para listar todas las solicitudes pendientes de los psicologos
+    .
+    """
+    model = RequerimientoExam
+    # RequerimientoExam.objects.filter(Q(estado='E') & Q(psicologico=True) & Q(status=True)):
+    template_name = "examenes/solicitudes_list_masso.html"
+
+    permission_required = 'psicologos.view_psicologico'
+    raise_exception = True
+
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        planta = self.kwargs.get('planta_id', None)
+
+        if planta == '':
+            planta = None
+
+        if search:
+            # Si el usuario no se administrador se despliegan los requerimientos en estado status
+            # de las plantas a las que pertenece el usuario, según el critero de busqueda.
+            if not self.request.user.groups.filter(name__in=['Administrador', ]).exists():
+                queryset = super(ExaSolicitudesListMasso, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(masso=True),
+                    Q(status=True),
+                    Q(planta__in=self.request.user.planta.all()),
+                    Q(nombre__icontains=search)
+                ).distinct()
+            else:
+                # Si el usuario es administrador se despliegan todos los requerimientos
+                # segun el critero de busqueda.
+                queryset = super(ExaSolicitudesListMasso, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(status=True),
+                    Q(masso=True),
+                    Q(nombre__icontains=search)
+                ).distinct()
+        else:
+            # Si el usuario no es administrador, se despliegan los requerimientos en estado
+            # status de las plantas a las que pertenece el usuario.
+            if not self.request.user.groups.filter(name__in=['Administrador']).exists():
+                queryset = super(ExaSolicitudesListMasso, self).get_queryset().filter(
+                    Q(estado='E'),
+                    Q(masso=True),
+                    Q(status=True),
+                    Q(planta__in=self.request.user.planta.all())
+                ).distinct()
+            else:
+                # Si el usuario es administrador, se despliegan todos los requerimientos.
+                if planta is None:
+                    queryset = super(ExaSolicitudesListMasso, self).get_queryset().filter(
+                        Q(estado='E'),
+                        Q(status=True),
+                        Q(masso=True),
+                    ).distinct()
+                else:
+                    # Si recibe la planta, solo muestra los requerimientos que pertenecen a esa planta.
+                    queryset = super(ExaSolicitudesListMasso, self).get_queryset().filter(
+                        Q(estado='E'),
+                        Q(status=True),
+                        Q(masso=True),
+                        Q(planta=planta)
+                    ).distinct()
+        print(queryset)
+        return queryset
 
 
 
@@ -524,7 +592,29 @@ def detail_solicitud(request, trabajador_id, template_name='examenes/solicitudes
 
     return JsonResponse(data)
 
+@login_required
+@permission_required('examenes.view_examen', raise_exception=True)
+def detail_solicitud_masso(request, trabajador_id, template_name='examenes/solicitudes_detail_masso.html'):
+    data = dict()
+    evaluacion = Evaluacion.objects.filter(trabajador=trabajador_id)
+    # evaluacion = get_object_or_404(Evaluacion, trabajador=trabajador_id)
+    evalua = Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="PSI")
+    trabajador = Evaluacion.objects.values_list('trabajador', flat=True).filter(trabajador=trabajador_id,tipo_evaluacion ="MAS")
+    print('examenes',evalua )
 
+    context={
+        'evaluacion': evaluacion,
+        'evalua': Evaluacion.objects.filter(trabajador=trabajador_id, tipo_evaluacion ="MAS"),
+        'trabajador': Trabajador.objects.get(id=trabajador_id),
+    }
+    
+    data['html_form'] = render_to_string(
+        template_name,
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
 
 def revision_solicitudes(request, requerimiento_id, template_name='examenes/revision_estado.html'):
     data = dict()

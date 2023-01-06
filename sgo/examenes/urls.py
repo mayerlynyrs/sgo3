@@ -49,8 +49,18 @@ urlpatterns = [
         name='list-solicitudes'
     ),
     path(
+        route='list_solicitudes_masso',
+        view=views.ExaSolicitudesListMasso.as_view(),
+        name='list-solicitudes-masso'
+    ),
+    path(
         route='<int:trabajador_id>/detail/',
         view=views.detail_solicitud,
+        name="detail"
+    ),
+    path(
+        route='<int:trabajador_id>/detail-masso/',
+        view=views.detail_solicitud_masso,
         name="detail"
     ),
     path(

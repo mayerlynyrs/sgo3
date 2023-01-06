@@ -50,6 +50,7 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         if request.method == 'POST':
             agenda_form = UserAgendar(data=request.POST)
             if agenda_form.is_valid():
+                    print(request.POST)
                     if "psico" in request.POST:
                         agendar = Agendamiento()
                         agendar.requerimiento_id = request.POST['requerimiento']
@@ -107,31 +108,33 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                             ['soporte@empresasintegra.cl'],
                             fail_silently=False,
                         )
-                        if "masso" in request.POST:
-                            agendar = Agendamiento()
-                            agendar.requerimiento_id = request.POST['requerimiento']
-                            agendar.tipo = request.POST['tipo']
-                            agendar.trabajador_id = request.POST['trabajador']
-                            agendar.fecha_ingreso_estimada = request.POST['fecha_ingreso_estimada']
-                            agendar.planta_id = request.POST['planta']
-                            agendar.cargo_id = request.POST['cargo']
-                            if "referido" in request.POST:
-                                estado = True
-                            else:
-                                estado = False
-                            agendar.referido =  estado
-                            agendar.obs = request.POST['obs']
-                            agendar.tipo_evaluacion = "MAS"
-                            agendar.status = True
-                            agendar.save()
-                            send_mail(
-                                'Nueva Solicitud de Agenda Prueba sgo3 ',
-                                'Estimado(a) se a realizado un nueva solicitud de agendamiento MASSO para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
-                                + agendar.fecha_ingreso_estimada  ,
-                                'jcruces@empresasintegra.cl',
-                                ['soporte@empresasintegra.cl'],
-                                fail_silently=False,
-                            )
+                    if "masso" in request.POST:
+                        print('aqui')
+                        agendar = Agendamiento()
+                        agendar.requerimiento_id = request.POST['requerimiento']
+                        agendar.tipo = request.POST['tipo']
+                        agendar.trabajador_id = request.POST['trabajador']
+                        agendar.fecha_ingreso_estimada = request.POST['fecha_ingreso_estimada']
+                        agendar.planta_id = request.POST['planta']
+                        agendar.cargo_id = request.POST['cargo']
+                        if "referido" in request.POST:
+                            estado = True
+                        else:
+                            estado = False
+                        agendar.referido =  estado
+                        agendar.obs = request.POST['obs']
+                        agendar.tipo_evaluacion = "MAS"
+                        agendar.status = True
+                        agendar.save()
+                        print(agendar)
+                        send_mail(
+                            'Nueva Solicitud de Agenda Prueba sgo3 ',
+                            'Estimado(a) se a realizado un nueva solicitud de agendamiento MASSO para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
+                            + agendar.fecha_ingreso_estimada  ,
+                            'jcruces@empresasintegra.cl',
+                            ['soporte@empresasintegra.cl'],
+                            fail_silently=False,
+                        )
                     messages.success(request, 'Agenda Creado Exitosamente')
                     return redirect('agendamientos:listAgenda')
             else:
