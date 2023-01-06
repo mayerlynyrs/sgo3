@@ -50,7 +50,6 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         if request.method == 'POST':
             agenda_form = UserAgendar(data=request.POST)
             if agenda_form.is_valid():
-                    print(request.POST)
                     if "psico" in request.POST:
                         agendar = Agendamiento()
                         agendar.requerimiento_id = request.POST['requerimiento']
@@ -109,7 +108,6 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                             fail_silently=False,
                         )
                     if "masso" in request.POST:
-                        print('aqui')
                         agendar = Agendamiento()
                         agendar.requerimiento_id = request.POST['requerimiento']
                         agendar.tipo = request.POST['tipo']
@@ -126,7 +124,6 @@ class AgendaCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
                         agendar.tipo_evaluacion = "MAS"
                         agendar.status = True
                         agendar.save()
-                        print(agendar)
                         send_mail(
                             'Nueva Solicitud de Agenda Prueba sgo3 ',
                             'Estimado(a) se a realizado un nueva solicitud de agendamiento MASSO para el trabajador ' + str(agendar.trabajador) +' con fecha de ingreso: ' 
