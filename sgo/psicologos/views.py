@@ -271,7 +271,7 @@ class PsiSolicitudesList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return queryset
 
 
-def revision_solicitudes(request, requerimiento_id, template_name='psicologos/revision_estado.html'):
+def revision_solicitudes(request, requerimiento_id, template_name='sharedComponents/revision_estado.html'):
     data = dict()
     requerimiento = get_object_or_404(RequerimientoExam, pk=requerimiento_id)
 

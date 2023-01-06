@@ -616,7 +616,7 @@ def detail_solicitud_masso(request, trabajador_id, template_name='examenes/solic
 
     return JsonResponse(data)
 
-def revision_solicitudes(request, requerimiento_id, template_name='examenes/revision_estado.html'):
+def revision_solicitudes(request, requerimiento_id, template_name='sharedComponents/revision_estado.html'):
     data = dict()
     requerimiento = get_object_or_404(RequerimientoExam, pk=requerimiento_id)
 
