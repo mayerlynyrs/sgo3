@@ -215,6 +215,7 @@ class Evaluacion(models.Model):
             item['centromedico'] = self.centro.nombre
         else:
             item['centromedico'] = "No Asignado"
+        item['tipoexamen'] = None
         if (self.psicologo):
             item['tipoexamen'] = "Psicologico"
         elif (self.tipo_evaluacion == "GEN"):
