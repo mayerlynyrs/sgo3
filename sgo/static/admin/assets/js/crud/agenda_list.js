@@ -70,7 +70,7 @@ $(function () {
     });
 
     $('#data-table-default tbody').on('click', 'a[rel="edit"]', function (){
-    
+        
         console.log('entre');
         modal_title.find('i').removeClass().addClass('fas fa-edit');
         var tr = tblAgenda.cell($(this).closest('td, li')).index();
@@ -82,14 +82,14 @@ $(function () {
         $('input[name="id"]' ).val(data.id);
         $('select[name="estado"]').val(data.estado).trigger("change");
         $('select[name="tipo"]').val(data.tipo).trigger("change");
-        $('input[name="fecha_ingreso_estimada"]').val(data.fecha_ingreso_estimada);
+        $('input[name="fecha_ingreso_estimada"]').val(data.fecha_ingreso_estimada).prop('disabled', true);
         $('input[name="fecha_agenda_evaluacion"]').val(data.fecha_agenda_evaluacion);
-        $('select[name="planta"]').val(data.planta).trigger("change");
-        $('select[name="cargo"]').val(data.cargo).trigger("change");
+        $('select[name="planta"]').val(data.planta).trigger("change").prop('disabled', true);
+        $('select[name="cargo"]').val(data.cargo).trigger("change").prop('disabled', true);
         $('select[name="evaluacion"]').val(data.evaluacion).trigger("change");
         $('select[name="psico"]').val(data.psico).trigger("change");
-        $('input:checkbox[name=hal2]').attr('checked',data.hal2);  
-        $('input:checkbox[name=referido]').attr('checked',data.referido);
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2).prop('disabled', true);  
+        $('input:checkbox[name=referido]').attr('checked',data.referido).prop('disabled', true);
         $('textarea[name="obs"]').val(data.obs);
         var btn = document.getElementById("btn-guardar");
         btn.style.borderColor= '#153264';
@@ -133,12 +133,12 @@ $(function () {
         $('form')[0].reset();
         $('input[name="id"]' ).val(data.id);
         $('input[name="user_id"]').val(data.user_id);
-        $('select[name="planta"]').val(data.planta).trigger("change");
-        $('input:checkbox[name=hal2]').attr('checked',data.hal2);
-        $('select[name="cargo"]').val(data.cargo).trigger("change");
-        $('select[name="tipo"]').val(data.tipo).trigger("change");
+        $('select[name="planta"]').val(data.planta).trigger("change").prop('disabled', true);
+        $('input:checkbox[name=hal2]').attr('checked',data.hal2).prop('disabled', true);
+        $('select[name="cargo"]').val(data.cargo).trigger("change").prop('disabled', true);
+        $('select[name="tipo"]').val(data.tipo).trigger("change").prop('disabled', true);
         $('input[name="psicologo"]').val(data.psico);
-        $('input:checkbox[name=referido]').attr('checked',data.referido);
+        $('input:checkbox[name=referido]').attr('checked',data.referido).prop('disabled', true);
         
        
         $('#myModalEvaluacion').modal('show');
