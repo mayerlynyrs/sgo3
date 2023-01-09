@@ -2366,8 +2366,9 @@ def enviar_revision_anexo(request, anexo_id):
                         'domicilio_trabajador': anexo.contrato.trabajador.domicilio,
                         'comuna_trabajador': anexo.contrato.trabajador.ciudad.nombre.title(),
                         'nuevo_parrafo': anexo.motivo,
-                        'nueva_renta': anexo.contrato.nueva_renta,
-                        
+                        'nuevo_motivo': anexo.motivo,
+                        'nueva_renta': anexo.nueva_renta,
+                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta),
                         }
             rut_trabajador = anexo.contrato.trabajador.rut
             doc.render(context)
