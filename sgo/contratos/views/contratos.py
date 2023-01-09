@@ -2237,7 +2237,9 @@ def aprobacion_masiva_anexo(request, aprobacion):
             fail_silently=False,
         )
     messages.success(request, 'Anexos aprobados Exitosamente')
-    return redirect('contratos:solicitud-contrato',)
+    # return redirect('contratos:solicitud-contrato',)
+    data = True
+    return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -2368,7 +2370,7 @@ def enviar_revision_anexo(request, anexo_id):
                         'nuevo_parrafo': anexo.motivo,
                         'nuevo_motivo': anexo.motivo,
                         'nueva_renta': anexo.nueva_renta,
-                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta),
+                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta) if anexo.nueva_renta else '',
                         }
             rut_trabajador = anexo.contrato.trabajador.rut
             doc.render(context)
@@ -2389,7 +2391,7 @@ def enviar_revision_anexo(request, anexo_id):
             # Si carpeta no existe, crea carpeta de contratos.
             carpeta = 'anexos'
             try:
-                os.mkdir(path + carpeta)
+                os.mkdir('C://Users/Inntegra-0070/Documents/Proyectos/sgo3/media/' + carpeta)
                 path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
                 doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
                 win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     

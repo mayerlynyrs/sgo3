@@ -37,7 +37,9 @@
       <table id="data-table-default" class="table table-striped table-bordered align-middle">
         <thead>
           <tr>
-              <th width="1%"> </th>
+              <th>
+                <input type="checkbox" id="checkAll" class="text-center" onclick="selectAll()" value="false"/>
+              </th>
               <th>Solicitante</th>
               <th width="20%">Cliente/Planta</th>
               <th>Trabajador</th>
@@ -108,7 +110,7 @@
       const message = [];
 
       //Loop through the CheckBoxes.
-      for (var i = 0; i < checkBoxes.length; i++) {
+      for (var i = 1; i < checkBoxes.length; i++) {
           if (checkBoxes[i].checked) {
               var row = checkBoxes[i].parentNode.parentNode;
               var row2 = grid.getElementsByTagName("INPUT")[i].value
@@ -120,16 +122,20 @@
       var URL = '/contratos/'+message+'/aprobacion_masiva_anexo/';
       $.ajax({
             url: URL,
-            type: 'get',
+            type: 'GET',
             dataType: 'json',
             beforeSend: function () {
               iziToast.success({
                             message: 'Los anexos fueron Aprobados Exitosamente',
                             position: 'topRight',
               });
-              location.reload();
+              // location.reload();
 
             },
+            success: function( data ) {
+              window.location.reload();
+            
+          },
           });
   }
   function exportar_excel() {
@@ -145,6 +151,14 @@
               
             }
           });
+  }
+  function selectAll() {
+    var grid = document.getElementById("data-table-default");
+    var checkboxes = grid.getElementsByTagName("INPUT");
+    let value = checkAll.checked;
+    for (var checkbox of checkboxes) {
+        checkbox.checked = value;
+    }
   }
 </script>
 {% endblock %}
