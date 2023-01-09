@@ -2237,7 +2237,9 @@ def aprobacion_masiva_anexo(request, aprobacion):
             fail_silently=False,
         )
     messages.success(request, 'Anexos aprobados Exitosamente')
-    return redirect('contratos:solicitud-contrato',)
+    # return redirect('contratos:solicitud-contrato',)
+    data = True
+    return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -2368,7 +2370,7 @@ def enviar_revision_anexo(request, anexo_id):
                         'nuevo_parrafo': anexo.motivo,
                         'nuevo_motivo': anexo.motivo,
                         'nueva_renta': anexo.nueva_renta,
-                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta),
+                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta) if anexo.nueva_renta else '',
                         }
             rut_trabajador = anexo.contrato.trabajador.rut
             doc.render(context)
