@@ -2389,7 +2389,7 @@ def enviar_revision_anexo(request, anexo_id):
             # Si carpeta no existe, crea carpeta de contratos.
             carpeta = 'anexos'
             try:
-                os.mkdir('C://Users/Integra-0070/Documents/Proyectos/sgo3/sgo/media/' + carpeta)
+                os.mkdir(path + carpeta)
                 path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
                 doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
                 win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     
