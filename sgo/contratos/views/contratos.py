@@ -2366,8 +2366,9 @@ def enviar_revision_anexo(request, anexo_id):
                         'domicilio_trabajador': anexo.contrato.trabajador.domicilio,
                         'comuna_trabajador': anexo.contrato.trabajador.ciudad.nombre.title(),
                         'nuevo_parrafo': anexo.motivo,
-                        'nueva_renta': anexo.contrato.nueva_renta,
-                        
+                        'nuevo_motivo': anexo.motivo,
+                        'nueva_renta': anexo.nueva_renta,
+                        'nueva_renta_letras': numero_a_letras(anexo.nueva_renta),
                         }
             rut_trabajador = anexo.contrato.trabajador.rut
             doc.render(context)
@@ -2388,7 +2389,7 @@ def enviar_revision_anexo(request, anexo_id):
             # Si carpeta no existe, crea carpeta de contratos.
             carpeta = 'anexos'
             try:
-                os.mkdir(path + carpeta)
+                os.mkdir('C://Users/Integra-0070/Documents/Proyectos/sgo3/sgo/media/' + carpeta)
                 path = os.path.join(settings.MEDIA_ROOT + '/anexos/')
                 doc.save(path + str(rut_trabajador) + "_" + formt['abreviatura'] + "_" + str(anexo_id) +'.docx')
                 win32com.client.Dispatch("Excel.Application",pythoncom.CoInitialize())     
